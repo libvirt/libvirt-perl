@@ -91,7 +91,7 @@ _open(name, readonly)
       RETVAL
 
 void
-restore(con, from)
+restore_domain(con, from)
       virConnectPtr con;
       const char *from;
   PPCODE:
@@ -121,7 +121,7 @@ get_type(con)
       RETVAL
 
 AV *
-list_domain_ids(con)
+_list_domain_ids(con)
       virConnectPtr con;
  PREINIT:
       int *ids;

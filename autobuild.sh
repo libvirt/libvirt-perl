@@ -1,9 +1,9 @@
 #!/bin/sh
 #
 # This script is used to Test::AutoBuild (http://www.autobuild.org)
-# to perform automated builds of the DBus module
+# to perform automated builds of the Sys-Virt module
 
-NAME=Net-DBus
+NAME=Sys-Virt
 
 set -e
 
@@ -40,7 +40,7 @@ make install
 
 rm -f $NAME-*.tar.gz
 make dist
-exit 0
+
 if [ -f /usr/bin/rpmbuild ]; then
   if [ -n "$AUTOBUILD_COUNTER" ]; then
     EXTRA_RELEASE=".auto$AUTOBUILD_COUNTER"
