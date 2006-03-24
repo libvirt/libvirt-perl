@@ -1,0 +1,34 @@
+TYPEMAP
+const char *    T_PV
+const unsigned char *    T_PV
+virConnectPtr O_OBJECT_connect
+virDomainPtr O_OBJECT_domain
+
+INPUT
+O_OBJECT_connect
+    if (sv_isobject($arg) && (SvTYPE(SvRV($arg)) == SVt_PVMG))
+        $var = ($type)SvIV((SV*)SvRV( $arg ));
+    else {
+        warn( \"${Package}::$func_name() -- $var is not a blessed SV reference\" );
+        XSRETURN_UNDEF;
+    }
+
+OUTPUT
+O_OBJECT_connect
+        sv_setref_pv( $arg, "Sys::Virt", (void*)$var );
+
+
+
+INPUT
+O_OBJECT_domain
+    if (sv_isobject($arg) && (SvTYPE(SvRV($arg)) == SVt_PVMG))
+        $var = ($type)SvIV((SV*)SvRV( $arg ));
+    else {
+        warn( \"${Package}::$func_name() -- $var is not a blessed SV reference\" );
+        XSRETURN_UNDEF;
+    }
+
+OUTPUT
+O_OBJECT_domain
+        sv_setref_pv( $arg, "Sys::Virt::Domain", (void*)$var );
+
