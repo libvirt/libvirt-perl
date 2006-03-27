@@ -168,7 +168,7 @@ _lookup_by_id(con, id)
       virConnectPtr con;
       int id;
     CODE:
-      if(!(RETVAL = virDomainLookupByID(con, id))) {
+      if (!(RETVAL = virDomainLookupByID(con, id))) {
         _croak_error(virGetLastError());
       }
   OUTPUT:
@@ -179,7 +179,7 @@ _lookup_by_name(con, name)
       virConnectPtr con;
       char *name;
     CODE:
-      if(!(RETVAL = virDomainLookupByName(con, name))) {
+      if (!(RETVAL = virDomainLookupByName(con, name))) {
         _croak_error(virGetLastError());
       }
   OUTPUT:
@@ -190,7 +190,7 @@ _lookup_by_uuid(con, uuid)
       virConnectPtr con;
       const unsigned char *uuid;
     CODE:
-      if(!(RETVAL = virDomainLookupByUUID(con, uuid))) {
+      if (!(RETVAL = virDomainLookupByUUID(con, uuid))) {
         _croak_error(virGetLastError());
       }
   OUTPUT:
@@ -200,7 +200,7 @@ int
 get_id(dom)
       virDomainPtr dom;
     CODE:
-      if((RETVAL = virDomainGetID(dom)) < 0) {
+      if ((RETVAL = virDomainGetID(dom)) < 0) {
         _croak_error(virGetLastError());
       }
   OUTPUT:
@@ -211,13 +211,23 @@ SV *
 get_uuid(dom)
       virDomainPtr dom;
   PREINIT:
-      unsigned char uuid[16];
+      unsigned char rawuuid[16];
+      char uuid[36];
+      static char hex[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8','9', 'a', 'b', 'c', 'd', 'e', 'f' };
+      int i,j;
     CODE:
-      if((virDomainGetUUID(dom, uuid)) < 0) {
+      if ((virDomainGetUUID(dom, rawuuid)) < 0) {
         _croak_error(virGetLastError());
       }
-      /* XXX signedness & UTF-8 fix */
-      RETVAL = newSVpv((char*)uuid, 16);
+      for (i = 0, j = 0 ; i < 16 ; i++) {
+        printf ("%x\n", rawuuid[i]);   
+        uuid[j++] = hex[((rawuuid[i] >> 4) & 0xf)];
+        uuid[j++] =  hex[(rawuuid[i] & 0xf)]; 
+        if (i == 3 || i == 5 || i == 7 || i == 9) {
+          uuid[j++] = '-';
+        }
+      }
+      RETVAL = newSVpv((char*)uuid, 36);
   OUTPUT:
       RETVAL
 
@@ -225,7 +235,7 @@ const char *
 get_name(dom)
       virDomainPtr dom;
     CODE:
-      if(!(RETVAL = virDomainGetName(dom))) {
+      if (!(RETVAL = virDomainGetName(dom))) {
         _croak_error(virGetLastError());
       }
   OUTPUT:
@@ -236,7 +246,7 @@ void
 suspend(dom)
       virDomainPtr dom;
   PPCODE:
-      if((virDomainSuspend(dom)) < 0) {
+      if ((virDomainSuspend(dom)) < 0) {
         _croak_error(virGetLastError());
       }
 
@@ -245,7 +255,7 @@ void
 resume(dom)
       virDomainPtr dom;
   PPCODE:
-      if((virDomainResume(dom)) < 0) {
+      if ((virDomainResume(dom)) < 0) {
         _croak_error(virGetLastError());
       }
 
@@ -255,7 +265,7 @@ save(dom, to)
       virDomainPtr dom;
       const char *to
   PPCODE:
-      if((virDomainSave(dom, to)) < 0) {
+      if ((virDomainSave(dom, to)) < 0) {
         _croak_error(virGetLastError());
       }
 
