@@ -1,0 +1,11 @@
+Sys::Virt ChangeLog
+===================
+
+Since 0.0.1:
+
+ - Added Sys::Virt->get_node_info mapping to virNodeGetInfo
+ - Exposed the constants for domain state in Sys::Virt::Domain
+ - Added binding for virDomainReboot
+ - Change get_uuid to return raw UUID string
+ - Add get_uuid_string to return a printable version
+ - More example programs
