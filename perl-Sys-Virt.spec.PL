@@ -41,6 +41,8 @@ Group: Development/Tools
 Source: %{appname}-%{version}.tar.gz
 BuildRoot: /var/tmp/%{appname}-%{version}-root
 Requires: perl >= %{perlversion}
+Requires: libvirt >= 0.1.0
+BuildRequires: libvirt-devel >= 0.1.0
 
 %description
 Sys::Virt provides an API for using the libvirt library from Perl
