@@ -43,14 +43,16 @@ use warnings;
 use Sys::Virt::Error;
 use Sys::Virt::Domain;
 
-our $VERSION = '0.0.1';
+our $VERSION = '0.1.0';
 require XSLoader;
 XSLoader::load('Sys::Virt', $VERSION);
 
 =item my $vmm = Sys::Virt->new(address => $address, readonly => $ro);
 
-Attach to the virtual machine monitor with the address of C<address>. This
-parameter is currently unused, so it is recommended to pass an empty string.
+Attach to the virtual machine monitor with the address of C<address>. The
+address parameter may be omitted, in which case the default connection made
+will be to the local Xen hypervisor. In the future it wil be possible to
+specify explicit addresses for other types of hypervisor connection.
 If the optional C<readonly> parameter is supplied, then an unprivileged 
 connection to the VMM will be attempted. If it is not supplied, then it
 defaults to making a fully privileged connection to the VMM. THis in turn
@@ -63,7 +65,7 @@ sub new {
     my $class = ref($proto) || $proto;
     my %params = @_;
     
-    my $address = exists $params{address} ? $params{address} : die "address parameter is required";
+    my $address = exists $params{address} ? $params{address} : "";
     my $readonly = exists $params{readonly} ? $params{readonly} : 0;
     my $self = Sys::Virt::_open($address, $readonly);
 
@@ -215,6 +217,47 @@ sub get_micro_version {
 1;
 
 =pod
+
+=item my $info = $con->get_node_info()
+
+Returns a hash reference summarising the capabilities of the host
+node. The elements of the hash ar
+
+=over 4
+
+=item memory
+
+The amount of physical memory in the host
+
+=item model
+
+The model of the CPU, eg x86_64
+
+=item cpus
+
+The total number of logical CPUs
+
+=item mhz
+
+The peak MHZ of the CPU
+
+=item nodes
+
+The number of NUMA cells
+
+=item sockets
+
+The number of CPU sockets
+
+=item cores
+
+The number of cores per socket
+
+=item threads
+
+The number of threads per core
+
+=back
 
 =back
 

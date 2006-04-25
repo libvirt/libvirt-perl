@@ -28,8 +28,8 @@ sub _new {
     
     my $con = exists $params{connection} ? $params{connection} : die "connection parameter is requried";
     my $self;
-    if (exists $params{address}) {
-	$self = Sys::Virt::Domain::_lookup_by_name($con,  $params{address});
+    if (exists $params{name}) {
+	$self = Sys::Virt::Domain::_lookup_by_name($con,  $params{name});
     } elsif (exists $params{id}) {
 	$self = Sys::Virt::Domain::_lookup_by_id($con,  $params{id});
     } elsif (exists $params{uuid}) {
@@ -53,8 +53,13 @@ domain.
 
 =item my $uuid = $dom->get_uuid()
 
-Returns a string containing a globally unique identifier for
-the domain.
+Returns a 16 byte long string containing the raw globally unique identifier 
+(UUID) for the domain.
+
+=item my $uuid = $dom->get_uuid_string()
+
+Returns a printable string representation of the raw UUID, in the format
+'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'.
 
 =item my $name = $dom->get_name()
 
@@ -70,12 +75,13 @@ the domain's configuration
 Returns a string containing the name of the OS type running
 within the domain.
 
-=item $dom->suspend
+=item $dom->suspend()
 
 Temporarily stop execution of the domain, allowing later continuation
 by calling the C<resume> method.
 
-=item $dom->resume
+=item $dom->resume()
+
 
 Resume execution of a domain previously halted with the C<suspend>
 method.
@@ -114,9 +120,8 @@ The current number of virtual CPUs enabled in the domain
 
 =item state
 
-The execution state of the machine, one of the strings
-C<running>, C<blocked>, C<paused>, C<shutdown>, C<shutoff>,
-C<crashed> or C<unknown>.
+The execution state of the machine, which will be one of the
+constants &Sys::Virt::Domain::STATE_*. 
 
 =back
 
@@ -135,9 +140,103 @@ kilobytes.
 Request that the guest OS perform a gracefull shutdown and
 poweroff.
 
+=item $dom->reboot($flags)
+
+Request that the guest OS perform a gracefull shutdown and
+optionally restart. The C<$flags> parameter determines how
+the domain restarts (if at all). It should be one of the
+constants &Sys::Virt::Domain::REBOOT_* listed later in this
+document.
+
 =cut
 
+sub DESTROY {
+    # Keep autoloader quiet
+}
+
+sub AUTOLOAD {
+    # This AUTOLOAD is used to 'autoload' constants from the constant()
+    # XS function.
+
+    my $constname;
+    our $AUTOLOAD;
+    ($constname = $AUTOLOAD) =~ s/.*:://;
+
+    die "&Sys::Virt::Domain::constant not defined" if $constname eq '_constant';
+    if (!exists $Sys::Virt::Domain::_constants{$constname}) {
+        die "no such constant \$" . __PACKAGE__ . "::$constname";
+    }
+
+    {
+        no strict 'refs';
+        *$AUTOLOAD = sub { $Sys::Virt::Domain::_constants{$constname} };
+    }
+    goto &$AUTOLOAD;
+}
+
+
 1;
+
+=back
+
+=head1 CONSTANTS
+
+The first set of constants enumerate the possible machine 
+runtime states, returned by the C<get_info> method.
+
+=over 4
+
+=item &Sys::Virt::Domain::STATE_NOSTATE
+
+The domain is active, but is not running / blocked (eg idle)
+
+=item &Sys::Virt::Domain::STATE_RUNNING
+
+The domain is active and running
+
+=item &Sys::Virt::Domain::STATE_BLOCKED
+
+The domain is active, but execution is blocked
+
+=item &Sys::Virt::Domain::STATE_PAUSED
+
+The domain is active, but execution has been paused
+
+=item &Sys::Virt::Domain::STATE_SHUTDOWN
+
+The domain is active, but in the shutdown phase
+
+=item &Sys::Virt::Domain::STATE_SHUTOFF
+
+The domain is inactive, and shut down.
+
+=item &Sys::Virt::Domain::STATE_CRASHED
+
+The domain is inactive, and crashed.
+
+=back
+
+The next set of constants enumerate the different flags 
+which can be passed when requesting a reboot.
+
+=over 4
+
+=item &Sys::Virt::Domain::REBOOT_DESTROY
+
+Destroy the domain, rather than restarting the domain
+
+=item &Sys::Virt::Domain::REBOOT_RESTART
+
+Restart the domain after shutdown is complete
+
+=item &Sys::Virt::Domain::REBOOT_PRESERVE
+
+Leave the domain inactive after shutdown is complete
+
+=item &Sys::Virt::Domain::REBOOT_RENAME_RESTART
+
+Restart the domain under a different (automatically generated) name
+after shutdown is complete
 
 =back
 

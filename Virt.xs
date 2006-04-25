@@ -120,6 +120,29 @@ get_type(con)
  OUTPUT:
       RETVAL
 
+HV *
+get_node_info(con)
+      virConnectPtr con;
+  PREINIT:
+      virNodeInfo info;
+    CODE:
+      if (virNodeGetInfo(con, &info) < 0) {
+        _croak_error(virGetLastError());
+      }
+      RETVAL = newHV();
+      hv_store (RETVAL, "model", 5, newSVpv(info.model, 0), 0);
+      hv_store (RETVAL, "memory", 6, newSViv(info.memory), 0);
+      hv_store (RETVAL, "cpus", 4, newSViv(info.cpus), 0);
+      hv_store (RETVAL, "mhz", 3, newSViv(info.mhz), 0);
+      hv_store (RETVAL, "nodes", 5, newSViv(info.nodes), 0);
+      hv_store (RETVAL, "sockets", 7, newSViv(info.sockets), 0);
+      hv_store (RETVAL, "cores", 5, newSViv(info.cores), 0);
+      hv_store (RETVAL, "threads", 7, newSViv(info.threads), 0);
+  OUTPUT:
+      RETVAL
+
+
+
 AV *
 _list_domain_ids(con)
       virConnectPtr con;
@@ -212,6 +235,19 @@ get_uuid(dom)
       virDomainPtr dom;
   PREINIT:
       unsigned char rawuuid[16];
+    CODE:
+      if ((virDomainGetUUID(dom, rawuuid)) < 0) {
+        _croak_error(virGetLastError());
+      }
+      RETVAL = newSVpv((char*)rawuuid, 16);
+  OUTPUT:
+      RETVAL
+
+SV *
+get_uuid_string(dom)
+      virDomainPtr dom;
+  PREINIT:
+      unsigned char rawuuid[16];
       char uuid[36];
       static char hex[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8','9', 'a', 'b', 'c', 'd', 'e', 'f' };
       int i,j;
@@ -220,7 +256,6 @@ get_uuid(dom)
         _croak_error(virGetLastError());
       }
       for (i = 0, j = 0 ; i < 16 ; i++) {
-        printf ("%x\n", rawuuid[i]);   
         uuid[j++] = hex[((rawuuid[i] >> 4) & 0xf)];
         uuid[j++] =  hex[(rawuuid[i] & 0xf)]; 
         if (i == 3 || i == 5 || i == 7 || i == 9) {
@@ -275,40 +310,16 @@ get_info(dom)
       virDomainPtr dom;
   PREINIT:
       virDomainInfo info;
-      char *state;
     CODE:
       if (virDomainGetInfo(dom, &info) < 0) {
         _croak_error(virGetLastError());
       }
-      switch (info.state) {
-        case VIR_DOMAIN_RUNNING:
-          state = "running";
-          break;
-        case VIR_DOMAIN_BLOCKED:
-          state = "blocked";
-          break;
-        case VIR_DOMAIN_PAUSED:
-          state = "paused";
-          break;
-        case VIR_DOMAIN_SHUTDOWN:
-          state = "shutdown";
-          break;
-        case VIR_DOMAIN_SHUTOFF:
-          state = "shutoff";
-          break;
-        case VIR_DOMAIN_CRASHED:
-          state = "crashed";
-          break;
-        case VIR_DOMAIN_NOSTATE:
-        default:
-          state = "unknown";
-          break;
-      }
       RETVAL = newHV();
-      hv_store (RETVAL, "state", 5, newSVpv(state, 0), 0);
+      hv_store (RETVAL, "state", 5, newSViv(info.state), 0);
       hv_store (RETVAL, "maxMem", 6, newSViv(info.maxMem), 0);
       hv_store (RETVAL, "memory", 6, newSViv(info.memory), 0);
       hv_store (RETVAL, "nrVirtCpu", 9, newSViv(info.nrVirtCpu), 0);
+      hv_store (RETVAL, "cpuTime", 7, newSViv(info.cpuTime), 0);
   OUTPUT:
       RETVAL
 
@@ -370,6 +381,15 @@ shutdown(dom)
       }
 
 void
+reboot(dom, flags)
+      virDomainPtr dom;
+      unsigned int flags;
+    PPCODE:
+      if (!virDomainReboot(dom, flags)) {
+        _croak_error(virGetLastError());
+      }
+
+void
 destroy(dom_rv)
       SV *dom_rv;
  PREINIT:
@@ -396,9 +416,31 @@ DESTROY(dom_rv)
 
 MODULE = Sys::Virt  PACKAGE = Sys::Virt
 
+
 PROTOTYPES: ENABLE
+
+#define REGISTER_CONSTANT(name, key) _populate_constant(constants, #key, name)
 
 BOOT:
     {
+      HV *constants;
+
       virSetErrorFunc(NULL, ignoreVirErrorFunc);
+
+      /* not the 'standard' way of doing perl constants, but a lot easier to maintain */
+
+      constants = perl_get_hv("Sys::Virt::Domain::_constants", TRUE);
+      REGISTER_CONSTANT(VIR_DOMAIN_NOSTATE, STATE_NOSTATE);
+      REGISTER_CONSTANT(VIR_DOMAIN_RUNNING, STATE_RUNNING);
+      REGISTER_CONSTANT(VIR_DOMAIN_BLOCKED, STATE_BLOCKED);
+      REGISTER_CONSTANT(VIR_DOMAIN_PAUSED, STATE_PAUSED);
+      REGISTER_CONSTANT(VIR_DOMAIN_SHUTDOWN, STATE_SHUTDOWN);
+      REGISTER_CONSTANT(VIR_DOMAIN_SHUTOFF, STATE_SHUTOFF);
+      REGISTER_CONSTANT(VIR_DOMAIN_CRASHED, STATE_CRASHED);
+      
+      REGISTER_CONSTANT(VIR_DOMAIN_DESTROY, REBOOT_DESTROY);
+      REGISTER_CONSTANT(VIR_DOMAIN_RESTART, REBOOT_RESTART);
+      REGISTER_CONSTANT(VIR_DOMAIN_PRESERVE, REBOOT_PRESERVE);
+      REGISTER_CONSTANT(VIR_DOMAIN_RENAME_RESTART, REBOOT_RENAME_RESTART);
+      
     }
