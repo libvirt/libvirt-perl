@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-Sys::Virt - interface to libvirt virtual machine management API
+Sys::Virt - Represent and manage a libvirt hypervisor connection
 
 =head1 SYNOPSIS
 

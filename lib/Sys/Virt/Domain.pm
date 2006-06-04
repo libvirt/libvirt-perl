@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-Sys::Virt - interface to libvirt virtual machine management API
+Sys::Virt::Domain - Represent & manage a libvirt guest domain
 
 =head1 DESCRIPTION
 
