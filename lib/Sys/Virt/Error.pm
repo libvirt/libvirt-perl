@@ -18,6 +18,8 @@ pretty much any of the Sys::Virt APIs.
 
 package Sys::Virt::Error;
 
+use strict;
+use warnings;
 use overload ('""' => 'stringify');
 
 =item $err->stringify

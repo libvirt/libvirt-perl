@@ -150,9 +150,6 @@ document.
 
 =cut
 
-sub DESTROY {
-    # Keep autoloader quiet
-}
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()

@@ -1,6 +1,13 @@
 Sys::Virt ChangeLog
 ===================
 
+Since 0.1.0:
+
+ - Fixed POD documentation names
+ - Make Sys::Virt::Error use 'strict' and 'warnings' pragmas
+ - Remove duplicated DESTROY sub in Domain.pm since its already
+   provided in the XS backend 
+
 Since 0.0.1:
 
  - Added Sys::Virt->get_node_info mapping to virNodeGetInfo
