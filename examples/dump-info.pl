@@ -1,5 +1,6 @@
 # -*- perl -*-
-
+use strict;
+use warnings;
 use Sys::Virt;
 
 my $addr = @ARGV ? shift @ARGV : "";

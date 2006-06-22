@@ -67,7 +67,6 @@ sub new {
 
     my $address = exists $params{address} ? $params{address} : "";
     my $readonly = exists $params{readonly} ? $params{readonly} : 0;
-    print "Eek $address\n";
     my $self = Sys::Virt::_open($address, $readonly);
 
     bless $self, $class;
