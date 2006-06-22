@@ -31,7 +31,7 @@ console to inform a user of the error.
 
 sub stringify {
     my $self = shift;
-    
+
     return "libvirt error code: " . $self->{code} . ", message: " . $self->{message} . ($self->{message} =~ /\n$/ ? "" : "\n");
 }
 

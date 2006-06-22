@@ -16,7 +16,7 @@ Sys::Virt - Represent and manage a libvirt hypervisor connection
 
 =head1 DESCRIPTION
 
-The Sys::Virt module provides a Perl XS binding to the libvirt 
+The Sys::Virt module provides a Perl XS binding to the libvirt
 virtual machine management APIs. This allows machines running
 within arbitrary virtualization containers to be managed with
 a consistent API.
@@ -43,7 +43,7 @@ use warnings;
 use Sys::Virt::Error;
 use Sys::Virt::Domain;
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.1.1';
 require XSLoader;
 XSLoader::load('Sys::Virt', $VERSION);
 
@@ -53,7 +53,7 @@ Attach to the virtual machine monitor with the address of C<address>. The
 address parameter may be omitted, in which case the default connection made
 will be to the local Xen hypervisor. In the future it wil be possible to
 specify explicit addresses for other types of hypervisor connection.
-If the optional C<readonly> parameter is supplied, then an unprivileged 
+If the optional C<readonly> parameter is supplied, then an unprivileged
 connection to the VMM will be attempted. If it is not supplied, then it
 defaults to making a fully privileged connection to the VMM. THis in turn
 requires that the calling application be running as root.
@@ -64,31 +64,50 @@ sub new {
     my $proto = shift;
     my $class = ref($proto) || $proto;
     my %params = @_;
-    
+
     my $address = exists $params{address} ? $params{address} : "";
     my $readonly = exists $params{readonly} ? $params{readonly} : 0;
+    print "Eek $address\n";
     my $self = Sys::Virt::_open($address, $readonly);
 
     bless $self, $class;
-    
+
     return $self;
 }
 
 
 =item my $dom = $vmm->create_domain($xml);
 
-Create a new domain based on the XML description passed into the C<$xml> 
+Create a new domain based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::Domain>
-class. This method is not available with unprivilegd connections to
-the VMM. 
+class. This method is not available with unprivileged connections to
+the VMM.
 
 =cut
 
 sub create_domain {
     my $self = shift;
     my $xml = shift;
-    
+
     return Sys::Virt::Domain->_new(connection => $self, xml => $xml);
+}
+
+=item my $dom = $vmm->define_domain($xml);
+
+Defines, but does not start, a new domain based on the XML description
+passed into the C<$xml> parameter. The returned object is an instance
+of the L<Sys::Virt::Domain> class. This method is not available with
+unprivileged connections to the VMM. The define can be later started
+by calling the C<create> method on the returned C<Sys::Virt::Domain>
+object.
+
+=cut
+
+sub define_domain {
+    my $self = shift;
+    my $xml = shift;
+
+    return Sys::Virt::Domain->_new(connection => $self, xml => $xml, nocreate => 1);
 }
 
 =item my @doms = $vmm->list_domains()
@@ -100,15 +119,35 @@ in the returned list are instances of the L<Sys::Virt::Domain> class.
 
 sub list_domains {
     my $self = shift;
-    
+
     my $ids = $self->_list_domain_ids();
-    
+
     my @domains;
     foreach my $id (@{$ids}) {
 	push @domains, Sys::Virt::Domain->_new(connection => $self, id => $id);
     }
     return @domains;
 }
+
+#=item my @doms = $vmm->list_defined_domains()
+#
+#Return a list of all domains defined, but not currently running, on the
+#VMM. The elements in the returned list are instances of the
+#L<Sys::Virt::Domain> class.
+#
+#=cut
+#
+#sub list_defined_domains {
+#    my $self = shift;
+#
+#    my $names = $self->_list_defined_domains();
+#
+#    my @domains;
+#    foreach my $name (@{$names}) {
+#	push @domains, Sys::Virt::Domain->_new(connection => $self, name => $name);
+#    }
+#    return @domains;
+#}
 
 =item my $dom = $vmm->get_domain_by_name($name)
 
@@ -120,7 +159,7 @@ an instance of the L<Sys::Virt::Domain> class.
 sub get_domain_by_name {
     my $self = shift;
     my $name = shift;
-    
+
     return Sys::Virt::Domain->_new(connection => $self, name => $name);
 }
 
@@ -136,7 +175,7 @@ an instance of the L<Sys::Virt::Domain> class.
 sub get_domain_by_id {
     my $self = shift;
     my $id = shift;
-    
+
     return Sys::Virt::Domain->_new(connection => $self, id => $id);
 }
 
@@ -152,7 +191,7 @@ an instance of the L<Sys::Virt::Domain> class.
 sub get_domain_by_uuid {
     my $self = shift;
     my $uuid = shift;
-    
+
     return Sys::Virt::Domain->_new(connection => $self, uuid => $uuid);
 }
 
@@ -263,7 +302,7 @@ The number of threads per core
 
 =head1 BUGS
 
-Hopefully none, but the XS code needs to be audited to ensure it 
+Hopefully none, but the XS code needs to be audited to ensure it
 is not leaking memory
 
 =head1 AUTHORS

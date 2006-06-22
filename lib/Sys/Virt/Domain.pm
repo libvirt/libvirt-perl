@@ -25,7 +25,7 @@ sub _new {
     my $proto = shift;
     my $class = ref($proto) || $proto;
     my %params = @_;
-    
+
     my $con = exists $params{connection} ? $params{connection} : die "connection parameter is requried";
     my $self;
     if (exists $params{name}) {
@@ -33,15 +33,26 @@ sub _new {
     } elsif (exists $params{id}) {
 	$self = Sys::Virt::Domain::_lookup_by_id($con,  $params{id});
     } elsif (exists $params{uuid}) {
-	$self = Sys::Virt::Domain::_lookup_by_uuid($con,  $params{uuid});
+	if (len($params{uuid} == 16)) {
+	    $self = Sys::Virt::Domain::_lookup_by_uuid($con,  $params{uuid});
+	} elsif (len($params{uuid} == 32) ||
+		 len($params{uuid} == 36)) {
+	    $self = Sys::Virt::Domain::_lookup_by_uuid_striing($con,  $params{uuid});
+	} else {
+	    die "UUID must be either 16 unsigned bytes, or 32/36 hex characters long";
+	}
     } elsif (exists $params{xml}) {
-	$self = Sys::Virt::Domain::_create_linux($con,  $params{xml});
+	if ($params{nocreate}) {
+	    $self = Sys::Virt::Domain::_define_xml($con,  $params{xml});
+	} else {
+	    $self = Sys::Virt::Domain::_create_linux($con,  $params{xml});
+	}
     } else {
 	die "address, id or uuid parameters are required";
     }
 
     bless $self, $class;
-    
+
     return $self;
 }
 
@@ -53,7 +64,7 @@ domain.
 
 =item my $uuid = $dom->get_uuid()
 
-Returns a 16 byte long string containing the raw globally unique identifier 
+Returns a 16 byte long string containing the raw globally unique identifier
 (UUID) for the domain.
 
 =item my $uuid = $dom->get_uuid_string()
@@ -75,13 +86,24 @@ the domain's configuration
 Returns a string containing the name of the OS type running
 within the domain.
 
+=item $dom->create()
+
+Start a domain whose configuration was previously defined using the
+C<define_domain> method in L<Sys::Virt>.
+
+=item $dom->undefine()
+
+Remove the configuration associated with a domain previously defined
+with the C<define_domain> method in L<Sys::Virt>. If the domain is
+running, you probably want to use the C<shutdown> or C<destroy>
+methods instead.
+
 =item $dom->suspend()
 
 Temporarily stop execution of the domain, allowing later continuation
 by calling the C<resume> method.
 
 =item $dom->resume()
-
 
 Resume execution of a domain previously halted with the C<suspend>
 method.
@@ -121,7 +143,7 @@ The current number of virtual CPUs enabled in the domain
 =item state
 
 The execution state of the machine, which will be one of the
-constants &Sys::Virt::Domain::STATE_*. 
+constants &Sys::Virt::Domain::STATE_*.
 
 =back
 
@@ -134,6 +156,12 @@ value of the C<$mem> parameter is specified in kilobytes
 
 Returns the current maximum memory allowed for this domain in
 kilobytes.
+
+=item $dom->set_memory($mem)
+
+Set the current memory for the domain to the value C<$mem>. The
+value of the C<$mem> parameter is specified in kilobytes. This
+must be less than, or equal to the domain's max memory limit.
 
 =item $dom->shutdown()
 
@@ -161,12 +189,12 @@ sub AUTOLOAD {
 
     die "&Sys::Virt::Domain::constant not defined" if $constname eq '_constant';
     if (!exists $Sys::Virt::Domain::_constants{$constname}) {
-        die "no such constant \$" . __PACKAGE__ . "::$constname";
+	die "no such constant \$" . __PACKAGE__ . "::$constname";
     }
 
     {
-        no strict 'refs';
-        *$AUTOLOAD = sub { $Sys::Virt::Domain::_constants{$constname} };
+	no strict 'refs';
+	*$AUTOLOAD = sub { $Sys::Virt::Domain::_constants{$constname} };
     }
     goto &$AUTOLOAD;
 }
@@ -178,7 +206,7 @@ sub AUTOLOAD {
 
 =head1 CONSTANTS
 
-The first set of constants enumerate the possible machine 
+The first set of constants enumerate the possible machine
 runtime states, returned by the C<get_info> method.
 
 =over 4
@@ -213,7 +241,7 @@ The domain is inactive, and crashed.
 
 =back
 
-The next set of constants enumerate the different flags 
+The next set of constants enumerate the different flags
 which can be passed when requesting a reboot.
 
 =over 4

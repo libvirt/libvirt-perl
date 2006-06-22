@@ -7,6 +7,12 @@ Since 0.1.0:
  - Make Sys::Virt::Error use 'strict' and 'warnings' pragmas
  - Remove duplicated DESTROY sub in Domain.pm since its already
    provided in the XS backend 
+ - Fixed typo in Makefile.PL
+ - Allow connection URI to be passed to example programs
+ - Minimum required libvirt version is now 0.1.1
+ - Make Makefile.PL exit if minimum required libvirt is not
+   found by pkg-config
+ - Added bindings for newly introduced APIs in libvirt 0.1.1
 
 Since 0.0.1:
 

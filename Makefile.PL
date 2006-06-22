@@ -3,15 +3,13 @@ use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
 
+my $libvirtver = "0.1.1";
+my $stat = system "pkg-config --atleast-version=$libvirtver libvirt";
+die "cannot run pkg-config to check libvirt version" if $stat == -1;
+die "libvirt >= $libvirtver is required\n" unless $stat == 0;
+
 my $LIBVIRT_LIBS = `pkg-config --libs libvirt`;
 my $LIBVIRT_CFLAGS = `pkg-config --cflags libvirt`;
-
-if (!defined $LIBVIRT_LIBS || !defined LIBVIRT_CFLAGS) {
-    die "could not run 'pkg-config' to determine compiler/linker flags for libvirt library: $!\n";
-}
-if (!$LIBVIRT_LIBS || !$LIBVIRT_CFLAGS) {
-    die "'pkg-config' didn't report any compiler/linker flags for libvirt library\n";
-}
 
 WriteMakefile(
 	      'NAME' => 'Sys::Virt',
@@ -21,7 +19,7 @@ WriteMakefile(
 		  },
 #    'ABSTRACT_FROM' => 'lib/Sys/Virt.pm',
 	      'AUTHOR' => 'Daniel Berrange <dan@berrange.com>',
-	      'LIBS' => [$LIBVIRT_LIBS], 
+	      'LIBS' => [$LIBVIRT_LIBS],
 	      'DEFINE' => "-DLIBVIRT_API_SUBJECT_TO_CHANGE -DPD_DO_DEBUG=1",
 	      'INC' => "-Wall $LIBVIRT_CFLAGS",
 	      'depend' => {
@@ -44,7 +42,7 @@ sub libscan
 sub test {
     my $self = shift;
     my $mm_test = $self->SUPER::test(@_);
-    
+
     return '
 TO_TEST_PM = $(TO_INST_PM:lib/%.pm=blib/test/%.pm.tstamp)
 
