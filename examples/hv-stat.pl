@@ -7,7 +7,9 @@ use Sys::Virt;
 use Sys::Virt::Domain;
 use Time::HiRes qw(time);
 
-my $hv = Sys::Virt->new(readonly => 1);
+my $addr = @ARGV ? shift @ARGV : "";
+
+my $hv = Sys::Virt->new(address => $addr, readonly => 1);
 
 my $interval = @ARGV ? shift @ARGV : 1;
 my $iterations = @ARGV ? shift @ARGV : 1;
@@ -32,7 +34,7 @@ for (my $i = 0 ; $i < $iterations ; $i++) {
     my $now = time;
 
     my @domains = $hv->list_domains;
-    
+
     my @stats;
     if (!($i % 10)) {
       printf " %-4s %-15s %-8s %-6s %-4s\n", "ID", "Name", "State", "CPU", "Memory";
@@ -46,15 +48,13 @@ for (my $i = 0 ; $i < $iterations ; $i++) {
 	my $timedelta = defined $sample ? ($now - $sample)*1000*1000*1000 :0;
 
 	$cpuTime{$uuid} = $info->{cpuTime};
-	
+
 	my $util = $timedelta > 0 ? $cpudelta * 100 / $timedelta : 0;
 
 	printf " %-4d %-15s %-8s %-6s %-4dMB \n", $domain->get_id, $domain->get_name, $states{$info->{state}}, (sprintf "%d%%",$util), ($info->{memory}/1024);
     }
 
     $sample = $now;
-    
+
     print "\n";
 }
-
-
