@@ -55,7 +55,7 @@ will be to the local Xen hypervisor. In the future it wil be possible to
 specify explicit addresses for other types of hypervisor connection.
 If the optional C<readonly> parameter is supplied, then an unprivileged
 connection to the VMM will be attempted. If it is not supplied, then it
-defaults to making a fully privileged connection to the VMM. THis in turn
+defaults to making a fully privileged connection to the VMM. This in turn
 requires that the calling application be running as root.
 
 =cut
@@ -202,7 +202,7 @@ Recreate a domain from the saved state file given in the C<$savefile> parameter.
 
 =item my $type = $vmm->get_type()
 
-Return the type of virtualization backend accessed by this VMM object. Curently
+Return the type of virtualization backend accessed by this VMM object. Currently
 the only supported type is C<Xen>.
 
 =cut
@@ -217,7 +217,7 @@ formula C<(major * 1000000) + (minor * 1000) + micro>.
 
 =item my $ver = $vmm->get_major_version
 
-Return the major version number of the libvirt library
+Return the major version number of the libvirt library.
 
 =cut
 
@@ -230,7 +230,7 @@ sub get_major_version {
 
 =item my $ver = $vmm->get_minor_version
 
-Return the minor version number of the libvirt library
+Return the minor version number of the libvirt library.
 
 =cut
 
@@ -243,7 +243,7 @@ sub get_minor_version {
 
 =item my $ver = $vmm->get_micro_version
 
-Return the micro version number of the libvirt library
+Return the micro version number of the libvirt library.
 
 =cut
 
@@ -259,7 +259,7 @@ sub get_micro_version {
 =item my $info = $con->get_node_info()
 
 Returns a hash reference summarising the capabilities of the host
-node. The elements of the hash ar
+node. The elements of the hash are as follows:
 
 =over 4
 
@@ -302,7 +302,7 @@ The number of threads per core
 =head1 BUGS
 
 Hopefully none, but the XS code needs to be audited to ensure it
-is not leaking memory
+is not leaking memory.
 
 =head1 AUTHORS
 
@@ -312,7 +312,7 @@ Daniel P. Berrange <berrange@redhat.com>
 
 Copyright (C) 2006 Red Hat
 
-Sys::Virt is distributed under the terms of the GPLv2 or later
+Sys::Virt is distributed under the terms of the GPLv2 or later.
 
 =head1 SEE ALSO
 

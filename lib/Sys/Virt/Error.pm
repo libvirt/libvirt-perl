@@ -37,7 +37,7 @@ sub stringify {
 
 =item my $code = $err->code
 
-Return the raw error code represented by this error
+Return the raw error code represented by this error.
 
 =cut
 
@@ -70,7 +70,7 @@ Daniel P. Berrange <berrange@redhat.com>
 
 Copyright (C) 2006 Red Hat
 
-Sys::Virt is distributed under the terms of the GPLv2 or later
+Sys::Virt is distributed under the terms of the GPLv2 or later.
 
 =head1 SEE ALSO
 

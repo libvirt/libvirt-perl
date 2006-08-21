@@ -124,7 +124,7 @@ completes and should not be used again.
 =item my $info = $dom->get_info()
 
 Returns a hash reference summarising the execution state of the
-domain. The elements of the hash ar
+domain. The elements of the hash are as follows:
 
 =over 4
 
@@ -136,7 +136,11 @@ The maximum memory allowed for this domain, in kilobytes
 
 The current memory allocated to the domain in kilobytes
 
-=item nrVirtCpus
+=item cpuTime
+
+The amount of CPU time used by the domain
+
+=item nrVirtCpu
 
 The current number of virtual CPUs enabled in the domain
 
@@ -150,7 +154,7 @@ constants &Sys::Virt::Domain::STATE_*.
 =item $dom->set_max_memory($mem)
 
 Set the maximum memory for the domain to the value C<$mem>. The
-value of the C<$mem> parameter is specified in kilobytes
+value of the C<$mem> parameter is specified in kilobytes.
 
 =item $mem = $dom->get_max_memory()
 
@@ -165,12 +169,12 @@ must be less than, or equal to the domain's max memory limit.
 
 =item $dom->shutdown()
 
-Request that the guest OS perform a gracefull shutdown and
+Request that the guest OS perform a graceful shutdown and
 poweroff.
 
 =item $dom->reboot($flags)
 
-Request that the guest OS perform a gracefull shutdown and
+Request that the guest OS perform a graceful shutdown and
 optionally restart. The C<$flags> parameter determines how
 the domain restarts (if at all). It should be one of the
 constants &Sys::Virt::Domain::REBOOT_* listed later in this
