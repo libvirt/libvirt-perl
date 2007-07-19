@@ -423,7 +423,7 @@ void
 shutdown(dom)
       virDomainPtr dom;
     PPCODE:
-      if (!virDomainShutdown(dom)) {
+      if (virDomainShutdown(dom) < 0) {
 	_croak_error(virGetLastError());
       }
 
@@ -432,7 +432,7 @@ reboot(dom, flags)
       virDomainPtr dom;
       unsigned int flags;
     PPCODE:
-      if (!virDomainReboot(dom, flags)) {
+      if (virDomainReboot(dom, flags) < 0) {
 	_croak_error(virGetLastError());
       }
 
@@ -440,7 +440,7 @@ void
 undefine(dom)
       virDomainPtr dom;
     PPCODE:
-      if (!virDomainUndefine(dom)) {
+      if (virDomainUndefine(dom) < 0) {
 	_croak_error(virGetLastError());
       }
 
@@ -448,7 +448,7 @@ void
 create(dom)
       virDomainPtr dom;
     PPCODE:
-      if (!virDomainCreate(dom)) {
+      if (!virDomainCreate(dom) < 0) {
 	_croak_error(virGetLastError());
       }
 
