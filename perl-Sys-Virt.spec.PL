@@ -36,7 +36,7 @@ Summary: Sys::Virt - Perl API to libvirt library
 Name: perl-%{appname}
 Version: @VERSION@
 Release: 1%{_extra_release}
-License: GPL
+License: GPLv2 or Artistic
 Group: Development/Tools
 Source: %{appname}-%{version}.tar.gz
 BuildRoot: /var/tmp/%{appname}-%{version}-root

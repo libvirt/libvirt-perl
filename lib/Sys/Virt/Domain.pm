@@ -1,3 +1,22 @@
+# -*- perl -*-
+#
+# Copyright (C) 2006 Red Hat
+# Copyright (C) 2006-2007 Daniel P. Berrange
+#
+# This program is free software; You can redistribute it and/or modify
+# it under either:
+#
+# a) the GNU General Public License as published by the Free
+#   Software Foundation; either version 2, or (at your option) any
+#   later version,
+#
+# or
+#
+# b) the "Artistic License"
+#
+# The file "LICENSE" distributed along with this file provides full
+# details of the terms and conditions of the two licenses.
+
 =pod
 
 =head1 NAME
@@ -273,11 +292,18 @@ after shutdown is complete
 
 Daniel P. Berrange <berrange@redhat.com>
 
-=head1 COPYRIGHT / LICENSE
+=head1 COPYRIGHT
 
 Copyright (C) 2006 Red Hat
+Copyright (C) 2006-2007 Daniel P. Berrange
 
-Sys::Virt is distributed under the terms of the GPLv2 or later
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of either the GNU General Public License as published
+by the Free Software Foundation (either version 2 of the License, or at
+your option any later version), or, the Artistic License, as specified
+in the Perl README file.
 
 =head1 SEE ALSO
 
