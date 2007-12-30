@@ -9,3 +9,4 @@
 ^perl-Sys-Virt\.spec$
 ^Sys-Virt-.*\.tar\.gz$
 ^MANIFEST$
+^cover_db

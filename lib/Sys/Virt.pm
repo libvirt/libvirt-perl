@@ -66,16 +66,47 @@ our $VERSION = '0.1.1';
 require XSLoader;
 XSLoader::load('Sys::Virt', $VERSION);
 
-=item my $vmm = Sys::Virt->new(address => $address, readonly => $ro);
+=item my $vmm = Sys::Virt->new(uri => $uri, readonly => $ro);
 
 Attach to the virtual machine monitor with the address of C<address>. The
-address parameter may be omitted, in which case the default connection made
-will be to the local Xen hypervisor. In the future it wil be possible to
-specify explicit addresses for other types of hypervisor connection.
+uri parameter may be omitted, in which case the default connection made
+will be to the local Xen hypervisor. Some example URIs include:
+
+=over 4
+
+=item xen:///
+
+Xen on the local machine
+
+=item test:///default
+
+Dummy "in memory" driver for test suites
+
+=item qemu:///system
+
+System-wide driver for QEMU / KVM virtualization
+
+=item qemu:///session
+
+Per-user driver for QEMU virtualization
+
+=item qemu+tls://somehost/system
+
+System-wide QEMU driver on C<somehost> using TLS security
+
+=item xen+tcp://somehost/
+
+Xen driver on C<somehost> using TCP / SASL security
+
+=back
+
+For further details consult C<http://libvirt.org/uri.html>
+
 If the optional C<readonly> parameter is supplied, then an unprivileged
 connection to the VMM will be attempted. If it is not supplied, then it
-defaults to making a fully privileged connection to the VMM. This in turn
-requires that the calling application be running as root.
+defaults to making a fully privileged connection to the VMM. If the
+calling application is not running as root, it may be neccessary to
+provide authentication callbacks.
 
 =cut
 
@@ -84,9 +115,9 @@ sub new {
     my $class = ref($proto) || $proto;
     my %params = @_;
 
-    my $address = exists $params{address} ? $params{address} : "";
+    my $uri = exists $params{address} ? $params{address} : exists $params{uri} ? $params{uri} : "";
     my $readonly = exists $params{readonly} ? $params{readonly} : 0;
-    my $self = Sys::Virt::_open($address, $readonly);
+    my $self = Sys::Virt::_open($uri, $readonly);
 
     bless $self, $class;
 
@@ -138,34 +169,66 @@ in the returned list are instances of the L<Sys::Virt::Domain> class.
 sub list_domains {
     my $self = shift;
 
-    my $ids = $self->_list_domain_ids();
+    my $nids = $self->num_of_domains();
+    my @ids = $self->list_domain_ids($nids);
 
     my @domains;
-    foreach my $id (@{$ids}) {
-	push @domains, Sys::Virt::Domain->_new(connection => $self, id => $id);
+    foreach my $id (@ids) {
+	eval {
+	    push @domains, Sys::Virt::Domain->_new(connection => $self, id => $id);
+	};
+	if ($@) {
+	    # nada - domain went away before we could look it up
+	};
     }
     return @domains;
 }
 
-#=item my @doms = $vmm->list_defined_domains()
-#
-#Return a list of all domains defined, but not currently running, on the
-#VMM. The elements in the returned list are instances of the
-#L<Sys::Virt::Domain> class.
-#
-#=cut
-#
-#sub list_defined_domains {
-#    my $self = shift;
-#
-#    my $names = $self->_list_defined_domains();
-#
-#    my @domains;
-#    foreach my $name (@{$names}) {
-#	push @domains, Sys::Virt::Domain->_new(connection => $self, name => $name);
-#    }
-#    return @domains;
-#}
+=item my $nids = $vmm->num_of_domains()
+
+Return the number of running domains known to the VMM. This can be
+used as the C<maxids> parameter to C<list_domain_ids>.
+
+=item my @domIDs = $vmm->list_domain_ids($maxids)
+
+Return a list of all domain IDs currently known to the VMM. The IDs can
+be used with the C<get_domain_by_id> method.
+
+=item my @doms = $vmm->list_defined_domains()
+
+Return a list of all domains defined, but not currently running, on the
+VMM. The elements in the returned list are instances of the
+L<Sys::Virt::Domain> class.
+
+=cut
+
+sub list_defined_domains {
+    my $self = shift;
+
+    my $nnames = $self->num_of_defined_domains();
+    my @names = $self->list_defined_domain_names($nnames);
+
+    my @domains;
+    foreach my $name (@names) {
+	eval {
+	    push @domains, Sys::Virt::Domain->_new(connection => $self, name => $name);
+	};
+	if ($@) {
+	    # nada - domain went away before we could look it up
+	};
+    }
+    return @domains;
+}
+
+=item my $nids = $vmm->num_of_defined_domains()
+
+Return the number of running domains known to the VMM. This can be
+used as the C<maxnames> parameter to C<list_defined_domain_names>.
+
+=item my @doms = $vmm->list_defined_domain_names($maxnames)
+
+Return a list of names of all domains defined, but not currently running, on
+the VMM. The names can be used with the C<get_domain_by_name> method.
 
 =item my $dom = $vmm->get_domain_by_name($name)
 
@@ -315,6 +378,10 @@ The number of cores per socket
 The number of threads per core
 
 =back
+
+=item my $xml = $con->get_capabilities();
+
+Returns an XML document describing the hypervisor capabilities
 
 =back
 
