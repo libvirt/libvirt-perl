@@ -61,6 +61,7 @@ use warnings;
 
 use Sys::Virt::Error;
 use Sys::Virt::Domain;
+use Sys::Virt::Network;
 
 our $VERSION = '0.1.1';
 require XSLoader;
@@ -159,6 +160,40 @@ sub define_domain {
     return Sys::Virt::Domain->_new(connection => $self, xml => $xml, nocreate => 1);
 }
 
+=item my $dom = $vmm->create_network($xml);
+
+Create a new network based on the XML description passed into the C<$xml>
+parameter. The returned object is an instance of the L<Sys::Virt::Network>
+class. This method is not available with unprivileged connections to
+the VMM.
+
+=cut
+
+sub create_network {
+    my $self = shift;
+    my $xml = shift;
+
+    return Sys::Virt::Network->_new(connection => $self, xml => $xml);
+}
+
+=item my $dom = $vmm->define_network($xml);
+
+Defines, but does not start, a new network based on the XML description
+passed into the C<$xml> parameter. The returned object is an instance
+of the L<Sys::Virt::Network> class. This method is not available with
+unprivileged connections to the VMM. The define can be later started
+by calling the C<create> method on the returned C<Sys::Virt::Network>
+object.
+
+=cut
+
+sub define_network {
+    my $self = shift;
+    my $xml = shift;
+
+    return Sys::Virt::Network->_new(connection => $self, xml => $xml, nocreate => 1);
+}
+
 =item my @doms = $vmm->list_domains()
 
 Return a list of all domains currently known to the VMM. The elements
@@ -235,6 +270,82 @@ the VMM. The names can be used with the C<get_domain_by_name> method.
 Return the domain with a name of C<$name>. The returned object is
 an instance of the L<Sys::Virt::Domain> class.
 
+=item my @nets = $vmm->list_networks()
+
+Return a list of all networks currently known to the VMM. The elements
+in the returned list are instances of the L<Sys::Virt::Network> class.
+
+=cut
+
+sub list_networks {
+    my $self = shift;
+
+    my $nnames = $self->num_of_networks();
+    my @names = $self->list_network_names($nnames);
+
+    my @networks;
+    foreach my $name (@names) {
+	eval {
+	    push @networks, Sys::Virt::Network->_new(connection => $self, name => $name);
+	};
+	if ($@) {
+	    # nada - network went away before we could look it up
+	};
+    }
+    return @networks;
+}
+
+=item my $nnames = $vmm->num_of_networks()
+
+Return the number of running networks known to the VMM. This can be
+used as the C<maxids> parameter to C<list_network_ids>.
+
+=item my @netNames = $vmm->list_network_names($maxnames)
+
+Return a list of all network IDs currently known to the VMM. The IDs can
+be used with the C<get_network_by_id> method.
+
+=item my @nets = $vmm->list_defined_networks()
+
+Return a list of all networks defined, but not currently running, on the
+VMM. The elements in the returned list are instances of the
+L<Sys::Virt::Network> class.
+
+=cut
+
+sub list_defined_networks {
+    my $self = shift;
+
+    my $nnames = $self->num_of_defined_networks();
+    my @names = $self->list_defined_network_names($nnames);
+
+    my @networks;
+    foreach my $name (@names) {
+	eval {
+	    push @networks, Sys::Virt::Network->_new(connection => $self, name => $name);
+	};
+	if ($@) {
+	    # nada - network went away before we could look it up
+	};
+    }
+    return @networks;
+}
+
+=item my $nids = $vmm->num_of_defined_networks()
+
+Return the number of running networks known to the VMM. This can be
+used as the C<maxnames> parameter to C<list_defined_network_names>.
+
+=item my @doms = $vmm->list_defined_network_names($maxnames)
+
+Return a list of names of all networks defined, but not currently running, on
+the VMM. The names can be used with the C<get_network_by_name> method.
+
+=item my $dom = $vmm->get_domain_by_name($name)
+
+Return the domain with a name of C<$name>. The returned object is
+an instance of the L<Sys::Virt::Domain> class.
+
 =cut
 
 sub get_domain_by_name {
@@ -274,6 +385,35 @@ sub get_domain_by_uuid {
     my $uuid = shift;
 
     return Sys::Virt::Domain->_new(connection => $self, uuid => $uuid);
+}
+
+=item my $dom = $vmm->get_network_by_name($name)
+
+Return the network with a name of C<$name>. The returned object is
+an instance of the L<Sys::Virt::Network> class.
+
+=cut
+
+sub get_network_by_name {
+    my $self = shift;
+    my $name = shift;
+
+    return Sys::Virt::Network->_new(connection => $self, name => $name);
+}
+
+
+=item my $dom = $vmm->get_network_by_uuid($uuid)
+
+Return the network with a globally unique id of C<$uuid>. The returned object is
+an instance of the L<Sys::Virt::Network> class.
+
+=cut
+
+sub get_network_by_uuid {
+    my $self = shift;
+    my $uuid = shift;
+
+    return Sys::Virt::Network->_new(connection => $self, uuid => $uuid);
 }
 
 =item $vmm->restore_domain($savefile)
@@ -409,6 +549,6 @@ in the Perl README file.
 
 =head1 SEE ALSO
 
-L<Sys::Virt::Domain>, L<Sys::Virt::Error>, C<http://libvirt.org>
+L<Sys::Virt::Domain>, L<Sys::Virt::Network>, L<Sys::Virt::Error>, C<http://libvirt.org>
 
 =cut

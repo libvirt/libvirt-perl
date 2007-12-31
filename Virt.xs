@@ -238,6 +238,68 @@ list_defined_domain_names(con, maxnames)
       free(names);
 
 
+int
+num_of_networks(con)
+      virConnectPtr con;
+    CODE:
+      if ((RETVAL = virConnectNumOfNetworks(con)) < 0) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+void
+list_network_names(con, maxnames)
+      virConnectPtr con;
+      int maxnames;
+ PREINIT:
+      char **names;
+      int i, nnet;
+  PPCODE:
+      Newx(names, maxnames, char *);
+      if ((nnet = virConnectListNetworks(con, names, maxnames)) < 0) {
+	_croak_error(virConnGetLastError(con));
+      }
+      EXTEND(SP, nnet);
+      for (i = 0 ; i < nnet ; i++) {
+	PUSHs(sv_2mortal(newSVpv(names[i], 0)));
+	free(names[i]);
+      }
+      free(names);
+
+
+int
+num_of_defined_networks(con)
+      virConnectPtr con;
+    CODE:
+      if ((RETVAL = virConnectNumOfDefinedNetworks(con)) < 0) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+void
+list_defined_network_names(con, maxnames)
+      virConnectPtr con;
+      int maxnames;
+ PREINIT:
+      char **names;
+      int ndom;
+      int i;
+  PPCODE:
+      Newx(names, maxnames, char *);
+      if ((ndom = virConnectListDefinedNetworks(con, names, maxnames)) < 0) {
+	free(names);
+	_croak_error(virConnGetLastError(con));
+      }
+      EXTEND(SP, ndom);
+      for (i = 0 ; i < ndom ; i++) {
+	PUSHs(sv_2mortal(newSVpv(names[i], 0)));
+        free(names[i]);
+      }
+      free(names);
+
+
 void
 DESTROY(con)
       virConnectPtr con;
@@ -530,6 +592,170 @@ DESTROY(dom_rv)
       dom = (virDomainPtr)SvIV((SV*)SvRV(dom_rv));
       if (dom) {
 	virDomainFree(dom);
+      }
+
+
+
+MODULE = Sys::Virt::Network  PACKAGE = Sys::Virt::Network
+
+virNetworkPtr
+_create_xml(con, xml)
+      virConnectPtr con;
+      const char *xml;
+    CODE:
+      if (!(RETVAL = virNetworkCreateXML(con, xml))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+virNetworkPtr
+_define_xml(con, xml)
+      virConnectPtr con;
+      const char *xml;
+    CODE:
+      if (!(RETVAL = virNetworkDefineXML(con, xml))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+virNetworkPtr
+_lookup_by_name(con, name)
+      virConnectPtr con;
+      const char *name;
+    CODE:
+      if (!(RETVAL = virNetworkLookupByName(con, name))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+virNetworkPtr
+_lookup_by_uuid(con, uuid)
+      virConnectPtr con;
+      const unsigned char *uuid;
+    CODE:
+      if (!(RETVAL = virNetworkLookupByUUID(con, uuid))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+virNetworkPtr
+_lookup_by_uuid_string(con, uuid)
+      virConnectPtr con;
+      const char *uuid;
+    CODE:
+      if (!(RETVAL = virNetworkLookupByUUIDString(con, uuid))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+SV *
+get_uuid(net)
+      virNetworkPtr net;
+  PREINIT:
+      unsigned char rawuuid[16];
+    CODE:
+      if ((virNetworkGetUUID(net, rawuuid)) < 0) {
+	_croak_error(virConnGetLastError(virNetworkGetConnect(net)));
+      }
+      RETVAL = newSVpv((char*)rawuuid, 16);
+  OUTPUT:
+      RETVAL
+
+SV *
+get_uuid_string(net)
+      virNetworkPtr net;
+  PREINIT:
+      char uuid[36];
+    CODE:
+      if ((virNetworkGetUUIDString(net, uuid)) < 0) {
+	_croak_error(virConnGetLastError(virNetworkGetConnect(net)));
+      }
+
+      RETVAL = newSVpv(uuid, 0);
+  OUTPUT:
+      RETVAL
+
+const char *
+get_name(net)
+      virNetworkPtr net;
+    CODE:
+      if (!(RETVAL = virNetworkGetName(net))) {
+	_croak_error(virConnGetLastError(virNetworkGetConnect(net)));
+      }
+  OUTPUT:
+      RETVAL
+
+
+SV *
+get_bridge_name(net)
+      virNetworkPtr net;
+  PREINIT:
+      char *name;
+    CODE:
+      if (!(name = virNetworkGetBridgeName(net))) {
+	 _croak_error(virConnGetLastError(virNetworkGetConnect(net)));
+      }
+      RETVAL = newSVpv(name, 0);
+      free(name);
+  OUTPUT:
+      RETVAL
+
+SV *
+get_xml_description(net)
+      virNetworkPtr net;
+  PREINIT:
+      char *xml;
+    CODE:
+      if (!(xml = virNetworkGetXMLDesc(net, 0))) {
+	 _croak_error(virConnGetLastError(virNetworkGetConnect(net)));
+      }
+      RETVAL = newSVpv(xml, 0);
+      free(xml);
+  OUTPUT:
+      RETVAL
+
+void
+undefine(net)
+      virNetworkPtr net;
+    PPCODE:
+      if (virNetworkUndefine(net) < 0) {
+	_croak_error(virConnGetLastError(virNetworkGetConnect(net)));
+      }
+
+void
+create(net)
+      virNetworkPtr net;
+    PPCODE:
+      if (virNetworkCreate(net) < 0) {
+	_croak_error(virConnGetLastError(virNetworkGetConnect(net)));
+      }
+
+void
+destroy(net_rv)
+      SV *net_rv;
+ PREINIT:
+      virNetworkPtr net;
+  PPCODE:
+      net = (virNetworkPtr)SvIV((SV*)SvRV(net_rv));
+      if (virNetworkDestroy(net) < 0) {
+	_croak_error(virConnGetLastError(virNetworkGetConnect(net)));
+      }
+      sv_setref_pv(net_rv, "Sys::Virt::Network", NULL);
+
+void
+DESTROY(net_rv)
+      SV *net_rv;
+ PREINIT:
+      virNetworkPtr net;
+  PPCODE:
+      net = (virNetworkPtr)SvIV((SV*)SvRV(net_rv));
+      if (net) {
+	virNetworkFree(net);
       }
 
 
