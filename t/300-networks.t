@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 27;
+use Test::More tests => 22;
 use XML::XPath;
 use XML::XPath::XMLParser;
 
