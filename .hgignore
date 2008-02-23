@@ -10,3 +10,4 @@
 ^Sys-Virt-.*\.tar\.gz$
 ^MANIFEST$
 ^cover_db
+^META\.yml$
