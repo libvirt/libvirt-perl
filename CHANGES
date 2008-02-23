@@ -1,6 +1,16 @@
 Sys::Virt ChangeLog
 ===================
 
+Since 0.1.1:
+
+ - Added manual written META.yml
+ - Added networking APIs
+ - Added APIs for host capabilities
+ - Added APIs for inactive domains
+ - Switch licensse to GPLv2+ or Artistic for CPAN compatability
+ - Fix return values for reboot/shutdown/undefine/create APIs
+ - Expanded documentation coverage
+
 Since 0.1.0:
 
  - Fixed POD documentation names

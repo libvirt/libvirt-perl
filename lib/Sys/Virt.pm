@@ -63,7 +63,7 @@ use Sys::Virt::Error;
 use Sys::Virt::Domain;
 use Sys::Virt::Network;
 
-our $VERSION = '0.1.1';
+our $VERSION = '0.1.2';
 require XSLoader;
 XSLoader::load('Sys::Virt', $VERSION);
 
