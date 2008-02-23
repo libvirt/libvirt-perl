@@ -420,22 +420,24 @@ sub get_network_by_uuid {
 
 Recreate a domain from the saved state file given in the C<$savefile> parameter.
 
-=cut
+=item $vmm->get_max_vcpus($domtype)
+
+Return the maximum number of vcpus that can be configured for a domain
+of type C<$domtype>
+
+=item $vmm->get_hostname()
+
+Return the name of the host with which this connection is associated.
 
 =item my $type = $vmm->get_type()
 
 Return the type of virtualization backend accessed by this VMM object. Currently
 the only supported type is C<Xen>.
 
-=cut
-
 =item my $ver = $vmm->get_version()
 
 Return the complete version number as a string encoded in the
 formula C<(major * 1000000) + (minor * 1000) + micro>.
-
-=cut
-
 
 =item my $ver = $vmm->get_major_version
 

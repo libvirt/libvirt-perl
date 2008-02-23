@@ -199,6 +199,11 @@ the domain restarts (if at all). It should be one of the
 constants &Sys::Virt::Domain::REBOOT_* listed later in this
 document.
 
+=item $dom->get_max_vcpus()
+
+Return the maximum number of vcpus that are configured
+for the domain
+
 =cut
 
 

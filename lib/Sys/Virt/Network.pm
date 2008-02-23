@@ -74,42 +74,47 @@ sub _new {
 }
 
 
-=item my $uuid = $dom->get_uuid()
+=item my $uuid = $net->get_uuid()
 
 Returns a 16 byte long string containing the raw globally unique identifier
 (UUID) for the network.
 
-=item my $uuid = $dom->get_uuid_string()
+=item my $uuid = $net->get_uuid_string()
 
 Returns a printable string representation of the raw UUID, in the format
 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'.
 
-=item my $name = $dom->get_name()
+=item my $name = $net->get_name()
 
 Returns a string with a locally unique name of the network
 
-=item my $xml = $dom->get_xml_description()
+=item my $xml = $net->get_xml_description()
 
 Returns an XML document containing a complete description of
 the network's configuration
 
-=item $dom->create()
+=item $net->create()
 
 Start a network whose configuration was previously defined using the
 C<define_network> method in L<Sys::Virt>.
 
-=item $dom->undefine()
+=item $net->undefine()
 
 Remove the configuration associated with a network previously defined
 with the C<define_network> method in L<Sys::Virt>. If the network is
 running, you probably want to use the C<shutdown> or C<destroy>
 methods instead.
 
-=item $dom->destroy()
+=item $net->destroy()
 
 Immediately terminate the machine, and remove it from the virtual
-machine monitor. The C<$dom> handle is invalid after this call
+machine monitor. The C<$net> handle is invalid after this call
 completes and should not be used again.
+
+=item $net->get_bridge_name()
+
+Return the name of the bridge device associated with the virtual
+network
 
 =cut
 
