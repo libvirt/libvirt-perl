@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 27;
+use Test::More tests => 26;
 use XML::XPath;
 use XML::XPath::XMLParser;
 
@@ -29,7 +29,8 @@ isa_ok($dom, "Sys::Virt::Domain");
 
 is($dom->get_name, "test", "name");
 is($dom->get_id, "1", "id");
-is($dom->get_uuid_string, "004b96e1-2d78-c30f-5aa5-f03c87d21e69", "uuid");
+# Can't test this - test driver has a random UUID
+#is($dom->get_uuid_string, "004b96e1-2d78-c30f-5aa5-f03c87d21e69", "uuid");
 
 my @doms = $conn->list_domains();
 is($#doms, 0, "one domain");
@@ -45,6 +46,9 @@ my $xml = "<domain type='test'>
   <memory>10241024</memory>
   <currentMemory>1024120</currentMemory>
   <vcpu>4</vcpu>
+  <os>
+    <type>hvm</type>
+  </os>
 </domain>";
 
 
