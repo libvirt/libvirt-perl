@@ -62,7 +62,7 @@ sub _new {
 	if ($params{nocreate}) {
 	    $self = Sys::Virt::Network::_define_xml($con,  $params{xml});
 	} else {
-	    $self = Sys::Virt::Network::_create_linux($con,  $params{xml});
+	    $self = Sys::Virt::Network::_create_xml($con,  $params{xml});
 	}
     } else {
 	die "address, id or uuid parameters are required";
