@@ -203,7 +203,7 @@ list_domain_ids(con, maxids)
       for (i = 0 ; i < nid ; i++) {
 	PUSHs(sv_2mortal(newSViv(ids[i])));
       }
-      free(ids);
+      Safefree(ids);
 
 
 int
@@ -235,7 +235,7 @@ list_defined_domain_names(con, maxnames)
 	PUSHs(sv_2mortal(newSVpv(names[i], 0)));
         free(names[i]);
       }
-      free(names);
+      Safefree(names);
 
 
 int
@@ -265,7 +265,7 @@ list_network_names(con, maxnames)
 	PUSHs(sv_2mortal(newSVpv(names[i], 0)));
 	free(names[i]);
       }
-      free(names);
+      Safefree(names);
 
 
 int
@@ -297,7 +297,69 @@ list_defined_network_names(con, maxnames)
 	PUSHs(sv_2mortal(newSVpv(names[i], 0)));
         free(names[i]);
       }
-      free(names);
+      Safefree(names);
+
+
+int
+num_of_storage_pools(con)
+      virConnectPtr con;
+    CODE:
+      if ((RETVAL = virConnectNumOfStoragePools(con)) < 0) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+void
+list_storage_pool_names(con, maxnames)
+      virConnectPtr con;
+      int maxnames;
+ PREINIT:
+      char **names;
+      int i, nnet;
+  PPCODE:
+      Newx(names, maxnames, char *);
+      if ((nnet = virConnectListStoragePools(con, names, maxnames)) < 0) {
+	_croak_error(virConnGetLastError(con));
+      }
+      EXTEND(SP, nnet);
+      for (i = 0 ; i < nnet ; i++) {
+	PUSHs(sv_2mortal(newSVpv(names[i], 0)));
+	free(names[i]);
+      }
+      Safefree(names);
+
+
+int
+num_of_defined_storage_pools(con)
+      virConnectPtr con;
+    CODE:
+      if ((RETVAL = virConnectNumOfDefinedStoragePools(con)) < 0) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+void
+list_defined_storage_pool_names(con, maxnames)
+      virConnectPtr con;
+      int maxnames;
+ PREINIT:
+      char **names;
+      int ndom;
+      int i;
+  PPCODE:
+      Newx(names, maxnames, char *);
+      if ((ndom = virConnectListDefinedStoragePools(con, names, maxnames)) < 0) {
+	free(names);
+	_croak_error(virConnGetLastError(con));
+      }
+      EXTEND(SP, ndom);
+      for (i = 0 ; i < ndom ; i++) {
+	PUSHs(sv_2mortal(newSVpv(names[i], 0)));
+        free(names[i]);
+      }
+      Safefree(names);
 
 
 void
@@ -756,6 +818,156 @@ DESTROY(net_rv)
       net = (virNetworkPtr)SvIV((SV*)SvRV(net_rv));
       if (net) {
 	virNetworkFree(net);
+      }
+
+
+
+MODULE = Sys::Virt::StoragePool  PACKAGE = Sys::Virt::StoragePool
+
+virStoragePoolPtr
+_create_xml(con, xml)
+      virConnectPtr con;
+      const char *xml;
+    CODE:
+      if (!(RETVAL = virStoragePoolCreateXML(con, xml, 0))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+virStoragePoolPtr
+_define_xml(con, xml)
+      virConnectPtr con;
+      const char *xml;
+    CODE:
+      if (!(RETVAL = virStoragePoolDefineXML(con, xml, 0))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+virStoragePoolPtr
+_lookup_by_name(con, name)
+      virConnectPtr con;
+      const char *name;
+    CODE:
+      if (!(RETVAL = virStoragePoolLookupByName(con, name))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+virStoragePoolPtr
+_lookup_by_uuid(con, uuid)
+      virConnectPtr con;
+      const unsigned char *uuid;
+    CODE:
+      if (!(RETVAL = virStoragePoolLookupByUUID(con, uuid))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+virStoragePoolPtr
+_lookup_by_uuid_string(con, uuid)
+      virConnectPtr con;
+      const char *uuid;
+    CODE:
+      if (!(RETVAL = virStoragePoolLookupByUUIDString(con, uuid))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+SV *
+get_uuid(pool)
+      virStoragePoolPtr pool;
+  PREINIT:
+      unsigned char rawuuid[16];
+    CODE:
+      if ((virStoragePoolGetUUID(pool, rawuuid)) < 0) {
+	_croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
+      }
+      RETVAL = newSVpv((char*)rawuuid, 16);
+  OUTPUT:
+      RETVAL
+
+SV *
+get_uuid_string(pool)
+      virStoragePoolPtr pool;
+  PREINIT:
+      char uuid[36];
+    CODE:
+      if ((virStoragePoolGetUUIDString(pool, uuid)) < 0) {
+	_croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
+      }
+
+      RETVAL = newSVpv(uuid, 0);
+  OUTPUT:
+      RETVAL
+
+const char *
+get_name(pool)
+      virStoragePoolPtr pool;
+    CODE:
+      if (!(RETVAL = virStoragePoolGetName(pool))) {
+	_croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
+      }
+  OUTPUT:
+      RETVAL
+
+
+SV *
+get_xml_description(pool)
+      virStoragePoolPtr pool;
+  PREINIT:
+      char *xml;
+    CODE:
+      if (!(xml = virStoragePoolGetXMLDesc(pool, 0))) {
+	 _croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
+      }
+      RETVAL = newSVpv(xml, 0);
+      free(xml);
+  OUTPUT:
+      RETVAL
+
+void
+undefine(pool)
+      virStoragePoolPtr pool;
+    PPCODE:
+      if (virStoragePoolUndefine(pool) < 0) {
+	_croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
+      }
+
+void
+create(pool)
+      virStoragePoolPtr pool;
+    PPCODE:
+      if (virStoragePoolCreate(pool, 0) < 0) {
+	_croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
+      }
+
+void
+destroy(pool_rv)
+      SV *pool_rv;
+ PREINIT:
+      virStoragePoolPtr pool;
+  PPCODE:
+      pool = (virStoragePoolPtr)SvIV((SV*)SvRV(pool_rv));
+      if (virStoragePoolDestroy(pool) < 0) {
+	_croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
+      }
+      sv_setref_pv(pool_rv, "Sys::Virt::StoragePool", NULL);
+
+void
+DESTROY(pool_rv)
+      SV *pool_rv;
+ PREINIT:
+      virStoragePoolPtr pool;
+  PPCODE:
+      pool = (virStoragePoolPtr)SvIV((SV*)SvRV(pool_rv));
+      if (pool) {
+	virStoragePoolFree(pool);
       }
 
 

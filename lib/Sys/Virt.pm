@@ -147,7 +147,7 @@ sub create_domain {
 Defines, but does not start, a new domain based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
 of the L<Sys::Virt::Domain> class. This method is not available with
-unprivileged connections to the VMM. The define can be later started
+unprivileged connections to the VMM. The defined domain can be later started
 by calling the C<create> method on the returned C<Sys::Virt::Domain>
 object.
 
@@ -181,7 +181,7 @@ sub create_network {
 Defines, but does not start, a new network based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
 of the L<Sys::Virt::Network> class. This method is not available with
-unprivileged connections to the VMM. The define can be later started
+unprivileged connections to the VMM. The defined network can be later started
 by calling the C<create> method on the returned C<Sys::Virt::Network>
 object.
 
@@ -192,6 +192,40 @@ sub define_network {
     my $xml = shift;
 
     return Sys::Virt::Network->_new(connection => $self, xml => $xml, nocreate => 1);
+}
+
+=item my $dom = $vmm->create_storage_pool($xml);
+
+Create a new storage pool based on the XML description passed into the C<$xml>
+parameter. The returned object is an instance of the L<Sys::Virt::StoragePool>
+class. This method is not available with unprivileged connections to
+the VMM.
+
+=cut
+
+sub create_storage_pool {
+    my $self = shift;
+    my $xml = shift;
+
+    return Sys::Virt::StoragePool->_new(connection => $self, xml => $xml);
+}
+
+=item my $dom = $vmm->define_storage_pool($xml);
+
+Defines, but does not start, a new storage pol based on the XML description
+passed into the C<$xml> parameter. The returned object is an instance
+of the L<Sys::Virt::StoragePool> class. This method is not available with
+unprivileged connections to the VMM. The defined pool can be later started
+by calling the C<create> method on the returned C<Sys::Virt::StoragePool>
+object.
+
+=cut
+
+sub define_storage_pool {
+    my $self = shift;
+    my $xml = shift;
+
+    return Sys::Virt::StoragePool->_new(connection => $self, xml => $xml, nocreate => 1);
 }
 
 =item my @doms = $vmm->list_domains()
@@ -260,15 +294,10 @@ sub list_defined_domains {
 Return the number of running domains known to the VMM. This can be
 used as the C<maxnames> parameter to C<list_defined_domain_names>.
 
-=item my @doms = $vmm->list_defined_domain_names($maxnames)
+=item my @names = $vmm->list_defined_domain_names($maxnames)
 
 Return a list of names of all domains defined, but not currently running, on
 the VMM. The names can be used with the C<get_domain_by_name> method.
-
-=item my $dom = $vmm->get_domain_by_name($name)
-
-Return the domain with a name of C<$name>. The returned object is
-an instance of the L<Sys::Virt::Domain> class.
 
 =item my @nets = $vmm->list_networks()
 
@@ -302,8 +331,8 @@ used as the C<maxids> parameter to C<list_network_ids>.
 
 =item my @netNames = $vmm->list_network_names($maxnames)
 
-Return a list of all network IDs currently known to the VMM. The IDs can
-be used with the C<get_network_by_id> method.
+Return a list of all network names currently known to the VMM. The names can
+be used with the C<get_network_by_name> method.
 
 =item my @nets = $vmm->list_defined_networks()
 
@@ -331,15 +360,86 @@ sub list_defined_networks {
     return @networks;
 }
 
-=item my $nids = $vmm->num_of_defined_networks()
+=item my $nnamess = $vmm->num_of_defined_networks()
 
-Return the number of running networks known to the VMM. This can be
+Return the number of running networks known to the host. This can be
 used as the C<maxnames> parameter to C<list_defined_network_names>.
 
-=item my @doms = $vmm->list_defined_network_names($maxnames)
+=item my @names = $vmm->list_defined_network_names($maxnames)
 
 Return a list of names of all networks defined, but not currently running, on
-the VMM. The names can be used with the C<get_network_by_name> method.
+the host. The names can be used with the C<get_network_by_name> method.
+
+=item my @pools = $vmm->list_storage_pools()
+
+Return a list of all storage pools currently known to the host. The elements
+in the returned list are instances of the L<Sys::Virt::StoragePool> class.
+
+=cut
+
+sub list_storage_pools {
+    my $self = shift;
+
+    my $nnames = $self->num_of_storage_pools();
+    my @names = $self->list_storage_pool_names($nnames);
+
+    my @pools;
+    foreach my $name (@names) {
+	eval {
+	    push @pools, Sys::Virt::StoragePool->_new(connection => $self, name => $name);
+	};
+	if ($@) {
+	    # nada - storage pool went away before we could look it up
+	};
+    }
+    return @pools;
+}
+
+=item my $nnames = $vmm->num_of_storage_pools()
+
+Return the number of running storage pools known to the VMM. This can be
+used as the C<maxids> parameter to C<list_storage_pool_names>.
+
+=item my @poolNames = $vmm->list_storage_pool_names($maxnames)
+
+Return a list of all storage pool names currently known to the VMM. The IDs can
+be used with the C<get_network_by_id> method.
+
+=item my @pools = $vmm->list_defined_storage_pools()
+
+Return a list of all storage pools defined, but not currently running, on the
+host. The elements in the returned list are instances of the
+L<Sys::Virt::StoragePool> class.
+
+=cut
+
+sub list_defined_storage_pools {
+    my $self = shift;
+
+    my $nnames = $self->num_of_defined_storage_pools();
+    my @names = $self->list_defined_storage_pool_names($nnames);
+
+    my @pools;
+    foreach my $name (@names) {
+	eval {
+	    push @pools, Sys::Virt::StoragePool->_new(connection => $self, name => $name);
+	};
+	if ($@) {
+	    # nada - storage pool went away before we could look it up
+	};
+    }
+    return @pools;
+}
+
+=item my $nnames = $vmm->num_of_defined_storage_pools()
+
+Return the number of running networks known to the host. This can be
+used as the C<maxnames> parameter to C<list_defined_storage_pool_names>.
+
+=item my @names = $vmm->list_defined_storage_pool_names($maxnames)
+
+Return a list of names of all storage pools defined, but not currently running, on
+the host. The names can be used with the C<get_storage_pool_by_name> method.
 
 =item my $dom = $vmm->get_domain_by_name($name)
 
@@ -387,7 +487,7 @@ sub get_domain_by_uuid {
     return Sys::Virt::Domain->_new(connection => $self, uuid => $uuid);
 }
 
-=item my $dom = $vmm->get_network_by_name($name)
+=item my $net = $vmm->get_network_by_name($name)
 
 Return the network with a name of C<$name>. The returned object is
 an instance of the L<Sys::Virt::Network> class.
@@ -402,7 +502,7 @@ sub get_network_by_name {
 }
 
 
-=item my $dom = $vmm->get_network_by_uuid($uuid)
+=item my $net = $vmm->get_network_by_uuid($uuid)
 
 Return the network with a globally unique id of C<$uuid>. The returned object is
 an instance of the L<Sys::Virt::Network> class.
@@ -414,6 +514,35 @@ sub get_network_by_uuid {
     my $uuid = shift;
 
     return Sys::Virt::Network->_new(connection => $self, uuid => $uuid);
+}
+
+=item my $pool = $vmm->get_storage_pool_by_name($name)
+
+Return the storage pool with a name of C<$name>. The returned object is
+an instance of the L<Sys::Virt::StoragePool> class.
+
+=cut
+
+sub get_storage_pool_by_name {
+    my $self = shift;
+    my $name = shift;
+
+    return Sys::Virt::StoragePool->_new(connection => $self, name => $name);
+}
+
+
+=item my $pool = $vmm->get_storage_pool_by_uuid($uuid)
+
+Return the storage pool with a globally unique id of C<$uuid>. The returned object is
+an instance of the L<Sys::Virt::StoragePool> class.
+
+=cut
+
+sub get_storage_pool_by_uuid {
+    my $self = shift;
+    my $uuid = shift;
+
+    return Sys::Virt::StoragePool->_new(connection => $self, uuid => $uuid);
 }
 
 =item $vmm->restore_domain($savefile)
@@ -538,8 +667,8 @@ Daniel P. Berrange <berrange@redhat.com>
 
 =head1 COPYRIGHT
 
-Copyright (C) 2006 Red Hat
-Copyright (C) 2006-2007 Daniel P. Berrange
+Copyright (C) 2006-2009 Red Hat
+Copyright (C) 2006-2009 Daniel P. Berrange
 
 =head1 LICENSE
 
@@ -551,6 +680,7 @@ in the Perl README file.
 
 =head1 SEE ALSO
 
-L<Sys::Virt::Domain>, L<Sys::Virt::Network>, L<Sys::Virt::Error>, C<http://libvirt.org>
+L<Sys::Virt::Domain>, L<Sys::Virt::Network>, L<Sys::Virt::StoragePool>,
+L<Sys::Virt::StorageVol>, L<Sys::Virt::Error>, C<http://libvirt.org>
 
 =cut
