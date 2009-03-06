@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 22;
+use Test::More tests => 21;
 use XML::XPath;
 use XML::XPath::XMLParser;
 
@@ -28,7 +28,8 @@ my $net = $conn->get_network_by_name($netnames[0]);
 isa_ok($net, "Sys::Virt::Network");
 
 is($net->get_name, "default", "name");
-is($net->get_uuid_string, "004b96e1-2d78-c30f-5aa5-f03c87d21e69", "uuid");
+# Can't depend on UUID since its random
+#is($net->get_uuid_string, "004b96e1-2d78-c30f-5aa5-f03c87d21e69", "uuid");
 
 my @nets = $conn->list_networks();
 is($#nets, 0, "one network");
@@ -49,10 +50,7 @@ my $xml = "<network>
   </ip>
 </network>";
 
-
 $net = $conn->define_network($xml);
-# XXX hack - libvirt bug - test driver starts the defined net
-$net->destroy();
 
 $nname = $conn->num_of_defined_networks();
 is($nname, 1, "1 defined network");
