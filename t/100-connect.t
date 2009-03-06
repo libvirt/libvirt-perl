@@ -39,7 +39,7 @@ is($arch, "i686", "host");
 
 
 my $guestos = $xp->find("string(/capabilities/guest[1]/os_type)");
-is($guestos, "linux", "os");
+is($guestos, "hvm", "os");
 my $guestarch = $xp->find("string(/capabilities/guest[1]/arch/\@name)");
 is($guestarch, "i686", "arch");
 my $guestword = $xp->find("string(/capabilities/guest[1]/arch/wordsize)");
@@ -66,5 +66,6 @@ is($max, 32, "max cpus");
 
 
 my $thishost = hostname();
+my ($canonhost, $other) = gethostbyname($thishost);
 my $host = $conn->get_hostname();
-is($host, $thishost, "hostname");
+is($host, $canonhost, "hostname");
