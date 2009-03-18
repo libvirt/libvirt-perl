@@ -6,6 +6,7 @@ virDomainPtr O_OBJECT_domain
 virNetworkPtr O_OBJECT_network
 virStoragePoolPtr O_OBJECT_storagepool
 virStorageVolPtr O_OBJECT_storagevol
+virNodeDevicePtr O_OBJECT_nodedevice
 
 INPUT
 O_OBJECT_connect
@@ -74,4 +75,17 @@ O_OBJECT_storagevol
 OUTPUT
 O_OBJECT_storagevol
         sv_setref_pv( $arg, "Sys::Virt::StorageVol", (void*)$var );
+
+INPUT
+O_OBJECT_nodedevice
+    if (sv_isobject($arg) && (SvTYPE(SvRV($arg)) == SVt_PVMG))
+        $var = ($type)SvIV((SV*)SvRV( $arg ));
+    else {
+        warn( \"${Package}::$func_name() -- $var is not a blessed SV reference\" );
+        XSRETURN_UNDEF;
+    }
+
+OUTPUT
+O_OBJECT_nodedevice
+        sv_setref_pv( $arg, "Sys::Virt::NodeDevice", (void*)$var );
 

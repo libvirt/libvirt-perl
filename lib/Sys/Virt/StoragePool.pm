@@ -76,73 +76,216 @@ sub _new {
 }
 
 
-=item my $uuid = $net->get_uuid()
+=item my $uuid = $pool->get_uuid()
 
 Returns a 16 byte long string containing the raw globally unique identifier
 (UUID) for the storage pool.
 
-=item my $uuid = $net->get_uuid_string()
+=item my $uuid = $pool->get_uuid_string()
 
 Returns a printable string representation of the raw UUID, in the format
 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'.
 
-=item my $name = $net->get_name()
+=item my $name = $pool->get_name()
 
 Returns a string with a locally unique name of the storage pool
 
-=item my $xml = $net->get_xml_description()
+=item my $xml = $pool->get_xml_description()
 
 Returns an XML document containing a complete description of
 the storage pool's configuration
 
-=item $net->create()
+=item $pool->create()
 
 Start a storage pool whose configuration was previously defined using the
 C<define_storage_pool> method in L<Sys::Virt>.
 
-=item $net->undefine()
+=item $pool->undefine()
 
 Remove the configuration associated with a storage pool previously defined
 with the C<define_storage pool> method in L<Sys::Virt>. If the storage pool is
 running, you probably want to use the C<shutdown> or C<destroy>
 methods instead.
 
-=item $net->destroy()
+=item $pool->destroy()
 
 Immediately terminate the machine, and remove it from the virtual
-machine monitor. The C<$net> handle is invalid after this call
+machine monitor. The C<$pool> handle is invalid after this call
 completes and should not be used again.
 
-=item $net->get_bridge_name()
+=item $flag = $pool->get_autostart();
 
-Return the name of the bridge device associated with the virtual
-storage pool
+Return a true value if the storage pool is configured to automatically
+start upon boot. Return false, otherwise
+
+=item $pool->set_autostart($flag)
+
+Set the state of the autostart flag, which determines whether the
+storage pool will automatically start upon boot of the host OS
+
+=item $pool->refresh();
+
+Refresh the storage pool state. Typically this will rescan the list
+of storage volumes.
+
+=item $pool->build($flags);
+
+Construct the storage pool if it does not exist. As an example, for
+a disk based storage pool this would ensure a partition table exists.
+The C<$flags> parameter allows control over the build operation
+
+=item $pool->delete($flags);
+
+Delete the storage pool. The C<$flags> parameter allows the data to
+be optionally wiped during delete.
+
+=item %info = $pool->get_info()
+
+Retrieve information about the current storage pool state. The
+returned hash has the following keys
+
+=over 4
+
+=item state
+
+The current status of the storage pool. See constants later.
+
+=item capacity
+
+The total logical size of the storage pool
+
+=item allocation
+
+The current physical allocation of the storage pool
+
+=item available
+
+The available space for creation of new volumes. This may
+be less than the difference between capacity & allocation
+if there are sizing / metadata constraints for volumes
+
+=back
+
+=item my $nnames = $pool->num_of_storage_volumes()
+
+Return the number of running volumes in this storage pool. The value
+can be used as the C<maxnames> parameter to C<list_storage_vol_names>.
+
+=item my @volNames = $pool->list_storage_vol_names($maxnames)
+
+Return a list of all volume names in this storage pool. The names can
+be used with the C<get_volume_by_name> method.
+
+=item my @nets = $pool->list_volumes()
+
+Return a list of all volumes in the storage pool.
+The elements in the returned list are instances of the
+L<Sys::Virt::StorageVol> class.
 
 =cut
 
+sub list_volumes {
+    my $self = shift;
 
-sub AUTOLOAD {
-    # This AUTOLOAD is used to 'autoload' constants from the constant()
-    # XS function.
+    my $nnames = $self->num_of_storage_volumes();
+    my @names = $self->list_storage_vol_names($nnames);
 
-    my $constname;
-    our $AUTOLOAD;
-    ($constname = $AUTOLOAD) =~ s/.*:://;
-
-    die "&Sys::Virt::StoragePool::constant not defined" if $constname eq '_constant';
-    if (!exists $Sys::Virt::StoragePool::_constants{$constname}) {
-	die "no such constant \$" . __PACKAGE__ . "::$constname";
+    my @volumes;
+    foreach my $name (@names) {
+	eval {
+	    push @volumes, Sys::Virt::StorageVol->_new(pool => $self, name => $name);
+	};
+	if ($@) {
+	    # nada - domain went away before we could look it up
+	};
     }
-
-    {
-	no strict 'refs';
-	*$AUTOLOAD = sub { $Sys::Virt::StoragePool::_constants{$constname} };
-    }
-    goto &$AUTOLOAD;
+    return @volumes;
 }
 
 
+=item my $vol = $pool->get_volume_by_name($name)
+
+Return the volume with a name of C<$name>. The returned object is
+an instance of the L<Sys::Virt::StorageVol> class.
+
+=cut
+
+sub get_volume_by_name {
+    my $self = shift;
+    my $name = shift;
+
+    return Sys::Virt::StorageVol->_new(pool => $self, name => $name);
+}
+
+
+
 1;
+
+=back
+
+=head1 CONSTANTS
+
+The following sets of constants may be useful in dealing with some of
+the methods in this package
+
+=head2 POOL STATES
+
+The following constants are useful for interpreting the C<state>
+key value in the hash returned by C<get_info>
+
+=over 4
+
+=item Sys::Virt::StoragePool::STATE_INACTIVE
+
+The storage pool is not currently active
+
+=item Sys::Virt::StoragePool::STATE_BUILDING
+
+The storage pool is still being constructed and is not ready for use
+yet.
+
+=item Sys::Virt::StoragePool::STATE_RUNNING
+
+The storage pool is running and can be queried for volumes
+
+=item Sys::Virt::StoragePool::STATE_DEGRADED
+
+The storage pool is running, but its operation is degraded due
+to a failure.
+
+=back
+
+=head2 DELETION MODES
+
+=over 4
+
+=item Sys::Virt::StoragePool::DELETE_NORMAL
+
+Delete the pool without any attempt to scrub data
+
+=item Sys::Virt::StoragePool::DELETE_ZEROED
+
+Fill the allocated storage with zeros when deleting
+
+=back
+
+
+=head2 BUILD MODES
+
+=over 4
+
+=item Sys::Virt::StoragePool::BUILD_NEW
+
+Construct a new storage pool from constituent bits
+
+=item Sys::Virt::StoragePool::BUILD_RESIZE
+
+Resize an existing built storage pool preserving data where
+appropriate
+
+=item Sys::Virt::StoragePool::BUILD_REPAIR
+
+Repair an existing storage pool operating in degraded mode
 
 =back
 

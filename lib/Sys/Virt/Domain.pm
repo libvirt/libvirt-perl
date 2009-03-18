@@ -134,6 +134,11 @@ the file named in the C<$filename> parameter. The domain can later
 be restored from this file with the C<restore_domain> method on
 the L<Sys::Virt> object.
 
+=item $dom->core_dump($filename)
+
+Trigger a core dump of the guest virtual machine, saving its memory
+image to C<$filename> so it can be analysed by tools such as C<crash>.
+
 =item $dom->destroy()
 
 Immediately terminate the machine, and remove it from the virtual
@@ -204,28 +209,140 @@ document.
 Return the maximum number of vcpus that are configured
 for the domain
 
+=item $dom->attach_device($xml)
+
+Hotplug a new device whose configuration is given by C<$xml>,
+to the running guest.
+
+=item $dom->detach_device($xml)
+
+Hotunplug a existing device whose configuration is given by C<$xml>,
+from the running guest.
+
+=item $data = $dom->block_peek($path, $offset, $size)
+
+Peek into the guest disk C<$path>, at byte C<$offset> capturing
+C<$size> bytes of data. The returned scalar may contain embedded
+NULLs.
+
+=item $data = $dom->memory_peek($offset, $size)
+
+Peek into the guest memory at byte C<$offset> virtual address,
+capturing C<$size> bytes of memory. The return scalar may
+contain embedded NULLs.
+
+=item $flag = $dom->get_autostart();
+
+Return a true value if the guest domain is configured to automatically
+start upon boot. Return false, otherwise
+
+=item $dom->set_autostart($flag)
+
+Set the state of the autostart flag, which determines whether the
+guest will automatically start upon boot of the host OS
+
+=item $dom->set_vcpus($count)
+
+Set the number of virtual CPUs in the guest VM to C<$count>
+
+=item $type = $dom->get_scheduler_type()
+
+Return the scheduler type for the guest domain
+
+=item %stats = $dom->block_stats($path)
+
+Fetch the current I/O statistics for the block device given by C<$path>.
+The returned hash containins keys for
+
+=over 4
+
+=item C<rd_req>
+
+Number of read requests
+
+=item C<rd_bytes>
+
+Number of bytes read
+
+=item C<wr_req>
+
+Number of write requests
+
+=item C<wr_bytes>
+
+Number of bytes written
+
+=item C<errs>
+
+Some kind of error count
+
+=back
+
+=item $dom->interface_stats($path)
+
+Fetch the current I/O statistics for the block device given by C<$path>.
+The returned hash containins keys for
+
+=over 4
+
+=item C<rx_bytes>
+
+Total bytes received
+
+=item C<rx_packets>
+
+Total packets received
+
+=item C<rx_errs>
+
+Total packets received with errors
+
+=item C<rx_drop>
+
+Total packets drop at reception
+
+=item C<tx_bytes>
+
+Total bytes transmitted
+
+=item C<tx_packets>
+
+Total packets transmitted
+
+=item C<tx_errs>
+
+Total packets transmitted with errors
+
+=item C<tx_drop>
+
+Total packets dropped at transmission.
+
+=back
+
+=item %info = $dom->get_security_label()
+
+Fetch information about the security label assigned to the guest
+domain. The returned hash has two keys, C<model> gives the name
+of the security model in effect (eg C<selinux>), while C<label>
+provides the name of the security label applied to the domain.
+
+=item $ddom = $dom->migrate(destcon, flags, dname, uri, bandwidth)
+
+Migrate a domain to an alternative host. The C<destcon> parameter
+should be a C<Sys::Virt> connection to the remote target host.
+If the C<flags> parameter is zero offline migration will be
+performed. The C<Sys::Virt::Domain::MIGRATE_LIVE> constant can be
+used to request live migration. The C<dname> parameter allows the
+guest to be renamed on the target host, if set to C<undef>, the
+domains' current name will be maintained. In normal circumstances,
+the source host determines the target hostname from the URI associated
+with the C<destcon> connection. If the destination host is multi-homed
+it may be neccessary to supply an alternate destination hostame
+via the C<uri> parameter. The C<bandwidth> parameter allows network
+usage to be throttled during migration. If set to zero, no throttling
+will be performed.
+
 =cut
-
-
-sub AUTOLOAD {
-    # This AUTOLOAD is used to 'autoload' constants from the constant()
-    # XS function.
-
-    my $constname;
-    our $AUTOLOAD;
-    ($constname = $AUTOLOAD) =~ s/.*:://;
-
-    die "&Sys::Virt::Domain::constant not defined" if $constname eq '_constant';
-    if (!exists $Sys::Virt::Domain::_constants{$constname}) {
-	die "no such constant \$" . __PACKAGE__ . "::$constname";
-    }
-
-    {
-	no strict 'refs';
-	*$AUTOLOAD = sub { $Sys::Virt::Domain::_constants{$constname} };
-    }
-    goto &$AUTOLOAD;
-}
 
 
 1;
@@ -234,62 +351,245 @@ sub AUTOLOAD {
 
 =head1 CONSTANTS
 
-The first set of constants enumerate the possible machine
-runtime states, returned by the C<get_info> method.
+A number of the APIs take a C<flags> parameter. In most cases
+passing a value of zero will be satisfactory. Some APIs, however,
+accept named constants to alter their behaviour. This section
+documents the current known constants.
+
+=head2 DOMAIN STATE
+
+The domain state constants are useful in interpreting the
+C<state> key in the hash returned by the C<get_info> method.
 
 =over 4
 
-=item &Sys::Virt::Domain::STATE_NOSTATE
+=item Sys::Virt::Domain::STATE_NOSTATE
 
 The domain is active, but is not running / blocked (eg idle)
 
-=item &Sys::Virt::Domain::STATE_RUNNING
+=item Sys::Virt::Domain::STATE_RUNNING
 
 The domain is active and running
 
-=item &Sys::Virt::Domain::STATE_BLOCKED
+=item Sys::Virt::Domain::STATE_BLOCKED
 
 The domain is active, but execution is blocked
 
-=item &Sys::Virt::Domain::STATE_PAUSED
+=item Sys::Virt::Domain::STATE_PAUSED
 
 The domain is active, but execution has been paused
 
-=item &Sys::Virt::Domain::STATE_SHUTDOWN
+=item Sys::Virt::Domain::STATE_SHUTDOWN
 
 The domain is active, but in the shutdown phase
 
-=item &Sys::Virt::Domain::STATE_SHUTOFF
+=item Sys::Virt::Domain::STATE_SHUTOFF
 
 The domain is inactive, and shut down.
 
-=item &Sys::Virt::Domain::STATE_CRASHED
+=item Sys::Virt::Domain::STATE_CRASHED
 
 The domain is inactive, and crashed.
 
 =back
 
-The next set of constants enumerate the different flags
-which can be passed when requesting a reboot.
+
+=head2 MEMORY PEEK
+
+The following constants can be used with the C<memory_peek>
+method's flags parameter
 
 =over 4
 
-=item &Sys::Virt::Domain::REBOOT_DESTROY
+=item Sys::Virt::Domain::MEMORY_VIRTUAL
 
-Destroy the domain, rather than restarting the domain
+Indicates that the offset is using virtual memory addressing.
 
-=item &Sys::Virt::Domain::REBOOT_RESTART
+=back
 
-Restart the domain after shutdown is complete
 
-=item &Sys::Virt::Domain::REBOOT_PRESERVE
+=head2 VCPU STATE
 
-Leave the domain inactive after shutdown is complete
+The following constants are useful when interpreting the
+virtual CPU run state
 
-=item &Sys::Virt::Domain::REBOOT_RENAME_RESTART
+=over 4
 
-Restart the domain under a different (automatically generated) name
-after shutdown is complete
+=item Sys::Virt::Domain::VCPU_OFFLINE
+
+The virtual CPU is not online
+
+=item Sys::Virt::Domain::VCPU_RUNNING
+
+The virtual CPU is executing code
+
+=item Sys::Virt::Domain::VCPU_BLOCKED
+
+The virtual CPU is waiting to be scheduled
+
+=back
+
+
+=head2 XML DUMP OPTIONS
+
+The following constants are used to control the information
+included in the XML configuration dump
+
+=over 4
+
+=item Sys::Virt::Domain::XML_INACTIVE
+
+Report the persistent inactive configuration for the guest, even
+if it is currently running.
+
+=item Sys::Virt::Domain::XML_SECURE
+
+Include security sensitive information in the XML dump, such as
+passwords.
+
+=back
+
+
+=head2 MIGRATE OPTIONS
+
+The following constants are used to control how migration
+is performed
+
+=over 4
+
+=item Sys::Virt::Domain::MIGRATE_LIVE
+
+Migrate the guest without interrupting its execution on the source
+host.
+
+=back
+
+
+=head2 STATE CHANGE EVENTS
+
+The following constants allow domain state change events to be
+interpreted. The events contain both a state change, and a
+reason.
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_DEFINED
+
+Indicates that a persistent configuration has been defined for
+the domain.
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_DEFINED_ADDED
+
+The defined configuration is newly added
+
+=item Sys::Virt::Domain::EVENT_DEFINED_UPDATED
+
+The defined configuration is an update to an existing configuration
+
+=back
+
+=item Sys::Virt::Domain::EVENT_RESUMED
+
+The domain has resumed execution
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_RESUMED_MIGRATED
+
+The domain resumed because migration has completed. This is
+emitted on the destination host.
+
+=item Sys::Virt::Domain::EVENT_RESUMED_UNPAUSED
+
+The domain resumed because the admin unpaused it.
+
+=back
+
+=item Sys::Virt::Domain::EVENT_STARTED
+
+The domain has started running
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_STARTED_BOOTED
+
+The domain was booted from shutoff state
+
+=item Sys::Virt::Domain::EVENT_STARTED_MIGRATED
+
+The domain started due to an incoming migration
+
+=item Sys::Virt::Domain::EVENT_STARTED_RESTORED
+
+The domain was restored from saved state file
+
+=back
+
+=item Sys::Virt::Domain::EVENT_STOPPED
+
+The domain has stopped running
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_STOPPED_CRASHED
+
+The domain stopped because guest operating system has crashed
+
+=item Sys::Virt::Domain::EVENT_STOPPED_DESTROYED
+
+The domain stopped because administrator issued a destroy
+command.
+
+=item Sys::Virt::Domain::EVENT_STOPPED_FAILED
+
+The domain stopped because of a fault in the host virtualization
+environment.
+
+=item Sys::Virt::Domain::EVENT_STOPPED_MIGRATED
+
+The domain stopped because it was migrated to another machine.
+
+=item Sys::Virt::Domain::EVENT_STOPPED_SAVED
+
+The domain was saved to a state file
+
+=item Sys::Virt::Domain::EVENT_STOPPED_SHUTDOWN
+
+The domain stopped due to graceful shutdown of the guest.
+
+=back
+
+=item Sys::Virt::Domain::EVENT_SUSPENDED
+
+The domain has stopped executing, but still exists
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_SUSPENDED_MIGRATED
+
+The domain has been suspended due to offline migration
+
+=item Sys::Virt::Domain::EVENT_SUSPENDED_PAUSED
+
+The domain has been suspended due to administrator pause
+request.
+
+=back
+
+=item Sys::Virt::Domain::EVENT_UNDEFINED
+
+The persistent configuration has gone away
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_UNDEFINED_REMOVED
+
+The domain configuration has gone away due to it being
+removed by administrator.
+
+=back
 
 =back
 

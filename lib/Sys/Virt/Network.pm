@@ -116,28 +116,18 @@ completes and should not be used again.
 Return the name of the bridge device associated with the virtual
 network
 
+=item $flag = $net->get_autostart();
+
+Return a true value if the virtual network is configured to automatically
+start upon boot. Return false, otherwise
+
+=item $net->set_autostart($flag)
+
+Set the state of the autostart flag, which determines whether the
+virtual network will automatically start upon boot of the host OS.
+
+
 =cut
-
-
-sub AUTOLOAD {
-    # This AUTOLOAD is used to 'autoload' constants from the constant()
-    # XS function.
-
-    my $constname;
-    our $AUTOLOAD;
-    ($constname = $AUTOLOAD) =~ s/.*:://;
-
-    die "&Sys::Virt::Network::constant not defined" if $constname eq '_constant';
-    if (!exists $Sys::Virt::Network::_constants{$constname}) {
-	die "no such constant \$" . __PACKAGE__ . "::$constname";
-    }
-
-    {
-	no strict 'refs';
-	*$AUTOLOAD = sub { $Sys::Virt::Network::_constants{$constname} };
-    }
-    goto &$AUTOLOAD;
-}
 
 
 1;

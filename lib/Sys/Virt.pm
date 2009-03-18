@@ -289,7 +289,7 @@ sub list_defined_domains {
     return @domains;
 }
 
-=item my $nids = $vmm->num_of_defined_domains()
+=item my $nnames = $vmm->num_of_defined_domains()
 
 Return the number of running domains known to the VMM. This can be
 used as the C<maxnames> parameter to C<list_defined_domain_names>.
@@ -441,6 +441,41 @@ used as the C<maxnames> parameter to C<list_defined_storage_pool_names>.
 Return a list of names of all storage pools defined, but not currently running, on
 the host. The names can be used with the C<get_storage_pool_by_name> method.
 
+=item my @devs = $vmm->list_node_devices()
+
+Return a list of all devices currently known to the host OS. The elements
+in the returned list are instances of the L<Sys::Virt::NodeDevice> class.
+
+=cut
+
+sub list_node_devices {
+    my $self = shift;
+
+    my $nnames = $self->num_of_node_devices();
+    my @names = $self->list_node_devices($nnames);
+
+    my @devs;
+    foreach my $name (@names) {
+	eval {
+	    push @devs, Sys::Virt::NodeDevice->_new(connection => $self, name => $name);
+	};
+	if ($@) {
+	    # nada - device went away before we could look it up
+	};
+    }
+    return @devs;
+}
+
+=item my $nnames = $vmm->num_of_node_devices()
+
+Return the number of host devices known to the VMM. This can be
+used as the C<maxids> parameter to C<list_node_device_names>.
+
+=item my @netNames = $vmm->list_node_device_names($maxnames)
+
+Return a list of all host device names currently known to the VMM. The names can
+be used with the C<get_node_device_by_name> method.
+
 =item my $dom = $vmm->get_domain_by_name($name)
 
 Return the domain with a name of C<$name>. The returned object is
@@ -545,6 +580,22 @@ sub get_storage_pool_by_uuid {
     return Sys::Virt::StoragePool->_new(connection => $self, uuid => $uuid);
 }
 
+=item my $dev = $vmm->get_node_device_by_name($name)
+
+Return the node device with a name of C<$name>. The returned object is
+an instance of the L<Sys::Virt::NodeDevice> class.
+
+=cut
+
+sub get_node_device_by_name {
+    my $self = shift;
+    my $name = shift;
+
+    return Sys::Virt::NodeDevice->_new(connection => $self, name => $name);
+}
+
+
+
 =item $vmm->restore_domain($savefile)
 
 Recreate a domain from the saved state file given in the C<$savefile> parameter.
@@ -554,9 +605,15 @@ Recreate a domain from the saved state file given in the C<$savefile> parameter.
 Return the maximum number of vcpus that can be configured for a domain
 of type C<$domtype>
 
-=item $vmm->get_hostname()
+=item my $hostname = $vmm->get_hostname()
 
 Return the name of the host with which this connection is associated.
+
+=item my $uri = $vmm->get_uri()
+
+Return the URI associated with the open connection. This may be different
+from the URI used when initially connecting to libvirt, when 'auto-probing'
+or drivers occurrs.
 
 =item my $type = $vmm->get_type()
 
@@ -605,6 +662,15 @@ sub get_micro_version {
     return $self->get_version % 1000;
 }
 
+sub get_version {
+    my $self = shift;
+    if (defined $self) {
+	return $self->_get_conn_version;
+    } else {
+	return &Sys::Virt::_get_library_version();
+    }
+}
+
 1;
 
 =pod
@@ -650,9 +716,91 @@ The number of threads per core
 
 =back
 
+=item my $info = $con->get_node_security_model()
+
+Returns a hash reference summarising the security model of the
+host node. There are two keys in the hash, C<model> specifying
+the name of the security model (eg 'selinux') and C<doi>
+specifying the 'domain of interpretation' for security labels.
+
 =item my $xml = $con->get_capabilities();
 
 Returns an XML document describing the hypervisor capabilities
+
+=back
+
+=head1 CONSTANTS
+
+The following sets of constants are useful when dealing with APIs
+in this package
+
+=head2 EVENT LOOP INTEGRATION
+
+When integrating with an event loop the following constants
+define the file descriptor events
+
+=over 4
+
+=item Sys::Virt::EVENT_HANDLE_READABLE
+
+The file descriptor has data available for read without blocking
+
+=item Sys::Virt::EVENT_HANDLE_WRITABLE
+
+The file descriptor has ability to write data without blocking
+
+=item Sys::Virt::EVENT_HANDLE_ERROR
+
+An error occurred on the file descriptor
+
+=item Sys::Virt::EVENT_HANDLE_HANGUP
+
+The remote end of the file descriptor closed
+
+=back
+
+=head2 CREDENTIAL TYPES
+
+When providing authentication callbacks, the following constants
+indicate the type of credential being requested
+
+=over 4
+
+=item Sys::Virt::CRED_AUTHNAME
+
+Identity to act as
+
+=item Sys::Virt::CRED_USERNAME
+
+Identity to authorize as
+
+=item Sys::Virt::CRED_CNONCE
+
+Client supplies a nonce
+
+=item Sys::Virt::CRED_REALM
+
+Authentication realm
+
+=item Sys::Virt::CRED_ECHOPROMPT
+
+Challenge response non-secret
+
+=item Sys::Virt::CRED_NOECHOPROMPT
+
+Challenge response secret
+
+=item Sys::Virt::CRED_PASSPHRASE
+
+Passphrase secret
+
+=item Sys::Virt::CRED_LANGUAGE
+
+RFC 1766 language code
+
+=item Sys::Virt::CRED_EXTERNAL
+
+Externally provided credential
 
 =back
 
