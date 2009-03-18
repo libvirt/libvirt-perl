@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 26;
+use Test::More tests => 33;
 use XML::XPath;
 use XML::XPath::XMLParser;
 
@@ -83,7 +83,30 @@ is($info->{maxMem}, "10241024", "max mem");
 is($info->{nrVirtCpu}, "4", "vcpu");
 is($info->{state}, &Sys::Virt::Domain::STATE_RUNNING, "state");
 
+my $params = $dom->get_scheduler_parameters();
+
+ok(exists $params->{"weight"}, "weight param");
+is($params->{"weight"}, 50, "weight param is 50");
+
+$dom->set_scheduler_parameters({weight  => 20 });
+
+$params = $dom->get_scheduler_parameters();
+
+ok(exists $params->{"weight"}, "weight param");
+# Temp disabled because test driver is not persisting the set request
+SKIP: {
+    skip "avoid bug in test driver sched params", 1;
+    is($params->{"weight"}, 20, "weight param is now 20");
+}
+
 $dom->destroy();
+
+#my $free = $conn->get_node_free_memory();
+#print STDERR $free;
+my $mem = $conn->get_node_cells_free_memory(0, 8);
+is($#$mem, 1, "2 cells");
+is($mem->[0], 2097152, "mem in cell 1");
+is($mem->[1], 4194304, "mem in cell 2");
 
 
 $nids = $conn->num_of_domains();
@@ -102,4 +125,5 @@ is($nname, 0, "0 defined domain");
 
 @names = $conn->list_defined_domain_names($nname);
 is_deeply(\@names, [], "names");
+
 

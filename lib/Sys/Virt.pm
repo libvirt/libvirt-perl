@@ -595,6 +595,13 @@ sub get_node_device_by_name {
 }
 
 
+=item my $xml = $vmm->find_storage_pool_sources($type, $srcspec, $flags)
+
+Probe for available storage pool sources for the pool of type C<$type>.
+The C<$srcspec> parameter can be C<undef>, or a parameter to refine the
+discovery process, for example a server hostname for NFS discovery. The
+C<$flags> parameter can usually be left as zero. The return scalar is
+an XML document describing the discovered storage pool sources.
 
 =item $vmm->restore_domain($savefile)
 
@@ -726,6 +733,14 @@ specifying the 'domain of interpretation' for security labels.
 =item my $xml = $con->get_capabilities();
 
 Returns an XML document describing the hypervisor capabilities
+
+=item $mem = $con->get_node_free_memory();
+
+Returns the current free memory on the host
+
+=item @mem = $con->get_node_cells_free_memory($start, $end);
+
+Returns the free memory on each NUMA cell between C<$start> and C<$end>.
 
 =back
 

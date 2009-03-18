@@ -254,6 +254,16 @@ Return the scheduler type for the guest domain
 Fetch the current I/O statistics for the block device given by C<$path>.
 The returned hash containins keys for
 
+=item my %params = $dom->get_scheduler_parameters()
+
+Return the set of scheduler tunable parameters for the guest.
+
+=item $dom->set_scheduler_parameters($params)
+
+Update the set of scheduler tunable parameters. The value names for
+tunables vary, and can be discovered using the C<get_scheduler_params>
+call
+
 =over 4
 
 =item C<rd_req>

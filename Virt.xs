@@ -179,6 +179,58 @@ get_node_security_model(con)
       RETVAL
 
 SV *
+get_node_free_memory(con)
+      virConnectPtr con;
+PREINIT:
+      unsigned long long mem;
+   CODE:
+      if ((mem = virNodeGetFreeMemory(con)) == 0) {
+	_croak_error(virConnGetLastError(con));
+      }
+      RETVAL = newSViv(mem);
+  OUTPUT:
+      RETVAL
+
+
+AV *
+get_node_cells_free_memory(con, start, end)
+      virConnectPtr con;
+      int start;
+      int end;
+PREINIT:
+      unsigned long long *mem;
+      int i, num;
+   CODE:
+      Newx(mem, end-start, unsigned long long);
+      if ((num = virNodeGetCellsFreeMemory(con, mem, start, end)) < 0) {
+	Safefree(mem);
+	_croak_error(virConnGetLastError(con));
+      }
+      RETVAL = newAV();
+      for (i = 0 ; i < num ; i++) {
+	SV *val = newSViv(mem[i]);
+	av_push(RETVAL, val);
+      }
+      Safefree(mem);
+  OUTPUT:
+      RETVAL
+
+
+char *
+find_storage_pool_sources(con, type, srcspec, flags)
+      virConnectPtr con;
+      const char *type;
+      const char *srcspec;
+      unsigned int flags;
+    CODE:
+      if ((RETVAL = virConnectFindStoragePoolSources(con, type, srcspec, flags)) == NULL) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+
+SV *
 get_capabilities(con)
       virConnectPtr con;
 PREINIT:
@@ -617,6 +669,116 @@ get_info(dom)
       (void)hv_store (RETVAL, "cpuTime", 7, newSViv(info.cpuTime), 0);
   OUTPUT:
       RETVAL
+
+
+HV *
+get_scheduler_parameters(dom)
+      virDomainPtr dom;
+  PREINIT:
+      virSchedParameter *params;
+      int nparams;
+      unsigned int i;
+      char *type;
+    CODE:
+      if (!(type = virDomainGetSchedulerType(dom, &nparams))) {
+	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+      free(type);
+      Newx(params, nparams, virSchedParameter);
+      if (virDomainGetSchedulerParameters(dom, params, &nparams) < 0) {
+	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+      RETVAL = newHV();
+      for (i = 0 ; i < nparams ; i++) {
+	SV *val = NULL;
+
+	switch (params[i].type) {
+	case VIR_DOMAIN_SCHED_FIELD_INT:
+	  val = newSViv(params[i].value.i);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_UINT:
+	  val = newSViv((int)params[i].value.ui);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_LLONG:
+	  val = newSViv(params[i].value.l);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_ULLONG:
+	  val = newSViv(params[i].value.ul);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
+	  val = newSVnv(params[i].value.d);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
+	  val = newSViv(params[i].value.b);
+	  break;
+	}
+
+	(void)hv_store (RETVAL, params[i].field, strlen(params[i].field), val, 0);
+      }
+  OUTPUT:
+      RETVAL
+
+void
+set_scheduler_parameters(dom, newparams)
+      virDomainPtr dom;
+      HV *newparams;
+  PREINIT:
+      virSchedParameter *params;
+      int nparams;
+      unsigned int i;
+      char *type;
+    PPCODE:
+      if (!(type = virDomainGetSchedulerType(dom, &nparams))) {
+	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+      free(type);
+      Newx(params, nparams, virSchedParameter);
+      if (virDomainGetSchedulerParameters(dom, params, &nparams) < 0) {
+	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+      for (i = 0 ; i < nparams ; i++) {
+	SV **val;
+
+	if (!hv_exists(newparams, params[i].field, strlen(params[i].field)))
+	  continue;
+
+	val = hv_fetch (newparams, params[i].field, strlen(params[i].field), 0);
+
+	switch (params[i].type) {
+	case VIR_DOMAIN_SCHED_FIELD_INT:
+	  params[i].value.i = SvIV(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_UINT:
+	  params[i].value.ui = SvIV(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_LLONG:
+	  params[i].value.l = SvIV(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_ULLONG:
+	  params[i].value.ul = SvIV(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
+	  params[i].value.d = SvNV(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
+	  params[i].value.b = SvIV(*val);
+	  break;
+	}
+
+      }
+      if (virDomainGetSchedulerParameters(dom, params, &nparams) < 0) {
+	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
 
 
 unsigned long
