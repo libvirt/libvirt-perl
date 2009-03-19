@@ -1105,6 +1105,21 @@ get_vcpu_info(dom)
 
 
 void
+pin_vcpu(dom, vcpu, mask)
+     virDomainPtr dom;
+     unsigned int vcpu;
+     SV *mask;
+PREINIT:
+     STRLEN masklen;
+     unsigned char *maps;
+ PPCODE:
+     maps = (unsigned char *)SvPV(mask, masklen);
+     if (virDomainPinVcpu(dom, vcpu, maps, masklen) < 0) {
+	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+     }
+
+
+void
 destroy(dom_rv)
       SV *dom_rv;
  PREINIT:

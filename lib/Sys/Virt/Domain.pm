@@ -365,6 +365,12 @@ the allowed shedular placement. The value for C<affinity> is a
 string representing a bitmask against physical CPUs, 8 cpus per
 character.
 
+=item $dom->pin_vcpu($vcpu, $mask)
+
+Ping the virtual CPU given by index C<$vcpu> to physical CPUs
+given by C<$mask>. The C<$mask> is a string representing a bitmask
+against physical CPUs, 8 cpus per character.
+
 =cut
 
 
