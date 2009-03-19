@@ -776,7 +776,7 @@ set_scheduler_parameters(dom, newparams)
 	}
 
       }
-      if (virDomainGetSchedulerParameters(dom, params, &nparams) < 0) {
+      if (virDomainSetSchedulerParameters(dom, params, nparams) < 0) {
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
 
