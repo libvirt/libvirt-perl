@@ -938,10 +938,12 @@ migrate(dom, destcon, flags, dname, uri, bandwidth)
      const char *dname;
      const char *uri;
      unsigned long bandwidth;
-   PPCODE:
+   CODE:
      if ((RETVAL = virDomainMigrate(dom, destcon, flags, dname, uri, bandwidth)) == NULL) {
        _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
      }
+ OUTPUT:
+     RETVAL
 
 void
 attach_device(dom, xml)
@@ -1059,6 +1061,49 @@ get_security_label(dom)
       (void)hv_store (RETVAL, "enforcing", 9, newSViv(seclabel.enforcing), 0);
    OUTPUT:
       RETVAL
+
+
+void
+get_vcpu_info(dom)
+      virDomainPtr dom;
+ PREINIT:
+      virVcpuInfoPtr info;
+      unsigned char *cpumaps;
+      int maplen;
+      virNodeInfo nodeinfo;
+      virDomainInfo dominfo;
+      int nvCpus;
+      int i;
+   PPCODE:
+      if (virNodeGetInfo(virDomainGetConnect(dom), &nodeinfo) < 0) {
+	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+      if (virDomainGetInfo(dom, &dominfo) < 0) {
+	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+
+      Newx(info, dominfo.nrVirtCpu, virVcpuInfo);
+      maplen = VIR_CPU_MAPLEN(VIR_NODEINFO_MAXCPUS(nodeinfo));
+      Newx(cpumaps, dominfo.nrVirtCpu * maplen, unsigned char);
+      if ((nvCpus = virDomainGetVcpus(dom, info, dominfo.nrVirtCpu, cpumaps, maplen)) < 0) {
+	Safefree(info);
+	Safefree(cpumaps);
+	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+
+      EXTEND(SP, nvCpus);
+      for (i = 0 ; i < nvCpus ; i++) {
+	HV *rec = newHV();
+	(void)hv_store(rec, "number", 6, newSViv(info[i].number), 0);
+	(void)hv_store(rec, "state", 5, newSViv(info[i].state), 0);
+	(void)hv_store(rec, "cpuTime", 7, newSViv(info[i].cpuTime), 0);
+	(void)hv_store(rec, "cpu", 3, newSViv(info[i].cpu), 0);
+	(void)hv_store(rec, "affinity", 8, newSVpvn((char*)cpumaps + (i *maplen), maplen), 0);
+	PUSHs(newRV_noinc((SV *)rec));
+      }
+
+      Safefree(info);
+      Safefree(cpumaps);
 
 
 void
