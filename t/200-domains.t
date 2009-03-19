@@ -103,10 +103,10 @@ $dom->destroy();
 
 #my $free = $conn->get_node_free_memory();
 #print STDERR $free;
-my $mem = $conn->get_node_cells_free_memory(0, 8);
-is($#$mem, 1, "2 cells");
-is($mem->[0], 2097152, "mem in cell 1");
-is($mem->[1], 4194304, "mem in cell 2");
+my @mem = $conn->get_node_cells_free_memory(0, 8);
+is($#mem, 1, "2 cells");
+is($mem[0], 2097152, "mem in cell 1");
+is($mem[1], 4194304, "mem in cell 2");
 
 
 $nids = $conn->num_of_domains();

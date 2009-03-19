@@ -352,6 +352,19 @@ via the C<uri> parameter. The C<bandwidth> parameter allows network
 usage to be throttled during migration. If set to zero, no throttling
 will be performed.
 
+
+=item @vcpuinfo = $dom->get_vcpu_info()
+
+Obtain information about the state of all virtual CPUs in a running
+guest domain. The returned list will have one element for each vCPU,
+where each elements contains a hash reference. The keys in the hash
+are, C<number> the vCPU number, C<cpu> the physical CPU on which the
+vCPU is currently scheduled, C<cpuTime> the cummulative execution
+time of the vCPU, C<state> the running state and C<affinity> giving
+the allowed shedular placement. The value for C<affinity> is a
+string representing a bitmask against physical CPUs, 8 cpus per
+character.
+
 =cut
 
 

@@ -192,7 +192,7 @@ PREINIT:
       RETVAL
 
 
-AV *
+void
 get_node_cells_free_memory(con, start, end)
       virConnectPtr con;
       int start;
@@ -200,20 +200,18 @@ get_node_cells_free_memory(con, start, end)
 PREINIT:
       unsigned long long *mem;
       int i, num;
-   CODE:
+ PPCODE:
       Newx(mem, end-start, unsigned long long);
       if ((num = virNodeGetCellsFreeMemory(con, mem, start, end)) < 0) {
 	Safefree(mem);
 	_croak_error(virConnGetLastError(con));
       }
-      RETVAL = newAV();
+      EXTEND(SP, num);
       for (i = 0 ; i < num ; i++) {
 	SV *val = newSViv(mem[i]);
-	av_push(RETVAL, val);
+	PUSHs(sv_2mortal(val));
       }
       Safefree(mem);
-  OUTPUT:
-      RETVAL
 
 
 char *
