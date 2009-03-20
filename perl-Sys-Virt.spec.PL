@@ -11,7 +11,7 @@ unless (do 'lib/Sys/Virt.pm')
     if ($@) { die $@ };
     die "lib/Sys/Virt.pm: $!";
   }
-		
+
 local $/ = undef;
 $_ = <DATA>;
 s/\@VERSION\@/$Sys::Virt::VERSION/g;
@@ -41,12 +41,14 @@ Group: Development/Tools
 Source: %{appname}-%{version}.tar.gz
 BuildRoot: /var/tmp/%{appname}-%{version}-root
 Requires: perl >= %{perlversion}
-Requires: libvirt >= 0.1.0
-BuildRequires: libvirt-devel >= 0.1.0
+Requires: libvirt >= 0.6.1
+BuildRequires: libvirt-devel >= 0.6.1
+BuildRequires: perl(Test::More)
+BuildRequires: perl(Time::HiRes)
 
 %description
 Sys::Virt provides an API for using the libvirt library from Perl
- 
+
 %prep
 %setup -q -n %{appname}-%{version}
 

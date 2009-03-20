@@ -15,3 +15,5 @@ CVS
 ^Makefile$
 ^cover_db/
 .hg
+.*\.orig
+.*\.sh

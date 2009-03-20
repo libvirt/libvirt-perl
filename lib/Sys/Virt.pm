@@ -63,7 +63,7 @@ use Sys::Virt::Error;
 use Sys::Virt::Domain;
 use Sys::Virt::Network;
 
-our $VERSION = '0.1.2';
+our $VERSION = '0.2.0';
 require XSLoader;
 XSLoader::load('Sys::Virt', $VERSION);
 
@@ -118,7 +118,18 @@ sub new {
 
     my $uri = exists $params{address} ? $params{address} : exists $params{uri} ? $params{uri} : "";
     my $readonly = exists $params{readonly} ? $params{readonly} : 0;
-    my $self = Sys::Virt::_open($uri, $readonly);
+    my $auth = exists $params{auth} ? $params{auth} : 0;
+
+    my $authcb = exists $params{callback} ? $params{callback} : undef;
+    my $credlist = exists $params{credlist} ? $params{credlist} : undef;
+
+    my $self;
+
+    if ($auth) {
+	$self = Sys::Virt::_open_auth($uri, $readonly, $credlist, $authcb);
+    } else {
+	$self = Sys::Virt::_open($uri, $readonly);
+    }
 
     bless $self, $class;
 
@@ -687,6 +698,23 @@ sub get_version {
 Returns a hash reference summarising the capabilities of the host
 node. The elements of the hash are as follows:
 
+=item $conn->domain_event_register($callback)
+
+Register a callback to received notificaitons of domain state change
+events. Only a single callback can be registered with each connection
+instance. The callback will be invoked with four paramters, an
+instance of C<Sys::Virt> for the connection, an instance of C<Sys::Virt::Domain>
+for the domain changing state, and a C<event> and C<detail> arguments,
+corresponding to the event constants defined in the C<Sys::Virt::Domain>
+module. Before discarding the connection object, the callback must be
+deregistered, otherwise the connection object memory will never be
+released in garbage collection.
+
+=item $conn->domain_event_deregister()
+
+Unregister a callback, allowing the connection object to be garbage
+collected.
+
 =over 4
 
 =item memory
@@ -748,31 +776,6 @@ Returns the free memory on each NUMA cell between C<$start> and C<$end>.
 
 The following sets of constants are useful when dealing with APIs
 in this package
-
-=head2 EVENT LOOP INTEGRATION
-
-When integrating with an event loop the following constants
-define the file descriptor events
-
-=over 4
-
-=item Sys::Virt::EVENT_HANDLE_READABLE
-
-The file descriptor has data available for read without blocking
-
-=item Sys::Virt::EVENT_HANDLE_WRITABLE
-
-The file descriptor has ability to write data without blocking
-
-=item Sys::Virt::EVENT_HANDLE_ERROR
-
-An error occurred on the file descriptor
-
-=item Sys::Virt::EVENT_HANDLE_HANGUP
-
-The remote end of the file descriptor closed
-
-=back
 
 =head2 CREDENTIAL TYPES
 

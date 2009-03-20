@@ -39,6 +39,7 @@ build_requires:
    XML::XPath:                    0
    XML::XPath::XMLParser:         0
    Sys::Hostname:                 0
+   Time::HiRes:                   0
 
 resources:
   license: http://www.gnu.org/licenses/gpl.html

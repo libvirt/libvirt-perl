@@ -68,6 +68,292 @@ _populate_constant(HV *stash, char *name, int val)
 
 #define REGISTER_CONSTANT(name, key) _populate_constant(stash, #key, name)
 
+static int
+_domain_event_callback(virConnectPtr con,
+		       virDomainPtr dom,
+		       int event,
+		       int detail,
+		       void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *domref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+    XPUSHs(domref);
+    XPUSHs(sv_2mortal(newSViv(event)));
+    XPUSHs(sv_2mortal(newSViv(detail)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+static void
+_domain_event_free(void *opaque)
+{
+  SV *sv = opaque;
+  SvREFCNT_dec(sv);
+}
+
+static int
+_event_add_handle(int fd,
+		  int events,
+		  virEventHandleCallback cb,
+		  void *opaque,
+		  virFreeCallback ff)
+{
+    SV *cbref;
+    SV *opaqueref;
+    SV *ffref;
+    int ret;
+    int watch = 0;
+    dSP;
+
+    ENTER;
+    SAVETMPS;
+
+    cbref= sv_newmortal();
+    opaqueref= sv_newmortal();
+    ffref= sv_newmortal();
+
+    sv_setref_pv(cbref, NULL, cb);
+    sv_setref_pv(opaqueref, NULL, opaque);
+    sv_setref_pv(ffref, NULL, ff);
+
+    PUSHMARK(SP);
+    XPUSHs(sv_2mortal(newSViv(fd)));
+    XPUSHs(sv_2mortal(newSViv(events)));
+    XPUSHs(cbref);
+    XPUSHs(opaqueref);
+    XPUSHs(ffref);
+    PUTBACK;
+
+    ret = call_pv("Sys::Virt::Event::_add_handle", G_SCALAR);
+
+    SPAGAIN;
+
+    if (ret == 1)
+      watch = POPi;
+
+    FREETMPS;
+    LEAVE;
+
+    if (ret != 1)
+      return -1;
+
+    return watch;
+}
+
+static void
+_event_update_handle(int watch,
+		     int events)
+{
+    dSP;
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(sv_2mortal(newSViv(watch)));
+    XPUSHs(sv_2mortal(newSViv(events)));
+    PUTBACK;
+
+    call_pv("Sys::Virt::Event::_update_handle", G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+}
+
+static int
+_event_remove_handle(int watch)
+{
+    dSP;
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(sv_2mortal(newSViv(watch)));
+    PUTBACK;
+
+    call_pv("Sys::Virt::Event::_remove_handle", G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+    return 0;
+}
+
+static int
+_event_add_timeout(int interval,
+		   virEventTimeoutCallback cb,
+		   void *opaque,
+		   virFreeCallback ff)
+{
+    SV *cbref;
+    SV *opaqueref;
+    SV *ffref;
+    int ret;
+    int timer = 0;
+    dSP;
+
+    ENTER;
+    SAVETMPS;
+
+    cbref = sv_newmortal();
+    opaqueref = sv_newmortal();
+    ffref = sv_newmortal();
+
+    sv_setref_pv(cbref, NULL, cb);
+    sv_setref_pv(opaqueref, NULL, opaque);
+    sv_setref_pv(ffref, NULL, ff);
+
+    PUSHMARK(SP);
+    XPUSHs(sv_2mortal(newSViv(interval)));
+    XPUSHs(cbref);
+    XPUSHs(opaqueref);
+    XPUSHs(ffref);
+    PUTBACK;
+
+    ret = call_pv("Sys::Virt::Event::_add_timeout", G_SCALAR);
+
+    SPAGAIN;
+
+    if (ret == 1)
+      timer = POPi;
+
+    FREETMPS;
+    LEAVE;
+
+    if (ret != 1)
+      return -1;
+
+    return timer;
+}
+
+static void
+_event_update_timeout(int timer,
+		      int interval)
+{
+    dSP;
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(sv_2mortal(newSViv(timer)));
+    XPUSHs(sv_2mortal(newSViv(interval)));
+    PUTBACK;
+
+    call_pv("Sys::Virt::Event::_update_timeout", G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+}
+
+static int
+_event_remove_timeout(int timer)
+{
+    dSP;
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(sv_2mortal(newSViv(timer)));
+    PUTBACK;
+
+    call_pv("Sys::Virt::Event::_remove_timeout", G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
+static int
+_open_auth_callback(virConnectCredentialPtr cred,
+		    unsigned int ncred,
+		    void *cbdata)
+{
+  dSP;
+  int i, ret, success = -1;
+  AV *credlist;
+
+  credlist = newAV();
+
+  ENTER;
+  SAVETMPS;
+  PUSHMARK(SP);
+
+  for (i = 0 ; i < ncred ; i++) {
+      HV *credrec = newHV();
+
+      (void)hv_store(credrec, "type", 4, newSViv(cred[i].type), 0);
+      (void)hv_store(credrec, "prompt", 6, newSVpv(cred[i].prompt, 0), 0);
+      (void)hv_store(credrec, "challenge", 9, newSVpv(cred[i].challenge, 0), 0);
+      (void)hv_store(credrec, "result", 6, newSVpv(cred[i].defresult, 0), 0);
+
+      av_push(credlist, newRV_noinc((SV *)credrec));
+  }
+  SvREFCNT_inc((SV*)credlist);
+
+  XPUSHs(newRV_noinc((SV*)credlist));
+  PUTBACK;
+
+  ret = call_sv((SV*)cbdata, G_SCALAR);
+
+  SPAGAIN;
+
+  if (ret == 1)
+     success = POPi;
+
+  for (i = 0 ; i < ncred ; i++) {
+      SV **credsv = av_fetch(credlist, i, 0);
+      HV *credrec = (HV*)SvRV(*credsv);
+      SV **val = hv_fetch(credrec, "result", 6, 0);
+
+      if (val && SvOK(*val)) {
+	  STRLEN len;
+	  char *result = SvPV(*val, len);
+	  if (!(cred[i].result = malloc(len+1)))
+	      abort();
+	  memcpy(cred[i].result, result, len+1);
+	  cred[i].resultlen = (unsigned int)len;
+      } else {
+	  cred[i].resultlen = 0;
+	  cred[i].result = NULL;
+      }
+  }
+
+  FREETMPS;
+  LEAVE;
+
+  return success;
+}
+
+
 MODULE = Sys::Virt  PACKAGE = Sys::Virt
 
 PROTOTYPES: ENABLE
@@ -89,6 +375,44 @@ _open(name, readonly)
 	_croak_error(virGetLastError());
       }
   OUTPUT:
+      RETVAL
+
+
+virConnectPtr
+_open_auth(name, readonly, creds, cb)
+      const char *name;
+      int readonly;
+      SV *creds;
+      SV *cb;
+PREINIT:
+      AV *credlist;
+      virConnectAuth auth;
+      int i;
+   CODE:
+      if (SvOK(cb) && SvOK(creds)) {
+	  memset(&auth, 0, sizeof auth);
+	  credlist = (AV*)SvRV(creds);
+	  auth.ncredtype = av_len(credlist) + 1;
+	  Newx(auth.credtype, auth.ncredtype, int);
+	  for (i = 0 ; i < auth.ncredtype ; i++) {
+	    SV **type = av_fetch(credlist, i, 0);
+	    auth.credtype[i] = SvIV(*type);
+	  }
+
+	  auth.cb = _open_auth_callback;
+	  auth.cbdata = cb;
+	  RETVAL = virConnectOpenAuth(name,
+				      &auth,
+				      readonly ? VIR_CONNECT_RO : 0);
+      } else {
+	  RETVAL = virConnectOpenAuth(name,
+				      virConnectAuthPtrDefault,
+				      readonly ? VIR_CONNECT_RO : 0);
+      }
+      if (!RETVAL) {
+	_croak_error(virGetLastError());
+      }
+ OUTPUT:
       RETVAL
 
 void
@@ -487,6 +811,29 @@ list_node_device_names(con, cap, maxnames, flags)
 
 
 
+
+void
+domain_event_register(conref, cb)
+      SV* conref;
+      SV* cb;
+PREINIT:
+      AV *opaque;
+      virConnectPtr con;
+ PPCODE:
+      con = (virConnectPtr)SvIV((SV*)SvRV(conref));
+      opaque = newAV();
+      SvREFCNT_inc(cb);
+      SvREFCNT_inc(conref);
+      av_push(opaque, conref);
+      av_push(opaque, cb);
+      virConnectDomainEventRegister(con, _domain_event_callback, opaque, _domain_event_free);
+
+void
+domain_event_deregister(con)
+      virConnectPtr con;
+ PPCODE:
+      virConnectDomainEventDeregister(con, _domain_event_callback);
+
 void
 DESTROY(con)
       virConnectPtr con;
@@ -567,9 +914,7 @@ int
 get_id(dom)
       virDomainPtr dom;
     CODE:
-      if ((RETVAL = virDomainGetID(dom)) < 0) {
-	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
-      }
+      RETVAL = virDomainGetID(dom);
   OUTPUT:
       RETVAL
 
@@ -1129,7 +1474,6 @@ destroy(dom_rv)
       if (virDomainDestroy(dom) < 0) {
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
-      sv_setref_pv(dom_rv, "Sys::Virt::Domain", NULL);
 
 void
 DESTROY(dom_rv)
@@ -1316,7 +1660,6 @@ destroy(net_rv)
       if (virNetworkDestroy(net) < 0) {
 	_croak_error(virConnGetLastError(virNetworkGetConnect(net)));
       }
-      sv_setref_pv(net_rv, "Sys::Virt::Network", NULL);
 
 void
 DESTROY(net_rv)
@@ -1546,7 +1889,6 @@ destroy(pool_rv)
       if (virStoragePoolDestroy(pool) < 0) {
 	_croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
       }
-      sv_setref_pv(pool_rv, "Sys::Virt::StoragePool", NULL);
 
 int
 num_of_storage_volumes(pool)
@@ -1831,6 +2173,66 @@ DESTROY(dev_rv)
 	virNodeDeviceFree(dev);
       }
 
+MODULE = Sys::Virt::Event  PACKAGE = Sys::Virt::Event
+
+PROTOTYPES: ENABLE
+
+void
+_register_impl()
+ PPCODE:
+      virEventRegisterImpl(_event_add_handle,
+			   _event_update_handle,
+			   _event_remove_handle,
+			   _event_add_timeout,
+			   _event_update_timeout,
+			   _event_remove_timeout);
+
+void
+_run_handle_callback_helper(watch, fd, event, cbref, opaqueref)
+      int watch;
+      int fd;
+      int event;
+      SV *cbref;
+      SV *opaqueref;
+ PREINIT:
+      virEventHandleCallback cb;
+      void *opaque;
+  PPCODE:
+      cb = (virEventHandleCallback)SvIV((SV*)SvRV(cbref));
+      opaque = (void*)SvIV((SV*)SvRV(opaqueref));
+
+      cb(watch, fd, event, opaque);
+
+
+void
+_run_timeout_callback_helper(timer, cbref, opaqueref)
+      int timer;
+      SV *cbref;
+      SV *opaqueref;
+ PREINIT:
+      virEventTimeoutCallback cb;
+      void *opaque;
+  PPCODE:
+      cb = (virEventTimeoutCallback)SvIV((SV*)SvRV(cbref));
+      opaque = (void*)SvIV((SV*)SvRV(opaqueref));
+
+      cb(timer, opaque);
+
+
+void
+_free_callback_opaque_helper(ffref, opaqueref)
+      SV *ffref;
+      SV *opaqueref;
+PREINIT:
+      virFreeCallback ff;
+      void *opaque;
+  PPCODE:
+      opaque = SvOK(opaqueref) ? (void*)SvIV((SV*)SvRV(opaqueref)) : NULL;
+      ff = SvOK(ffref) ? (virFreeCallback)SvIV((SV*)SvRV(ffref)) : NULL;
+
+      if (opaque != NULL && ff != NULL)
+        ff(opaque);
+
 
 
 MODULE = Sys::Virt  PACKAGE = Sys::Virt
@@ -1849,7 +2251,7 @@ BOOT:
 
       /*
        * Not required
-      REGISTER_CONSTANT(VIR_CONNECT_RO, CONNECT_RO);
+      RGISTER_CONSTANT(VIR_CONNECT_RO, CONNECT_RO);
       */
 
       REGISTER_CONSTANT(VIR_CRED_USERNAME, CRED_USERNAME);
@@ -1863,10 +2265,12 @@ BOOT:
       REGISTER_CONSTANT(VIR_CRED_EXTERNAL, CRED_EXTERNAL);
 
 
-      REGISTER_CONSTANT(VIR_EVENT_HANDLE_READABLE, EVENT_HANDLE_READABLE);
-      REGISTER_CONSTANT(VIR_EVENT_HANDLE_WRITABLE, EVENT_HANDLE_WRITABLE);
-      REGISTER_CONSTANT(VIR_EVENT_HANDLE_ERROR, EVENT_HANDLE_ERROR);
-      REGISTER_CONSTANT(VIR_EVENT_HANDLE_HANGUP, EVENT_HANDLE_HANGUP);
+      stash = gv_stashpv( "Sys::Virt::Event", TRUE );
+
+      REGISTER_CONSTANT(VIR_EVENT_HANDLE_READABLE, HANDLE_READABLE);
+      REGISTER_CONSTANT(VIR_EVENT_HANDLE_WRITABLE, HANDLE_WRITABLE);
+      REGISTER_CONSTANT(VIR_EVENT_HANDLE_ERROR, HANDLE_ERROR);
+      REGISTER_CONSTANT(VIR_EVENT_HANDLE_HANGUP, HANDLE_HANGUP);
 
 
       stash = gv_stashpv( "Sys::Virt::Domain", TRUE );

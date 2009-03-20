@@ -1,6 +1,13 @@
 Sys::Virt ChangeLog
 ===================
 
+Since 0.1.2:
+
+ - Implement storage, node device, event APIs
+ - Full covereage of all APIs in 0.6.1 release of libvirt
+ - Full documentation coverage
+ - Ability to authenticate when openning connections
+
 Since 0.1.1:
 
  - Added manual written META.yml
