@@ -474,7 +474,7 @@ get_node_info(con)
       if (virNodeGetInfo(con, &info) < 0) {
 	_croak_error(virConnGetLastError(con));
       }
-      RETVAL = newHV();
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
       (void)hv_store (RETVAL, "model", 5, newSVpv(info.model, 0), 0);
       (void)hv_store (RETVAL, "memory", 6, newSViv(info.memory), 0);
       (void)hv_store (RETVAL, "cpus", 4, newSViv(info.cpus), 0);
@@ -496,7 +496,7 @@ get_node_security_model(con)
       if (virNodeGetSecurityModel(con, &secmodel) < 0) {
 	_croak_error(virConnGetLastError(con));
       }
-      RETVAL = newHV();
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
       (void)hv_store (RETVAL, "model", 5, newSVpv(secmodel.model, 0), 0);
       (void)hv_store (RETVAL, "doi", 3, newSVpv(secmodel.doi, 0), 0);
    OUTPUT:
@@ -1004,7 +1004,7 @@ get_info(dom)
       if (virDomainGetInfo(dom, &info) < 0) {
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
-      RETVAL = newHV();
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
       (void)hv_store (RETVAL, "state", 5, newSViv(info.state), 0);
       (void)hv_store (RETVAL, "maxMem", 6, newSViv(info.maxMem), 0);
       (void)hv_store (RETVAL, "memory", 6, newSViv(info.memory), 0);
@@ -1031,7 +1031,7 @@ get_scheduler_parameters(dom)
       if (virDomainGetSchedulerParameters(dom, params, &nparams) < 0) {
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
-      RETVAL = newHV();
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
       for (i = 0 ; i < nparams ; i++) {
 	SV *val = NULL;
 
@@ -1318,7 +1318,7 @@ block_stats(dom, path)
       if (virDomainBlockStats(dom, path, &stats, sizeof(stats)) < 0) {
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
-      RETVAL = newHV();
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
       (void)hv_store (RETVAL, "rd_req", 6, newSViv(stats.rd_req), 0);
       (void)hv_store (RETVAL, "rd_bytes", 8, newSViv(stats.rd_bytes), 0);
       (void)hv_store (RETVAL, "wr_req", 6, newSViv(stats.wr_req), 0);
@@ -1338,7 +1338,7 @@ interface_stats(dom, path)
       if (virDomainInterfaceStats(dom, path, &stats, sizeof(stats)) < 0) {
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
-      RETVAL = newHV();
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
       (void)hv_store (RETVAL, "rx_bytes", 8, newSViv(stats.rx_bytes), 0);
       (void)hv_store (RETVAL, "rx_packets", 10, newSViv(stats.rx_packets), 0);
       (void)hv_store (RETVAL, "rx_errs", 7, newSViv(stats.rx_errs), 0);
@@ -1399,7 +1399,7 @@ get_security_label(dom)
       if (virDomainGetSecurityLabel(dom, &seclabel) < 0) {
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
-      RETVAL = newHV();
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
       (void)hv_store (RETVAL, "label", 5, newSVpv(seclabel.label, 0), 0);
       (void)hv_store (RETVAL, "enforcing", 9, newSViv(seclabel.enforcing), 0);
    OUTPUT:
@@ -1871,7 +1871,7 @@ get_info(pool)
       if (virStoragePoolGetInfo(pool, &info) < 0) {
 	_croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
       }
-      RETVAL = newHV();
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
       (void)hv_store (RETVAL, "state", 5, newSViv(info.state), 0);
       (void)hv_store (RETVAL, "capacity", 8, newSViv(info.capacity), 0);
       (void)hv_store (RETVAL, "allocation", 10, newSViv(info.allocation), 0);
@@ -2046,7 +2046,7 @@ get_info(vol)
       if (virStorageVolGetInfo(vol, &info) < 0) {
 	_croak_error(virConnGetLastError(virStorageVolGetConnect(vol)));
       }
-      RETVAL = newHV();
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
       (void)hv_store (RETVAL, "type", 4, newSViv(info.type), 0);
       (void)hv_store (RETVAL, "capacity", 8, newSViv(info.capacity), 0);
       (void)hv_store (RETVAL, "allocation", 10, newSViv(info.allocation), 0);
