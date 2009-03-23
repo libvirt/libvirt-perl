@@ -109,6 +109,53 @@ defaults to making a fully privileged connection to the VMM. If the
 calling application is not running as root, it may be neccessary to
 provide authentication callbacks.
 
+If the optional C<auth> parameter is set to a non-zero value,
+authentication will be enabled during connection, using the
+default set of credential gathering callbacks. The default
+callbacks prompt for credentials on the console, so are not
+suitable for graphical applications. For such apps a custom
+implementation should be supplied. The C<credlist> parameter
+should be an array reference listing the set of credential
+types that will be supported. The credential constants in
+this module can be used as values in this list. The C<callback>
+parameter should be a subroutine reference containing the
+code neccessary to gather the credentials. When invoked it
+will be supplied with a single parameter, a array reference
+of requested credentials. The elements of the array are
+hash references, with keys C<type> giving the type of
+credential, C<prompt> giving a user descriptive user
+prompt, C<challenge> giving name of the credential
+required. The answer should be collected from the user, and
+returned by setting the C<result> key. This key may already
+be set with a default result if applicable
+
+As a simple example returning hardcoded credentials
+
+    my $address  = "qemu+tcp://192.168.122.1/system";
+    my $username = "test";
+    my $password = "123456";
+
+    my $con = Sys::Virt->new(address => $address,
+                             auth => 1,
+                             credlist => [
+                               Sys::Virt::CRED_AUTHNAME,
+                               Sys::Virt::CRED_PASSPHRASE,
+                             ],
+                             callback =>
+         sub {
+               my $creds = shift;
+
+               foreach my $cred (@{$creds}) {
+                  if ($cred->{type} == Sys::Virt::CRED_AUTHNAME) {
+                      $cred->{result} = $username;
+                  }
+                  if ($cred->{type} == Sys::Virt::CRED_PASSPHRASE) {
+                      $cred->{result} = $password;
+                  }
+               }
+               return 0;
+         });
+
 =cut
 
 sub new {
