@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 21;
+use Test::More tests => 25;
 use XML::XPath;
 use XML::XPath::XMLParser;
 
@@ -28,8 +28,19 @@ my $net = $conn->get_network_by_name($netnames[0]);
 isa_ok($net, "Sys::Virt::Network");
 
 is($net->get_name, "default", "name");
-# Can't depend on UUID since its random
-#is($net->get_uuid_string, "004b96e1-2d78-c30f-5aa5-f03c87d21e69", "uuid");
+
+# Lookup again via UUID to verify we get the same
+my $uuid = $net->get_uuid();
+
+my $net2 = $conn->get_network_by_uuid($uuid);
+isa_ok($net2, "Sys::Virt::Network");
+is($net2->get_name, "default", "name");
+
+my $uuidstr = $net->get_uuid_string();
+
+my $net3 = $conn->get_network_by_uuid($uuidstr);
+isa_ok($net3, "Sys::Virt::Network");
+is($net3->get_name, "default", "name");
 
 my @nets = $conn->list_networks();
 is($#nets, 0, "one network");

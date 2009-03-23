@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 21;
+use Test::More tests => 25;
 use XML::XPath;
 use XML::XPath::XMLParser;
 
@@ -21,19 +21,31 @@ isa_ok($conn, "Sys::Virt");
 my $nid = $conn->num_of_storage_pools();
 is($nid, 1, "1 active storage_pool");
 
-my @netnames = $conn->list_storage_pool_names($nid);
-is_deeply(\@netnames, ["default-pool"], "storage_pool names");
+my @poolnames = $conn->list_storage_pool_names($nid);
+is_deeply(\@poolnames, ["default-pool"], "storage_pool names");
 
-my $net = $conn->get_storage_pool_by_name($netnames[0]);
-isa_ok($net, "Sys::Virt::StoragePool");
+my $pool = $conn->get_storage_pool_by_name($poolnames[0]);
+isa_ok($pool, "Sys::Virt::StoragePool");
 
-is($net->get_name, "default-pool", "name");
-# Can't depend on UUID since its random
-#is($net->get_uuid_string, "004b96e1-2d78-c30f-5aa5-f03c87d21e69", "uuid");
+is($pool->get_name, "default-pool", "name");
 
-my @nets = $conn->list_storage_pools();
-is($#nets, 0, "one storage_pool");
-isa_ok($nets[0], "Sys::Virt::StoragePool");
+# Lookup again via UUID to verify we get the same
+my $uuid = $pool->get_uuid();
+
+my $pool2 = $conn->get_storage_pool_by_uuid($uuid);
+isa_ok($pool2, "Sys::Virt::StoragePool");
+is($pool2->get_name, "default-pool", "name");
+
+my $uuidstr = $pool->get_uuid_string();
+
+my $pool3 = $conn->get_storage_pool_by_uuid($uuidstr);
+isa_ok($pool3, "Sys::Virt::StoragePool");
+is($pool3->get_name, "default-pool", "name");
+
+
+my @pools = $conn->list_storage_pools();
+is($#pools, 0, "one storage_pool");
+isa_ok($pools[0], "Sys::Virt::StoragePool");
 
 
 my $nname = $conn->num_of_defined_storage_pools();
@@ -47,7 +59,7 @@ my $xml = "<pool type='dir'>
   </target>
 </pool>";
 
-$net = $conn->define_storage_pool($xml);
+$pool = $conn->define_storage_pool($xml);
 
 $nname = $conn->num_of_defined_storage_pools();
 is($nname, 1, "1 defined storage_pool");
@@ -55,15 +67,15 @@ is($nname, 1, "1 defined storage_pool");
 my @names = $conn->list_defined_storage_pool_names($nname);
 is_deeply(\@names, ["wibble"], "names");
 
-@nets = $conn->list_defined_storage_pools();
-is($#nets, 0, "1 defined storage_pool");
-isa_ok($nets[0], "Sys::Virt::StoragePool");
+@pools = $conn->list_defined_storage_pools();
+is($#pools, 0, "1 defined storage_pool");
+isa_ok($pools[0], "Sys::Virt::StoragePool");
 
-$net = $conn->get_storage_pool_by_name("wibble");
-isa_ok($net, "Sys::Virt::StoragePool");
+$pool = $conn->get_storage_pool_by_name("wibble");
+isa_ok($pool, "Sys::Virt::StoragePool");
 
 
-$net->create();
+$pool->create();
 
 my $nids = $conn->num_of_storage_pools();
 is($nids, 2, "2 active storage_pools");
@@ -71,7 +83,7 @@ is($nids, 2, "2 active storage_pools");
 my @ids = sort { $a cmp $b } $conn->list_storage_pool_names($nids);
 is_deeply(\@ids, ["default-pool", "wibble"], "storage_pool names");
 
-$net->destroy();
+$pool->destroy();
 
 
 $nids = $conn->num_of_storage_pools();
@@ -80,9 +92,9 @@ is($nids, 1, "1 active storage_pools");
 @ids = $conn->list_storage_pool_names($nids);
 is_deeply(\@ids, ["default-pool"], "storage_pool names");
 
-$net = $conn->get_storage_pool_by_name("wibble");
+$pool = $conn->get_storage_pool_by_name("wibble");
 
-$net->undefine();
+$pool->undefine();
 
 
 $nname = $conn->num_of_defined_storage_pools();
