@@ -3,6 +3,12 @@
 
 Sys::Virt is written and maintained by
 
-   Daniel P. Berrange <berrange@redhat.com>
+   Daniel P. Berrange <berrange-at-redhat-dot-com>
+
+
+Patches contributed by:
+
+   Anthony Hinsinger <anthony-dot-hinsinger-at-univ-pau-dot-fr>
+
 
 -- End

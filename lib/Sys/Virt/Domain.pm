@@ -52,11 +52,11 @@ sub _new {
     } elsif (exists $params{id}) {
 	$self = Sys::Virt::Domain::_lookup_by_id($con,  $params{id});
     } elsif (exists $params{uuid}) {
-	if (len($params{uuid} == 16)) {
+	if (length($params{uuid}) == 16) {
 	    $self = Sys::Virt::Domain::_lookup_by_uuid($con,  $params{uuid});
-	} elsif (len($params{uuid} == 32) ||
-		 len($params{uuid} == 36)) {
-	    $self = Sys::Virt::Domain::_lookup_by_uuid_striing($con,  $params{uuid});
+	} elsif (length($params{uuid}) == 32 ||
+		 length($params{uuid}) == 36) {
+	    $self = Sys::Virt::Domain::_lookup_by_uuid_string($con,  $params{uuid});
 	} else {
 	    die "UUID must be either 16 unsigned bytes, or 32/36 hex characters long";
 	}
