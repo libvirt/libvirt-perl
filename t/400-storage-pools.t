@@ -3,13 +3,12 @@
 use strict;
 use warnings;
 
-use Test::More tests => 25;
+use Test::More tests => 24;
 use XML::XPath;
 use XML::XPath::XMLParser;
 
 BEGIN {
         use_ok('Sys::Virt');
-        use_ok('Sys::Virt::StoragePool');
 }
 
 

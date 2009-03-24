@@ -62,6 +62,9 @@ use warnings;
 use Sys::Virt::Error;
 use Sys::Virt::Domain;
 use Sys::Virt::Network;
+use Sys::Virt::StoragePool;
+use Sys::Virt::StorageVol;
+use Sys::Virt::NodeDevice;
 
 our $VERSION = '0.2.0';
 require XSLoader;
