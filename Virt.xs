@@ -25,6 +25,65 @@
 #include <libvirt/virterror.h>
 #include <libvirt/libvirt.h>
 
+/*
+ * On 32-bit OS (and some 64-bit) Perl does not have an
+ * integer type capable of storing 64 bit numbers. So
+ * we serialize to/from strings on these platforms
+ */
+
+long long
+virt_SvIVll(SV *sv) {
+#ifdef USE_64_BIT_ALL
+    return SvIV(sv);
+#else
+    return strtoll(SvPV_nolen(sv), NULL, 10);
+#endif
+}
+
+unsigned long long
+virt_SvIVull(SV *sv) {
+#ifdef USE_64_BIT_ALL
+    return SvIV(sv);
+#else
+    return strtoull(SvPV_nolen(sv), NULL, 10);
+#endif
+}
+
+
+#ifndef PRId64
+#define PRId64 "lld"
+#endif
+
+SV *
+virt_newSVll(long long val) {
+#ifdef USE_64_BIT_ALL
+    return newSViv(val);
+#else
+    char buf[100];
+    int len;
+    len = snprintf(buf, 100, "%" PRId64, val);
+    return newSVpv(buf, len);
+#endif
+}
+
+#ifndef PRIu64
+#define PRIu64 "llu"
+#endif
+
+SV *
+virt_newSVull(unsigned long long val) {
+#ifdef USE_64_BIT_ALL
+    return newSVuv(val);
+#else
+    char buf[100];
+    int len;
+    len = snprintf(buf, 100, "%" PRIu64, val);
+    return newSVpv(buf, len);
+#endif
+}
+
+
+
 void	ignoreVirErrorFunc(void * userData, virErrorPtr error) {
   /* Do nothing */
 }
@@ -511,7 +570,7 @@ PREINIT:
       if ((mem = virNodeGetFreeMemory(con)) == 0) {
 	_croak_error(virConnGetLastError(con));
       }
-      RETVAL = newSViv(mem);
+      RETVAL = virt_newSVull(mem);
   OUTPUT:
       RETVAL
 
@@ -1009,7 +1068,7 @@ get_info(dom)
       (void)hv_store (RETVAL, "maxMem", 6, newSViv(info.maxMem), 0);
       (void)hv_store (RETVAL, "memory", 6, newSViv(info.memory), 0);
       (void)hv_store (RETVAL, "nrVirtCpu", 9, newSViv(info.nrVirtCpu), 0);
-      (void)hv_store (RETVAL, "cpuTime", 7, newSViv(info.cpuTime), 0);
+      (void)hv_store (RETVAL, "cpuTime", 7, virt_newSVull(info.cpuTime), 0);
   OUTPUT:
       RETVAL
 
@@ -1045,11 +1104,11 @@ get_scheduler_parameters(dom)
 	  break;
 
 	case VIR_DOMAIN_SCHED_FIELD_LLONG:
-	  val = newSViv(params[i].value.l);
+	  val = virt_newSVll(params[i].value.l);
 	  break;
 
 	case VIR_DOMAIN_SCHED_FIELD_ULLONG:
-	  val = newSViv(params[i].value.ul);
+	  val = virt_newSVull(params[i].value.ul);
 	  break;
 
 	case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
@@ -1102,11 +1161,11 @@ set_scheduler_parameters(dom, newparams)
 	  break;
 
 	case VIR_DOMAIN_SCHED_FIELD_LLONG:
-	  params[i].value.l = SvIV(*val);
+	  params[i].value.l = virt_SvIVll(*val);
 	  break;
 
 	case VIR_DOMAIN_SCHED_FIELD_ULLONG:
-	  params[i].value.ul = SvIV(*val);
+	  params[i].value.ul = virt_SvIVull(*val);
 	  break;
 
 	case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
@@ -1319,11 +1378,11 @@ block_stats(dom, path)
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
       RETVAL = (HV *)sv_2mortal((SV*)newHV());
-      (void)hv_store (RETVAL, "rd_req", 6, newSViv(stats.rd_req), 0);
-      (void)hv_store (RETVAL, "rd_bytes", 8, newSViv(stats.rd_bytes), 0);
-      (void)hv_store (RETVAL, "wr_req", 6, newSViv(stats.wr_req), 0);
-      (void)hv_store (RETVAL, "wr_bytes", 8, newSViv(stats.wr_bytes), 0);
-      (void)hv_store (RETVAL, "errs", 4, newSViv(stats.errs), 0);
+      (void)hv_store (RETVAL, "rd_req", 6, virt_newSVll(stats.rd_req), 0);
+      (void)hv_store (RETVAL, "rd_bytes", 8, virt_newSVll(stats.rd_bytes), 0);
+      (void)hv_store (RETVAL, "wr_req", 6, virt_newSVll(stats.wr_req), 0);
+      (void)hv_store (RETVAL, "wr_bytes", 8, virt_newSVll(stats.wr_bytes), 0);
+      (void)hv_store (RETVAL, "errs", 4, virt_newSVll(stats.errs), 0);
   OUTPUT:
       RETVAL
 
@@ -1339,14 +1398,14 @@ interface_stats(dom, path)
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
       RETVAL = (HV *)sv_2mortal((SV*)newHV());
-      (void)hv_store (RETVAL, "rx_bytes", 8, newSViv(stats.rx_bytes), 0);
-      (void)hv_store (RETVAL, "rx_packets", 10, newSViv(stats.rx_packets), 0);
-      (void)hv_store (RETVAL, "rx_errs", 7, newSViv(stats.rx_errs), 0);
-      (void)hv_store (RETVAL, "rx_drop", 7, newSViv(stats.rx_drop), 0);
-      (void)hv_store (RETVAL, "tx_bytes", 8, newSViv(stats.tx_bytes), 0);
-      (void)hv_store (RETVAL, "tx_packets", 10, newSViv(stats.tx_packets), 0);
-      (void)hv_store (RETVAL, "tx_errs", 7, newSViv(stats.tx_errs), 0);
-      (void)hv_store (RETVAL, "tx_drop", 7, newSViv(stats.tx_drop), 0);
+      (void)hv_store (RETVAL, "rx_bytes", 8, virt_newSVll(stats.rx_bytes), 0);
+      (void)hv_store (RETVAL, "rx_packets", 10, virt_newSVll(stats.rx_packets), 0);
+      (void)hv_store (RETVAL, "rx_errs", 7, virt_newSVll(stats.rx_errs), 0);
+      (void)hv_store (RETVAL, "rx_drop", 7, virt_newSVll(stats.rx_drop), 0);
+      (void)hv_store (RETVAL, "tx_bytes", 8, virt_newSVll(stats.tx_bytes), 0);
+      (void)hv_store (RETVAL, "tx_packets", 10, virt_newSVll(stats.tx_packets), 0);
+      (void)hv_store (RETVAL, "tx_errs", 7, virt_newSVll(stats.tx_errs), 0);
+      (void)hv_store (RETVAL, "tx_drop", 7, virt_newSVll(stats.tx_drop), 0);
   OUTPUT:
       RETVAL
 
@@ -1439,7 +1498,7 @@ get_vcpu_info(dom)
 	HV *rec = newHV();
 	(void)hv_store(rec, "number", 6, newSViv(info[i].number), 0);
 	(void)hv_store(rec, "state", 5, newSViv(info[i].state), 0);
-	(void)hv_store(rec, "cpuTime", 7, newSViv(info[i].cpuTime), 0);
+	(void)hv_store(rec, "cpuTime", 7, virt_newSVull(info[i].cpuTime), 0);
 	(void)hv_store(rec, "cpu", 3, newSViv(info[i].cpu), 0);
 	(void)hv_store(rec, "affinity", 8, newSVpvn((char*)cpumaps + (i *maplen), maplen), 0);
 	PUSHs(newRV_noinc((SV *)rec));
@@ -1873,9 +1932,9 @@ get_info(pool)
       }
       RETVAL = (HV *)sv_2mortal((SV*)newHV());
       (void)hv_store (RETVAL, "state", 5, newSViv(info.state), 0);
-      (void)hv_store (RETVAL, "capacity", 8, newSViv(info.capacity), 0);
-      (void)hv_store (RETVAL, "allocation", 10, newSViv(info.allocation), 0);
-      (void)hv_store (RETVAL, "available", 9, newSViv(info.available), 0);
+      (void)hv_store (RETVAL, "capacity", 8, virt_newSVull(info.capacity), 0);
+      (void)hv_store (RETVAL, "allocation", 10, virt_newSVull(info.allocation), 0);
+      (void)hv_store (RETVAL, "available", 9, virt_newSVull(info.available), 0);
   OUTPUT:
       RETVAL
 
@@ -2048,8 +2107,8 @@ get_info(vol)
       }
       RETVAL = (HV *)sv_2mortal((SV*)newHV());
       (void)hv_store (RETVAL, "type", 4, newSViv(info.type), 0);
-      (void)hv_store (RETVAL, "capacity", 8, newSViv(info.capacity), 0);
-      (void)hv_store (RETVAL, "allocation", 10, newSViv(info.allocation), 0);
+      (void)hv_store (RETVAL, "capacity", 8, virt_newSVull(info.capacity), 0);
+      (void)hv_store (RETVAL, "allocation", 10, virt_newSVull(info.allocation), 0);
   OUTPUT:
       RETVAL
 
