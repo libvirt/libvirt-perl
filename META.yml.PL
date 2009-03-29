@@ -44,7 +44,7 @@ build_requires:
 resources:
   license: http://www.gnu.org/licenses/gpl.html
   homepage: http://libvirt.org/
-  repository: http://hg.berrange.com/libraries/sys-virt--devel
+  repository: http://libvirt.org/hg/libvirt-perl
   MailingList: http://www.redhat.com/mailman/listinfo/libvir-list
 
 distribution_type: module
