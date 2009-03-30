@@ -463,6 +463,7 @@ PREINIT:
 	  RETVAL = virConnectOpenAuth(name,
 				      &auth,
 				      readonly ? VIR_CONNECT_RO : 0);
+	  Safefree(auth.credtype);
       } else {
 	  RETVAL = virConnectOpenAuth(name,
 				      virConnectAuthPtrDefault,
@@ -670,6 +671,7 @@ list_domain_ids(con, maxids)
   PPCODE:
       Newx(ids, maxids, int);
       if ((nid = virConnectListDomains(con, ids, maxids)) < 0) {
+        Safefree(ids);
 	_croak_error(virConnGetLastError(con));
       }
       EXTEND(SP, nid);
@@ -700,7 +702,7 @@ list_defined_domain_names(con, maxnames)
   PPCODE:
       Newx(names, maxnames, char *);
       if ((ndom = virConnectListDefinedDomains(con, names, maxnames)) < 0) {
-	free(names);
+	Safefree(names);
 	_croak_error(virConnGetLastError(con));
       }
       EXTEND(SP, ndom);
@@ -731,6 +733,7 @@ list_network_names(con, maxnames)
   PPCODE:
       Newx(names, maxnames, char *);
       if ((nnet = virConnectListNetworks(con, names, maxnames)) < 0) {
+        Safefree(names);
 	_croak_error(virConnGetLastError(con));
       }
       EXTEND(SP, nnet);
@@ -762,7 +765,7 @@ list_defined_network_names(con, maxnames)
   PPCODE:
       Newx(names, maxnames, char *);
       if ((ndom = virConnectListDefinedNetworks(con, names, maxnames)) < 0) {
-	free(names);
+	Safefree(names);
 	_croak_error(virConnGetLastError(con));
       }
       EXTEND(SP, ndom);
@@ -793,6 +796,7 @@ list_storage_pool_names(con, maxnames)
   PPCODE:
       Newx(names, maxnames, char *);
       if ((nnet = virConnectListStoragePools(con, names, maxnames)) < 0) {
+        Safefree(names);
 	_croak_error(virConnGetLastError(con));
       }
       EXTEND(SP, nnet);
@@ -824,7 +828,7 @@ list_defined_storage_pool_names(con, maxnames)
   PPCODE:
       Newx(names, maxnames, char *);
       if ((ndom = virConnectListDefinedStoragePools(con, names, maxnames)) < 0) {
-	free(names);
+	Safefree(names);
 	_croak_error(virConnGetLastError(con));
       }
       EXTEND(SP, ndom);
@@ -859,6 +863,7 @@ list_node_device_names(con, cap, maxnames, flags)
   PPCODE:
       Newx(names, maxnames, char *);
       if ((nnet = virNodeListDevices(con, cap, names, maxnames, flags)) < 0) {
+        Safefree(names);
 	_croak_error(virConnGetLastError(con));
       }
       EXTEND(SP, nnet);
@@ -1088,6 +1093,7 @@ get_scheduler_parameters(dom)
       free(type);
       Newx(params, nparams, virSchedParameter);
       if (virDomainGetSchedulerParameters(dom, params, &nparams) < 0) {
+	Safefree(params);
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
       RETVAL = (HV *)sv_2mortal((SV*)newHV());
@@ -1122,6 +1128,7 @@ get_scheduler_parameters(dom)
 
 	(void)hv_store (RETVAL, params[i].field, strlen(params[i].field), val, 0);
       }
+      Safefree(params);
   OUTPUT:
       RETVAL
 
@@ -1141,6 +1148,7 @@ set_scheduler_parameters(dom, newparams)
       free(type);
       Newx(params, nparams, virSchedParameter);
       if (virDomainGetSchedulerParameters(dom, params, &nparams) < 0) {
+	Safefree(params);
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
       for (i = 0 ; i < nparams ; i++) {
@@ -1181,6 +1189,7 @@ set_scheduler_parameters(dom, newparams)
       if (virDomainSetSchedulerParameters(dom, params, nparams) < 0) {
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
+      Safefree(params);
 
 
 unsigned long
@@ -1422,6 +1431,7 @@ block_peek(dom, path, offset, size, flags)
     CODE:
       Newx(buf, size, char);
       if (virDomainBlockPeek(dom, path, offset, size, buf, flags) < 0) {
+	Safefree(buf);
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
       RETVAL = newSVpvn(buf, size);
@@ -1441,6 +1451,7 @@ memory_peek(dom, offset, size, flags)
     CODE:
       Newx(buf, size, char);
       if (virDomainMemoryPeek(dom, offset, size, buf, flags) < 0) {
+	Safefree(buf);
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
       RETVAL = newSVpvn(buf, size);
@@ -1969,6 +1980,7 @@ list_storage_vol_names(pool, maxnames)
   PPCODE:
       Newx(names, maxnames, char *);
       if ((nnet = virStoragePoolListVolumes(pool, names, maxnames)) < 0) {
+	Safefree(names);
 	_croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
       }
       EXTEND(SP, nnet);
@@ -2211,6 +2223,7 @@ list_capabilities(dev)
       }
       Newx(names, maxnames, char *);
       if ((nnet = virNodeDeviceListCaps(dev, names, maxnames)) < 0) {
+	Safefree(names);
 	_croak_error(virGetLastError());
       }
       EXTEND(SP, nnet);
