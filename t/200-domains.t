@@ -4,8 +4,6 @@ use strict;
 use warnings;
 
 use Test::More tests => 38;
-use XML::XPath;
-use XML::XPath::XMLParser;
 
 BEGIN {
         use_ok('Sys::Virt');
