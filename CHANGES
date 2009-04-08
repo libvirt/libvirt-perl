@@ -1,6 +1,12 @@
 Sys::Virt ChangeLog
 ===================
 
+Since 0.2.0:
+
+ - Export all the virError related constants
+ - Fix some memory leaks in C layer
+ - Remove bogus module imports from test suite
+
 Since 0.1.2:
 
  - Implement storage, node device, event APIs
@@ -23,7 +29,7 @@ Since 0.1.0:
  - Fixed POD documentation names
  - Make Sys::Virt::Error use 'strict' and 'warnings' pragmas
  - Remove duplicated DESTROY sub in Domain.pm since its already
-   provided in the XS backend 
+   provided in the XS backend
  - Fixed typo in Makefile.PL
  - Allow connection URI to be passed to example programs
  - Minimum required libvirt version is now 0.1.1
