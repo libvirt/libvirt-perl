@@ -166,7 +166,7 @@ sub new {
     my $class = ref($proto) || $proto;
     my %params = @_;
 
-    my $uri = exists $params{address} ? $params{address} : exists $params{uri} ? $params{uri} : "";
+    my $uri = exists $params{address} ? $params{address} : exists $params{uri} ? $params{uri} : undef;
     my $readonly = exists $params{readonly} ? $params{readonly} : 0;
     my $auth = exists $params{auth} ? $params{auth} : 0;
 

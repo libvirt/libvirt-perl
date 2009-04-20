@@ -419,16 +419,18 @@ PROTOTYPES: ENABLE
 
 virConnectPtr
 _open(name, readonly)
-      char *name;
+      SV *name;
       int readonly;
+PREINIT:
+      const char *uri = NULL;
     CODE:
-      if (!strcmp(name, "")) {
-	name = NULL;
-      }
+      if (SvOK(name))
+	  uri = SvPV_nolen(name);
+
       if (readonly) {
-	RETVAL = virConnectOpenReadOnly(name);
+	RETVAL = virConnectOpenReadOnly(uri);
       } else {
-	RETVAL = virConnectOpen(name);
+	RETVAL = virConnectOpen(uri);
       }
       if (!RETVAL) {
 	_croak_error(virGetLastError());
@@ -439,7 +441,7 @@ _open(name, readonly)
 
 virConnectPtr
 _open_auth(name, readonly, creds, cb)
-      const char *name;
+      SV *name;
       int readonly;
       SV *creds;
       SV *cb;
@@ -447,7 +449,11 @@ PREINIT:
       AV *credlist;
       virConnectAuth auth;
       int i;
+      const char *uri = NULL;
    CODE:
+      if (SvOK(name))
+	  uri = SvPV_nolen(name);
+
       if (SvOK(cb) && SvOK(creds)) {
 	  memset(&auth, 0, sizeof auth);
 	  credlist = (AV*)SvRV(creds);
@@ -460,12 +466,12 @@ PREINIT:
 
 	  auth.cb = _open_auth_callback;
 	  auth.cbdata = cb;
-	  RETVAL = virConnectOpenAuth(name,
+	  RETVAL = virConnectOpenAuth(uri,
 				      &auth,
 				      readonly ? VIR_CONNECT_RO : 0);
 	  Safefree(auth.credtype);
       } else {
-	  RETVAL = virConnectOpenAuth(name,
+	  RETVAL = virConnectOpenAuth(uri,
 				      virConnectAuthPtrDefault,
 				      readonly ? VIR_CONNECT_RO : 0);
       }
@@ -1346,11 +1352,19 @@ migrate(dom, destcon, flags, dname, uri, bandwidth)
      virDomainPtr dom;
      virConnectPtr destcon;
      unsigned long flags;
-     const char *dname;
-     const char *uri;
+     SV *dname;
+     SV *uri;
      unsigned long bandwidth;
+PREINIT:
+     const char *dnamestr = NULL;
+     const char *uristr = NULL;
    CODE:
-     if ((RETVAL = virDomainMigrate(dom, destcon, flags, dname, uri, bandwidth)) == NULL) {
+     if (SvOK(dname))
+       dnamestr = SvPV_nolen(dname);
+     if (SvOK(uri))
+       uristr = SvPV_nolen(uri);
+
+     if ((RETVAL = virDomainMigrate(dom, destcon, flags, dnamestr, uristr, bandwidth)) == NULL) {
        _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
      }
  OUTPUT:
