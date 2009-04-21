@@ -912,10 +912,16 @@ domain_event_deregister(con)
       virConnectDomainEventDeregister(con, _domain_event_callback);
 
 void
-DESTROY(con)
+DESTROY(con_rv)
+      SV *con_rv;
+ PREINIT:
       virConnectPtr con;
   PPCODE:
-      virConnectClose(con);
+      con = (virConnectPtr)SvIV((SV*)SvRV(con_rv));
+      if (con) {
+	virConnectClose(con);
+	sv_setiv((SV*)SvRV(con_rv), 0);
+      }
 
 MODULE = Sys::Virt::Domain  PACKAGE = Sys::Virt::Domain
 
@@ -1575,6 +1581,7 @@ DESTROY(dom_rv)
       dom = (virDomainPtr)SvIV((SV*)SvRV(dom_rv));
       if (dom) {
 	virDomainFree(dom);
+	sv_setiv((SV*)SvRV(dom_rv), 0);
       }
 
 
@@ -1761,6 +1768,7 @@ DESTROY(net_rv)
       net = (virNetworkPtr)SvIV((SV*)SvRV(net_rv));
       if (net) {
 	virNetworkFree(net);
+	sv_setiv((SV*)SvRV(net_rv), 0);
       }
 
 
@@ -2022,6 +2030,7 @@ DESTROY(pool_rv)
       pool = (virStoragePoolPtr)SvIV((SV*)SvRV(pool_rv));
       if (pool) {
 	virStoragePoolFree(pool);
+	sv_setiv((SV*)SvRV(pool_rv), 0);
       }
 
 
@@ -2154,6 +2163,7 @@ DESTROY(vol_rv)
       vol = (virStorageVolPtr)SvIV((SV*)SvRV(vol_rv));
       if (vol) {
 	virStorageVolFree(vol);
+	sv_setiv((SV*)SvRV(vol_rv), 0);
       }
 
 
@@ -2264,6 +2274,7 @@ DESTROY(dev_rv)
       dev = (virNodeDevicePtr)SvIV((SV*)SvRV(dev_rv));
       if (dev) {
 	virNodeDeviceFree(dev);
+	sv_setiv((SV*)SvRV(dev_rv), 0);
       }
 
 MODULE = Sys::Virt::Event  PACKAGE = Sys::Virt::Event
