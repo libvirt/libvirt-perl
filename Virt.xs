@@ -98,7 +98,7 @@ _sv_from_error (virErrorPtr error)
     /* Map virErrorPtr attributes to hash keys */
     (void)hv_store (hv, "code", 4, newSViv (error ? error->code : 0), 0);
     (void)hv_store (hv, "domain", 6, newSViv (error ? error->domain : VIR_FROM_NONE), 0);
-    (void)hv_store (hv, "message", 7, newSVpv (error ? error->message : "Unknown problem", 0), 0);
+    (void)hv_store (hv, "message", 7, newSVpv (error && error->message ? error->message : "Unknown problem", 0), 0);
 
     return sv_bless (newRV_noinc ((SV*) hv), gv_stashpv ("Sys::Virt::Error", TRUE));
 }
@@ -605,7 +605,7 @@ PREINIT:
 
 
 char *
-find_storage_pool_sources(con, type, srcspec, flags)
+find_storage_pool_sources(con, type, srcspec, flags=0)
       virConnectPtr con;
       const char *type;
       const char *srcspec;
@@ -846,29 +846,36 @@ list_defined_storage_pool_names(con, maxnames)
 
 
 int
-num_of_node_devices(con, cap, flags)
+num_of_node_devices(con, cap, flags=0)
       virConnectPtr con;
-      const char *cap;
+      SV *cap;
       int flags
+ PREINIT:
+      const char *capname = NULL;
     CODE:
-      if ((RETVAL = virNodeNumOfDevices(con, cap, flags)) < 0) {
+      if (SvOK(cap))
+	  capname = SvPV_nolen(cap);
+      if ((RETVAL = virNodeNumOfDevices(con, capname, flags)) < 0) {
 	_croak_error(virConnGetLastError(con));
       }
   OUTPUT:
       RETVAL
 
 void
-list_node_device_names(con, cap, maxnames, flags)
+list_node_device_names(con, cap, maxnames, flags=0)
       virConnectPtr con;
-      const char *cap;
+      SV *cap;
       int maxnames;
       int flags;
  PREINIT:
       char **names;
       int i, nnet;
+      const char *capname = NULL;
   PPCODE:
+      if (SvOK(cap))
+	  capname = SvPV_nolen(cap);
       Newx(names, maxnames, char *);
-      if ((nnet = virNodeListDevices(con, cap, names, maxnames, flags)) < 0) {
+      if ((nnet = virNodeListDevices(con, capname, names, maxnames, flags)) < 0) {
         Safefree(names);
 	_croak_error(virConnGetLastError(con));
       }
@@ -1055,7 +1062,7 @@ save(dom, to)
       }
 
 void
-core_dump(dom, to, flags)
+core_dump(dom, to, flags=0)
       virDomainPtr dom;
       const char *to
       unsigned int flags;
@@ -1322,7 +1329,7 @@ shutdown(dom)
       }
 
 void
-reboot(dom, flags)
+reboot(dom, flags=0)
       virDomainPtr dom;
       unsigned int flags;
     PPCODE:
@@ -1348,7 +1355,7 @@ create(dom)
 
 
 virDomainPtr
-migrate(dom, destcon, flags, dname, uri, bandwidth)
+migrate(dom, destcon, flags=0, dname=&PL_sv_undef, uri=&PL_sv_undef, bandwidth=0)
      virDomainPtr dom;
      virConnectPtr destcon;
      unsigned long flags;
@@ -1434,7 +1441,7 @@ interface_stats(dom, path)
 
 
 SV *
-block_peek(dom, path, offset, size, flags)
+block_peek(dom, path, offset, size, flags=0)
       virDomainPtr dom;
       const char *path;
       unsigned int offset;
@@ -1455,7 +1462,7 @@ block_peek(dom, path, offset, size, flags)
 
 
 SV *
-memory_peek(dom, offset, size, flags)
+memory_peek(dom, offset, size, flags=0)
       virDomainPtr dom;
       unsigned int offset;
       size_t size;
@@ -1896,7 +1903,7 @@ create(pool)
       }
 
 void
-refresh(pool, flags)
+refresh(pool, flags=0)
       virStoragePoolPtr pool;
       int flags;
     PPCODE:
@@ -1905,7 +1912,7 @@ refresh(pool, flags)
       }
 
 void
-build(pool, flags)
+build(pool, flags=0)
       virStoragePoolPtr pool;
       int flags;
     PPCODE:
@@ -1914,7 +1921,7 @@ build(pool, flags)
       }
 
 void
-delete(pool, flags)
+delete(pool, flags=0)
       virStoragePoolPtr pool;
       int flags;
     PPCODE:
@@ -2021,7 +2028,7 @@ DESTROY(pool_rv)
 MODULE = Sys::Virt::StorageVol  PACKAGE = Sys::Virt::StorageVol
 
 virStorageVolPtr
-_create_xml(pool, xml, flags)
+_create_xml(pool, xml, flags=0)
       virStoragePoolPtr pool;
       const char *xml;
       int flags;
@@ -2113,7 +2120,7 @@ get_xml_description(vol)
       RETVAL
 
 void
-delete(vol, flags)
+delete(vol, flags=0)
       virStorageVolPtr vol;
       int flags;
     PPCODE:

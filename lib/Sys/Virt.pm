@@ -502,18 +502,21 @@ used as the C<maxnames> parameter to C<list_defined_storage_pool_names>.
 Return a list of names of all storage pools defined, but not currently running, on
 the host. The names can be used with the C<get_storage_pool_by_name> method.
 
-=item my @devs = $vmm->list_node_devices()
+=item my @devs = $vmm->list_node_devices($capability)
 
 Return a list of all devices currently known to the host OS. The elements
 in the returned list are instances of the L<Sys::Virt::NodeDevice> class.
+The optional C<capability> parameter allows the list to be restricted to
+only devices with a particular capability type.
 
 =cut
 
 sub list_node_devices {
     my $self = shift;
+    my $cap = shift;
 
-    my $nnames = $self->num_of_node_devices();
-    my @names = $self->list_node_devices($nnames);
+    my $nnames = $self->num_of_node_devices($cap);
+    my @names = $self->list_node_device_names($cap, $nnames);
 
     my @devs;
     foreach my $name (@names) {
@@ -527,15 +530,19 @@ sub list_node_devices {
     return @devs;
 }
 
-=item my $nnames = $vmm->num_of_node_devices()
+=item my $nnames = $vmm->num_of_node_devices($capability)
 
 Return the number of host devices known to the VMM. This can be
 used as the C<maxids> parameter to C<list_node_device_names>.
+The optional C<capability> parameter allows the list to be restricted to
+only devices with a particular capability type.
 
-=item my @netNames = $vmm->list_node_device_names($maxnames)
+=item my @netNames = $vmm->list_node_device_names($capability, $maxnames)
 
 Return a list of all host device names currently known to the VMM. The names can
 be used with the C<get_node_device_by_name> method.
+The optional C<capability> parameter allows the list to be restricted to
+only devices with a particular capability type.
 
 =item my $dom = $vmm->get_domain_by_name($name)
 
