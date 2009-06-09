@@ -1006,12 +1006,12 @@ SV *
 get_uuid(dom)
       virDomainPtr dom;
   PREINIT:
-      unsigned char rawuuid[16];
+      unsigned char rawuuid[VIR_UUID_BUFLEN];
     CODE:
       if ((virDomainGetUUID(dom, rawuuid)) < 0) {
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
-      RETVAL = newSVpv((char*)rawuuid, 16);
+      RETVAL = newSVpv((char*)rawuuid, sizeof(rawuuid));
   OUTPUT:
       RETVAL
 
@@ -1019,7 +1019,7 @@ SV *
 get_uuid_string(dom)
       virDomainPtr dom;
   PREINIT:
-      char uuid[36];
+      char uuid[VIR_UUID_STRING_BUFLEN];
     CODE:
       if ((virDomainGetUUIDString(dom, uuid)) < 0) {
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
@@ -1647,12 +1647,12 @@ SV *
 get_uuid(net)
       virNetworkPtr net;
   PREINIT:
-      unsigned char rawuuid[16];
+      unsigned char rawuuid[VIR_UUID_BUFLEN];
     CODE:
       if ((virNetworkGetUUID(net, rawuuid)) < 0) {
 	_croak_error(virConnGetLastError(virNetworkGetConnect(net)));
       }
-      RETVAL = newSVpv((char*)rawuuid, 16);
+      RETVAL = newSVpv((char*)rawuuid, sizeof(rawuuid));
   OUTPUT:
       RETVAL
 
@@ -1660,7 +1660,7 @@ SV *
 get_uuid_string(net)
       virNetworkPtr net;
   PREINIT:
-      char uuid[36];
+      char uuid[VIR_UUID_STRING_BUFLEN];
     CODE:
       if ((virNetworkGetUUIDString(net, uuid)) < 0) {
 	_croak_error(virConnGetLastError(virNetworkGetConnect(net)));
@@ -1846,12 +1846,12 @@ SV *
 get_uuid(pool)
       virStoragePoolPtr pool;
   PREINIT:
-      unsigned char rawuuid[16];
+      unsigned char rawuuid[VIR_UUID_BUFLEN];
     CODE:
       if ((virStoragePoolGetUUID(pool, rawuuid)) < 0) {
 	_croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
       }
-      RETVAL = newSVpv((char*)rawuuid, 16);
+      RETVAL = newSVpv((char*)rawuuid, sizeof(rawuuid));
   OUTPUT:
       RETVAL
 
@@ -1859,7 +1859,7 @@ SV *
 get_uuid_string(pool)
       virStoragePoolPtr pool;
   PREINIT:
-      char uuid[36];
+      char uuid[VIR_UUID_STRING_BUFLEN];
     CODE:
       if ((virStoragePoolGetUUIDString(pool, uuid)) < 0) {
 	_croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
