@@ -1,0 +1,13 @@
+blib/
+pm_to_blib
+Makefile
+Makefile.old
+*~
+Virt.bs
+Virt.c
+Virt.o
+perl-Sys-Virt.spec
+Sys-Virt-.*.tar.gz
+MANIFEST
+cover_db
+META.yml
