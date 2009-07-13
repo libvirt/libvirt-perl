@@ -289,6 +289,23 @@ sub define_storage_pool {
     return Sys::Virt::StoragePool->_new(connection => $self, xml => $xml, nocreate => 1);
 }
 
+=item my $dom = $vmm->create_node_device($xml);
+
+Create a new virtual node device based on the XML description passed into the
+C<$xml> parameter. The returned object is an instance of the L<Sys::Virt::NodeDevice>
+class. This method is not available with unprivileged connections to
+the VMM.
+
+=cut
+
+sub create_node_device {
+    my $self = shift;
+    my $xml = shift;
+
+    return Sys::Virt::NodeDevice->_new(connection => $self, xml => $xml);
+}
+
+
 =item my @doms = $vmm->list_domains()
 
 Return a list of all domains currently known to the VMM. The elements

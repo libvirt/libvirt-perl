@@ -51,6 +51,8 @@ sub _new {
     my $self;
     if (exists $params{name}) {
 	$self = Sys::Virt::NodeDevice::_lookup_by_name($con,  $params{name});
+    } elsif (exists $params{xml}) {
+	$self = Sys::Virt::NodeDevice::_create_xml($con, $params{xml});
     } else {
 	die "name parameter is required";
     }
@@ -87,6 +89,11 @@ Unbind the node device from the host OS device driver
 
 Reset the node device. The device must be unbound from the host
 OS drivers for this to work
+
+=item $dev->destroy()
+
+Destroy the virtual device releasing any OS resources associated
+with it.
 
 =item my @caps = $dev->list_capabilities()
 

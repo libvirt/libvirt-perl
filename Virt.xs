@@ -2184,6 +2184,18 @@ MODULE = Sys::Virt::NodeDevice  PACKAGE = Sys::Virt::NodeDevice
 
 
 virNodeDevicePtr
+_create_xml(con, xml, flags=0)
+      virConnectPtr con;
+      const char *xml;
+      unsigned int flags;
+    CODE:
+      if (!(RETVAL = virNodeDeviceCreateXML(con, xml, flags))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+virNodeDevicePtr
 _lookup_by_name(con, name)
       virConnectPtr con;
       const char *name;
@@ -2276,6 +2288,17 @@ list_capabilities(dev)
 	free(names[i]);
       }
       Safefree(names);
+
+void
+destroy(dev_rv)
+      SV *dev_rv;
+ PREINIT:
+      virNodeDevicePtr dev;
+  PPCODE:
+      dev = (virNodeDevicePtr)SvIV((SV*)SvRV(dev_rv));
+      if (virNodeDeviceDestroy(dev) < 0) {
+        _croak_error(virGetLastError());
+      }
 
 
 void
