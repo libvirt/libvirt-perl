@@ -217,7 +217,7 @@ sub get_volume_by_name {
     return Sys::Virt::StorageVol->_new(pool => $self, name => $name);
 }
 
-=item my $vol = $pool->create_volume($xml[, $clonevol]);
+=item my $vol = $pool->create_volume($xml)
 
 Create a new volume based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::StorageVol>
@@ -227,6 +227,23 @@ that source volume
 =cut
 
 sub create_volume {
+    my $self = shift;
+    my $xml = shift;
+
+    return Sys::Virt::StorageVol->_new(pool => $self, xml => $xml);
+}
+
+=item my $vol = $pool->clone_volume($xml, $clonevol);
+
+Create a new volume based on the XML description passed into the C<$xml>
+parameter. The returned object is an instance of the L<Sys::Virt::StorageVol>
+class. The new volume will be populated with data from the specified clone
+source volume.
+
+=cut
+
+
+sub clone_volume {
     my $self = shift;
     my $xml = shift;
     my $clone = shift;
