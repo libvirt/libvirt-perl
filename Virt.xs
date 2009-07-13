@@ -886,7 +886,71 @@ list_node_device_names(con, cap, maxnames, flags=0)
       }
       Safefree(names);
 
+int
+num_of_interfaces(con)
+      virConnectPtr con;
+    CODE:
+      if ((RETVAL = virConnectNumOfInterfaces(con)) < 0) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
 
+void
+list_interface_names(con, maxnames)
+      virConnectPtr con;
+      int maxnames;
+ PREINIT:
+      char **names;
+      int i, nnet;
+  PPCODE:
+      Newx(names, maxnames, char *);
+      if ((nnet = virConnectListInterfaces(con, names, maxnames)) < 0) {
+        Safefree(names);
+	_croak_error(virConnGetLastError(con));
+      }
+      EXTEND(SP, nnet);
+      for (i = 0 ; i < nnet ; i++) {
+	PUSHs(sv_2mortal(newSVpv(names[i], 0)));
+	free(names[i]);
+      }
+      Safefree(names);
+
+
+SV *
+domain_xml_from_native(con, configtype, configdata, flags=0)
+      virConnectPtr con;
+      const char *configtype;
+      const char *configdata;
+      unsigned int flags;
+ PREINIT:
+      char *xmldata;
+    CODE:
+      if (!(xmldata = virConnectDomainXMLFromNative(con, configtype, configdata, flags))) {
+        _croak_error(virConnGetLastError(con));
+      }
+      RETVAL = newSVpv(xmldata, 0);
+      free(xmldata);
+ OUTPUT:
+      RETVAL
+
+
+SV *
+domain_xml_to_native(con, configtype, xmldata, flags=0)
+      virConnectPtr con;
+      const char *configtype;
+      const char *xmldata;
+      unsigned int flags;
+ PREINIT:
+      char *configdata;
+    CODE:
+      if (!(configdata = virConnectDomainXMLFromNative(con, configtype, xmldata, flags))) {
+        _croak_error(virConnGetLastError(con));
+      }
+      RETVAL = newSVpv(configdata, 0);
+      free(configdata);
+ OUTPUT:
+      RETVAL
 
 
 void
@@ -2313,6 +2377,122 @@ DESTROY(dev_rv)
 	sv_setiv((SV*)SvRV(dev_rv), 0);
       }
 
+
+
+MODULE = Sys::Virt::Interface  PACKAGE = Sys::Virt::Interface
+
+virInterfacePtr
+_define_xml(con, xml, flags = 0)
+      virConnectPtr con;
+      const char *xml;
+      unsigned int flags;
+    CODE:
+      if (!(RETVAL = virInterfaceDefineXML(con, xml, flags))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+virInterfacePtr
+_lookup_by_name(con, name)
+      virConnectPtr con;
+      const char *name;
+    CODE:
+      if (!(RETVAL = virInterfaceLookupByName(con, name))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+virInterfacePtr
+_lookup_by_mac(con, mac)
+      virConnectPtr con;
+      const char *mac;
+    CODE:
+      if (!(RETVAL = virInterfaceLookupByMACString(con, mac))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+const char *
+get_mac(iface)
+      virInterfacePtr iface;
+    CODE:
+      if (!(RETVAL = virInterfaceGetMACString(iface))) {
+	_croak_error(virConnGetLastError(virInterfaceGetConnect(iface)));
+      }
+  OUTPUT:
+      RETVAL
+
+const char *
+get_name(iface)
+      virInterfacePtr iface;
+    CODE:
+      if (!(RETVAL = virInterfaceGetName(iface))) {
+	_croak_error(virConnGetLastError(virInterfaceGetConnect(iface)));
+      }
+  OUTPUT:
+      RETVAL
+
+
+SV *
+get_xml_description(iface)
+      virInterfacePtr iface;
+  PREINIT:
+      char *xml;
+    CODE:
+      if (!(xml = virInterfaceGetXMLDesc(iface, 0))) {
+	 _croak_error(virConnGetLastError(virInterfaceGetConnect(iface)));
+      }
+      RETVAL = newSVpv(xml, 0);
+      free(xml);
+  OUTPUT:
+      RETVAL
+
+void
+undefine(iface)
+      virInterfacePtr iface;
+    PPCODE:
+      if (virInterfaceUndefine(iface) < 0) {
+	_croak_error(virConnGetLastError(virInterfaceGetConnect(iface)));
+      }
+
+void
+create(iface, flags=0)
+      virInterfacePtr iface;
+      unsigned int flags;
+    PPCODE:
+      if (virInterfaceCreate(iface, flags) < 0) {
+	_croak_error(virConnGetLastError(virInterfaceGetConnect(iface)));
+      }
+
+void
+destroy(iface_rv, flags=0)
+      SV *iface_rv;
+      unsigned int flags;
+ PREINIT:
+      virInterfacePtr iface;
+  PPCODE:
+      iface = (virInterfacePtr)SvIV((SV*)SvRV(iface_rv));
+      if (virInterfaceDestroy(iface, flags) < 0) {
+	_croak_error(virConnGetLastError(virInterfaceGetConnect(iface)));
+      }
+
+void
+DESTROY(iface_rv)
+      SV *iface_rv;
+ PREINIT:
+      virInterfacePtr iface;
+  PPCODE:
+      iface = (virInterfacePtr)SvIV((SV*)SvRV(iface_rv));
+      if (iface) {
+	virInterfaceFree(iface);
+	sv_setiv((SV*)SvRV(iface_rv), 0);
+      }
+
+
+
 MODULE = Sys::Virt::Event  PACKAGE = Sys::Virt::Event
 
 PROTOTYPES: ENABLE
@@ -2581,5 +2761,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_ERR_INVALID_NODE_DEVICE, ERR_INVALID_NODE_DEVICE);
       REGISTER_CONSTANT(VIR_ERR_NO_NODE_DEVICE, ERR_NO_NODE_DEVICE);
       REGISTER_CONSTANT(VIR_ERR_NO_SECURITY_MODEL, ERR_NO_SECURITY_MODEL);
-
+      REGISTER_CONSTANT(VIR_ERR_OPERATION_INVALID, ERR_OPERATION_INVALID);
+      REGISTER_CONSTANT(VIR_WAR_NO_INTERFACE, WAR_NO_INTERFACE);
+      REGISTER_CONSTANT(VIR_ERR_NO_INTERFACE, ERR_NO_INTERFACE);
+      REGISTER_CONSTANT(VIR_ERR_INVALID_INTERFACE, ERR_INVALID_INTERFACE);
     }

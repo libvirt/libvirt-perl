@@ -4,6 +4,7 @@ const unsigned char *    T_PV
 virConnectPtr O_OBJECT_connect
 virDomainPtr O_OBJECT_domain
 virNetworkPtr O_OBJECT_network
+virInterfacePtr O_OBJECT_interface
 virStoragePoolPtr O_OBJECT_storagepool
 virStorageVolPtr O_OBJECT_storagevol
 virNodeDevicePtr O_OBJECT_nodedevice
@@ -88,4 +89,19 @@ O_OBJECT_nodedevice
 OUTPUT
 O_OBJECT_nodedevice
         sv_setref_pv( $arg, "Sys::Virt::NodeDevice", (void*)$var );
+
+
+
+INPUT
+O_OBJECT_interface
+    if (sv_isobject($arg) && (SvTYPE(SvRV($arg)) == SVt_PVMG))
+        $var = ($type)SvIV((SV*)SvRV( $arg ));
+    else {
+        warn( \"${Package}::$func_name() -- $var is not a blessed SV reference\" );
+        XSRETURN_UNDEF;
+    }
+
+OUTPUT
+O_OBJECT_interface
+        sv_setref_pv( $arg, "Sys::Virt::Interface", (void*)$var );
 

@@ -430,6 +430,22 @@ Warning that no node device driver is activated
 
 Warning that no storage driver is activated
 
+=item Sys::Virt::Error::ERR_INVALID_INTERFACE
+
+Invalid network interface object
+
+=item Sys::Virt::Error::ERR_NO_INTERFACE
+
+No interface with the matching name / mac address
+
+=item Sys::Virt::Error::ERR_OPERATION_INVALID
+
+The requested operation is not valid for the current object state
+
+=item Sys::Virt::Error::WAR_NO_INTERFACE
+
+The network interface driver is not available
+
 =back
 
 =head1 AUTHORS
