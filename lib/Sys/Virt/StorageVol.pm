@@ -58,7 +58,11 @@ sub _new {
 	$self = Sys::Virt::StorageVol::_lookup_by_path($con,  $params{path});
     } elsif (exists $params{xml}) {
 	my $pool = exists $params{pool} ? $params{pool} : die "pool parameter is requried";
-	$self = Sys::Virt::StorageVol::_create_xml($pool,  $params{xml}, 0);
+	if ($params{clone}) {
+	    $self = Sys::Virt::StorageVol::_create_xml_from($pool,  $params{xml}, $params{clone}, 0);
+	} else {
+	    $self = Sys::Virt::StorageVol::_create_xml($pool,  $params{xml}, 0);
+	}
     } else {
 	die "name, key, path or xml parameters are required";
     }

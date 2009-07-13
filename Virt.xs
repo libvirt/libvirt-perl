@@ -2049,6 +2049,19 @@ _create_xml(pool, xml, flags=0)
       RETVAL
 
 virStorageVolPtr
+_create_xml_from(pool, xml, clone, flags=0)
+      virStoragePoolPtr pool;
+      const char *xml;
+      virStorageVolPtr clone;
+      int flags;
+    CODE:
+      if (!(RETVAL = virStorageVolCreateXMLFrom(pool, xml, clone, flags))) {
+	_croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
+      }
+  OUTPUT:
+      RETVAL
+
+virStorageVolPtr
 _lookup_by_name(pool, name)
       virStoragePoolPtr pool;
       const char *name;
