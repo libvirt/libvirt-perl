@@ -44,7 +44,7 @@ build_requires:
 resources:
   license: http://www.gnu.org/licenses/gpl.html
   homepage: http://libvirt.org/
-  repository: http://libvirt.org/hg/libvirt-perl
+  repository: http://libvirt.org/git/?p=libvirt-perl.git;a=summary
   MailingList: http://www.redhat.com/mailman/listinfo/libvir-list
 
 distribution_type: module
