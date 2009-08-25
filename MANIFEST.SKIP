@@ -17,3 +17,4 @@ CVS
 .hg
 .*\.orig
 .*\.sh
+\.git
