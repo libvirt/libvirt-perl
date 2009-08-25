@@ -3,6 +3,11 @@ Sys::Virt ChangeLog
 
 Since 0.2.0:
 
+ - Add all new APIs upto libvirt 0.6.4 (network interfaces,
+   storage volume cloning and node device create/delete)
+ - Fix off-by-1 in UUID stringification
+ - Set default values for optional params.
+ - Use SvOK check for potentially undefined string params
  - Export all the virError related constants
  - Fix some memory leaks in C layer
  - Remove bogus module imports from test suite
