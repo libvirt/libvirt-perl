@@ -50,7 +50,7 @@ sub _new {
     if (exists $params{name}) {
 	$self = Sys::Virt::Interface::_lookup_by_name($con,  $params{name});
     } elsif (exists $params{mac}) {
-	$self = Sys::Virt::Interface::_lookup_by_mac($con,  $params{uuid});
+	$self = Sys::Virt::Interface::_lookup_by_mac($con,  $params{mac});
     } elsif (exists $params{xml}) {
 	$self = Sys::Virt::Interface::_define_xml($con,  $params{xml});
     } else {

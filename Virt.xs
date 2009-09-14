@@ -917,6 +917,37 @@ list_interface_names(con, maxnames)
       Safefree(names);
 
 
+int
+num_of_defined_interfaces(con)
+      virConnectPtr con;
+    CODE:
+      if ((RETVAL = virConnectNumOfDefinedInterfaces(con)) < 0) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+void
+list_defined_interface_names(con, maxnames)
+      virConnectPtr con;
+      int maxnames;
+ PREINIT:
+      char **names;
+      int i, nnet;
+  PPCODE:
+      Newx(names, maxnames, char *);
+      if ((nnet = virConnectListDefinedInterfaces(con, names, maxnames)) < 0) {
+        Safefree(names);
+	_croak_error(virConnGetLastError(con));
+      }
+      EXTEND(SP, nnet);
+      for (i = 0 ; i < nnet ; i++) {
+	PUSHs(sv_2mortal(newSVpv(names[i], 0)));
+	free(names[i]);
+      }
+      Safefree(names);
+
+
 SV *
 domain_xml_from_native(con, configtype, configdata, flags=0)
       virConnectPtr con;
