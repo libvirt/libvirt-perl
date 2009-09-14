@@ -1,6 +1,16 @@
 Sys::Virt ChangeLog
 ===================
 
+Since 0.2.1:
+
+ - Add all new APIs upto libvirt 0.7.0 APIs (listing defined
+   network interfaces)
+ - Add missing APIs for looking up storage volumes based
+   on path and key
+ - Fix lookup of network interfaces based on MAC address
+ - Add missing APIs for defining network interfaces and
+   starting defined interfaces
+
 Since 0.2.0:
 
  - Add all new APIs upto libvirt 0.6.4 (network interfaces,

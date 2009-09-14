@@ -67,7 +67,7 @@ use Sys::Virt::StorageVol;
 use Sys::Virt::NodeDevice;
 use Sys::Virt::Interface;
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.2.2';
 require XSLoader;
 XSLoader::load('Sys::Virt', $VERSION);
 
