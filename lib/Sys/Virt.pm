@@ -700,6 +700,36 @@ sub get_storage_pool_by_uuid {
     return Sys::Virt::StoragePool->_new(connection => $self, uuid => $uuid);
 }
 
+
+=item my $vol = $vmm->get_storage_volume_by_path($path)
+
+Return the storage volume with a location of C<$path>. The returned object is
+an instance of the L<Sys::Virt::StorageVol> class.
+
+=cut
+
+sub get_storage_volume_by_path {
+    my $self = shift;
+    my $path = shift;
+
+    return Sys::Virt::StorageVol->_new(connection => $self, path => $path);
+}
+
+
+=item my $vol = $vmm->get_storage_volume_by_key($key)
+
+Return the storage volume with a globally unique id of C<$key>. The returned object is
+an instance of the L<Sys::Virt::StorageVol> class.
+
+=cut
+
+sub get_storage_volume_by_key {
+    my $self = shift;
+    my $key = shift;
+
+    return Sys::Virt::StorageVol->_new(connection => $self, key => $key);
+}
+
 =item my $dev = $vmm->get_node_device_by_name($name)
 
 Return the node device with a name of C<$name>. The returned object is
