@@ -201,6 +201,30 @@ Xen Inotify events driver
 
 Low level XML parser
 
+=item Sys::Virt::Error::FROM_ESX
+
+The VMWare ESX driver
+
+=item Sys::Virt::Error::FROM_INTERFACE
+
+The host network interface driver
+
+=item Sys::Virt::Error::FROM_ONE
+
+The Open Nebula driver
+
+=item Sys::Virt::Error::FROM_PHYP
+
+The IBM Power Hypervisor driver
+
+=item Sys::Virt::Error::FROM_SECRET
+
+The secret management driver
+
+=item Sys::Virt::Error::FROM_VBOX
+
+The VirtualBox driver
+
 =back
 
 =head2 ERROR CODES
@@ -445,6 +469,22 @@ The requested operation is not valid for the current object state
 =item Sys::Virt::Error::WAR_NO_INTERFACE
 
 The network interface driver is not available
+
+=item Sys::Virt::Error::ERR_MULTIPLE_INTERFACES
+
+There are multiple interfaces with the requested MAC address
+
+=item Sys::Virt::Error::WAR_NO_SECRET
+
+There secret management driver is not available
+
+=item Sys::Virt::Error::ERR_NO_SECRET
+
+No secret with the matching uuid / usage ID
+
+=item Sys::Virt::Error::ERR_INVALID_SECRET
+
+Invalid secret object
 
 =back
 

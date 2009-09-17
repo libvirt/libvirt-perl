@@ -66,6 +66,7 @@ use Sys::Virt::StoragePool;
 use Sys::Virt::StorageVol;
 use Sys::Virt::NodeDevice;
 use Sys::Virt::Interface;
+use Sys::Virt::Secret;
 
 our $VERSION = '0.2.2';
 require XSLoader;
@@ -666,6 +667,41 @@ used as the C<maxnames> parameter to C<list_defined_interface_names>.
 Return a list of inactive interface names currently known to the VMM. The names can
 be used with the C<get_interface_by_name> method.
 
+=item my @ifaces = $vmm->list_secrets()
+
+Return a list of all secrets currently known to the VMM. The elements
+in the returned list are instances of the L<Sys::Virt::Secret> class.
+
+=cut
+
+sub list_secrets {
+    my $self = shift;
+
+    my $nuuids = $self->num_of_secrets();
+    my @uuids = $self->list_secrets($nuuids);
+
+    my @secrets;
+    foreach my $uuid (@uuids) {
+	eval {
+	    push @secrets, Sys::Virt::Secret->_new(connection => $self, uuid => $uuid);
+	};
+	if ($@) {
+	    # nada - secret went away before we could look it up
+	};
+    }
+    return @secrets;
+}
+
+=item my $nuuids = $vmm->num_of_secrets()
+
+Return the number of secrets known to the VMM. This can be
+used as the C<maxuuids> parameter to C<list_secrets>.
+
+=item my @uuids = $vmm->list_secret_uuids($maxuuids)
+
+Return a list of all secret uuids currently known to the VMM. The uuids can
+be used with the C<get_secret_by_uuid> method.
+
 =item my $dom = $vmm->get_domain_by_name($name)
 
 Return the domain with a name of C<$name>. The returned object is
@@ -844,6 +880,38 @@ sub get_interface_by_mac {
     return Sys::Virt::Interface->_new(connection => $self, mac => $mac);
 }
 
+
+=item my $sec = $vmm->get_secret_by_uuid($uuid)
+
+Return the secret with a globally unique id of C<$uuid>. The returned object is
+an instance of the L<Sys::Virt::Secret> class.
+
+=cut
+
+sub get_secret_by_uuid {
+    my $self = shift;
+    my $uuid = shift;
+
+    return Sys::Virt::Secret->_new(connection => $self, uuid => $uuid);
+}
+
+=item my $sec = $vmm->get_secret_by_usage($usageType, $usageID)
+
+Return the secret with a usage type of C<$usageType>, identified
+by C<$usageID>. The returned object is an instance of the
+L<Sys::Virt::Secret> class.
+
+=cut
+
+sub get_secret_by_usage {
+    my $self = shift;
+    my $type = shift;
+    my $id = shift;
+
+    return Sys::Virt::Secret->_new(connection => $self,
+				   usageType => $type,
+				   usageID => $id);
+}
 
 =item my $xml = $vmm->find_storage_pool_sources($type, $srcspec, $flags)
 

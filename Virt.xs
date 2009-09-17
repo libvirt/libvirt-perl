@@ -948,6 +948,38 @@ list_defined_interface_names(con, maxnames)
       Safefree(names);
 
 
+int
+num_of_secrets(con)
+      virConnectPtr con;
+    CODE:
+      if ((RETVAL = virConnectNumOfSecrets(con)) < 0) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+
+void
+list_secret_uuids(con, maxuuids)
+      virConnectPtr con;
+      int maxuuids;
+ PREINIT:
+      char **uuids;
+      int i, nsecret;
+  PPCODE:
+      Newx(uuids, maxuuids, char *);
+      if ((nsecret = virConnectListSecrets(con, uuids, maxuuids)) < 0) {
+        Safefree(uuids);
+	_croak_error(virConnGetLastError(con));
+      }
+      EXTEND(SP, nsecret);
+      for (i = 0 ; i < nsecret ; i++) {
+	PUSHs(sv_2mortal(newSVpv(uuids[i], 0)));
+	free(uuids[i]);
+      }
+      Safefree(uuids);
+
+
 SV *
 domain_xml_from_native(con, configtype, configdata, flags=0)
       virConnectPtr con;
@@ -2523,6 +2555,171 @@ DESTROY(iface_rv)
       }
 
 
+MODULE = Sys::Virt::Secret  PACKAGE = Sys::Virt::Secret
+
+virSecretPtr
+_define_xml(con, xml, flags=0)
+      virConnectPtr con;
+      const char *xml;
+      unsigned int flags;
+    CODE:
+      if (!(RETVAL = virSecretDefineXML(con, xml, flags))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+virSecretPtr
+_lookup_by_usage(con, usageType, usageID)
+      virConnectPtr con;
+      int usageType;
+      const char *usageID;
+    CODE:
+      if (!(RETVAL = virSecretLookupByUsage(con, usageType, usageID))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+virSecretPtr
+_lookup_by_uuid(con, uuid)
+      virConnectPtr con;
+      const unsigned char *uuid;
+    CODE:
+      if (!(RETVAL = virSecretLookupByUUID(con, uuid))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+virSecretPtr
+_lookup_by_uuid_string(con, uuid)
+      virConnectPtr con;
+      const char *uuid;
+    CODE:
+      if (!(RETVAL = virSecretLookupByUUIDString(con, uuid))) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+SV *
+get_uuid(sec)
+      virSecretPtr sec;
+  PREINIT:
+      unsigned char rawuuid[VIR_UUID_BUFLEN];
+    CODE:
+      if ((virSecretGetUUID(sec, rawuuid)) < 0) {
+	_croak_error(virConnGetLastError(virSecretGetConnect(sec)));
+      }
+      RETVAL = newSVpv((char*)rawuuid, sizeof(rawuuid));
+  OUTPUT:
+      RETVAL
+
+SV *
+get_uuid_string(sec)
+      virSecretPtr sec;
+  PREINIT:
+      char uuid[VIR_UUID_STRING_BUFLEN];
+    CODE:
+      if ((virSecretGetUUIDString(sec, uuid)) < 0) {
+	_croak_error(virConnGetLastError(virSecretGetConnect(sec)));
+      }
+
+      RETVAL = newSVpv(uuid, 0);
+  OUTPUT:
+      RETVAL
+
+const char *
+get_usage_id(sec)
+      virSecretPtr sec;
+    CODE:
+      if (!(RETVAL = virSecretGetUsageID(sec))) {
+	_croak_error(virConnGetLastError(virSecretGetConnect(sec)));
+      }
+  OUTPUT:
+      RETVAL
+
+
+int
+get_usage_type(sec)
+      virSecretPtr sec;
+    CODE:
+      if (!(RETVAL = virSecretGetUsageType(sec))) {
+	_croak_error(virConnGetLastError(virSecretGetConnect(sec)));
+      }
+  OUTPUT:
+      RETVAL
+
+
+SV *
+get_xml_description(sec)
+      virSecretPtr sec;
+  PREINIT:
+      char *xml;
+    CODE:
+      if (!(xml = virSecretGetXMLDesc(sec, 0))) {
+	 _croak_error(virConnGetLastError(virSecretGetConnect(sec)));
+      }
+      RETVAL = newSVpv(xml, 0);
+      free(xml);
+  OUTPUT:
+      RETVAL
+
+void
+undefine(sec)
+      virSecretPtr sec;
+    PPCODE:
+      if (virSecretUndefine(sec) < 0) {
+	_croak_error(virConnGetLastError(virSecretGetConnect(sec)));
+      }
+
+void
+set_value(sec, value, flags=0)
+      virSecretPtr sec;
+      SV *value;
+      unsigned int flags;
+PREINIT:
+      unsigned char *bytes;
+      STRLEN len;
+ PPCODE:
+      bytes = (unsigned char *)SvPV(value, len);
+      if (virSecretSetValue(sec, bytes, len, flags) < 0) {
+        _croak_error(virConnGetLastError(virSecretGetConnect(sec)));
+      }
+
+
+SV *
+get_value(sec, flags=0)
+      virSecretPtr sec;
+      unsigned int flags;
+PREINIT:
+      unsigned char *bytes;
+      size_t len;
+    CODE:
+      if ((bytes = virSecretGetValue(sec, &len, flags)) == NULL) {
+	_croak_error(virConnGetLastError(virSecretGetConnect(sec)));
+      }
+      RETVAL = newSVpv((char*)bytes, len);
+  OUTPUT:
+      RETVAL
+
+
+
+void
+DESTROY(sec_rv)
+      SV *sec_rv;
+ PREINIT:
+      virSecretPtr sec;
+  PPCODE:
+      sec = (virSecretPtr)SvIV((SV*)SvRV(sec_rv));
+      if (sec) {
+	virSecretFree(sec);
+	sv_setiv((SV*)SvRV(sec_rv), 0);
+      }
+
+
+
 
 MODULE = Sys::Virt::Event  PACKAGE = Sys::Virt::Event
 
@@ -2700,12 +2897,20 @@ BOOT:
       REGISTER_CONSTANT(VIR_STORAGE_POOL_DELETE_ZEROED, DELETE_ZEROED);
 
 
+
       stash = gv_stashpv( "Sys::Virt::StorageVol", TRUE );
       REGISTER_CONSTANT(VIR_STORAGE_VOL_FILE, TYPE_FILE);
       REGISTER_CONSTANT(VIR_STORAGE_VOL_BLOCK, TYPE_BLOCK);
 
       REGISTER_CONSTANT(VIR_STORAGE_VOL_DELETE_NORMAL, DELETE_NORMAL);
       REGISTER_CONSTANT(VIR_STORAGE_VOL_DELETE_ZEROED, DELETE_ZEROED);
+
+
+
+      stash = gv_stashpv( "Sys::Virt::Secret", TRUE );
+      REGISTER_CONSTANT(VIR_SECRET_USAGE_TYPE_NONE, USAGE_TYPE_NONE);
+      REGISTER_CONSTANT(VIR_SECRET_USAGE_TYPE_VOLUME, USAGE_TYPE_VOLUME);
+
 
 
       stash = gv_stashpv( "Sys::Virt::Error", TRUE );
@@ -2734,6 +2939,12 @@ BOOT:
       REGISTER_CONSTANT(VIR_FROM_NODEDEV, FROM_NODEDEV);
       REGISTER_CONSTANT(VIR_FROM_XEN_INOTIFY, FROM_XEN_INOTIFY);
       REGISTER_CONSTANT(VIR_FROM_SECURITY, FROM_SECURITY);
+      REGISTER_CONSTANT(VIR_FROM_VBOX, FROM_VBOX);
+      REGISTER_CONSTANT(VIR_FROM_INTERFACE, FROM_INTERFACE);
+      REGISTER_CONSTANT(VIR_FROM_ONE, FROM_ONE);
+      REGISTER_CONSTANT(VIR_FROM_ESX, FROM_ESX);
+      REGISTER_CONSTANT(VIR_FROM_PHYP, FROM_PHYP);
+      REGISTER_CONSTANT(VIR_FROM_SECRET, FROM_SECRET);
 
 
 
@@ -2796,4 +3007,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_WAR_NO_INTERFACE, WAR_NO_INTERFACE);
       REGISTER_CONSTANT(VIR_ERR_NO_INTERFACE, ERR_NO_INTERFACE);
       REGISTER_CONSTANT(VIR_ERR_INVALID_INTERFACE, ERR_INVALID_INTERFACE);
+      REGISTER_CONSTANT(VIR_ERR_MULTIPLE_INTERFACES, ERR_MULTIPLE_INTERFACES);
+      REGISTER_CONSTANT(VIR_WAR_NO_SECRET, WAR_NO_SECRET);
+      REGISTER_CONSTANT(VIR_ERR_INVALID_SECRET, ERR_INVALID_SECRET);
+      REGISTER_CONSTANT(VIR_ERR_NO_SECRET, ERR_NO_SECRET);
     }

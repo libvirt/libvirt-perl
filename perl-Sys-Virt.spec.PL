@@ -42,7 +42,7 @@ Source: %{appname}-%{version}.tar.gz
 BuildRoot: /var/tmp/%{appname}-%{version}-root
 Requires: perl >= %{perlversion}
 Requires: libvirt >= 0.7.0
-BuildRequires: libvirt-devel >= 0.7.0
+BuildRequires: libvirt-devel >= 0.7.1
 BuildRequires: perl(Test::More)
 BuildRequires: perl(Time::HiRes)
 
