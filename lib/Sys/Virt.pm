@@ -583,19 +583,23 @@ sub list_node_devices {
     return @devs;
 }
 
-=item my $nnames = $vmm->num_of_node_devices($capability)
+=item my $nnames = $vmm->num_of_node_devices($capability[, $flags])
 
 Return the number of host devices known to the VMM. This can be
 used as the C<maxids> parameter to C<list_node_device_names>.
-The optional C<capability> parameter allows the list to be restricted to
-only devices with a particular capability type.
+The C<capability> parameter allows the list to be restricted to
+only devices with a particular capability type, and should be left
+as C<undef> if the full list is required. The optional <flags>
+parameter is currently unused and defaults to 0 if omitted.
 
-=item my @netNames = $vmm->list_node_device_names($capability, $maxnames)
+=item my @netNames = $vmm->list_node_device_names($capability, $maxnames[, $flags])
 
 Return a list of all host device names currently known to the VMM. The names can
 be used with the C<get_node_device_by_name> method.
-The optional C<capability> parameter allows the list to be restricted to
-only devices with a particular capability type.
+The C<capability> parameter allows the list to be restricted to
+only devices with a particular capability type, and should be left
+as C<undef> if the full list is required. The optional <flags>
+parameter is currently unused and defaults to 0 if omitted.
 
 =item my @ifaces = $vmm->list_interfaces()
 
@@ -913,13 +917,14 @@ sub get_secret_by_usage {
 				   usageID => $id);
 }
 
-=item my $xml = $vmm->find_storage_pool_sources($type, $srcspec, $flags)
+=item my $xml = $vmm->find_storage_pool_sources($type, $srcspec[, $flags])
 
 Probe for available storage pool sources for the pool of type C<$type>.
 The C<$srcspec> parameter can be C<undef>, or a parameter to refine the
 discovery process, for example a server hostname for NFS discovery. The
-C<$flags> parameter can usually be left as zero. The return scalar is
-an XML document describing the discovered storage pool sources.
+C<$flags> parameter is optional, and if omitted defaults to zero. The
+returned scalar is an XML document describing the discovered storage
+pool sources.
 
 =item $vmm->restore_domain($savefile)
 

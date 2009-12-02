@@ -123,21 +123,23 @@ start upon boot. Return false, otherwise
 Set the state of the autostart flag, which determines whether the
 storage pool will automatically start upon boot of the host OS
 
-=item $pool->refresh();
+=item $pool->refresh([$flags]);
 
 Refresh the storage pool state. Typically this will rescan the list
-of storage volumes.
+of storage volumes. The C<$flags> parameter is currently unused and
+if omitted defaults to zero.
 
-=item $pool->build($flags);
+=item $pool->build([$flags]);
 
 Construct the storage pool if it does not exist. As an example, for
 a disk based storage pool this would ensure a partition table exists.
 The C<$flags> parameter allows control over the build operation
+and if omitted defaults to zero.
 
-=item $pool->delete($flags);
+=item $pool->delete([$flags]);
 
 Delete the storage pool. The C<$flags> parameter allows the data to
-be optionally wiped during delete.
+be optionally wiped during delete and if omitted defaults to zero.
 
 =item %info = $pool->get_info()
 

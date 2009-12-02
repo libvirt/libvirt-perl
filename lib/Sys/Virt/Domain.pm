@@ -134,10 +134,12 @@ the file named in the C<$filename> parameter. The domain can later
 be restored from this file with the C<restore_domain> method on
 the L<Sys::Virt> object.
 
-=item $dom->core_dump($filename)
+=item $dom->core_dump($filename[, $flags])
 
 Trigger a core dump of the guest virtual machine, saving its memory
 image to C<$filename> so it can be analysed by tools such as C<crash>.
+The optional C<$flags> flags parameter is currently unused and if
+omitted will default to 0.
 
 =item $dom->destroy()
 
@@ -196,13 +198,13 @@ must be less than, or equal to the domain's max memory limit.
 Request that the guest OS perform a graceful shutdown and
 poweroff.
 
-=item $dom->reboot($flags)
+=item $dom->reboot([$flags])
 
 Request that the guest OS perform a graceful shutdown and
 optionally restart. The C<$flags> parameter determines how
 the domain restarts (if at all). It should be one of the
 constants &Sys::Virt::Domain::REBOOT_* listed later in this
-document.
+document, but if omitted defaults to zero.
 
 =item $dom->get_max_vcpus()
 
@@ -219,17 +221,19 @@ to the running guest.
 Hotunplug a existing device whose configuration is given by C<$xml>,
 from the running guest.
 
-=item $data = $dom->block_peek($path, $offset, $size)
+=item $data = $dom->block_peek($path, $offset, $size[, $flags)
 
 Peek into the guest disk C<$path>, at byte C<$offset> capturing
 C<$size> bytes of data. The returned scalar may contain embedded
-NULLs.
+NULLs. The optional C<$flags> parameter is currently unused and
+if omitted defaults to zero.
 
-=item $data = $dom->memory_peek($offset, $size)
+=item $data = $dom->memory_peek($offset, $size[, $flags])
 
 Peek into the guest memory at byte C<$offset> virtual address,
 capturing C<$size> bytes of memory. The return scalar may
-contain embedded NULLs.
+contain embedded NULLs. The optional C<$flags> parameter is
+currently unused and if omitted defaults to zero.
 
 =item $flag = $dom->get_autostart();
 
@@ -350,7 +354,9 @@ with the C<destcon> connection. If the destination host is multi-homed
 it may be neccessary to supply an alternate destination hostame
 via the C<uri> parameter. The C<bandwidth> parameter allows network
 usage to be throttled during migration. If set to zero, no throttling
-will be performed.
+will be performed. The C<flags>, C<dname>, C<uri> and C<bandwidth>
+parameters are all optional, and if omitted default to zero, C<undef>,
+C<undef>, and zero respectively.
 
 
 =item @vcpuinfo = $dom->get_vcpu_info()
