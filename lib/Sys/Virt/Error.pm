@@ -84,7 +84,7 @@ Return an informative message describing the error condition.
 
 sub message {
     my $self = shift;
-    return $self->{code}
+    return $self->{message}
 }
 
 
