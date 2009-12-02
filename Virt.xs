@@ -372,7 +372,10 @@ _open_auth_callback(virConnectCredentialPtr cred,
       (void)hv_store(credrec, "type", 4, newSViv(cred[i].type), 0);
       (void)hv_store(credrec, "prompt", 6, newSVpv(cred[i].prompt, 0), 0);
       (void)hv_store(credrec, "challenge", 9, newSVpv(cred[i].challenge, 0), 0);
-      (void)hv_store(credrec, "result", 6, newSVpv(cred[i].defresult, 0), 0);
+      if (cred[i].defresult != NULL)
+          (void)hv_store(credrec, "result", 6, newSVpv(cred[i].defresult, 0), 0);
+      else
+          (void)hv_fetch(credrec, "result", 6, 1);
 
       av_push(credlist, newRV_noinc((SV *)credrec));
   }
