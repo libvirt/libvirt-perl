@@ -201,10 +201,8 @@ poweroff.
 =item $dom->reboot([$flags])
 
 Request that the guest OS perform a graceful shutdown and
-optionally restart. The C<$flags> parameter determines how
-the domain restarts (if at all). It should be one of the
-constants &Sys::Virt::Domain::REBOOT_* listed later in this
-document, but if omitted defaults to zero.
+optionally restart. The optional C<$flags> parameter is
+currently unused and if omitted defaults to zero.
 
 =item $dom->get_max_vcpus()
 
