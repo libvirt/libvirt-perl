@@ -83,7 +83,7 @@ $dom->create();
 my $nids = $conn->num_of_domains();
 is($nids, 2, "2 active domains");
 
-my @ids = $conn->list_domain_ids($nids);
+my @ids = sort { $a <=> $b } $conn->list_domain_ids($nids);
 is_deeply(\@ids, [1, 2], "domain ids");
 
 
