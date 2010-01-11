@@ -357,6 +357,25 @@ parameters are all optional, and if omitted default to zero, C<undef>,
 C<undef>, and zero respectively.
 
 
+=item $dom->migrate_to_uri(desturi, flags, dname, uri, bandwidth)
+
+Migrate a domain to an alternative host. The C<destri> parameter
+should be a valid libvirt connection URI for the remote target host.
+If the C<flags> parameter is zero offline migration will be
+performed. The C<Sys::Virt::Domain::MIGRATE_LIVE> constant can be
+used to request live migration. The C<dname> parameter allows the
+guest to be renamed on the target host, if set to C<undef>, the
+domains' current name will be maintained. In normal circumstances,
+the source host determines the target hostname from the URI associated
+with the C<destcon> connection. If the destination host is multi-homed
+it may be neccessary to supply an alternate destination hostame
+via the C<uri> parameter. The C<bandwidth> parameter allows network
+usage to be throttled during migration. If set to zero, no throttling
+will be performed. The C<flags>, C<dname>, C<uri> and C<bandwidth>
+parameters are all optional, and if omitted default to zero, C<undef>,
+C<undef>, and zero respectively.
+
+
 =item @vcpuinfo = $dom->get_vcpu_info()
 
 Obtain information about the state of all virtual CPUs in a running
@@ -494,6 +513,32 @@ is performed
 
 Migrate the guest without interrupting its execution on the source
 host.
+
+=item Sys::Virt::Domain::MIGRATE_PEER2PEER
+
+Manage the migration process over a direct peer-2-peer connection between
+the source and destination host libvirtd daemons.
+
+=item Sys::Virt::Domain::MIGRATE_TUNNELLED
+
+Tunnel the migration data over the libvirt daemon connection, rather
+than the native hypervisor data transport. Requires PEER2PEER flag to
+be set.
+
+=item Sys::Virt::Domain::MIGRATE_PERSIST_DEST
+
+Make the domain persistent on the destination host, defining its
+configuration file upon completion of migration.
+
+=item Sys::Virt::Domain::MIGRATE_UNDEFINE_SOURCE
+
+Remove the domain's persistent configuration after migration
+completes successfully.
+
+=item Sys::Virt::Domain::MIGRATE_PAUSED
+
+Do not re-start execution of the guest CPUs on the destination
+host after migration completes.
 
 =back
 

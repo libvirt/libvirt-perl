@@ -1012,6 +1012,21 @@ sub get_version {
     }
 }
 
+=item my $ver = $vmm->get_library_version
+
+Return the version number of the API associated with
+the active connection. This differs from C<get_version>
+in that if the connection is to a remote libvirtd
+daemon, it will return the API version of the remote
+libvirt, rather than the local client.
+
+=cut
+
+sub get_library_version {
+    my $self = shift;
+    return $self->_get_conn_library_version;
+}
+
 1;
 
 =pod

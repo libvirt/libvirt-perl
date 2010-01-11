@@ -518,6 +518,19 @@ _get_conn_version(con)
   OUTPUT:
       RETVAL
 
+unsigned long
+_get_conn_library_version(con)
+      virConnectPtr con;
+ PREINIT:
+      unsigned long version;
+   CODE:
+      if (virConnectGetLibVersion(con, &version) < 0) {
+	_croak_error(virConnGetLastError(con));
+      }
+      RETVAL = version;
+  OUTPUT:
+      RETVAL
+
 const char *
 get_type(con)
       virConnectPtr con;
@@ -1512,6 +1525,28 @@ PREINIT:
      }
  OUTPUT:
      RETVAL
+
+
+void
+migrate_to_uri(dom, desturi, flags=0, dname=&PL_sv_undef, uri=&PL_sv_undef, bandwidth=0)
+     virDomainPtr dom;
+     const char *desturi;
+     unsigned long flags;
+     SV *dname;
+     SV *uri;
+     unsigned long bandwidth;
+PREINIT:
+     const char *dnamestr = NULL;
+     const char *uristr = NULL;
+  PPCODE:
+     if (SvOK(dname))
+       dnamestr = SvPV_nolen(dname);
+     if (SvOK(uri))
+       uristr = SvPV_nolen(uri);
+
+     if (virDomainMigrateToURI(dom, desturi, flags, dnamestr, bandwidth) < 0) {
+       _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+     }
 
 void
 attach_device(dom, xml)
@@ -2843,6 +2878,11 @@ BOOT:
          in the XS layer */
 
       REGISTER_CONSTANT(VIR_MIGRATE_LIVE, MIGRATE_LIVE);
+      REGISTER_CONSTANT(VIR_MIGRATE_PEER2PEER, MIGRATE_PEER2PEER);
+      REGISTER_CONSTANT(VIR_MIGRATE_TUNNELLED, MIGRATE_TUNNELLED);
+      REGISTER_CONSTANT(VIR_MIGRATE_PERSIST_DEST, MIGRATE_PERSIST_DEST);
+      REGISTER_CONSTANT(VIR_MIGRATE_UNDEFINE_SOURCE, MIGRATE_UNDEFINE_SOURCE);
+      REGISTER_CONSTANT(VIR_MIGRATE_PAUSED, MIGRATE_PAUSED);
 
 
       REGISTER_CONSTANT(VIR_DOMAIN_XML_SECURE, XML_SECURE);
