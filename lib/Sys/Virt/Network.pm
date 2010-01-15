@@ -88,6 +88,15 @@ Returns a printable string representation of the raw UUID, in the format
 
 Returns a string with a locally unique name of the network
 
+=item $net->is_active()
+
+Returns a true value if the network is currently running
+
+=item $net->is_persistent()
+
+Returns a true value if the network has a persistent configuration
+file defined
+
 =item my $xml = $net->get_xml_description()
 
 Returns an XML document containing a complete description of

@@ -531,6 +531,26 @@ _get_conn_library_version(con)
   OUTPUT:
       RETVAL
 
+int
+is_encrypted(conn)
+      virConnectPtr conn;
+    CODE:
+      if ((RETVAL = virConnectIsEncrypted(conn)) < 0) {
+          _croak_error(virConnGetLastError(conn));
+      }
+  OUTPUT:
+      RETVAL
+
+int
+is_secure(conn)
+      virConnectPtr conn;
+    CODE:
+      if ((RETVAL = virConnectIsSecure(conn)) < 0) {
+          _croak_error(virConnGetLastError(conn));
+      }
+  OUTPUT:
+      RETVAL
+
 const char *
 get_type(con)
       virConnectPtr con;
@@ -1178,6 +1198,28 @@ get_name(dom)
     CODE:
       if (!(RETVAL = virDomainGetName(dom))) {
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+  OUTPUT:
+      RETVAL
+
+
+int
+is_active(dom)
+      virDomainPtr dom;
+    CODE:
+      if ((RETVAL = virDomainIsActive(dom)) < 0) {
+          _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+  OUTPUT:
+      RETVAL
+
+
+int
+is_persistent(dom)
+      virDomainPtr dom;
+    CODE:
+      if ((RETVAL = virDomainIsPersistent(dom)) < 0) {
+          _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
   OUTPUT:
       RETVAL
@@ -1846,6 +1888,28 @@ get_name(net)
       RETVAL
 
 
+int
+is_active(net)
+      virNetworkPtr net;
+    CODE:
+      if ((RETVAL = virNetworkIsActive(net)) < 0) {
+          _croak_error(virConnGetLastError(virNetworkGetConnect(net)));
+      }
+  OUTPUT:
+      RETVAL
+
+
+int
+is_persistent(net)
+      virNetworkPtr net;
+    CODE:
+      if ((RETVAL = virNetworkIsPersistent(net)) < 0) {
+          _croak_error(virConnGetLastError(virNetworkGetConnect(net)));
+      }
+  OUTPUT:
+      RETVAL
+
+
 SV *
 get_bridge_name(net)
       virNetworkPtr net;
@@ -2040,6 +2104,28 @@ get_name(pool)
     CODE:
       if (!(RETVAL = virStoragePoolGetName(pool))) {
 	_croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
+      }
+  OUTPUT:
+      RETVAL
+
+
+int
+is_active(pool)
+      virStoragePoolPtr pool;
+    CODE:
+      if ((RETVAL = virStoragePoolIsActive(pool)) < 0) {
+          _croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
+      }
+  OUTPUT:
+      RETVAL
+
+
+int
+is_persistent(pool)
+      virStoragePoolPtr pool;
+    CODE:
+      if ((RETVAL = virStoragePoolIsPersistent(pool)) < 0) {
+          _croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
       }
   OUTPUT:
       RETVAL
@@ -2532,6 +2618,17 @@ get_name(iface)
     CODE:
       if (!(RETVAL = virInterfaceGetName(iface))) {
 	_croak_error(virConnGetLastError(virInterfaceGetConnect(iface)));
+      }
+  OUTPUT:
+      RETVAL
+
+
+int
+is_active(iface)
+      virInterfacePtr iface;
+    CODE:
+      if ((RETVAL = virInterfaceIsActive(iface)) < 0) {
+          _croak_error(virConnGetLastError(virInterfaceGetConnect(iface)));
       }
   OUTPUT:
       RETVAL

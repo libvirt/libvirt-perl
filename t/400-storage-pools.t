@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 24;
+use Test::More tests => 29;
 
 BEGIN {
         use_ok('Sys::Virt');
@@ -25,6 +25,9 @@ my $pool = $conn->get_storage_pool_by_name($poolnames[0]);
 isa_ok($pool, "Sys::Virt::StoragePool");
 
 is($pool->get_name, "default-pool", "name");
+ok($pool->is_persistent(), "pool is persistent");
+ok($pool->is_active(), "pool is active");
+
 
 # Lookup again via UUID to verify we get the same
 my $uuid = $pool->get_uuid();
@@ -60,6 +63,8 @@ $pool = $conn->define_storage_pool($xml);
 
 $nname = $conn->num_of_defined_storage_pools();
 is($nname, 1, "1 defined storage_pool");
+ok($pool->is_persistent(), "pool is persistent");
+ok(!$pool->is_active(), "pool is not active");
 
 my @names = $conn->list_defined_storage_pool_names($nname);
 is_deeply(\@names, ["wibble"], "names");
@@ -73,6 +78,7 @@ isa_ok($pool, "Sys::Virt::StoragePool");
 
 
 $pool->create();
+ok($pool->is_active(), "pool is active");
 
 my $nids = $conn->num_of_storage_pools();
 is($nids, 2, "2 active storage_pools");

@@ -95,6 +95,15 @@ Returns a printable string representation of the raw UUID, in the format
 
 Returns a string with a locally unique name of the domain
 
+=item $dom->is_active()
+
+Returns a true value if the domain is currently running
+
+=item $dom->is_persistent()
+
+Returns a true value if the domain has a persistent configuration
+file defined
+
 =item my $xml = $dom->get_xml_description()
 
 Returns an XML document containing a complete description of

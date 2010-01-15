@@ -1031,6 +1031,17 @@ sub get_library_version {
 
 =pod
 
+=item $conn->is_secure()
+
+Returns a true value if the current connection is secure against
+network interception. This implies either use of UNIX sockets,
+or encryption with a TCP stream.
+
+=item $conn->is_encrypted()
+
+Returns a true value if the current connection data stream is
+encrypted.
+
 =item my $info = $con->get_node_info()
 
 Returns a hash reference summarising the capabilities of the host

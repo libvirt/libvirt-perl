@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 38;
+use Test::More tests => 43;
 
 BEGIN {
         use_ok('Sys::Virt');
@@ -26,6 +26,8 @@ isa_ok($dom, "Sys::Virt::Domain");
 
 is($dom->get_name, "test", "name");
 is($dom->get_id, "1", "id");
+ok($dom->is_persistent(), "domain is persistent");
+ok($dom->is_active(), "domain is active");
 
 # Lookup again via UUID to verify we get the same
 my $uuid = $dom->get_uuid();
@@ -77,8 +79,13 @@ isa_ok($doms[0], "Sys::Virt::Domain");
 $dom = $conn->get_domain_by_name("wibble");
 isa_ok($dom, "Sys::Virt::Domain");
 
+ok($dom->is_persistent(), "domain is persistent");
+ok(!$dom->is_active(), "domain is not active");
+
 
 $dom->create();
+
+ok($dom->is_active(), "domain is active");
 
 my $nids = $conn->num_of_domains();
 is($nids, 2, "2 active domains");

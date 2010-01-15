@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 22;
+use Test::More tests => 23;
 
 BEGIN {
         use_ok('Sys::Virt');
@@ -25,6 +25,12 @@ my $iface = $conn->get_interface_by_name($ifacenames[0]);
 isa_ok($iface, "Sys::Virt::Interface");
 
 is($iface->get_name, "eth1", "name");
+# Disable till 0.7.6 libvirt
+SKIP: {
+    skip "libvirt < 0.7.6 is broken", 1;
+
+    ok($iface->is_active(), "interface is active");
+};
 
 # Lookup again via MAC to verify we get the same
 my $mac = $iface->get_mac();

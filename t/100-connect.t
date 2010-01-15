@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 22;
+use Test::More tests => 24;
 use XML::XPath;
 use XML::XPath::XMLParser;
 use Sys::Hostname;
@@ -69,3 +69,6 @@ my $thishost = hostname();
 my ($canonhost, $other) = gethostbyname($thishost);
 my $host = $conn->get_hostname();
 is($host, $canonhost, "hostname");
+
+ok($conn->is_secure(), "connection is secure");
+ok(!$conn->is_encrypted(), "connection is not encrypted");

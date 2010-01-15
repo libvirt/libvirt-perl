@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 24;
+use Test::More tests => 29;
 
 BEGIN {
         use_ok('Sys::Virt');
@@ -25,6 +25,8 @@ my $net = $conn->get_network_by_name($netnames[0]);
 isa_ok($net, "Sys::Virt::Network");
 
 is($net->get_name, "default", "name");
+ok($net->is_persistent(), "net is persistent");
+ok($net->is_active(), "net is active");
 
 # Lookup again via UUID to verify we get the same
 my $uuid = $net->get_uuid();
@@ -60,6 +62,9 @@ my $xml = "<network>
 
 $net = $conn->define_network($xml);
 
+ok($net->is_persistent(), "net is persistent");
+ok(!$net->is_active(), "net is not active");
+
 $nname = $conn->num_of_defined_networks();
 is($nname, 1, "1 defined network");
 
@@ -75,6 +80,8 @@ isa_ok($net, "Sys::Virt::Network");
 
 
 $net->create();
+
+ok($net->is_active(), "net is active");
 
 my $nids = $conn->num_of_networks();
 is($nids, 2, "2 active networks");

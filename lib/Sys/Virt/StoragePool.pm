@@ -90,6 +90,15 @@ Returns a printable string representation of the raw UUID, in the format
 
 Returns a string with a locally unique name of the storage pool
 
+=item $pool->is_active()
+
+Returns a true value if the storage pool is currently running
+
+=item $pool->is_persistent()
+
+Returns a true value if the storage pool has a persistent configuration
+file defined
+
 =item my $xml = $pool->get_xml_description()
 
 Returns an XML document containing a complete description of

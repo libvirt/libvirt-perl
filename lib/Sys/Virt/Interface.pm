@@ -67,6 +67,10 @@ sub _new {
 
 Returns a string with a locally unique name of the network
 
+=item $iface->is_active()
+
+Returns a true value if the interface is currently running
+
 =item my $name = $iface->get_mac()
 
 Returns a string with the hardware MAC address of the interface
