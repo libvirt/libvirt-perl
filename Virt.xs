@@ -668,6 +668,21 @@ PREINIT:
   OUTPUT:
       RETVAL
 
+SV *
+compare_cpu(con, xml, flags=0)
+      virConnectPtr con;
+      char *xml;
+      unsigned int flags;
+PREINIT:
+      int rc;
+   CODE:
+      if ((rc = virConnectCompareCPU(con, xml, flags)) < 0) {
+	 _croak_error(virConnGetLastError(con));
+      }
+      RETVAL = newSViv(rc);
+  OUTPUT:
+      RETVAL
+
 int
 get_max_vcpus(con, type)
       virConnectPtr con;
@@ -1649,6 +1664,51 @@ interface_stats(dom, path)
       (void)hv_store (RETVAL, "tx_packets", 10, virt_newSVll(stats.tx_packets), 0);
       (void)hv_store (RETVAL, "tx_errs", 7, virt_newSVll(stats.tx_errs), 0);
       (void)hv_store (RETVAL, "tx_drop", 7, virt_newSVll(stats.tx_drop), 0);
+  OUTPUT:
+      RETVAL
+
+
+HV *
+memory_stats(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+  PREINIT:
+      virDomainMemoryStatPtr stats;
+      int i, got;
+    CODE:
+      Newx(stats, VIR_DOMAIN_MEMORY_STAT_NR, virDomainMemoryStatStruct);
+      if ((got = virDomainMemoryStats(dom, stats, VIR_DOMAIN_MEMORY_STAT_NR, flags)) < 0) {
+	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
+      for (i = 0 ; i < got ; i++) {
+          switch (stats[i].tag) {
+          case VIR_DOMAIN_MEMORY_STAT_SWAP_IN:
+              (void)hv_store (RETVAL, "swap_in", 7, virt_newSVll(stats[i].val), 0);
+              break;
+
+          case VIR_DOMAIN_MEMORY_STAT_SWAP_OUT:
+              (void)hv_store (RETVAL, "swap_out", 8, virt_newSVll(stats[i].val), 0);
+              break;
+
+          case VIR_DOMAIN_MEMORY_STAT_MAJOR_FAULT:
+              (void)hv_store (RETVAL, "major_fault", 11, virt_newSVll(stats[i].val), 0);
+              break;
+
+          case VIR_DOMAIN_MEMORY_STAT_MINOR_FAULT:
+              (void)hv_store (RETVAL, "minor_fault", 11, virt_newSVll(stats[i].val), 0);
+              break;
+
+          case VIR_DOMAIN_MEMORY_STAT_UNUSED:
+              (void)hv_store (RETVAL, "unused", 6, virt_newSVll(stats[i].val), 0);
+              break;
+
+          case VIR_DOMAIN_MEMORY_STAT_AVAILABLE:
+              (void)hv_store (RETVAL, "available", 9, virt_newSVll(stats[i].val), 0);
+              break;
+          }
+      }
+      Safefree(stats);
   OUTPUT:
       RETVAL
 
@@ -2947,6 +3007,11 @@ BOOT:
       REGISTER_CONSTANT(VIR_CRED_REALM, CRED_REALM);
       REGISTER_CONSTANT(VIR_CRED_EXTERNAL, CRED_EXTERNAL);
 
+
+      /* Don't bother with VIR_CPU_COMPARE_ERROR since we die in that case */
+      REGISTER_CONSTANT(VIR_CPU_COMPARE_INCOMPATIBLE, CPU_COMPARE_INCOMPATIBLE);
+      REGISTER_CONSTANT(VIR_CPU_COMPARE_IDENTICAL, CPU_COMPARE_IDENTICAL);
+      REGISTER_CONSTANT(VIR_CPU_COMPARE_SUPERSET, CPU_COMPARE_SUPERSET);
 
       stash = gv_stashpv( "Sys::Virt::Event", TRUE );
 

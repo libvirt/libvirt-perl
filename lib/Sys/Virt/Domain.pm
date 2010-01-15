@@ -340,6 +340,40 @@ Total packets dropped at transmission.
 
 =back
 
+=item $dom->memory_stats($flags=0)
+
+Fetch the current memory statistics for the guest domain. The
+C<$flags> parameter is currently unused and can be omitted.
+The returned hash containins keys for
+
+=over 4
+
+=item C<swap_in>
+
+Data read from swap space
+
+=item C<swap_out>
+
+Data written to swap space
+
+=item C<major_fault>
+
+Page fault involving disk I/O
+
+=item C<minor_fault>
+
+Page fault not involving disk I/O
+
+=item C<unused>
+
+Memory not used by the system
+
+=item C<available>
+
+Total memory seen by guest
+
+=back
+
 =item %info = $dom->get_security_label()
 
 Fetch information about the security label assigned to the guest

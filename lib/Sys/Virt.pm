@@ -1111,6 +1111,13 @@ specifying the 'domain of interpretation' for security labels.
 
 Returns an XML document describing the hypervisor capabilities
 
+=item my $result = $con->compare_cpu($xml, $flags=0);
+
+Checks whether the CPU definition in C<$xml> is compatible with the
+current hypervisor connection. This can be used to determine whether
+it is safe to migrate a guest to this host. The returned result is
+one of the constants listed later
+
 =item $mem = $con->get_node_free_memory();
 
 Returns the current free memory on the host
@@ -1168,6 +1175,25 @@ RFC 1766 language code
 =item Sys::Virt::CRED_EXTERNAL
 
 Externally provided credential
+
+=back
+
+=head2 CPU COMPARISON CONSTANTS
+
+=over 4
+
+=item Sys::Virt::CPU_COMPARE_INCOMPATIBLE
+
+This host is missing one or more CPU features in the CPU
+description
+
+=item Sys::Virt::CPU_COMPARE_IDENTICAL
+
+The host has an identical CPU description
+
+=item Sys::Virt::CPU_COMPARE_SUPERSET
+
+The host offers a superset of the CPU descriptoon
 
 =back
 
