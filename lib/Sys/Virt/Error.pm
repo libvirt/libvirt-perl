@@ -486,6 +486,19 @@ No secret with the matching uuid / usage ID
 
 Invalid secret object
 
+=item Sys::Virt::Error::ERR_CONFIG_UNSUPPORTED
+
+The requested XML configuration is not supported by the hypervisor
+
+=item Sys::Virt::Error::ERR_OPERATION_TIMEOUT
+
+The operation could not be completed in a satisfactory time
+
+=item Sys::Virt::Error::ERR_MIGRATE_PERSIST_FAILED
+
+Unable to persistent the domain configuration after migration
+successfully completed
+
 =back
 
 =head1 AUTHORS
