@@ -68,7 +68,7 @@ use Sys::Virt::NodeDevice;
 use Sys::Virt::Interface;
 use Sys::Virt::Secret;
 
-our $VERSION = '0.2.2';
+our $VERSION = '0.2.3';
 require XSLoader;
 XSLoader::load('Sys::Virt', $VERSION);
 

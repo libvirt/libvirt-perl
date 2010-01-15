@@ -1,6 +1,18 @@
 Sys::Virt ChangeLog
 ===================
 
+Since 0.2.2:
+
+ - New virSecretPtr APIs
+ - Fix authentication callback handling of NULLs
+ - Document flags parameters to many methods
+ - Add virDomainMigrateToURI and virConnectGetLibVersion
+ - Add virConnectCPUCompare and virDomainMemoryStats
+ - Add vir*IsActive vir*IsPersistent
+ - Add virConnectIsSecure & virConnectIsEncrypted
+ - Add new error codes
+ - Require libvirt >= 0.7.5
+
 Since 0.2.1:
 
  - Add all new APIs upto libvirt 0.7.0 APIs (listing defined
