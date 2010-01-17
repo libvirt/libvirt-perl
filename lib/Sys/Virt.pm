@@ -111,7 +111,7 @@ For further details consult C<http://libvirt.org/uri.html>
 If the optional C<readonly> parameter is supplied, then an unprivileged
 connection to the VMM will be attempted. If it is not supplied, then it
 defaults to making a fully privileged connection to the VMM. If the
-calling application is not running as root, it may be neccessary to
+calling application is not running as root, it may be necessary to
 provide authentication callbacks.
 
 If the optional C<auth> parameter is set to a non-zero value,
@@ -124,7 +124,7 @@ should be an array reference listing the set of credential
 types that will be supported. The credential constants in
 this module can be used as values in this list. The C<callback>
 parameter should be a subroutine reference containing the
-code neccessary to gather the credentials. When invoked it
+code necessary to gather the credentials. When invoked it
 will be supplied with a single parameter, a array reference
 of requested credentials. The elements of the array are
 hash references, with keys C<type> giving the type of
@@ -1051,7 +1051,7 @@ node. The elements of the hash are as follows:
 
 Register a callback to received notificaitons of domain state change
 events. Only a single callback can be registered with each connection
-instance. The callback will be invoked with four paramters, an
+instance. The callback will be invoked with four parameters, an
 instance of C<Sys::Virt> for the connection, an instance of C<Sys::Virt::Domain>
 for the domain changing state, and a C<event> and C<detail> arguments,
 corresponding to the event constants defined in the C<Sys::Virt::Domain>

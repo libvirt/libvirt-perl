@@ -392,7 +392,7 @@ guest to be renamed on the target host, if set to C<undef>, the
 domains' current name will be maintained. In normal circumstances,
 the source host determines the target hostname from the URI associated
 with the C<destcon> connection. If the destination host is multi-homed
-it may be neccessary to supply an alternate destination hostame
+it may be necessary to supply an alternate destination hostame
 via the C<uri> parameter. The C<bandwidth> parameter allows network
 usage to be throttled during migration. If set to zero, no throttling
 will be performed. The C<flags>, C<dname>, C<uri> and C<bandwidth>
@@ -411,7 +411,7 @@ guest to be renamed on the target host, if set to C<undef>, the
 domains' current name will be maintained. In normal circumstances,
 the source host determines the target hostname from the URI associated
 with the C<destcon> connection. If the destination host is multi-homed
-it may be neccessary to supply an alternate destination hostame
+it may be necessary to supply an alternate destination hostame
 via the C<uri> parameter. The C<bandwidth> parameter allows network
 usage to be throttled during migration. If set to zero, no throttling
 will be performed. The C<flags>, C<dname>, C<uri> and C<bandwidth>
