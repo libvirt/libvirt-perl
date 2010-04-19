@@ -1606,22 +1606,36 @@ PREINIT:
      }
 
 void
-attach_device(dom, xml)
+attach_device(dom, xml, flags=0)
       virDomainPtr dom;
       const char *xml;
+      unsigned int flags;
     PPCODE:
-      if (virDomainAttachDevice(dom, xml) < 0) {
-	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      if (flags) {
+        if (virDomainAttachDeviceFlags(dom, xml, flags) < 0) {
+          _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+        }
+      } else {
+        if (virDomainAttachDevice(dom, xml) < 0) {
+          _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+        }
       }
 
 
 void
-detach_device(dom, xml)
+detach_device(dom, xml, flags=0)
       virDomainPtr dom;
       const char *xml;
+      unsigned int flags;
     PPCODE:
-      if (virDomainDetachDevice(dom, xml) < 0) {
-	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      if (flags) {
+        if (virDomainDetachDeviceFlags(dom, xml, flags) < 0) {
+          _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+        }
+      } else {
+        if (virDomainDetachDevice(dom, xml) < 0) {
+          _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+        }
       }
 
 
@@ -3086,6 +3100,10 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_STOPPED_SAVED, EVENT_STOPPED_SAVED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_STOPPED_FAILED, EVENT_STOPPED_FAILED);
 
+
+      REGISTER_CONSTANT(VIR_DOMAIN_DEVICE_MODIFY_CURRENT, DEVICE_MODIFY_CURRENT);
+      REGISTER_CONSTANT(VIR_DOMAIN_DEVICE_MODIFY_LIVE, DEVICE_MODIFY_LIVE);
+      REGISTER_CONSTANT(VIR_DOMAIN_DEVICE_MODIFY_CONFIG, DEVICE_MODIFY_CONFIG);
 
 
       stash = gv_stashpv( "Sys::Virt::StoragePool", TRUE );

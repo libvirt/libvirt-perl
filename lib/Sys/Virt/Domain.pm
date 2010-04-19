@@ -218,15 +218,19 @@ currently unused and if omitted defaults to zero.
 Return the maximum number of vcpus that are configured
 for the domain
 
-=item $dom->attach_device($xml)
+=item $dom->attach_device($xml[, $flags])
 
 Hotplug a new device whose configuration is given by C<$xml>,
-to the running guest.
+to the running guest. The optional <$flags> parameter defaults
+to 0, but can accept one of the device hotplug flags described
+later.
 
-=item $dom->detach_device($xml)
+=item $dom->detach_device($xml[, $flags])
 
 Hotunplug a existing device whose configuration is given by C<$xml>,
-from the running guest.
+from the running guest. The optional <$flags> parameter defaults
+to 0, but can accept one of the device hotplug flags described
+later.
 
 =item $data = $dom->block_peek($path, $offset, $size[, $flags)
 
@@ -544,6 +548,26 @@ passwords.
 
 =back
 
+=head2 DEVICE HOTPLUG OPTIONS
+
+The following constants are used to control device hotplug
+operations
+
+=over 4
+
+=item Sys::Virt::Domain::DEVICE_MODIFY_CURRENT
+
+Modify the domain in its current state
+
+=item Sys::Virt::Domain::DEVICE_MODIFY_LIVE
+
+Modify only the live state of the domain
+
+=item Sys::Virt::Domain::DEVICE_MODIFY_CONFIG
+
+Modify only the persistent config of the domain
+
+=back
 
 =head2 MIGRATE OPTIONS
 
