@@ -1064,6 +1064,13 @@ released in garbage collection.
 Unregister a callback, allowing the connection object to be garbage
 collected.
 
+=item my $xml = $con->baseline_cpu(\@xml, $flags=0)
+
+Given an array ref whose elements are XML documents describing host CPUs,
+compute the baseline CPU model that is operable across all hosts. The
+XML for the baseline CPU model is returned. The optional C<$flags>
+parameter is currently unused and defaults to 0.
+
 =over 4
 
 =item memory

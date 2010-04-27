@@ -683,6 +683,35 @@ PREINIT:
   OUTPUT:
       RETVAL
 
+SV *
+baseline_cpu(con, xml, flags=0)
+      virConnectPtr con;
+      SV *xml;
+      unsigned int flags;
+PREINIT:
+      AV *xmllist;
+      const char **xmlstr;
+      int xmllen;
+      int i;
+      char *retxml;
+   CODE:
+      xmllist = (AV*)SvRV(xml);
+      xmllen = av_len(xmllist) + 1;
+      Newx(xmlstr, xmllen, const char *);
+      for (i = 0 ; i < xmllen ; i++) {
+          SV **doc = av_fetch(xmllist, i, 0);
+          xmlstr[i] = SvPV_nolen(*doc);
+      }
+
+      if (!(retxml = virConnectBaselineCPU(con, xmlstr, xmllen, flags))) {
+	 _croak_error(virConnGetLastError(con));
+      }
+      Safefree(xmlstr);
+      RETVAL = newSVpv(retxml, 0);
+      free(retxml);
+  OUTPUT:
+      RETVAL
+
 int
 get_max_vcpus(con, type)
       virConnectPtr con;
