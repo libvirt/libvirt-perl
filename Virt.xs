@@ -1060,6 +1060,37 @@ list_secret_uuids(con, maxuuids)
       Safefree(uuids);
 
 
+int
+num_of_nwfilters(con)
+      virConnectPtr con;
+    CODE:
+      if ((RETVAL = virConnectNumOfNWFilters(con)) < 0) {
+	_croak_error(virConnGetLastError(con));
+      }
+  OUTPUT:
+      RETVAL
+
+void
+list_nwfilter_names(con, maxnames)
+      virConnectPtr con;
+      int maxnames;
+ PREINIT:
+      char **names;
+      int i, nnet;
+  PPCODE:
+      Newx(names, maxnames, char *);
+      if ((nnet = virConnectListNWFilters(con, names, maxnames)) < 0) {
+        Safefree(names);
+	_croak_error(virConnGetLastError(con));
+      }
+      EXTEND(SP, nnet);
+      for (i = 0 ; i < nnet ; i++) {
+	PUSHs(sv_2mortal(newSVpv(names[i], 0)));
+	free(names[i]);
+      }
+      Safefree(names);
+
+
 SV *
 domain_xml_from_native(con, configtype, configdata, flags=0)
       virConnectPtr con;
@@ -3058,6 +3089,123 @@ DESTROY(sec_rv)
       }
 
 
+MODULE = Sys::Virt::NWFilter  PACKAGE = Sys::Virt::NWFilter
+
+virNWFilterPtr
+_define_xml(con, xml)
+      virConnectPtr con;
+      const char *xml;
+    CODE:
+      if (!(RETVAL = virNWFilterDefineXML(con, xml))) {
+	_croak_error(virGetLastError());
+      }
+  OUTPUT:
+      RETVAL
+
+virNWFilterPtr
+_lookup_by_name(con, name)
+      virConnectPtr con;
+      const char *name;
+    CODE:
+      if (!(RETVAL = virNWFilterLookupByName(con, name))) {
+	_croak_error(virGetLastError());
+      }
+  OUTPUT:
+      RETVAL
+
+virNWFilterPtr
+_lookup_by_uuid(con, uuid)
+      virConnectPtr con;
+      const unsigned char *uuid;
+    CODE:
+      if (!(RETVAL = virNWFilterLookupByUUID(con, uuid))) {
+	_croak_error(virGetLastError());
+      }
+  OUTPUT:
+      RETVAL
+
+virNWFilterPtr
+_lookup_by_uuid_string(con, uuid)
+      virConnectPtr con;
+      const char *uuid;
+    CODE:
+      if (!(RETVAL = virNWFilterLookupByUUIDString(con, uuid))) {
+	_croak_error(virGetLastError());
+      }
+  OUTPUT:
+      RETVAL
+
+SV *
+get_uuid(filter)
+      virNWFilterPtr filter;
+  PREINIT:
+      unsigned char rawuuid[VIR_UUID_BUFLEN];
+    CODE:
+      if ((virNWFilterGetUUID(filter, rawuuid)) < 0) {
+	_croak_error(virGetLastError());
+      }
+      RETVAL = newSVpv((char*)rawuuid, sizeof(rawuuid));
+  OUTPUT:
+      RETVAL
+
+SV *
+get_uuid_string(filter)
+      virNWFilterPtr filter;
+  PREINIT:
+      char uuid[VIR_UUID_STRING_BUFLEN];
+    CODE:
+      if ((virNWFilterGetUUIDString(filter, uuid)) < 0) {
+	_croak_error(virGetLastError());
+      }
+
+      RETVAL = newSVpv(uuid, 0);
+  OUTPUT:
+      RETVAL
+
+const char *
+get_name(filter)
+      virNWFilterPtr filter;
+    CODE:
+      if (!(RETVAL = virNWFilterGetName(filter))) {
+	_croak_error(virGetLastError());
+      }
+  OUTPUT:
+      RETVAL
+
+
+SV *
+get_xml_description(filter)
+      virNWFilterPtr filter;
+  PREINIT:
+      char *xml;
+    CODE:
+      if (!(xml = virNWFilterGetXMLDesc(filter, 0))) {
+	_croak_error(virGetLastError());
+      }
+      RETVAL = newSVpv(xml, 0);
+      free(xml);
+  OUTPUT:
+      RETVAL
+
+void
+undefine(filter)
+      virNWFilterPtr filter;
+    PPCODE:
+      if (virNWFilterUndefine(filter) < 0) {
+	_croak_error(virGetLastError());
+      }
+
+void
+DESTROY(filter_rv)
+      SV *filter_rv;
+ PREINIT:
+      virNWFilterPtr filter;
+  PPCODE:
+      filter = (virNWFilterPtr)SvIV((SV*)SvRV(filter_rv));
+      if (filter) {
+	virNWFilterFree(filter);
+	sv_setiv((SV*)SvRV(filter_rv), 0);
+      }
 
 
 MODULE = Sys::Virt::Event  PACKAGE = Sys::Virt::Event

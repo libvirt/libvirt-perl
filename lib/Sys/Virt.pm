@@ -67,6 +67,7 @@ use Sys::Virt::StorageVol;
 use Sys::Virt::NodeDevice;
 use Sys::Virt::Interface;
 use Sys::Virt::Secret;
+use Sys::Virt::NWFilter;
 
 our $VERSION = '0.2.4';
 require XSLoader;
@@ -706,6 +707,41 @@ used as the C<maxuuids> parameter to C<list_secrets>.
 Return a list of all secret uuids currently known to the VMM. The uuids can
 be used with the C<get_secret_by_uuid> method.
 
+=item my @nets = $vmm->list_nwfilters()
+
+Return a list of all nwfilters currently known to the VMM. The elements
+in the returned list are instances of the L<Sys::Virt::NWFilter> class.
+
+=cut
+
+sub list_nwfilters {
+    my $self = shift;
+
+    my $nnames = $self->num_of_nwfilters();
+    my @names = $self->list_nwfilter_names($nnames);
+
+    my @nwfilters;
+    foreach my $name (@names) {
+	eval {
+	    push @nwfilters, Sys::Virt::NWFilter->_new(connection => $self, name => $name);
+	};
+	if ($@) {
+	    # nada - nwfilter went away before we could look it up
+	};
+    }
+    return @nwfilters;
+}
+
+=item my $nnames = $vmm->num_of_nwfilters()
+
+Return the number of running nwfilters known to the VMM. This can be
+used as the C<maxids> parameter to C<list_nwfilter_names>.
+
+=item my @filterNames = $vmm->list_nwfilter_names($maxnames)
+
+Return a list of all nwfilter names currently known to the VMM. The names can
+be used with the C<get_nwfilter_by_name> method.
+
 =item my $dom = $vmm->get_domain_by_name($name)
 
 Return the domain with a name of C<$name>. The returned object is
@@ -915,6 +951,35 @@ sub get_secret_by_usage {
     return Sys::Virt::Secret->_new(connection => $self,
 				   usageType => $type,
 				   usageID => $id);
+}
+
+=item my $dom = $vmm->get_nwfilter_by_name($name)
+
+Return the domain with a name of C<$name>. The returned object is
+an instance of the L<Sys::Virt::NWFilter> class.
+
+=cut
+
+sub get_nwfilter_by_name {
+    my $self = shift;
+    my $name = shift;
+
+    return Sys::Virt::NWFilter->_new(connection => $self, name => $name);
+}
+
+
+=item my $dom = $vmm->get_nwfilter_by_uuid($uuid)
+
+Return the nwfilter with a globally unique id of C<$uuid>. The returned object is
+an instance of the L<Sys::Virt::NWFilter> class.
+
+=cut
+
+sub get_nwfilter_by_uuid {
+    my $self = shift;
+    my $uuid = shift;
+
+    return Sys::Virt::NWFilter->_new(connection => $self, uuid => $uuid);
 }
 
 =item my $xml = $vmm->find_storage_pool_sources($type, $srcspec[, $flags])
