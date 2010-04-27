@@ -1669,6 +1669,21 @@ PREINIT:
        _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
      }
 
+
+void
+migrate_set_max_downtime(dom, downtime, flags=0)
+     virDomainPtr dom;
+     SV *downtime;
+     unsigned int flags;
+ PREINIT:
+     unsigned long long downtimeVal;
+  PPCODE:
+     downtimeVal = virt_SvIVull(downtime);
+     if (virDomainMigrateSetMaxDowntime(dom, downtimeVal, flags) < 0) {
+       _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+     }
+
+
 void
 attach_device(dom, xml, flags=0)
       virDomainPtr dom;

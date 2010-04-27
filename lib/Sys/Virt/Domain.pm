@@ -423,6 +423,14 @@ parameters are all optional, and if omitted default to zero, C<undef>,
 C<undef>, and zero respectively.
 
 
+=item $dom->migrate_set_max_downtime($downtime, $flags)
+
+Set the maximum allowed downtime during migration of the guest. A
+longer downtime makes it more likely that migration will complete,
+at the cost of longer time blackout for the guest OS at the switch
+over point. The C<downtime> parameter is measured in milliseconds.
+The C<$flags> parameter is currently unused and defaults to zero.
+
 =item @vcpuinfo = $dom->get_vcpu_info()
 
 Obtain information about the state of all virtual CPUs in a running
