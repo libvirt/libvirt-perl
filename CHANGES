@@ -1,6 +1,11 @@
 Sys::Virt ChangeLog
 ===================
 
+Since 0.2.3:
+
+ - Add all APIs + constants from 0.7.7 and 0.8.0 releases
+ - Requires libvirt >= 0.8.0
+
 Since 0.2.2:
 
  - New virSecretPtr APIs
