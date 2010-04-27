@@ -1296,6 +1296,37 @@ save(dom, to)
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
 
+
+void
+managed_save(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+  PPCODE:
+      if ((virDomainManagedSave(dom, flags)) < 0) {
+	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+
+
+int
+has_managed_save_image(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+    CODE:
+      if ((RETVAL = virDomainHasManagedSaveImage(dom, flags)) < 0) {
+          _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+  OUTPUT:
+      RETVAL
+
+void
+managed_save_remove(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+  PPCODE:
+      if ((virDomainManagedSaveRemove(dom, flags)) < 0) {
+	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+
 void
 core_dump(dom, to, flags=0)
       virDomainPtr dom;

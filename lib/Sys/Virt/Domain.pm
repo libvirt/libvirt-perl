@@ -143,6 +143,25 @@ the file named in the C<$filename> parameter. The domain can later
 be restored from this file with the C<restore_domain> method on
 the L<Sys::Virt> object.
 
+=item $dom->managed_save($flags=0)
+
+Take a snapshot of the domain's state and save the information to
+a managed save location. The domain will be automatically restored
+with this state when it is next started. The C<$flags> parameter is
+unused and defaults to zero.
+
+=item $bool = $dom->has_managed_save_image($flags=0)
+
+Return a non-zero value if the domain has a managed save image
+that will be used at next start. The C<$flags> parameter is
+unused and defaults to zero.
+
+=item $dom->managed_save_remove($flags=0)
+
+Remove the current managed save image, causing the guest to perform
+a full boot next time it is started. The C<$flags> parameter is
+unused and defaults to zero.
+
 =item $dom->core_dump($filename[, $flags])
 
 Trigger a core dump of the guest virtual machine, saving its memory
