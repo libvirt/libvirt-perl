@@ -232,6 +232,12 @@ from the running guest. The optional <$flags> parameter defaults
 to 0, but can accept one of the device hotplug flags described
 later.
 
+=item $dom->update_device($xml[, $flags])
+
+Update the configuration of an existing device. The new configuration
+is given by C<$xml>. The optional <$flags> parameter defaults to
+0 but can accept one of the device hotplug flags described later.
+
 =item $data = $dom->block_peek($path, $offset, $size[, $flags)
 
 Peek into the guest disk C<$path>, at byte C<$offset> capturing

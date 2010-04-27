@@ -1718,6 +1718,17 @@ detach_device(dom, xml, flags=0)
       }
 
 
+void
+update_device(dom, xml, flags=0)
+      virDomainPtr dom;
+      const char *xml;
+      unsigned int flags;
+    PPCODE:
+      if (virDomainUpdateDeviceFlags(dom, xml, flags) < 0) {
+        _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+
+
 HV *
 block_stats(dom, path)
       virDomainPtr dom;
