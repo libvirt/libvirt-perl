@@ -441,6 +441,69 @@ Ping the virtual CPU given by index C<$vcpu> to physical CPUs
 given by C<$mask>. The C<$mask> is a string representing a bitmask
 against physical CPUs, 8 cpus per character.
 
+=item my $info = $dom->get_job_info()
+
+Returns a hash reference summarising the execution state of the
+background job. The elements of the hash are as follows:
+
+=item $dom->abort_job()
+
+Aborts the currently executing job
+
+=over 4
+
+=item type
+
+The type of job, one of the JOB TYPE constants listed later in
+this document.
+
+=item timeElapsed
+
+The elapsed time in milliseconds
+
+=item timeRemaining
+
+The expected remaining time in milliseconds. Only set if the
+C<type> is JOB_UNBOUNDED.
+
+=item dataTotal
+
+The total amount of data expected to be processed by the job, in bytes.
+
+=item dataProcessed
+
+The current amount of data processed by the job, in bytes.
+
+=item dataRemaining
+
+The expected amount of data remaining to be processed by the job, in bytes.
+
+=item memTotal
+
+The total amount of mem expected to be processed by the job, in bytes.
+
+=item memProcessed
+
+The current amount of mem processed by the job, in bytes.
+
+=item memRemaining
+
+The expected amount of mem remaining to be processed by the job, in bytes.
+
+=item fileTotal
+
+The total amount of file expected to be processed by the job, in bytes.
+
+=item fileProcessed
+
+The current amount of file processed by the job, in bytes.
+
+=item fileRemaining
+
+The expected amount of file remaining to be processed by the job, in bytes.
+
+=back
+
 =cut
 
 
@@ -609,6 +672,39 @@ host after migration completes.
 
 =back
 
+
+=head2 JOB TYPES
+
+The following constants describe the different background job
+types.
+
+=over 4
+
+=item Sys::Virt::Domain::JOB_NONE
+
+No job is active
+
+=item Sys::Virt::Domain::JOB_BOUNDED
+
+A job with a finite completion time is active
+
+=item Sys::Virt::Domain::JOB_UNBOUNDED
+
+A job with an unbounded completion time is active
+
+=item Sys::Virt::Domain::JOB_COMPLETED
+
+The job has finished, but isn't cleaned up
+
+=item Sys::Virt::Domain::JOB_FAILED
+
+The job has hit an error, but isn't cleaned up
+
+=item Sys::Virt::Domain::JOB_CANCELLED
+
+The job was aborted at user request, but isn't cleaned up
+
+=back
 
 =head2 STATE CHANGE EVENTS
 

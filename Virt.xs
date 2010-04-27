@@ -1327,6 +1327,41 @@ get_info(dom)
 
 
 HV *
+get_job_info(dom)
+      virDomainPtr dom;
+  PREINIT:
+      virDomainJobInfo info;
+    CODE:
+      if (virDomainGetJobInfo(dom, &info) < 0) {
+	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
+      (void)hv_store (RETVAL, "type", 4, newSViv(info.type), 0);
+      (void)hv_store (RETVAL, "timeElapsed", 11, virt_newSVull(info.timeElapsed), 0);
+      (void)hv_store (RETVAL, "timeRemaining", 13, virt_newSVull(info.timeRemaining), 0);
+      (void)hv_store (RETVAL, "dataTotal", 9, virt_newSVull(info.dataTotal), 0);
+      (void)hv_store (RETVAL, "dataProcessed", 13, virt_newSVull(info.dataProcessed), 0);
+      (void)hv_store (RETVAL, "dataRemaining", 13, virt_newSVull(info.dataRemaining), 0);
+      (void)hv_store (RETVAL, "memTotal", 8, virt_newSVull(info.memTotal), 0);
+      (void)hv_store (RETVAL, "memProcessed", 12, virt_newSVull(info.memProcessed), 0);
+      (void)hv_store (RETVAL, "memRemaining", 12, virt_newSVull(info.memRemaining), 0);
+      (void)hv_store (RETVAL, "fileTotal", 9, virt_newSVull(info.fileTotal), 0);
+      (void)hv_store (RETVAL, "fileProcessed", 13, virt_newSVull(info.fileProcessed), 0);
+      (void)hv_store (RETVAL, "fileRemaining", 13, virt_newSVull(info.fileRemaining), 0);
+  OUTPUT:
+      RETVAL
+
+
+void
+abort_job(dom)
+      virDomainPtr dom;
+    PPCODE:
+      if (virDomainAbortJob(dom) < 0) {
+	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+
+
+HV *
 get_scheduler_parameters(dom)
       virDomainPtr dom;
   PREINIT:
@@ -3133,6 +3168,14 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_DEVICE_MODIFY_CURRENT, DEVICE_MODIFY_CURRENT);
       REGISTER_CONSTANT(VIR_DOMAIN_DEVICE_MODIFY_LIVE, DEVICE_MODIFY_LIVE);
       REGISTER_CONSTANT(VIR_DOMAIN_DEVICE_MODIFY_CONFIG, DEVICE_MODIFY_CONFIG);
+
+
+      REGISTER_CONSTANT(VIR_DOMAIN_JOB_NONE, JOB_NONE);
+      REGISTER_CONSTANT(VIR_DOMAIN_JOB_BOUNDED, JOB_BOUNDED);
+      REGISTER_CONSTANT(VIR_DOMAIN_JOB_UNBOUNDED, JOB_UNBOUNDED);
+      REGISTER_CONSTANT(VIR_DOMAIN_JOB_COMPLETED, JOB_COMPLETED);
+      REGISTER_CONSTANT(VIR_DOMAIN_JOB_FAILED, JOB_FAILED);
+      REGISTER_CONSTANT(VIR_DOMAIN_JOB_CANCELLED, JOB_CANCELLED);
 
 
       stash = gv_stashpv( "Sys::Virt::StoragePool", TRUE );
