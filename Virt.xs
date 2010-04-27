@@ -2539,6 +2539,15 @@ delete(vol, flags=0)
 	_croak_error(virConnGetLastError(virStorageVolGetConnect(vol)));
       }
 
+void
+wipe(vol, flags=0)
+      virStorageVolPtr vol;
+      int flags;
+    PPCODE:
+      if (virStorageVolWipe(vol, flags) < 0) {
+	_croak_error(virConnGetLastError(virStorageVolGetConnect(vol)));
+      }
+
 
 HV *
 get_info(vol)

@@ -96,6 +96,13 @@ Immediately delete the storage volume freeing its storage resources.
 The C<flags> parameter indicates any special action to be taken when
 deleting the volume.
 
+=item $vol->wipe($flags = 0)
+
+Clear the data in the storage volume to avoid future information
+leak. The C<flags> parameter indicates any special approach to be
+taken when wiping the data. It defaults to zero, which causes the
+volume to be filled with zeros.
+
 =item my %info = $vol->get_info()
 
 Retrieve live information about the storage volume. The returned
