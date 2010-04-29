@@ -483,6 +483,50 @@ background job. The elements of the hash are as follows:
 
 Aborts the currently executing job
 
+=item $count = $dom->num_of_snapshots()
+
+Return the number of saved snapshots of the domain
+
+=item @names = $dom->list_snapshot_names()
+
+List the names of all saved snapshots. The names can be
+used with the C<lookup_snapshot_by_name>
+
+=item @snapshots = $dom->list_snapshots()
+
+Return a list of all snapshots currently known to the domain. The elements
+in the returned list are instances of the L<Sys::Virt::DomainSnapshot> class.
+
+=cut
+
+
+sub list_snapshots {
+    my $self = shift;
+
+    my $nnames = $self->num_of_snapshots();
+    my @names = $self->list_snapshot_names($nnames);
+
+    my @snapshots;
+    foreach my $name (@names) {
+	eval {
+	    push @snapshots, Sys::Virt::Domain->_new(connection => $self, name => $name);
+	};
+	if ($@) {
+	    # nada - snapshot went away before we could look it up
+	};
+    }
+    return @snapshots;
+}
+
+
+=item $dom->has_current_snapshot()
+
+Returns a true value if the domain has a currently active snapshot
+
+=item $snapshot = $dom->current_snapshot()
+
+Returns the currently active snapshot for the domain.
+
 =over 4
 
 =item type

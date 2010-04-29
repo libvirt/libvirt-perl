@@ -1994,6 +1994,64 @@ PREINIT:
      }
 
 
+int
+num_of_snapshots(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+    CODE:
+      if ((RETVAL = virDomainSnapshotNum(dom, flags)) < 0) {
+	_croak_error(virGetLastError());
+      }
+  OUTPUT:
+      RETVAL
+
+
+void
+list_snapshot_names(dom, maxnames, flags=0)
+      virDomainPtr dom;
+      int maxnames;
+      unsigned int flags;
+ PREINIT:
+      char **names;
+      int nsnap;
+      int i;
+  PPCODE:
+      Newx(names, maxnames, char *);
+      if ((nsnap = virDomainSnapshotListNames(dom, names, maxnames, flags)) < 0) {
+	Safefree(names);
+	_croak_error(virGetLastError());
+      }
+      EXTEND(SP, nsnap);
+      for (i = 0 ; i < nsnap ; i++) {
+	PUSHs(sv_2mortal(newSVpv(names[i], 0)));
+        free(names[i]);
+      }
+      Safefree(names);
+
+
+int
+has_current_snapshot(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+    CODE:
+      if ((RETVAL = virDomainHasCurrentSnapshot(dom, flags)) < 0) {
+          _croak_error(virGetLastError());
+      }
+  OUTPUT:
+      RETVAL
+
+
+virDomainSnapshotPtr
+current_snapshot(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+    CODE:
+      if ((RETVAL = virDomainSnapshotCurrent(dom, flags)) < 0) {
+          _croak_error(virGetLastError());
+      }
+  OUTPUT:
+      RETVAL
+
 void
 destroy(dom_rv)
       SV *dom_rv;
@@ -3205,6 +3263,82 @@ DESTROY(filter_rv)
       if (filter) {
 	virNWFilterFree(filter);
 	sv_setiv((SV*)SvRV(filter_rv), 0);
+      }
+
+MODULE = Sys::Virt::DomainSnapshot  PACKAGE = Sys::Virt::DomainSnapshot
+
+virDomainSnapshotPtr
+_create_xml(dom, xml, flags=0)
+      virDomainPtr dom;
+      const char *xml;
+      unsigned int flags;
+    CODE:
+      if (!(RETVAL = virDomainSnapshotCreateXML(dom, xml, flags))) {
+	_croak_error(virGetLastError());
+      }
+  OUTPUT:
+      RETVAL
+
+
+virDomainSnapshotPtr
+_lookup_by_name(dom, name, flags=0)
+      virDomainPtr dom;
+      const char *name;
+      unsigned int flags;
+    CODE:
+      if (!(RETVAL = virDomainSnapshotLookupByName(dom, name, flags))) {
+	_croak_error(virGetLastError());
+      }
+  OUTPUT:
+      RETVAL
+
+
+SV *
+get_xml_description(domss, flags=0)
+      virDomainSnapshotPtr domss;
+      unsigned int flags;
+  PREINIT:
+      char *xml;
+    CODE:
+      if (!(xml = virDomainSnapshotGetXMLDesc(domss, flags))) {
+          _croak_error(virGetLastError());
+      }
+      RETVAL = newSVpv(xml, 0);
+      free(xml);
+  OUTPUT:
+      RETVAL
+
+
+void
+revert_to(domss, flags=0)
+      virDomainSnapshotPtr domss;
+      unsigned int flags;
+  PPCODE:
+      if (virDomainRevertToSnapshot(domss, flags) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+
+void
+delete(domss, flags=0)
+      virDomainSnapshotPtr domss;
+      unsigned int flags;
+  PPCODE:
+      if (virDomainSnapshotDelete(domss, flags) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+
+void
+DESTROY(domss_rv)
+      SV *domss_rv;
+ PREINIT:
+      virDomainSnapshotPtr domss;
+  PPCODE:
+      domss = (virNWFilterPtr)SvIV((SV*)SvRV(domss_rv));
+      if (domss) {
+	virDomainSnapshotFree(domss);
+	sv_setiv((SV*)SvRV(domss_rv), 0);
       }
 
 

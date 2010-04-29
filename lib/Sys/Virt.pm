@@ -68,6 +68,7 @@ use Sys::Virt::NodeDevice;
 use Sys::Virt::Interface;
 use Sys::Virt::Secret;
 use Sys::Virt::NWFilter;
+use Sys::Virt::DomainSnapshot;
 
 our $VERSION = '0.2.4';
 require XSLoader;

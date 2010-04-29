@@ -10,6 +10,7 @@ virStoragePoolPtr O_OBJECT_storagepool
 virStorageVolPtr O_OBJECT_storagevol
 virNodeDevicePtr O_OBJECT_nodedevice
 virSecretPtr O_OBJECT_secret
+virDomainSnapshotPtr O_OBJECT_domainsnapshot
 
 INPUT
 O_OBJECT_connect
@@ -136,3 +137,16 @@ OUTPUT
 O_OBJECT_nwfilter
         sv_setref_pv( $arg, "Sys::Virt::NWFilter", (void*)$var );
 
+
+INPUT
+O_OBJECT_domainsnapshot
+    if (sv_isobject($arg) && (SvTYPE(SvRV($arg)) == SVt_PVMG))
+        $var = ($type)SvIV((SV*)SvRV( $arg ));
+    else {
+        warn( \"${Package}::$func_name() -- $var is not a blessed SV reference\" );
+        XSRETURN_UNDEF;
+    }
+
+OUTPUT
+O_OBJECT_domainsnapshot
+        sv_setref_pv( $arg, "Sys::Virt::DomainSnapshot", (void*)$var );
