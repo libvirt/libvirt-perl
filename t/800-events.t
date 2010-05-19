@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 12;
+use Test::More tests => 23;
 
 my $URI = "test:///default";
 my $DOM = "test";
@@ -286,5 +286,44 @@ is($events[1]->[2], Sys::Virt::Domain::EVENT_STARTED, "started");
 is($events[1]->[3], Sys::Virt::Domain::EVENT_STARTED_BOOTED, "booted");
 
 $conn->domain_event_deregister;
+
+my $id = $conn->domain_event_register_any(
+    undef, Sys::Virt::Domain::EVENT_ID_LIFECYCLE,
+    sub {
+	my $con = shift;
+	my $dom = shift;
+	my $event = shift;
+	my $detail = shift;
+
+	push @events, [$con, $dom, $event, $detail];
+    });
+
+$dom->destroy;
+
+$ev->run_once();
+
+is(int(@events), 3, "got 3rd event");
+is($events[2]->[0]->get_uri(), $URI, "got URI");
+is($events[2]->[1]->get_name(), $DOM, "got name");
+is($events[2]->[2], Sys::Virt::Domain::EVENT_STOPPED, "stopped");
+is($events[2]->[3], Sys::Virt::Domain::EVENT_STOPPED_DESTROYED, "destroy");
+
+
+$dom->create;
+
+$ev->run_once();
+
+is(int(@events), 4, "got 4th event");
+is($events[3]->[0]->get_uri(), $URI, "got URI");
+is($events[3]->[1]->get_name(), $DOM, "got name");
+is($events[3]->[2], Sys::Virt::Domain::EVENT_STARTED, "started");
+is($events[3]->[3], Sys::Virt::Domain::EVENT_STARTED_BOOTED, "booted");
+
+$conn->domain_event_deregister_any($id);
+
+$dom->destroy;
+$ev->run_once();
+
+is(int(@events), 4, "no more events");
 
 $conn = undef;
