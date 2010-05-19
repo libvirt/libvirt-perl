@@ -3684,7 +3684,7 @@ DESTROY(domss_rv)
  PREINIT:
       virDomainSnapshotPtr domss;
   PPCODE:
-      domss = (virNWFilterPtr)SvIV((SV*)SvRV(domss_rv));
+      domss = (virDomainSnapshotPtr)SvIV((SV*)SvRV(domss_rv));
       if (domss) {
 	virDomainSnapshotFree(domss);
 	sv_setiv((SV*)SvRV(domss_rv), 0);
