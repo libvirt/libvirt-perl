@@ -911,6 +911,130 @@ removed by administrator.
 
 =back
 
+=head2 EVENT ID CONSTANTS
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_ID_LIFECYCLE
+
+Domain lifecycle events
+
+=item Sys::Virt::Domain::EVENT_ID_REBOOT
+
+Soft / warm reboot events
+
+=item Sys::Virt::Domain::EVENT_ID_RTC_CHANGE
+
+RTC clock adjustments
+
+=item Sys::Virt::Domain::EVENT_ID_IO_ERROR
+
+File IO errors, typically from disks
+
+=item Sys::Virt::Domain::EVENT_ID_WATCHDOG
+
+Watchdog device triggering
+
+=item Sys::Virt::Domain::EVENT_ID_GRAPHICS
+
+Graphics client connections.
+
+=item Sys::Virt::Domain::EVENT_ID_IO_ERROR_REASON
+
+File IO errors, typically from disks, with a root cause
+
+=back
+
+=head2 IO ERROR EVENT CONSTANTS
+
+These constants describe what action was taken due to the
+IO error.
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_IO_ERROR_NONE
+
+No action was taken, the error was ignored & reported as success to guest
+
+=item Sys::Virt::Domain::EVENT_IO_ERROR_PAUSE
+
+The guest is paused since the error occurred
+
+=item Sys::Virt::Domain::EVENT_IO_ERROR_REPORT
+
+The error has been reported to the guest OS
+
+=back
+
+=head2 WATCHDOG EVENT CONSTANTS
+
+These constants describe what action was taken due to the
+watchdog firing
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_WATCHDOG_NONE
+
+No action was taken, the watchdog was ignored
+
+=item Sys::Virt::Domain::EVENT_WATCHDOG_PAUSE
+
+The guest is paused since the watchdog fired
+
+=item Sys::Virt::Domain::EVENT_WATCHDOG_POWEROFF
+
+The guest is powered off after the watchdog fired
+
+=item Sys::Virt::Domain::EVENT_WATCHDOG_RESET
+
+The guest is reset after the watchdog fired
+
+=item Sys::Virt::Domain::EVENT_WATCHDOG_SHUTDOWN
+
+The guest attempted to gracefully shutdown after the watchdog fired
+
+=item Sys::Virt::Domain::EVENT_WATCHDOG_DEBUG
+
+No action was taken, the watchdog was logged
+
+=back
+
+=head2 GRAPHICS EVENT PHASE CONSTANTS
+
+These constants describe the phase of the graphics connection
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_GRAPHICS_CONNECT
+
+The initial client connection
+
+=item Sys::Virt::Domain::EVENT_GRAPHICS_INITIALIZE
+
+The client has been authenticated & the connection is running
+
+=item Sys::Virt::Domain::EVENT_GRAPHICS_DISCONNECT
+
+The client has disconnected
+
+=back
+
+=head2 GRAPHICS EVENT ADDRESS CONSTANTS
+
+These constants describe the format of the address
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_GRAPHICS_ADDRESS_IPV4
+
+An IPv4 address
+
+=item Sys::Virt::Domain::EVENT_GRAPHICS_ADDRESS_IPV6
+
+An IPv6 address
+
+=back
+
 =head1 AUTHORS
 
 Daniel P. Berrange <berrange@redhat.com>

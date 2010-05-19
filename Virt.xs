@@ -128,11 +128,11 @@ _populate_constant(HV *stash, char *name, int val)
 #define REGISTER_CONSTANT(name, key) _populate_constant(stash, #key, name)
 
 static int
-_domain_event_callback(virConnectPtr con,
-		       virDomainPtr dom,
-		       int event,
-		       int detail,
-		       void *opaque)
+_domain_event_lifecycle_callback(virConnectPtr con,
+                                 virDomainPtr dom,
+                                 int event,
+                                 int detail,
+                                 void *opaque)
 {
     AV *data = opaque;
     SV **self;
@@ -156,6 +156,267 @@ _domain_event_callback(virConnectPtr con,
     XPUSHs(domref);
     XPUSHs(sv_2mortal(newSViv(event)));
     XPUSHs(sv_2mortal(newSViv(detail)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+static int
+_domain_event_generic_callback(virConnectPtr con,
+                               virDomainPtr dom,
+                               void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *domref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+    XPUSHs(domref);
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+static int
+_domain_event_rtcchange_callback(virConnectPtr con,
+                                 virDomainPtr dom,
+                                 long long utcoffset,
+                                 void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *domref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+    XPUSHs(domref);
+    XPUSHs(sv_2mortal(virt_newSVll(utcoffset)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+static int
+_domain_event_watchdog_callback(virConnectPtr con,
+                                virDomainPtr dom,
+                                int action,
+                                void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *domref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+    XPUSHs(domref);
+    XPUSHs(sv_2mortal(newSViv(action)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+static int
+_domain_event_io_error_callback(virConnectPtr con,
+                                virDomainPtr dom,
+                                const char *srcPath,
+                                const char *devAlias,
+                                int action,
+                                void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *domref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+    XPUSHs(domref);
+    XPUSHs(sv_2mortal(newSVpv(srcPath, 0)));
+    XPUSHs(sv_2mortal(newSVpv(devAlias, 0)));
+    XPUSHs(sv_2mortal(newSViv(action)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+static int
+_domain_event_io_error_reason_callback(virConnectPtr con,
+                                       virDomainPtr dom,
+                                       const char *srcPath,
+                                       const char *devAlias,
+                                       int action,
+                                       const char *reason,
+                                       void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *domref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+    XPUSHs(domref);
+    XPUSHs(sv_2mortal(newSVpv(srcPath, 0)));
+    XPUSHs(sv_2mortal(newSVpv(devAlias, 0)));
+    XPUSHs(sv_2mortal(newSViv(action)));
+    XPUSHs(sv_2mortal(newSVpv(reason, 0)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+static int
+_domain_event_graphics_callback(virConnectPtr con,
+                                virDomainPtr dom,
+                                int phase,
+                                virDomainEventGraphicsAddressPtr local,
+                                virDomainEventGraphicsAddressPtr remote,
+                                const char *authScheme,
+                                virDomainEventGraphicsSubjectPtr subject,
+                                void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *domref;
+    HV *local_hv;
+    HV *remote_hv;
+    AV *subject_av;
+    int i;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    local_hv = newHV();
+    (void)hv_store(local_hv, "family", 6, newSViv(local->family), 0);
+    (void)hv_store(local_hv, "node", 4, newSVpv(local->node, 0), 0);
+    (void)hv_store(local_hv, "service", 7, newSVpv(local->service, 0), 0);
+
+    remote_hv = newHV();
+    (void)hv_store(remote_hv, "family", 6, newSViv(remote->family), 0);
+    (void)hv_store(remote_hv, "node", 4, newSVpv(remote->node, 0), 0);
+    (void)hv_store(remote_hv, "service", 7, newSVpv(remote->service, 0), 0);
+
+    subject_av = newAV();
+    for (i = 0 ; i < subject->nidentity ; i++) {
+        HV *identity = newHV();
+        (void)hv_store(identity, "type", 4, newSVpv(subject->identities[i].type, 0), 0);
+        (void)hv_store(identity, "name", 4, newSVpv(subject->identities[i].name, 0), 0);
+
+        av_push(subject_av, newRV_noinc((SV *)identity));
+    }
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+    XPUSHs(domref);
+    XPUSHs(sv_2mortal(newSViv(phase)));
+    XPUSHs(newRV_noinc((SV*)local_hv));
+    XPUSHs(newRV_noinc((SV*)remote_hv));
+    XPUSHs(sv_2mortal(newSVpv(authScheme, 0)));
+    XPUSHs(newRV_noinc((SV*)subject_av));
     PUTBACK;
 
     call_sv(*cb, G_DISCARD);
@@ -1141,13 +1402,82 @@ PREINIT:
       SvREFCNT_inc(conref);
       av_push(opaque, conref);
       av_push(opaque, cb);
-      virConnectDomainEventRegister(con, _domain_event_callback, opaque, _domain_event_free);
+      if (virConnectDomainEventRegister(con, _domain_event_lifecycle_callback,
+                                        opaque, _domain_event_free) < 0) {
+          _croak_error(virConnGetLastError(con));
+      }
 
 void
 domain_event_deregister(con)
       virConnectPtr con;
  PPCODE:
-      virConnectDomainEventDeregister(con, _domain_event_callback);
+      virConnectDomainEventDeregister(con, _domain_event_lifecycle_callback);
+
+int
+domain_event_register_any(conref, domref, eventID, cb)
+      SV* conref;
+      SV* domref;
+      int eventID;
+      SV* cb;
+PREINIT:
+      AV *opaque;
+      virConnectPtr con;
+      virDomainPtr dom;
+      virConnectDomainEventGenericCallback callback;
+    CODE:
+      con = (virConnectPtr)SvIV((SV*)SvRV(conref));
+      if (SvOK(domref)) {
+          dom = (virDomainPtr)SvIV((SV*)SvRV(domref));
+      } else {
+          dom = NULL;
+      }
+
+      switch (eventID) {
+      case VIR_DOMAIN_EVENT_ID_LIFECYCLE:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_lifecycle_callback);
+          break;
+      case VIR_DOMAIN_EVENT_ID_REBOOT:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_generic_callback);
+          break;
+      case VIR_DOMAIN_EVENT_ID_RTC_CHANGE:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_rtcchange_callback);
+          break;
+      case VIR_DOMAIN_EVENT_ID_WATCHDOG:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_watchdog_callback);
+          break;
+      case VIR_DOMAIN_EVENT_ID_IO_ERROR:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_io_error_callback);
+          break;
+      case VIR_DOMAIN_EVENT_ID_IO_ERROR_REASON:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_io_error_reason_callback);
+          break;
+      case VIR_DOMAIN_EVENT_ID_GRAPHICS:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_graphics_callback);
+          break;
+      default:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_generic_callback);
+          break;
+      }
+
+      opaque = newAV();
+      SvREFCNT_inc(cb);
+      SvREFCNT_inc(conref);
+      av_push(opaque, conref);
+      av_push(opaque, cb);
+      if ((RETVAL = virConnectDomainEventRegisterAny(con, dom, eventID, callback, opaque, _domain_event_free)) < 0) {
+          _croak_error(virConnGetLastError(con));
+      }
+OUTPUT:
+      RETVAL
+
+void
+domain_event_deregister_any(con, callbackID)
+      virConnectPtr con;
+      int callbackID;
+ PPCODE:
+      virConnectDomainEventDeregisterAny(con, callbackID);
+
+
 
 void
 DESTROY(con_rv)
@@ -3525,6 +3855,31 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_JOB_FAILED, JOB_FAILED);
       REGISTER_CONSTANT(VIR_DOMAIN_JOB_CANCELLED, JOB_CANCELLED);
 
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_LIFECYCLE, EVENT_ID_LIFECYCLE);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_REBOOT, EVENT_ID_REBOOT);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_RTC_CHANGE, EVENT_ID_RTC_CHANGE);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_WATCHDOG, EVENT_ID_WATCHDOG);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_IO_ERROR, EVENT_ID_IO_ERROR);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_GRAPHICS, EVENT_ID_GRAPHICS);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_IO_ERROR_REASON, EVENT_ID_IO_ERROR_REASON);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_NONE, EVENT_WATCHDOG_NONE);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_PAUSE, EVENT_WATCHDOG_PAUSE);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_RESET, EVENT_WATCHDOG_RESET);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_POWEROFF, EVENT_WATCHDOG_POWEROFF);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_SHUTDOWN, EVENT_WATCHDOG_SHUTDOWN);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_DEBUG, EVENT_WATCHDOG_DEBUG);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_IO_ERROR_NONE, EVENT_IO_ERROR_NONE);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_IO_ERROR_PAUSE, EVENT_IO_ERROR_PAUSE);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_IO_ERROR_REPORT, EVENT_IO_ERROR_REPORT);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_GRAPHICS_CONNECT, EVENT_GRAPHICS_CONNECT);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_GRAPHICS_INITIALIZE, EVENT_GRAPHICS_INITIALIZE);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_GRAPHICS_DISCONNECT, EVENT_GRAPHICS_DISCONNECT);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_GRAPHICS_ADDRESS_IPV4, EVENT_GRAPHICS_ADDRESS_IPV4);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_GRAPHICS_ADDRESS_IPV6, EVENT_GRAPHICS_ADDRESS_IPV6);
 
       stash = gv_stashpv( "Sys::Virt::StoragePool", TRUE );
       REGISTER_CONSTANT(VIR_STORAGE_POOL_INACTIVE, STATE_INACTIVE);

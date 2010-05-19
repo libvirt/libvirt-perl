@@ -1130,6 +1130,70 @@ released in garbage collection.
 Unregister a callback, allowing the connection object to be garbage
 collected.
 
+=item $callback = $conn->domain_event_register_any($dom, $eventID, $callback)
+
+Register a callback to received notifications of domain events.
+The C<$dom> parameter can be C<undef> to request events on all
+known domains, or a specific C<Sys::Virt::Domain> object to
+filter events. The C<$eventID> parameter is one of the EVENT ID
+constants described later in this document. The C<$callback> is
+a subroutine reference that will receive the events.
+
+All callbacks receive a C<Sys::Virt> connection as the first parameter
+and a C<Sys::Virt::Domain> object indiciating the domain on which the
+event occurred as the second parameter. Subsequent parameters vary
+according to the event type
+
+=over
+
+=item EVENT_ID_LIFECYCLE
+
+Extra C<event> and C<detail> parameters defining the lifecycle
+transition that occurred.
+
+=item EVENT_ID_REBOOT
+
+No extra parameters
+
+=item EVENT_ID_RTC_CHANGE
+
+The C<utcoffset> gives the offset from UTC in seconds
+
+=item EVENT_ID_WATCHDOG
+
+The C<action> defines the action that is taken as a result
+of the watchdog triggering. One of the WATCHDOG constants
+described later
+
+=item EVENT_ID_IO_ERROR
+
+The C<srcPath> is the file on the host which had the error.
+The C<devAlias> is the unique device alias from the guest
+configuration associated with C<srcPath>. The C<action> is
+the action taken as a result of the error, one of the
+IO ERROR constants described later
+
+=item EVENT_ID_GRAPHICS
+
+The C<phase> is the stage of the connection, one of the GRAPHICS
+PHASE constants described later. The C<local> and C<remote>
+parameters follow with the details of the local and remote
+network addresses. The C<authScheme> describes how the user
+was authenticated (if at all). Finally C<identities> is an
+array ref containing authenticated identities for the user,
+if any.
+
+=back
+
+The return value is a unique callback ID that must be used when
+unregistering the event.
+
+
+=item $conn->domain_event_deregister_any($callbackID)
+
+Unregister a callback, associated with the C<$callbackID> previously
+obtained from C<domain_event_register_any>.
+
 =item my $xml = $con->baseline_cpu(\@xml, $flags=0)
 
 Given an array ref whose elements are XML documents describing host CPUs,
