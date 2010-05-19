@@ -1719,6 +1719,25 @@ get_info(dom)
 
 
 HV *
+get_block_info(dom, dev, flags=0)
+      virDomainPtr dom;
+      const char *dev;
+      unsigned int flags;
+  PREINIT:
+      virDomainBlockInfo info;
+    CODE:
+      if (virDomainGetBlockInfo(dom, dev, &info, flags) < 0) {
+	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
+      (void)hv_store (RETVAL, "capacity", 8, virt_newSVull(info.capacity), 0);
+      (void)hv_store (RETVAL, "allocation", 10, virt_newSVull(info.allocation), 0);
+      (void)hv_store (RETVAL, "physical", 8, virt_newSVull(info.physical), 0);
+  OUTPUT:
+      RETVAL
+
+
+HV *
 get_job_info(dom)
       virDomainPtr dom;
   PREINIT:

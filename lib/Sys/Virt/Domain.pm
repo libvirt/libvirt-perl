@@ -205,6 +205,31 @@ constants &Sys::Virt::Domain::STATE_*.
 
 =back
 
+=item my $info = $dom->get_block_info($dev, $flags=0)
+
+Returns a hash reference summarising the disk usage of
+the host backing store for a guest block device. The
+C<$dev> parameter should be the path to the backing
+store on the host. C<$flags> is currently unused and
+defaults to 0 if omitted. The returned hash contains
+the following elements
+
+=over 4
+
+=item capacity
+
+Logical size in bytes of the block device backing image *
+
+=item allocation
+
+Highest allocated extent in bytes of the block device backing image
+
+=item physical
+
+Physical size in bytes of the container of the backing image
+
+=back
+
 =item $dom->set_max_memory($mem)
 
 Set the maximum memory for the domain to the value C<$mem>. The
