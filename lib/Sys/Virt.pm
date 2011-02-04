@@ -70,7 +70,7 @@ use Sys::Virt::Secret;
 use Sys::Virt::NWFilter;
 use Sys::Virt::DomainSnapshot;
 
-our $VERSION = '0.2.4';
+our $VERSION = '0.2.5';
 require XSLoader;
 XSLoader::load('Sys::Virt', $VERSION);
 

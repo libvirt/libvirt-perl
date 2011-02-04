@@ -1,12 +1,19 @@
 Sys::Virt ChangeLog
 ===================
 
-Since 0.2.3:
+New in 0.2.5:
+
+ - Add all APIs + constants from 0.8.2, 0.8.5 and 0.8.7
+   releases, with exception of virDomainOpenConsole
+ - Add missing dep on XML::XPath
+ - Requires libvirt >= 0.8.7
+
+New in 0.2.4:
 
  - Add all APIs + constants from 0.7.7, 0.8.0 & 0.8.1 releases
  - Requires libvirt >= 0.8.1
 
-Since 0.2.2:
+New in 0.2.3:
 
  - New virSecretPtr APIs
  - Fix authentication callback handling of NULLs
@@ -18,7 +25,7 @@ Since 0.2.2:
  - Add new error codes
  - Require libvirt >= 0.7.5
 
-Since 0.2.1:
+New in 0.2.2:
 
  - Add all new APIs upto libvirt 0.7.0 APIs (listing defined
    network interfaces)
@@ -28,7 +35,7 @@ Since 0.2.1:
  - Add missing APIs for defining network interfaces and
    starting defined interfaces
 
-Since 0.2.0:
+New in 0.2.1:
 
  - Add all new APIs upto libvirt 0.6.4 (network interfaces,
    storage volume cloning and node device create/delete)
@@ -39,14 +46,14 @@ Since 0.2.0:
  - Fix some memory leaks in C layer
  - Remove bogus module imports from test suite
 
-Since 0.1.2:
+New in 0.2.0:
 
  - Implement storage, node device, event APIs
  - Full covereage of all APIs in 0.6.1 release of libvirt
  - Full documentation coverage
  - Ability to authenticate when openning connections
 
-Since 0.1.1:
+New in 0.1.2:
 
  - Added manual written META.yml
  - Added networking APIs
@@ -56,7 +63,7 @@ Since 0.1.1:
  - Fix return values for reboot/shutdown/undefine/create APIs
  - Expanded documentation coverage
 
-Since 0.1.0:
+New in 0.1.1:
 
  - Fixed POD documentation names
  - Make Sys::Virt::Error use 'strict' and 'warnings' pragmas
@@ -69,7 +76,7 @@ Since 0.1.0:
    found by pkg-config
  - Added bindings for newly introduced APIs in libvirt 0.1.1
 
-Since 0.0.1:
+New in 0.1.0:
 
  - Added Sys::Virt->get_node_info mapping to virNodeGetInfo
  - Exposed the constants for domain state in Sys::Virt::Domain
