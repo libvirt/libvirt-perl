@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 43;
+use Test::More tests => 55;
 
 BEGIN {
         use_ok('Sys::Virt');
@@ -143,4 +143,39 @@ is($nname, 0, "0 defined domain");
 @names = $conn->list_defined_domain_names($nname);
 is_deeply(\@names, [], "names");
 
+
+
+$conn->create_domain($xml);
+
+$nname = $conn->num_of_domains();
+is($nname, 2, "1 domain");
+
+@ids = sort { $a <=> $b} $conn->list_domain_ids($nname);
+is_deeply(\@ids, [1, 3], "domain ids");
+
+@doms = $conn->list_domains();
+is($#doms, 1, "2 domains");
+isa_ok($doms[0], "Sys::Virt::Domain");
+isa_ok($doms[1], "Sys::Virt::Domain");
+
+$dom = $conn->get_domain_by_name("wibble");
+isa_ok($dom, "Sys::Virt::Domain");
+
+ok(!$dom->is_persistent(), "domain is not persistent");
+ok($dom->is_active(), "domain is active");
+
+$dom->destroy();
+
+
+$nname = $conn->num_of_domains();
+is($nname, 1, "1 domains");
+
+@ids = $conn->list_domain_ids($nname);
+is_deeply(\@ids, [1], "ids");
+
+$nname = $conn->num_of_defined_domains();
+is($nname, 0, "0 defined domain");
+
+@names = $conn->list_defined_domain_names($nname);
+is_deeply(\@names, [], "names");
 

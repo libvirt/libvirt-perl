@@ -191,20 +191,22 @@ sub new {
 }
 
 
-=item my $dom = $vmm->create_domain($xml);
+=item my $dom = $vmm->create_domain($xml, $flags);
 
 Create a new domain based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::Domain>
 class. This method is not available with unprivileged connections to
-the VMM.
+the VMM. The C<$flags> parameter accepts one of the DOMAIN CREATION
+constants documented in L<Sys::Virt::Domain>, and defaults to 0 if omitted.
 
 =cut
 
 sub create_domain {
     my $self = shift;
     my $xml = shift;
+    my $flags = shift || 0;
 
-    return Sys::Virt::Domain->_new(connection => $self, xml => $xml);
+    return Sys::Virt::Domain->_new(connection => $self, xml => $xml, flags => $flags);
 }
 
 =item my $dom = $vmm->define_domain($xml);
@@ -356,7 +358,6 @@ sub list_domains {
 
     my $nids = $self->num_of_domains();
     my @ids = $self->list_domain_ids($nids);
-
     my @domains;
     foreach my $id (@ids) {
 	eval {

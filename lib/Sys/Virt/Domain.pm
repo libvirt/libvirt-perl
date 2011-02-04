@@ -64,7 +64,7 @@ sub _new {
 	if ($params{nocreate}) {
 	    $self = Sys::Virt::Domain::_define_xml($con,  $params{xml});
 	} else {
-	    $self = Sys::Virt::Domain::_create_linux($con,  $params{xml});
+	    $self = Sys::Virt::Domain::_create($con,  $params{xml}, $params{flags});
 	}
     } else {
 	die "address, id or uuid parameters are required";
@@ -114,10 +114,12 @@ the domain's configuration
 Returns a string containing the name of the OS type running
 within the domain.
 
-=item $dom->create()
+=item $dom->create($flags)
 
 Start a domain whose configuration was previously defined using the
-C<define_domain> method in L<Sys::Virt>.
+C<define_domain> method in L<Sys::Virt>. The C<$flags> parameter
+accepts one of the DOMAIN CREATION constants documented later, and
+defaults to 0 if omitted.
 
 =item $dom->undefine()
 
@@ -654,6 +656,20 @@ The domain is inactive, and shut down.
 =item Sys::Virt::Domain::STATE_CRASHED
 
 The domain is inactive, and crashed.
+
+=back
+
+
+=head2 DOMAIN CREATION
+
+The following constants can be used to control the behaviour
+of domain creation
+
+=over 4
+
+=item Sys::Virt::Domain::START_PAUSED
+
+Keep the guest vCPUs paused after starting the guest
 
 =back
 

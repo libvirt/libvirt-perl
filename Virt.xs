@@ -1494,14 +1494,19 @@ DESTROY(con_rv)
 MODULE = Sys::Virt::Domain  PACKAGE = Sys::Virt::Domain
 
 virDomainPtr
-_create_linux(con, xml)
+_create(con, xml, flags=0)
       virConnectPtr con;
       const char *xml;
+      unsigned int flags;
     CODE:
-      /* Don't bother using virDomainCreateXML, since this works
-         for more versions */
-      if (!(RETVAL = virDomainCreateLinux(con, xml, 0))) {
-	_croak_error(virConnGetLastError(con));
+      if (flags) {
+        if (!(RETVAL = virDomainCreateXML(con, xml, flags))) {
+  	  _croak_error(virConnGetLastError(con));
+        }
+      } else {
+        if (!(RETVAL = virDomainCreateLinux(con, xml, 0))) {
+	  _croak_error(virConnGetLastError(con));
+        }
       }
   OUTPUT:
       RETVAL
@@ -2027,13 +2032,19 @@ undefine(dom)
       }
 
 void
-create(dom)
+create(dom, flags=0)
       virDomainPtr dom;
+      unsigned int flags;
     PPCODE:
-      if (virDomainCreate(dom) < 0) {
-	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      if (flags) {
+        if (virDomainCreateWithFlags(dom, flags) < 0) {
+	  _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+        }
+      } else {
+        if (virDomainCreate(dom) < 0) {
+	  _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+        }
       }
-
 
 virDomainPtr
 migrate(dom, destcon, flags=0, dname=&PL_sv_undef, uri=&PL_sv_undef, bandwidth=0)
@@ -3805,10 +3816,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_SHUTOFF, STATE_SHUTOFF);
       REGISTER_CONSTANT(VIR_DOMAIN_CRASHED, STATE_CRASHED);
 
-      /*
-       * This constant is not really useful yet
-      REGISTER_CONSTANT(VIR_DOMAIN_NONE, CREATE_NONE);
-      */
+      REGISTER_CONSTANT(VIR_DOMAIN_START_PAUSED, START_PAUSED);
 
       /* NB: skip VIR_DOMAIN_SCHED_FIELD_* constants, because
          those are not used from Perl code - handled internally
