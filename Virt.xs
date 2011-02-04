@@ -125,7 +125,28 @@ _populate_constant(HV *stash, char *name, int val)
     newCONSTSUB(stash, name, valsv);
 }
 
+void
+_populate_constant_str(HV *stash, char *name, const char *value)
+{
+    SV *valsv;
+
+    valsv = newSVpv(value, strlen(value));
+    newCONSTSUB(stash, name, valsv);
+}
+
+void
+_populate_constant_ull(HV *stash, char *name, unsigned long long val)
+{
+    SV *valsv;
+
+    valsv = virt_newSVull(val);
+    newCONSTSUB(stash, name, valsv);
+}
+
+
 #define REGISTER_CONSTANT(name, key) _populate_constant(stash, #key, name)
+#define REGISTER_CONSTANT_STR(name, key) _populate_constant_str(stash, #key, name)
+#define REGISTER_CONSTANT_ULL(name, key) _populate_constant_ull(stash, #key, name)
 
 static int
 _domain_event_lifecycle_callback(virConnectPtr con,
@@ -1886,6 +1907,124 @@ set_scheduler_parameters(dom, newparams)
 
       }
       if (virDomainSetSchedulerParameters(dom, params, nparams) < 0) {
+	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+      Safefree(params);
+
+
+HV *
+get_memory_parameters(dom)
+      virDomainPtr dom;
+  PREINIT:
+      virMemoryParameter *params;
+      int nparams;
+      unsigned int i;
+    CODE:
+      nparams = 0;
+      if (virDomainGetMemoryParameters(dom, NULL, &nparams, 0) < 0) {
+          _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
+      Newx(params, nparams, virMemoryParameter);
+
+      if (virDomainGetMemoryParameters(dom, params, &nparams, 0) < 0) {
+          Safefree(params);
+          _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+
+      for (i = 0 ; i < nparams ; i++) {
+          SV *val = NULL;
+
+          switch (params[i].type) {
+          case VIR_DOMAIN_SCHED_FIELD_INT:
+              val = newSViv(params[i].value.i);
+              break;
+
+          case VIR_DOMAIN_SCHED_FIELD_UINT:
+              val = newSViv((int)params[i].value.ui);
+              break;
+
+          case VIR_DOMAIN_SCHED_FIELD_LLONG:
+              val = virt_newSVll(params[i].value.l);
+              break;
+
+          case VIR_DOMAIN_SCHED_FIELD_ULLONG:
+              val = virt_newSVull(params[i].value.ul);
+              break;
+
+          case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
+              val = newSVnv(params[i].value.d);
+              break;
+
+          case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
+              val = newSViv(params[i].value.b);
+              break;
+          }
+
+          (void)hv_store(RETVAL, params[i].field, strlen(params[i].field), val, 0);
+      }
+      Safefree(params);
+  OUTPUT:
+      RETVAL
+
+void
+set_memory_parameters(dom, newparams)
+      virDomainPtr dom;
+      HV *newparams;
+  PREINIT:
+      virMemoryParameter *params;
+      int nparams;
+      unsigned int i;
+    PPCODE:
+      nparams = 0;
+      if (virDomainGetMemoryParameters(dom, NULL, &nparams, 0) < 0) {
+          _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+
+      Newx(params, nparams, virMemoryParameter);
+
+      if (virDomainGetMemoryParameters(dom, params, &nparams, 0) < 0) {
+          Safefree(params);
+          _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+
+      for (i = 0 ; i < nparams ; i++) {
+	SV **val;
+
+	if (!hv_exists(newparams, params[i].field, strlen(params[i].field)))
+	  continue;
+
+	val = hv_fetch (newparams, params[i].field, strlen(params[i].field), 0);
+
+	switch (params[i].type) {
+	case VIR_DOMAIN_SCHED_FIELD_INT:
+	  params[i].value.i = SvIV(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_UINT:
+	  params[i].value.ui = SvIV(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_LLONG:
+	  params[i].value.l = virt_SvIVll(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_ULLONG:
+	  params[i].value.ul = virt_SvIVull(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
+	  params[i].value.d = SvNV(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
+	  params[i].value.b = SvIV(*val);
+	  break;
+	}
+
+      }
+      if (virDomainSetMemoryParameters(dom, params, nparams, 0) < 0) {
 	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
       Safefree(params);
@@ -3907,6 +4046,15 @@ BOOT:
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_GRAPHICS_ADDRESS_IPV4, EVENT_GRAPHICS_ADDRESS_IPV4);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_GRAPHICS_ADDRESS_IPV6, EVENT_GRAPHICS_ADDRESS_IPV6);
+
+
+      REGISTER_CONSTANT_ULL(VIR_DOMAIN_MEMORY_PARAM_UNLIMITED, MEMORY_PARAM_UNLIMITED);
+
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_MEMORY_HARD_LIMIT, MEMORY_HARD_LIMIT);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_MEMORY_SOFT_LIMIT, MEMORY_SOFT_LIMIT);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_MEMORY_MIN_GUARANTEE, MEMORY_MIN_GUARANTEE);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_MEMORY_SWAP_HARD_LIMIT, MEMORY_SWAP_HARD_LIMIT);
+
 
       stash = gv_stashpv( "Sys::Virt::StoragePool", TRUE );
       REGISTER_CONSTANT(VIR_STORAGE_POOL_INACTIVE, STATE_INACTIVE);

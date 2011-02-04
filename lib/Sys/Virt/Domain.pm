@@ -331,6 +331,18 @@ Update the set of scheduler tunable parameters. The value names for
 tunables vary, and can be discovered using the C<get_scheduler_params>
 call
 
+=item my $params = $dom->get_memory_parameters()
+
+Return a hash reference containing the set of memory tunable
+parameters for the guest. The keys in the hash are one of the
+constants MEMORY PARAMETERS described later.
+
+=item $dom->set_memory_parameters($params)
+
+Update the memory tunable parameters for the guest. The
+C<$params> should be a hash reference whose keys are one
+of the MEMORY PARAMETERS constants.
+
 =over 4
 
 =item C<rd_req>
@@ -821,6 +833,36 @@ The job has hit an error, but isn't cleaned up
 =item Sys::Virt::Domain::JOB_CANCELLED
 
 The job was aborted at user request, but isn't cleaned up
+
+=back
+
+
+=head2 MEMORY PARAMETERS
+
+The following constants are useful when getting/setting
+memory parameters for guests
+
+=over 4
+
+=item Sys::Virt::Domain::MEMORY_HARD_LIMIT
+
+The maximum memory the guest can use.
+
+=item Sys::Virt::Domain::MEMORY_SOFT_LIMIT
+
+The memory upper limit enforced during memory contention.
+
+=item Sys::Virt::Domain::MEMORY_MIN_GUARANTEE
+
+The minimum memory guaranteed to be reserved for the guest.
+
+=item Sys::Virt::Domain::MEMORY_SWAP_HARD_LIMIT
+
+The maximum swap the guest can use.
+
+=item Sys::Virt::Domain::MEMORY_PARAM_UNLIMITED
+
+The value that indicates "unlimited"
 
 =back
 
