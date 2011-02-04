@@ -104,6 +104,12 @@ Returns a true value if the domain is currently running
 Returns a true value if the domain has a persistent configuration
 file defined
 
+=item $dom->is_updated()
+
+Returns a true value if the domain is running and has a persistent
+configuration file defined that is out of date compared to the
+current live config.
+
 =item my $xml = $dom->get_xml_description()
 
 Returns an XML document containing a complete description of
@@ -308,9 +314,17 @@ start upon boot. Return false, otherwise
 Set the state of the autostart flag, which determines whether the
 guest will automatically start upon boot of the host OS
 
-=item $dom->set_vcpus($count)
+=item $dom->set_vcpus($count, [$flags])
 
-Set the number of virtual CPUs in the guest VM to C<$count>
+Set the number of virtual CPUs in the guest VM to C<$count>.
+The optional C<$flags> parameter can be used to control whether
+the setting changes the live config or inactive config.
+
+=item $count = $dom->get_vcpus([$flags])
+
+Get the number of virtual CPUs in the guest VM.
+The optional C<$flags> parameter can be used to control whether
+to query the setting of the live config or inactive config.
 
 =item $type = $dom->get_scheduler_type()
 
@@ -863,6 +877,23 @@ The maximum swap the guest can use.
 =item Sys::Virt::Domain::MEMORY_PARAM_UNLIMITED
 
 The value that indicates "unlimited"
+
+=back
+
+=head2 VCPU FLAGS
+
+The following constants are useful when getting/setting the
+VCPU count for a guest
+
+=over 4
+
+=item Sys::Virt::Domain::VCPU_LIVE
+
+Flag to request the live value
+
+=item Sys::Virt::Domain::VCPU_CONFIG
+
+Flag to request the persistent config value
 
 =back
 

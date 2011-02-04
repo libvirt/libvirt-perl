@@ -1656,6 +1656,17 @@ is_persistent(dom)
       RETVAL
 
 
+int
+is_updated(dom)
+      virDomainPtr dom;
+    CODE:
+      if ((RETVAL = virDomainIsUpdated(dom)) < 0) {
+          _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      }
+  OUTPUT:
+      RETVAL
+
+
 void
 suspend(dom)
       virDomainPtr dom;
@@ -2071,13 +2082,32 @@ get_max_vcpus(dom)
 
 
 void
-set_vcpus(dom, num)
+set_vcpus(dom, num, flags=0)
       virDomainPtr dom;
       int num;
+      int flags;
   PPCODE:
-      if (virDomainSetVcpus(dom, num) < 0) {
-	_croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+      if (flags) {
+          if (virDomainSetVcpusFlags(dom, num, flags) < 0) {
+              _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+          }
+      } else {
+          if (virDomainSetVcpus(dom, num) < 0) {
+              _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+          }
       }
+
+int
+get_vcpus(dom, flags=0)
+    virDomainPtr dom;
+    int flags;
+  CODE:
+    if ((RETVAL = virDomainGetVcpusFlags(dom, flags)) < 0) {
+        _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
+    }
+OUTPUT:
+    RETVAL
+
 
 
 void
@@ -4055,6 +4085,8 @@ BOOT:
       REGISTER_CONSTANT_STR(VIR_DOMAIN_MEMORY_MIN_GUARANTEE, MEMORY_MIN_GUARANTEE);
       REGISTER_CONSTANT_STR(VIR_DOMAIN_MEMORY_SWAP_HARD_LIMIT, MEMORY_SWAP_HARD_LIMIT);
 
+      REGISTER_CONSTANT(VIR_DOMAIN_VCPU_LIVE, VCPU_LIVE);
+      REGISTER_CONSTANT(VIR_DOMAIN_VCPU_CONFIG, VCPU_CONFIG);
 
       stash = gv_stashpv( "Sys::Virt::StoragePool", TRUE );
       REGISTER_CONSTANT(VIR_STORAGE_POOL_INACTIVE, STATE_INACTIVE);

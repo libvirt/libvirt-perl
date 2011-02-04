@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 55;
+use Test::More tests => 56;
 
 BEGIN {
         use_ok('Sys::Virt');
@@ -28,6 +28,7 @@ is($dom->get_name, "test", "name");
 is($dom->get_id, "1", "id");
 ok($dom->is_persistent(), "domain is persistent");
 ok($dom->is_active(), "domain is active");
+ok(!$dom->is_updated(), "domain is not updated");
 
 # Lookup again via UUID to verify we get the same
 my $uuid = $dom->get_uuid();
