@@ -47,7 +47,7 @@ if [ -f /usr/bin/rpmbuild ]; then
     NOW=`date +"%s"`
     EXTRA_RELEASE=".$USER$NOW"
   fi
-  rpmbuild -ta --define "extra_release $EXTRA_RELEASE" --clean $NAME-*.tar.gz
+  rpmbuild --nodeps -ta --define "extra_release $EXTRA_RELEASE" --clean $NAME-*.tar.gz
 fi
 
 # Skip debian pkg for now
