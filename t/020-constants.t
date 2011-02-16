@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 14;
 
 BEGIN {
   use_ok("Sys::Virt") or die;
@@ -22,4 +22,3 @@ is(Sys::Virt::Domain::MEMORY_HARD_LIMIT, "hard_limit", "hard limit");
 is(Sys::Virt::Domain::MEMORY_SOFT_LIMIT, "soft_limit", "soft limit");
 is(Sys::Virt::Domain::MEMORY_MIN_GUARANTEE, "min_guarantee", "min guarantee");
 is(Sys::Virt::Domain::MEMORY_SWAP_HARD_LIMIT, "swap_hard_limit", "swap hard limit");
-is(Sys::Virt::Domain::MEMORY_PARAM_UNLIMITED, "9007199254740991", "param unlimited");

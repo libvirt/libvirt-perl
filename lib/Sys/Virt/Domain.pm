@@ -874,10 +874,6 @@ The minimum memory guaranteed to be reserved for the guest.
 
 The maximum swap the guest can use.
 
-=item Sys::Virt::Domain::MEMORY_PARAM_UNLIMITED
-
-The value that indicates "unlimited"
-
 =back
 
 =head2 VCPU FLAGS
