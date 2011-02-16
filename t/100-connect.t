@@ -67,6 +67,7 @@ is($max, 32, "max cpus");
 
 my $thishost = hostname();
 my ($canonhost, $other) = gethostbyname($thishost);
+$canonhost = $thishost unless $canonhost;
 my $host = $conn->get_hostname();
 is($host, $canonhost, "hostname");
 
