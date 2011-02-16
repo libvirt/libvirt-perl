@@ -1,6 +1,12 @@
 Sys::Virt ChangeLog
 ===================
 
+New in 0.2.6:
+
+ - Fix build with 0.8.7 libvirt by removing reference to
+   non-existant constant only introduced in libvirt > 0.8.7
+ - Fix test script when hostname is undefined
+
 New in 0.2.5:
 
  - Add all APIs + constants from 0.8.2, 0.8.5 and 0.8.7
