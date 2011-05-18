@@ -2162,12 +2162,13 @@ get_os_type(dom)
       RETVAL
 
 SV *
-get_xml_description(dom)
+get_xml_description(dom, flags=0)
       virDomainPtr dom;
+      unsigned int flags;
   PREINIT:
       char *xml;
     CODE:
-      if (!(xml = virDomainGetXMLDesc(dom, 0))) {
+      if (!(xml = virDomainGetXMLDesc(dom, flags))) {
 	 _croak_error(virConnGetLastError(virDomainGetConnect(dom)));
       }
       RETVAL = newSVpv(xml, 0);
@@ -2738,12 +2739,13 @@ get_bridge_name(net)
       RETVAL
 
 SV *
-get_xml_description(net)
+get_xml_description(net, flags=0)
       virNetworkPtr net;
+      unsigned int flags;
   PREINIT:
       char *xml;
     CODE:
-      if (!(xml = virNetworkGetXMLDesc(net, 0))) {
+      if (!(xml = virNetworkGetXMLDesc(net, flags))) {
 	 _croak_error(virConnGetLastError(virNetworkGetConnect(net)));
       }
       RETVAL = newSVpv(xml, 0);
@@ -2945,12 +2947,13 @@ is_persistent(pool)
 
 
 SV *
-get_xml_description(pool)
+get_xml_description(pool, flags=0)
       virStoragePoolPtr pool;
+      unsigned int flags;
   PREINIT:
       char *xml;
     CODE:
-      if (!(xml = virStoragePoolGetXMLDesc(pool, 0))) {
+      if (!(xml = virStoragePoolGetXMLDesc(pool, flags))) {
 	 _croak_error(virConnGetLastError(virStoragePoolGetConnect(pool)));
       }
       RETVAL = newSVpv(xml, 0);
@@ -3192,12 +3195,13 @@ get_path(vol)
 
 
 SV *
-get_xml_description(vol)
+get_xml_description(vol, flags=0)
       virStorageVolPtr vol;
+      unsigned int flags;
   PREINIT:
       char *xml;
     CODE:
-      if (!(xml = virStorageVolGetXMLDesc(vol, 0))) {
+      if (!(xml = virStorageVolGetXMLDesc(vol, flags))) {
 	 _croak_error(virConnGetLastError(virStorageVolGetConnect(vol)));
       }
       RETVAL = newSVpv(xml, 0);
@@ -3302,12 +3306,13 @@ get_parent(dev)
 
 
 SV *
-get_xml_description(dev)
+get_xml_description(dev, flags=0)
       virNodeDevicePtr dev;
+      unsigned int flags;
   PREINIT:
       char *xml;
     CODE:
-      if (!(xml = virNodeDeviceGetXMLDesc(dev, 0))) {
+      if (!(xml = virNodeDeviceGetXMLDesc(dev, flags))) {
 	_croak_error(virGetLastError());
       }
       RETVAL = newSVpv(xml, 0);
@@ -3457,12 +3462,13 @@ is_active(iface)
 
 
 SV *
-get_xml_description(iface)
+get_xml_description(iface, flags=0)
       virInterfacePtr iface;
+      unsigned int flags;
   PREINIT:
       char *xml;
     CODE:
-      if (!(xml = virInterfaceGetXMLDesc(iface, 0))) {
+      if (!(xml = virInterfaceGetXMLDesc(iface, flags))) {
 	 _croak_error(virConnGetLastError(virInterfaceGetConnect(iface)));
       }
       RETVAL = newSVpv(xml, 0);
@@ -3610,12 +3616,13 @@ get_usage_type(sec)
 
 
 SV *
-get_xml_description(sec)
+get_xml_description(sec, flags=0)
       virSecretPtr sec;
+      unsigned int flags;
   PREINIT:
       char *xml;
     CODE:
-      if (!(xml = virSecretGetXMLDesc(sec, 0))) {
+      if (!(xml = virSecretGetXMLDesc(sec, flags))) {
 	 _croak_error(virConnGetLastError(virSecretGetConnect(sec)));
       }
       RETVAL = newSVpv(xml, 0);
@@ -3761,12 +3768,13 @@ get_name(filter)
 
 
 SV *
-get_xml_description(filter)
+get_xml_description(filter, flags=0)
       virNWFilterPtr filter;
+      unsigned int flags;
   PREINIT:
       char *xml;
     CODE:
-      if (!(xml = virNWFilterGetXMLDesc(filter, 0))) {
+      if (!(xml = virNWFilterGetXMLDesc(filter, flags))) {
 	_croak_error(virGetLastError());
       }
       RETVAL = newSVpv(xml, 0);
