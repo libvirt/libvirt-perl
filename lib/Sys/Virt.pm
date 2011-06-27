@@ -69,6 +69,7 @@ use Sys::Virt::Interface;
 use Sys::Virt::Secret;
 use Sys::Virt::NWFilter;
 use Sys::Virt::DomainSnapshot;
+use Sys::Virt::Stream;
 
 our $VERSION = '0.2.6';
 require XSLoader;
@@ -188,6 +189,20 @@ sub new {
     bless $self, $class;
 
     return $self;
+}
+
+
+=item my $st = $vmm->new_stream($flags)
+
+Create a new stream, with the given flags
+
+=cut
+
+sub new_stream {
+    my $self = shift;
+    my $flags = shift || 0;
+
+    return Sys::Virt::Stream->_new(connection => $self, flags => $flags);
 }
 
 
@@ -1011,6 +1026,11 @@ Return the name of the host with which this connection is associated.
 Return the URI associated with the open connection. This may be different
 from the URI used when initially connecting to libvirt, when 'auto-probing'
 or drivers occurrs.
+
+=item my $xml = $vmm->get_sysinfo()
+
+Return an XML documenting representing the host system information,
+typically obtained from SMBIOS tables.
 
 =item my $type = $vmm->get_type()
 

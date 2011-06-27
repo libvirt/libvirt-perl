@@ -698,6 +698,149 @@ _open_auth_callback(virConnectCredentialPtr cred,
 }
 
 
+static void
+_stream_event_callback(virStreamPtr st,
+                       int events,
+                       void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    XPUSHs(sv_2mortal(newSViv(events)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+}
+
+
+static void
+_stream_event_free(void *opaque)
+{
+    AV *data = opaque;
+    SvREFCNT_dec(data);
+}
+
+
+static int
+_stream_send_all_source(virStreamPtr st,
+                        char *data,
+                        size_t nbytes,
+                        void *opaque)
+{
+    AV *av = opaque;
+    SV **self;
+    SV **handler;
+    SV *datasv;
+    int rv;
+    int ret;
+    dSP;
+
+    self = av_fetch(av, 0, 0);
+    handler = av_fetch(av, 1, 0);
+    datasv = newSVpv("", 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    XPUSHs(datasv);
+    XPUSHs(sv_2mortal(newSViv(nbytes)));
+    PUTBACK;
+
+    rv = call_sv((SV*)*handler, G_SCALAR);
+
+    SPAGAIN;
+
+    if (rv == 1) {
+        ret = POPi;
+    } else {
+        ret = -1;
+    }
+
+    if (ret > 0) {
+        const char *newdata = SvPV_nolen(datasv);
+        if (ret > nbytes)
+            ret = nbytes;
+        strncpy(data, newdata, nbytes);
+    }
+
+    FREETMPS;
+    LEAVE;
+
+    SvREFCNT_dec(datasv);
+
+    return ret;
+}
+
+
+static int
+_stream_recv_all_sink(virStreamPtr st,
+                      const char *data,
+                      size_t nbytes,
+                      void *opaque)
+{
+    AV *av = opaque;
+    SV **self;
+    SV **handler;
+    SV *datasv;
+    int rv;
+    int ret;
+    dSP;
+
+    self = av_fetch(av, 0, 0);
+    handler = av_fetch(av, 1, 0);
+    datasv = newSVpv(data, nbytes);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    XPUSHs(datasv);
+    XPUSHs(sv_2mortal(newSViv(nbytes)));
+    PUTBACK;
+
+    rv = call_sv((SV*)*handler, G_SCALAR);
+
+    SPAGAIN;
+
+    if (rv == 1) {
+        ret = POPi;
+    } else {
+        ret = -1;
+    }
+
+    FREETMPS;
+    LEAVE;
+
+    SvREFCNT_dec(datasv);
+
+    return ret;
+}
+
+
+
+
 MODULE = Sys::Virt  PACKAGE = Sys::Virt
 
 PROTOTYPES: ENABLE
@@ -848,6 +991,16 @@ get_uri(con)
       RETVAL = virConnectGetURI(con);
  OUTPUT:
       RETVAL
+
+char *
+get_sysinfo(con, flags=0)
+      virConnectPtr con;
+      unsigned int flags;
+   CODE:
+      RETVAL = virConnectGetSysinfo(con, flags);
+ OUTPUT:
+      RETVAL
+
 
 HV *
 get_node_info(con)
@@ -3941,6 +4094,182 @@ PREINIT:
 
 
 
+MODULE = Sys::Virt::Stream  PACKAGE = Sys::Virt::Stream
+
+virStreamPtr
+_new_obj(con, flags=0)
+      virConnectPtr con;
+      unsigned int flags;
+    CODE:
+      if (!(RETVAL = virStreamNew(con, flags))) {
+	_croak_error(virGetLastError());
+      }
+  OUTPUT:
+      RETVAL
+
+int
+send(st, data, nbytes)
+      virStreamPtr st;
+      SV *data;
+      size_t nbytes;
+ PREINIT:
+      const char *rawdata;
+      STRLEN len;
+    CODE:
+      if (SvOK(data)) {
+	  rawdata = SvPV(data, len);
+          if (nbytes < 0 || nbytes > len)
+              nbytes = len;
+      } else {
+          rawdata = "";
+          nbytes = 0;
+      }
+
+      if ((RETVAL = virStreamSend(st, rawdata, nbytes)) < 0 &&
+          RETVAL != -2) {
+          _croak_error(virGetLastError());
+      }
+  OUTPUT:
+      RETVAL
+
+
+int
+recv(st, data, nbytes)
+      virStreamPtr st;
+      SV *data;
+      size_t nbytes;
+ PREINIT:
+      char *rawdata;
+    CODE:
+      Newx(rawdata, nbytes, char);
+      if ((RETVAL = virStreamRecv(st, rawdata, nbytes)) < 0 &&
+          RETVAL != -2) {
+          Safefree(rawdata);
+          _croak_error(virGetLastError());
+      }
+      if (RETVAL > 0) {
+          sv_setpvn(data, rawdata, RETVAL);
+      }
+      Safefree(rawdata);
+  OUTPUT:
+      RETVAL
+
+
+void
+send_all(stref, handler)
+      SV *stref;
+      SV *handler;
+ PREINIT:
+      AV *opaque;
+      virStreamPtr st;
+    CODE:
+      st = (virStreamPtr)SvIV((SV*)SvRV(stref));
+
+      opaque = newAV();
+      SvREFCNT_inc(handler);
+      SvREFCNT_inc(stref);
+      av_push(opaque, stref);
+      av_push(opaque, handler);
+
+      if (virStreamSendAll(st, _stream_send_all_source, opaque) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+      SvREFCNT_dec(opaque);
+
+
+void
+recv_all(stref, handler)
+      SV *stref;
+      SV *handler;
+ PREINIT:
+      AV *opaque;
+      virStreamPtr st;
+    CODE:
+      st = (virStreamPtr)SvIV((SV*)SvRV(stref));
+
+      opaque = newAV();
+      SvREFCNT_inc(handler);
+      SvREFCNT_inc(stref);
+      av_push(opaque, stref);
+      av_push(opaque, handler);
+
+      if (virStreamRecvAll(st, _stream_recv_all_sink, opaque) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+      SvREFCNT_dec(opaque);
+
+
+void
+add_callback(stref, events, cb)
+      SV* stref;
+      int events;
+      SV* cb;
+ PREINIT:
+      AV *opaque;
+      virStreamPtr st;
+  PPCODE:
+      st = (virStreamPtr)SvIV((SV*)SvRV(stref));
+
+      opaque = newAV();
+      SvREFCNT_inc(cb);
+      SvREFCNT_inc(stref);
+      av_push(opaque, stref);
+      av_push(opaque, cb);
+      if (virStreamEventAddCallback(st, events, _stream_event_callback, opaque, _stream_event_free) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+
+void
+update_callback(st, events)
+      virStreamPtr st;
+      int events;
+   PPCODE:
+      if (virStreamEventUpdateCallback(st, events) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+
+void
+remove_callback(st)
+      virStreamPtr st;
+   PPCODE:
+      if (virStreamEventRemoveCallback(st) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+
+void
+finish(st)
+      virStreamPtr st;
+  PPCODE:
+      if (virStreamFinish(st) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+void
+abort(st)
+      virStreamPtr st;
+  PPCODE:
+      if (virStreamAbort(st) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+void
+DESTROY(st_rv)
+      SV *st_rv;
+ PREINIT:
+      virStreamPtr st;
+  PPCODE:
+      st = (virStreamPtr)SvIV((SV*)SvRV(st_rv));
+      if (st) {
+	virStreamFree(st);
+	sv_setiv((SV*)SvRV(st_rv), 0);
+      }
+
+
 MODULE = Sys::Virt  PACKAGE = Sys::Virt
 
 
@@ -3952,6 +4281,7 @@ BOOT:
       HV *stash;
 
       virSetErrorFunc(NULL, ignoreVirErrorFunc);
+      virInitialize();
 
       stash = gv_stashpv( "Sys::Virt", TRUE );
 
@@ -4090,6 +4420,7 @@ BOOT:
       REGISTER_CONSTANT_STR(VIR_DOMAIN_MEMORY_SOFT_LIMIT, MEMORY_SOFT_LIMIT);
       REGISTER_CONSTANT_STR(VIR_DOMAIN_MEMORY_MIN_GUARANTEE, MEMORY_MIN_GUARANTEE);
       REGISTER_CONSTANT_STR(VIR_DOMAIN_MEMORY_SWAP_HARD_LIMIT, MEMORY_SWAP_HARD_LIMIT);
+      REGISTER_CONSTANT_ULL(VIR_DOMAIN_MEMORY_PARAM_UNLIMITED, MEMORY_PARAM_UNLIMITED);
 
       REGISTER_CONSTANT(VIR_DOMAIN_VCPU_LIVE, VCPU_LIVE);
       REGISTER_CONSTANT(VIR_DOMAIN_VCPU_CONFIG, VCPU_CONFIG);
@@ -4121,6 +4452,16 @@ BOOT:
       stash = gv_stashpv( "Sys::Virt::Secret", TRUE );
       REGISTER_CONSTANT(VIR_SECRET_USAGE_TYPE_NONE, USAGE_TYPE_NONE);
       REGISTER_CONSTANT(VIR_SECRET_USAGE_TYPE_VOLUME, USAGE_TYPE_VOLUME);
+
+
+
+      stash = gv_stashpv( "Sys::Virt::Stream", TRUE );
+      REGISTER_CONSTANT(VIR_STREAM_NONBLOCK, NONBLOCK);
+
+      REGISTER_CONSTANT(VIR_STREAM_EVENT_READABLE, EVENT_READABLE);
+      REGISTER_CONSTANT(VIR_STREAM_EVENT_WRITABLE, EVENT_WRITABLE);
+      REGISTER_CONSTANT(VIR_STREAM_EVENT_ERROR, EVENT_ERROR);
+      REGISTER_CONSTANT(VIR_STREAM_EVENT_HANGUP, EVENT_HANGUP);
 
 
 
@@ -4156,6 +4497,15 @@ BOOT:
       REGISTER_CONSTANT(VIR_FROM_ESX, FROM_ESX);
       REGISTER_CONSTANT(VIR_FROM_PHYP, FROM_PHYP);
       REGISTER_CONSTANT(VIR_FROM_SECRET, FROM_SECRET);
+      REGISTER_CONSTANT(VIR_FROM_CPU, FROM_CPU);
+      REGISTER_CONSTANT(VIR_FROM_XENAPI, FROM_XENAPI);
+      REGISTER_CONSTANT(VIR_FROM_NWFILTER, FROM_NWFILTER);
+      REGISTER_CONSTANT(VIR_FROM_HOOK, FROM_HOOK);
+      REGISTER_CONSTANT(VIR_FROM_DOMAIN_SNAPSHOT, FROM_DOMAIN_SNAPSHOT);
+      REGISTER_CONSTANT(VIR_FROM_AUDIT, FROM_AUDIT);
+      REGISTER_CONSTANT(VIR_FROM_SYSINFO, FROM_SYSINFO);
+      REGISTER_CONSTANT(VIR_FROM_STREAMS, FROM_STREAMS);
+      REGISTER_CONSTANT(VIR_FROM_VMWARE, FROM_VMWARE);
 
 
 
@@ -4225,4 +4575,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_ERR_CONFIG_UNSUPPORTED, ERR_CONFIG_UNSUPPORTED);
       REGISTER_CONSTANT(VIR_ERR_OPERATION_TIMEOUT, ERR_OPERATION_TIMEOUT);
       REGISTER_CONSTANT(VIR_ERR_MIGRATE_PERSIST_FAILED, ERR_MIGRATE_PERSIST_FAILED);
+      REGISTER_CONSTANT(VIR_ERR_HOOK_SCRIPT_FAILED, ERR_HOOK_SCRIPT_FAILED);
+      REGISTER_CONSTANT(VIR_ERR_INVALID_DOMAIN_SNAPSHOT, ERR_INVALID_DOMAIN_SNAPSHOT);
+      REGISTER_CONSTANT(VIR_ERR_NO_DOMAIN_SNAPSHOT, ERR_NO_DOMAIN_SNAPSHOT);
     }

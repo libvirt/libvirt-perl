@@ -225,6 +225,42 @@ The secret management driver
 
 The VirtualBox driver
 
+=item Sys::Virt::Error::FROM_AUDIT
+
+The audit driver
+
+=item Sys::Virt::Error::FROM_CPU
+
+The CPU information driver
+
+=item Sys::Virt::Error::FROM_DOMAIN_SNAPSHOT
+
+The domain snapshot driver
+
+=item Sys::Virt::Error::FROM_HOOK
+
+The daemon hook driver
+
+=item Sys::Virt::Error::FROM_NWFILTER
+
+The network filter driver
+
+=item Sys::Virt::Error::FROM_STREAMS
+
+The data streams driver
+
+=item Sys::Virt::Error::FROM_SYSINFO
+
+The system information driver
+
+=item Sys::Virt::Error::FROM_VMWARE
+
+The VMWare driver
+
+=item Sys::Virt::Error::FROM_XENAPI
+
+The XenAPI driver
+
 =back
 
 =head2 ERROR CODES
@@ -498,6 +534,18 @@ The operation could not be completed in a satisfactory time
 
 Unable to persistent the domain configuration after migration
 successfully completed
+
+=item Sys::Virt::Error::ERR_HOOK_SCRIPT_FAILED
+
+Execution of a daemon hook script failed
+
+=item Sys::Virt::Error::ERR_INVALID_DOMAIN_SNAPSHOT
+
+The domain snapshot object pointer was invalid
+
+=item Sys::Virt::Error::ERR_NO_DOMAIN_SNAPSHOT
+
+No matching domain snapshot was found
 
 =back
 
