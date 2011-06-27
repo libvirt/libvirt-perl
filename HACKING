@@ -1,0 +1,10 @@
+   Hacking on libvirt perl
+   =======================
+
+After each libvirt release:
+
+ - Look at src/libvirt_public.syms and find any
+   new APIs introduced
+ - Look at include/libvirt/virterror.h and find
+   any new VIR_FROM_XXX and VIR_ERR_XXX constants
+ - Look for any new constants in libvirt.h.in
