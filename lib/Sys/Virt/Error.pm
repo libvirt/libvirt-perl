@@ -211,7 +211,8 @@ The host network interface driver
 
 =item Sys::Virt::Error::FROM_ONE
 
-The Open Nebula driver
+The Open Nebula driver. This constant is no longer
+used and retained only for backwards compatibility
 
 =item Sys::Virt::Error::FROM_PHYP
 
@@ -260,6 +261,14 @@ The VMWare driver
 =item Sys::Virt::Error::FROM_XENAPI
 
 The XenAPI driver
+
+=item Sys::Virt::Error::FROM_EVENT
+
+The event driver
+
+=item Sys::Virt::Error::FROM_LIBXL
+
+The libxl Xen driver
 
 =back
 
@@ -546,6 +555,10 @@ The domain snapshot object pointer was invalid
 =item Sys::Virt::Error::ERR_NO_DOMAIN_SNAPSHOT
 
 No matching domain snapshot was found
+
+=item Sys::Virt::Error::ERR_INVALID_STREAM
+
+The stream object pointer was invalid
 
 =back
 

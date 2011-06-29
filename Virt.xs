@@ -2194,6 +2194,124 @@ set_memory_parameters(dom, newparams)
       Safefree(params);
 
 
+HV *
+get_blkio_parameters(dom)
+      virDomainPtr dom;
+  PREINIT:
+      virBlkioParameter *params;
+      int nparams;
+      unsigned int i;
+    CODE:
+      nparams = 0;
+      if (virDomainGetBlkioParameters(dom, NULL, &nparams, 0) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
+      Newx(params, nparams, virBlkioParameter);
+
+      if (virDomainGetBlkioParameters(dom, params, &nparams, 0) < 0) {
+          Safefree(params);
+          _croak_error(virGetLastError());
+      }
+
+      for (i = 0 ; i < nparams ; i++) {
+          SV *val = NULL;
+
+          switch (params[i].type) {
+          case VIR_DOMAIN_SCHED_FIELD_INT:
+              val = newSViv(params[i].value.i);
+              break;
+
+          case VIR_DOMAIN_SCHED_FIELD_UINT:
+              val = newSViv((int)params[i].value.ui);
+              break;
+
+          case VIR_DOMAIN_SCHED_FIELD_LLONG:
+              val = virt_newSVll(params[i].value.l);
+              break;
+
+          case VIR_DOMAIN_SCHED_FIELD_ULLONG:
+              val = virt_newSVull(params[i].value.ul);
+              break;
+
+          case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
+              val = newSVnv(params[i].value.d);
+              break;
+
+          case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
+              val = newSViv(params[i].value.b);
+              break;
+          }
+
+          (void)hv_store(RETVAL, params[i].field, strlen(params[i].field), val, 0);
+      }
+      Safefree(params);
+  OUTPUT:
+      RETVAL
+
+void
+set_blkio_parameters(dom, newparams)
+      virDomainPtr dom;
+      HV *newparams;
+  PREINIT:
+      virBlkioParameter *params;
+      int nparams;
+      unsigned int i;
+    PPCODE:
+      nparams = 0;
+      if (virDomainGetBlkioParameters(dom, NULL, &nparams, 0) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+      Newx(params, nparams, virBlkioParameter);
+
+      if (virDomainGetBlkioParameters(dom, params, &nparams, 0) < 0) {
+          Safefree(params);
+          _croak_error(virGetLastError());
+      }
+
+      for (i = 0 ; i < nparams ; i++) {
+	SV **val;
+
+	if (!hv_exists(newparams, params[i].field, strlen(params[i].field)))
+	  continue;
+
+	val = hv_fetch (newparams, params[i].field, strlen(params[i].field), 0);
+
+	switch (params[i].type) {
+	case VIR_DOMAIN_SCHED_FIELD_INT:
+	  params[i].value.i = SvIV(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_UINT:
+	  params[i].value.ui = SvIV(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_LLONG:
+	  params[i].value.l = virt_SvIVll(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_ULLONG:
+	  params[i].value.ul = virt_SvIVull(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
+	  params[i].value.d = SvNV(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
+	  params[i].value.b = SvIV(*val);
+	  break;
+	}
+
+      }
+      if (virDomainSetBlkioParameters(dom, params, nparams, 0) < 0) {
+	_croak_error(virGetLastError());
+      }
+      Safefree(params);
+
+
 unsigned long
 get_max_memory(dom)
       virDomainPtr dom;
@@ -2215,12 +2333,19 @@ set_max_memory(dom, val)
 
 
 void
-set_memory(dom, val)
+set_memory(dom, val, flags=0)
       virDomainPtr dom;
       unsigned long val;
+      unsigned int flags;
   PPCODE:
-      if (virDomainSetMemory(dom, val) < 0) {
-	_croak_error(virGetLastError());
+      if (flags) {
+        if (virDomainSetMemoryFlags(dom, val, flags) < 0) {
+          _croak_error(virGetLastError());
+        }
+      } else {
+        if (virDomainSetMemory(dom, val) < 0) {
+          _croak_error(virGetLastError());
+        }
       }
 
 int
@@ -2421,6 +2546,17 @@ migrate_set_max_downtime(dom, downtime, flags=0)
   PPCODE:
      downtimeVal = virt_SvIVull(downtime);
      if (virDomainMigrateSetMaxDowntime(dom, downtimeVal, flags) < 0) {
+       _croak_error(virGetLastError());
+     }
+
+
+void
+migrate_set_max_speed(dom, bandwidth, flags=0)
+     virDomainPtr dom;
+     unsigned long bandwidth;
+     unsigned int flags;
+  PPCODE:
+     if (virDomainMigrateSetMaxSpeed(dom, bandwidth, flags) < 0) {
        _croak_error(virGetLastError());
      }
 
@@ -4427,6 +4563,9 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_DEVICE_MODIFY_CONFIG, DEVICE_MODIFY_CONFIG);
 
 
+      REGISTER_CONSTANT(VIR_DOMAIN_MEM_LIVE, MEM_LIVE);
+      REGISTER_CONSTANT(VIR_DOMAIN_MEM_CONFIG, MEM_CONFIG);
+
       REGISTER_CONSTANT(VIR_DOMAIN_JOB_NONE, JOB_NONE);
       REGISTER_CONSTANT(VIR_DOMAIN_JOB_BOUNDED, JOB_BOUNDED);
       REGISTER_CONSTANT(VIR_DOMAIN_JOB_UNBOUNDED, JOB_UNBOUNDED);
@@ -4466,6 +4605,9 @@ BOOT:
       REGISTER_CONSTANT_STR(VIR_DOMAIN_MEMORY_MIN_GUARANTEE, MEMORY_MIN_GUARANTEE);
       REGISTER_CONSTANT_STR(VIR_DOMAIN_MEMORY_SWAP_HARD_LIMIT, MEMORY_SWAP_HARD_LIMIT);
       REGISTER_CONSTANT_ULL(VIR_DOMAIN_MEMORY_PARAM_UNLIMITED, MEMORY_PARAM_UNLIMITED);
+
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BLKIO_WEIGHT, BLKIO_WEIGHT);
+
 
       REGISTER_CONSTANT(VIR_DOMAIN_VCPU_LIVE, VCPU_LIVE);
       REGISTER_CONSTANT(VIR_DOMAIN_VCPU_CONFIG, VCPU_CONFIG);
@@ -4551,6 +4693,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_FROM_SYSINFO, FROM_SYSINFO);
       REGISTER_CONSTANT(VIR_FROM_STREAMS, FROM_STREAMS);
       REGISTER_CONSTANT(VIR_FROM_VMWARE, FROM_VMWARE);
+      REGISTER_CONSTANT(VIR_FROM_EVENT, FROM_EVENT);
+      REGISTER_CONSTANT(VIR_FROM_LIBXL, FROM_LIBXL);
 
 
 
@@ -4623,4 +4767,5 @@ BOOT:
       REGISTER_CONSTANT(VIR_ERR_HOOK_SCRIPT_FAILED, ERR_HOOK_SCRIPT_FAILED);
       REGISTER_CONSTANT(VIR_ERR_INVALID_DOMAIN_SNAPSHOT, ERR_INVALID_DOMAIN_SNAPSHOT);
       REGISTER_CONSTANT(VIR_ERR_NO_DOMAIN_SNAPSHOT, ERR_NO_DOMAIN_SNAPSHOT);
+      REGISTER_CONSTANT(VIR_ERR_INVALID_STREAM, ERR_INVALID_STREAM);
     }

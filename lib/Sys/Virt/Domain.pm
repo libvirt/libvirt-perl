@@ -248,11 +248,14 @@ value of the C<$mem> parameter is specified in kilobytes.
 Returns the current maximum memory allowed for this domain in
 kilobytes.
 
-=item $dom->set_memory($mem)
+=item $dom->set_memory($mem, $flags)
 
 Set the current memory for the domain to the value C<$mem>. The
 value of the C<$mem> parameter is specified in kilobytes. This
 must be less than, or equal to the domain's max memory limit.
+The C<$flags> parameter can control whether the update affects
+the live guest, or inactive config, defaulting to modifying
+the current state.
 
 =item $dom->shutdown()
 
@@ -378,6 +381,26 @@ Number of bytes written
 =item C<errs>
 
 Some kind of error count
+
+=back
+
+=item my $params = $dom->get_blkio_parameters()
+
+Return a hash reference containing the set of blkio tunable
+parameters for the guest. The keys in the hash are one of the
+constants BLKIO PARAMETERS described later.
+
+=item $dom->set_blkio_parameters($params)
+
+Update the blkio tunable parameters for the guest. The
+C<$params> should be a hash reference whose keys are one
+of the BLKIO PARAMETERS constants.
+
+=over 4
+
+=item C<weight>
+
+Relative I/O weighting
 
 =back
 
@@ -507,6 +530,12 @@ Set the maximum allowed downtime during migration of the guest. A
 longer downtime makes it more likely that migration will complete,
 at the cost of longer time blackout for the guest OS at the switch
 over point. The C<downtime> parameter is measured in milliseconds.
+The C<$flags> parameter is currently unused and defaults to zero.
+
+=item $dom->migrate_set_max_speed($bandwidth, $flags)
+
+Set the maximum allowed bandwidth during migration of the guest.
+The C<bandwidth> parameter is measured in kilobytes/second.
 The C<$flags> parameter is currently unused and defaults to zero.
 
 =item @vcpuinfo = $dom->get_vcpu_info()
@@ -776,6 +805,23 @@ Modify only the persistent config of the domain
 
 =back
 
+=head2 MEMORY OPTIONS
+
+The following constants are used to control memory change
+operations
+
+=over 4
+
+=item Sys::Virt::Domain::MEM_LIVE
+
+Modify only the live state of the domain
+
+=item Sys::Virt::Domain::MEM_CONFIG
+
+Modify only the persistent config of the domain
+
+=back
+
 =head2 MIGRATE OPTIONS
 
 The following constants are used to control how migration
@@ -877,6 +923,17 @@ The maximum swap the guest can use.
 =item Sys::Virt::Domain::MEMORY_PARAM_UNLIMITED
 
 The value of an unlimited memory parameter
+
+=back
+
+
+=head2 BLKIO PARAMETERS
+
+=over 4
+
+=item Sys::Virt::Domain::BLKIO_WEIGHT
+
+The I/O weight parameter
 
 =back
 
