@@ -1,6 +1,18 @@
 Sys::Virt ChangeLog
 ===================
 
+New in 0.2.7:
+
+ - Honour flags parameter when dumping XML
+ - Use thread local error APIs exclusively
+ - Fix bogus extra URI parameter in migrate_to_uri function
+ - Implement all virStream APIs in Sys::Virt::Stream
+ - Impement virDomainGetSysinfo binding
+ - Call virInitialize when loading module
+ - Add all missing error constants
+ - Update example RPM spec to match Fedora
+ - Requires libvirt >= 0.8.8
+
 New in 0.2.6:
 
  - Fix build with 0.8.7 libvirt by removing reference to
