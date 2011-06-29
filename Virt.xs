@@ -2394,21 +2394,17 @@ PREINIT:
 
 
 void
-migrate_to_uri(dom, desturi, flags=0, dname=&PL_sv_undef, uri=&PL_sv_undef, bandwidth=0)
+migrate_to_uri(dom, desturi, flags=0, dname=&PL_sv_undef, bandwidth=0)
      virDomainPtr dom;
      const char *desturi;
      unsigned long flags;
      SV *dname;
-     SV *uri;
      unsigned long bandwidth;
 PREINIT:
      const char *dnamestr = NULL;
-     const char *uristr = NULL;
   PPCODE:
      if (SvOK(dname))
        dnamestr = SvPV_nolen(dname);
-     if (SvOK(uri))
-       uristr = SvPV_nolen(uri);
 
      if (virDomainMigrateToURI(dom, desturi, flags, dnamestr, bandwidth) < 0) {
        _croak_error(virGetLastError());
