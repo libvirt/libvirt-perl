@@ -1628,6 +1628,9 @@ PREINIT:
       case VIR_DOMAIN_EVENT_ID_GRAPHICS:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_graphics_callback);
           break;
+      case VIR_DOMAIN_EVENT_ID_CONTROL_ERROR:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_generic_callback);
+          break;
       default:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_generic_callback);
           break;
@@ -1651,6 +1654,33 @@ domain_event_deregister_any(con, callbackID)
  PPCODE:
       virConnectDomainEventDeregisterAny(con, callbackID);
 
+
+void
+interface_change_begin(conn, flags=0)
+      virConnectPtr conn;
+      unsigned int flags;
+    PPCODE:
+      if (virInterfaceChangeBegin(conn, flags) < 0) {
+	_croak_error(virGetLastError());
+      }
+
+void
+interface_change_commit(conn, flags=0)
+      virConnectPtr conn;
+      unsigned int flags;
+    PPCODE:
+      if (virInterfaceChangeCommit(conn, flags) < 0) {
+	_croak_error(virGetLastError());
+      }
+
+void
+interface_change_rollback(conn, flags=0)
+      virConnectPtr conn;
+      unsigned int flags;
+    PPCODE:
+      if (virInterfaceChangeRollback(conn, flags) < 0) {
+	_croak_error(virGetLastError());
+      }
 
 
 void
@@ -1907,6 +1937,34 @@ get_info(dom)
   OUTPUT:
       RETVAL
 
+void
+get_state(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+PREINIT:
+      int state;
+      int reason;
+ PPCODE:
+      if (virDomainGetState(dom, &state, &reason, flags) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+      XPUSHs(sv_2mortal(newSViv(state)));
+      XPUSHs(sv_2mortal(newSViv(reason)));
+
+
+
+void
+screenshot(dom, st, screen, flags=0)
+      virDomainPtr dom;
+      virStreamPtr st;
+      unsigned int screen;
+      unsigned int flags;
+  PPCODE:
+      if (virDomainScreenshot(dom, st, screen, flags) < 0) {
+          _croak_error(virGetLastError());
+      }
+
 
 HV *
 get_block_info(dom, dev, flags=0)
@@ -1963,8 +2021,9 @@ abort_job(dom)
 
 
 HV *
-get_scheduler_parameters(dom)
+get_scheduler_parameters(dom, flags=0)
       virDomainPtr dom;
+      unsigned int flags;
   PREINIT:
       virSchedParameter *params;
       int nparams;
@@ -1976,9 +2035,16 @@ get_scheduler_parameters(dom)
       }
       free(type);
       Newx(params, nparams, virSchedParameter);
-      if (virDomainGetSchedulerParameters(dom, params, &nparams) < 0) {
-	Safefree(params);
-	_croak_error(virGetLastError());
+      if (flags) {
+        if (virDomainGetSchedulerParametersFlags(dom, params, &nparams, flags) < 0) {
+	  Safefree(params);
+          _croak_error(virGetLastError());
+        }
+      } else {
+        if (virDomainGetSchedulerParameters(dom, params, &nparams) < 0) {
+	  Safefree(params);
+          _croak_error(virGetLastError());
+        }
       }
       RETVAL = (HV *)sv_2mortal((SV*)newHV());
       for (i = 0 ; i < nparams ; i++) {
@@ -2017,9 +2083,10 @@ get_scheduler_parameters(dom)
       RETVAL
 
 void
-set_scheduler_parameters(dom, newparams)
+set_scheduler_parameters(dom, newparams, flags=0)
       virDomainPtr dom;
       HV *newparams;
+      unsigned int flags;
   PREINIT:
       virSchedParameter *params;
       int nparams;
@@ -2031,9 +2098,16 @@ set_scheduler_parameters(dom, newparams)
       }
       free(type);
       Newx(params, nparams, virSchedParameter);
-      if (virDomainGetSchedulerParameters(dom, params, &nparams) < 0) {
-	Safefree(params);
-	_croak_error(virGetLastError());
+      if (flags) {
+        if (virDomainGetSchedulerParametersFlags(dom, params, &nparams, flags) < 0) {
+          Safefree(params);
+          _croak_error(virGetLastError());
+        }
+      } else {
+        if (virDomainGetSchedulerParameters(dom, params, &nparams) < 0) {
+          Safefree(params);
+          _croak_error(virGetLastError());
+        }
       }
       for (i = 0 ; i < nparams ; i++) {
 	SV **val;
@@ -2070,8 +2144,14 @@ set_scheduler_parameters(dom, newparams)
 	}
 
       }
-      if (virDomainSetSchedulerParameters(dom, params, nparams) < 0) {
-	_croak_error(virGetLastError());
+      if (flags) {
+        if (virDomainSetSchedulerParametersFlags(dom, params, nparams, flags) < 0) {
+          _croak_error(virGetLastError());
+        }
+      } else {
+        if (virDomainSetSchedulerParameters(dom, params, nparams) < 0) {
+          _croak_error(virGetLastError());
+        }
       }
       Safefree(params);
 
@@ -2472,6 +2552,15 @@ reboot(dom, flags=0)
       }
 
 void
+inject_nmi(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+    PPCODE:
+      if (virDomainInjectNMI(dom, flags) < 0) {
+	_croak_error(virGetLastError());
+      }
+
+void
 undefine(dom)
       virDomainPtr dom;
     PPCODE:
@@ -2532,6 +2621,62 @@ PREINIT:
        dnamestr = SvPV_nolen(dname);
 
      if (virDomainMigrateToURI(dom, desturi, flags, dnamestr, bandwidth) < 0) {
+       _croak_error(virGetLastError());
+     }
+
+
+virDomainPtr
+migrate2(dom, destcon, dxml=&PL_sv_undef, flags=0, dname=&PL_sv_undef, uri=&PL_sv_undef, bandwidth=0)
+     virDomainPtr dom;
+     virConnectPtr destcon;
+     SV *dxml;
+     unsigned long flags;
+     SV *dname;
+     SV *uri;
+     unsigned long bandwidth;
+PREINIT:
+     const char *dnamestr = NULL;
+     const char *uristr = NULL;
+     const char *dxmlstr = NULL;
+   CODE:
+     if (SvOK(dxml))
+       dxmlstr = SvPV_nolen(dxml);
+     if (SvOK(dname))
+       dnamestr = SvPV_nolen(dname);
+     if (SvOK(uri))
+       uristr = SvPV_nolen(uri);
+
+     if ((RETVAL = virDomainMigrate2(dom, destcon, dxmlstr,
+                                     flags, dnamestr, uristr, bandwidth)) == NULL) {
+       _croak_error(virGetLastError());
+     }
+ OUTPUT:
+     RETVAL
+
+
+void
+migrate_to_uri2(dom, dconnuri, miguri=&PL_sv_undef, dxml=&PL_sv_undef, flags=0, dname=&PL_sv_undef, bandwidth=0)
+     virDomainPtr dom;
+     const char *dconnuri;
+     SV *miguri;
+     SV *dxml;
+     unsigned long flags;
+     SV *dname;
+     unsigned long bandwidth;
+PREINIT:
+     const char *miguristr = NULL;
+     const char *dxmlstr = NULL;
+     const char *dnamestr = NULL;
+  PPCODE:
+     if (SvOK(dxml))
+       dxmlstr = SvPV_nolen(dxml);
+     if (SvOK(miguri))
+       miguristr = SvPV_nolen(miguri);
+     if (SvOK(dname))
+       dnamestr = SvPV_nolen(dname);
+
+     if (virDomainMigrateToURI2(dom, dconnuri, miguristr, dxmlstr,
+                                flags, dnamestr, bandwidth) < 0) {
        _croak_error(virGetLastError());
      }
 
@@ -4506,6 +4651,43 @@ BOOT:
 
       REGISTER_CONSTANT(VIR_DOMAIN_START_PAUSED, START_PAUSED);
 
+      REGISTER_CONSTANT(VIR_DOMAIN_NOSTATE_UNKNOWN, STATE_NOSTATE_UNKNOWN);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_RUNNING_UNKNOWN, STATE_RUNNING_UNKNOWN);
+      REGISTER_CONSTANT(VIR_DOMAIN_RUNNING_BOOTED, STATE_RUNNING_BOOTED);
+      REGISTER_CONSTANT(VIR_DOMAIN_RUNNING_MIGRATED, STATE_RUNNING_MIGRATED);
+      REGISTER_CONSTANT(VIR_DOMAIN_RUNNING_RESTORED, STATE_RUNNING_RESTORED);
+      REGISTER_CONSTANT(VIR_DOMAIN_RUNNING_FROM_SNAPSHOT, STATE_RUNNING_FROM_SNAPSHOT);
+      REGISTER_CONSTANT(VIR_DOMAIN_RUNNING_UNPAUSED, STATE_RUNNING_UNPAUSED);
+      REGISTER_CONSTANT(VIR_DOMAIN_RUNNING_MIGRATION_CANCELED, STATE_RUNNING_MIGRATION_CANCELED);
+      REGISTER_CONSTANT(VIR_DOMAIN_RUNNING_SAVE_CANCELED, STATE_RUNNING_SAVE_CANCELED);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_BLOCKED_UNKNOWN, STATE_RUNNING_UNKNOWN);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_PAUSED_UNKNOWN, STATE_PAUSED_UNKNOWN);
+      REGISTER_CONSTANT(VIR_DOMAIN_PAUSED_USER, STATE_PAUSED_USER);
+      REGISTER_CONSTANT(VIR_DOMAIN_PAUSED_MIGRATION, STATE_PAUSED_MIGRATION);
+      REGISTER_CONSTANT(VIR_DOMAIN_PAUSED_SAVE, STATE_PAUSED_SAVE);
+      REGISTER_CONSTANT(VIR_DOMAIN_PAUSED_DUMP, STATE_PAUSED_DUMP);
+      REGISTER_CONSTANT(VIR_DOMAIN_PAUSED_IOERROR, STATE_PAUSED_IOERROR);
+      REGISTER_CONSTANT(VIR_DOMAIN_PAUSED_WATCHDOG, STATE_PAUSED_WATCHDOG);
+      REGISTER_CONSTANT(VIR_DOMAIN_PAUSED_FROM_SNAPSHOT, STATE_PAUSED_FROM_SNAPSHOT);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_SHUTDOWN_UNKNOWN, STATE_SHUTDOWN_UNKNOWN);
+      REGISTER_CONSTANT(VIR_DOMAIN_SHUTDOWN_USER, STATE_SHUTDOWN_USER);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_SHUTOFF_UNKNOWN, STATE_SHUTOFF_UNKNOWN);
+      REGISTER_CONSTANT(VIR_DOMAIN_SHUTOFF_SHUTDOWN, STATE_SHUTOFF_SHUTDOWN);
+      REGISTER_CONSTANT(VIR_DOMAIN_SHUTOFF_DESTROYED, STATE_SHUTOFF_DESTROYED);
+      REGISTER_CONSTANT(VIR_DOMAIN_SHUTOFF_CRASHED, STATE_SHUTOFF_CRASHED);
+      REGISTER_CONSTANT(VIR_DOMAIN_SHUTOFF_MIGRATED, STATE_SHUTOFF_MIGRATED);
+      REGISTER_CONSTANT(VIR_DOMAIN_SHUTOFF_SAVED, STATE_SHUTOFF_SAVED);
+      REGISTER_CONSTANT(VIR_DOMAIN_SHUTOFF_FAILED, STATE_SHUTOFF_FAILED);
+      REGISTER_CONSTANT(VIR_DOMAIN_SHUTOFF_FROM_SNAPSHOT, STATE_SHUTOFF_FROM_SNAPSHOT);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_CRASHED_UNKNOWN, STATE_CRASHED_UNKNOWN);
+
+
       /* NB: skip VIR_DOMAIN_SCHED_FIELD_* constants, because
          those are not used from Perl code - handled internally
          in the XS layer */
@@ -4566,6 +4748,12 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_MEM_LIVE, MEM_LIVE);
       REGISTER_CONSTANT(VIR_DOMAIN_MEM_CONFIG, MEM_CONFIG);
 
+
+      REGISTER_CONSTANT(VIR_DOMAIN_AFFECT_CURRENT, AFFECT_CURRENT);
+      REGISTER_CONSTANT(VIR_DOMAIN_AFFECT_LIVE, AFFECT_LIVE);
+      REGISTER_CONSTANT(VIR_DOMAIN_AFFECT_CONFIG, AFFECT_CONFIG);
+
+
       REGISTER_CONSTANT(VIR_DOMAIN_JOB_NONE, JOB_NONE);
       REGISTER_CONSTANT(VIR_DOMAIN_JOB_BOUNDED, JOB_BOUNDED);
       REGISTER_CONSTANT(VIR_DOMAIN_JOB_UNBOUNDED, JOB_UNBOUNDED);
@@ -4580,6 +4768,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_IO_ERROR, EVENT_ID_IO_ERROR);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_GRAPHICS, EVENT_ID_GRAPHICS);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_IO_ERROR_REASON, EVENT_ID_IO_ERROR_REASON);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_CONTROL_ERROR, EVENT_ID_CONTROL_ERROR);
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_NONE, EVENT_WATCHDOG_NONE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_PAUSE, EVENT_WATCHDOG_PAUSE);
@@ -4695,7 +4884,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_FROM_VMWARE, FROM_VMWARE);
       REGISTER_CONSTANT(VIR_FROM_EVENT, FROM_EVENT);
       REGISTER_CONSTANT(VIR_FROM_LIBXL, FROM_LIBXL);
-
+      REGISTER_CONSTANT(VIR_FROM_LOCKING, FROM_LOCKING);
 
 
       REGISTER_CONSTANT(VIR_ERR_OK, ERR_OK);

@@ -270,6 +270,10 @@ The event driver
 
 The libxl Xen driver
 
+=item Sys::Virt::Error::FROM_LOCKING
+
+The lock manager drivers
+
 =back
 
 =head2 ERROR CODES

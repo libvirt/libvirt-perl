@@ -1008,6 +1008,21 @@ C<$flags> parameter is optional, and if omitted defaults to zero. The
 returned scalar is an XML document describing the discovered storage
 pool sources.
 
+=item $vmm->interface_change_begin($flags)
+
+Begin a transaction for changing the configuration of one or more
+network interfaces
+
+=item $vmm->interface_change_commit($flags)
+
+Complete a transaction for changing the configuration of one or more
+network interfaces
+
+=item $vmm->interface_change_rollback($flags)
+
+Abort a transaction for changing the configuration of one or more
+network interfaces
+
 =item $vmm->restore_domain($savefile)
 
 Recreate a domain from the saved state file given in the C<$savefile> parameter.

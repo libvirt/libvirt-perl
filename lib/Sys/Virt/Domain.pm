@@ -213,6 +213,129 @@ constants &Sys::Virt::Domain::STATE_*.
 
 =back
 
+=item my ($state, $reason) = $dom->get_state()
+
+Returns an array whose values specify the current state
+of the guest, and the reason for it being in that state.
+The C<$state> values are the same as for the C<get_info>
+API, and the C<$reason> values come from:
+
+=over 4
+
+=item Sys::Virt::Domain::STATE_CRASHED_UNKNOWN
+
+It is not known why the domain has crashed
+
+=item Sys::Virt::Domain::STATE_NOSTATE_UNKNOWN
+
+It is not known why the domain has no state
+
+=item Sys::Virt::Domain::STATE_PAUSED_DUMP
+
+The guest is paused due to a core dump operation
+
+=item Sys::Virt::Domain::STATE_PAUSED_FROM_SNAPSHOT
+
+The guest is paused due to a snapshot
+
+=item Sys::Virt::Domain::STATE_PAUSED_IOERROR
+
+The guest is paused due to an I/O error
+
+=item Sys::Virt::Domain::STATE_PAUSED_MIGRATION
+
+The guest is paused due to migration
+
+=item Sys::Virt::Domain::STATE_PAUSED_SAVE
+
+The guest is paused due to a save operation
+
+=item Sys::Virt::Domain::STATE_PAUSED_UNKNOWN
+
+It is not known why the domain has paused
+
+=item Sys::Virt::Domain::STATE_PAUSED_USER
+
+The guest is paused at admin request
+
+=item Sys::Virt::Domain::STATE_PAUSED_WATCHDOG
+
+The guest is paused due to the watchdog
+
+=item Sys::Virt::Domain::STATE_RUNNING_BOOTED
+
+The guest is running after being booted
+
+=item Sys::Virt::Domain::STATE_RUNNING_FROM_SNAPSHOT
+
+The guest is running after restore from snapshot
+
+=item Sys::Virt::Domain::STATE_RUNNING_MIGRATED
+
+The guest is running after migration
+
+=item Sys::Virt::Domain::STATE_RUNNING_MIGRATION_CANCELED
+
+The guest is running after migration abort
+
+=item Sys::Virt::Domain::STATE_RUNNING_RESTORED
+
+The guest is running after restore from file
+
+=item Sys::Virt::Domain::STATE_RUNNING_SAVE_CANCELED
+
+The guest is running after save cancel
+
+=item Sys::Virt::Domain::STATE_RUNNING_UNKNOWN
+
+It is not known why the domain has started
+
+=item Sys::Virt::Domain::STATE_RUNNING_UNPAUSED
+
+The guest is running after a resume
+
+=item Sys::Virt::Domain::STATE_SHUTDOWN_UNKNOWN
+
+It is not known why the domain has shutdown
+
+=item Sys::Virt::Domain::STATE_SHUTDOWN_USER
+
+The guest is shutdown due to admin request
+
+=item Sys::Virt::Domain::STATE_SHUTOFF_CRASHED
+
+The guest is shutoff after a crash
+
+=item Sys::Virt::Domain::STATE_SHUTOFF_DESTROYED
+
+The guest is shutoff after being destroyed
+
+=item Sys::Virt::Domain::STATE_SHUTOFF_FAILED
+
+The guest is shutoff due to a virtualization failure
+
+=item Sys::Virt::Domain::STATE_SHUTOFF_FROM_SNAPSHOT
+
+The guest is shutoff after a snapshot
+
+=item Sys::Virt::Domain::STATE_SHUTOFF_MIGRATED
+
+The guest is shutoff after migration
+
+=item Sys::Virt::Domain::STATE_SHUTOFF_SAVED
+
+The guest is shutoff after a save
+
+=item Sys::Virt::Domain::STATE_SHUTOFF_SHUTDOWN
+
+The guest is shutoff due to controlled shutdown
+
+=item Sys::Virt::Domain::STATE_SHUTOFF_UNKNOWN
+
+It is not known why the domain has shutoff
+
+=back
+
 =item my $info = $dom->get_block_info($dev, $flags=0)
 
 Returns a hash reference summarising the disk usage of
@@ -504,6 +627,11 @@ will be performed. The C<flags>, C<dname>, C<uri> and C<bandwidth>
 parameters are all optional, and if omitted default to zero, C<undef>,
 C<undef>, and zero respectively.
 
+=item $ddom = $dom->migrate2(destcon, dxml, flags, dname, uri, bandwidth)
+
+Migrate a domain to an alternative host. This function works in the
+same way as C<migrate>, except is also allows C<dxml> to specify a
+changed XML configuration for the guest on the target host.
 
 =item $dom->migrate_to_uri(desturi, flags, dname, bandwidth)
 
@@ -523,6 +651,15 @@ will be performed. The C<flags>, C<dname> and C<bandwidth>
 parameters are all optional, and if omitted default to zero, C<undef>,
 C<undef>, and zero respectively.
 
+=item $dom->migrate_to_uri2(dconnuri, miguri, dxml, flags, dname, bandwidth)
+
+Migrate a domain to an alternative host. This function works in almost
+the same way as C<migrate_to_uri>, except is also allows C<dxml> to
+specify a changed XML configuration for the guest on the target host.
+The C<dconnuri> must always specify the URI of the remote libvirtd
+daemon, or be C<undef>. The C<miguri> parameter can be used to specify
+the URI for initiating the migration operation, or be C<undef>.
+
 
 =item $dom->migrate_set_max_downtime($downtime, $flags)
 
@@ -537,6 +674,19 @@ The C<$flags> parameter is currently unused and defaults to zero.
 Set the maximum allowed bandwidth during migration of the guest.
 The C<bandwidth> parameter is measured in kilobytes/second.
 The C<$flags> parameter is currently unused and defaults to zero.
+
+=item $dom->inject_nmi($flags)
+
+Trigger an NMI in the guest virtual machine. The C<$flags> parameter
+is currently unused and defaults to 0.
+
+=item $dom->screenshot($st, $screen, $flags)
+
+Capture a screenshot of the virtual machine's monitor. The C<$screen>
+parameter controls which monitor is captured when using a multi-head
+or multi-card configuration. C<$st> must be a C<Sys::Virt::Stream>
+object from which the data can be read. C<$flags> is currently unused
+and defaults to 0.
 
 =item @vcpuinfo = $dom->get_vcpu_info()
 
@@ -812,11 +962,40 @@ operations
 
 =over 4
 
+=item Sys::Virt::Domain::MEM_CURRENT
+
+Modify the current state
+
 =item Sys::Virt::Domain::MEM_LIVE
 
 Modify only the live state of the domain
 
 =item Sys::Virt::Domain::MEM_CONFIG
+
+Modify only the persistent config of the domain
+
+=item Sys::Virt::Domain::MEM_MAXIMUM
+
+Modify the maximum memory value
+
+=back
+
+=head2 CONFIG OPTIONS
+
+The following constants are used to control what configuration
+a domain update changes
+
+=over 4
+
+=item Sys::Virt::Domain::AFFECT_CURRENT
+
+Modify the current state
+
+=item Sys::Virt::Domain::AFFECT_LIVE
+
+Modify only the live state of the domain
+
+=item Sys::Virt::Domain::AFFECT_CONFIG
 
 Modify only the persistent config of the domain
 
@@ -1113,6 +1292,10 @@ Graphics client connections.
 =item Sys::Virt::Domain::EVENT_ID_IO_ERROR_REASON
 
 File IO errors, typically from disks, with a root cause
+
+=item Sys::Virt::Domain::EVENT_ID_CONTROL_ERROR
+
+Errors from the virtualization control channel
 
 =back
 
