@@ -1,6 +1,13 @@
 Sys::Virt ChangeLog
 ===================
 
+New in 0.2.8:
+
+ - Add all new APIs in libvirt 0.9.0
+ - Add examples for different ways of using stream
+   APIs to download/upload storage volumes
+ - Requires libvirt >= 0.9.0
+
 New in 0.2.7:
 
  - Honour flags parameter when dumping XML
