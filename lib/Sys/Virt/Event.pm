@@ -43,6 +43,13 @@ use warnings;
 
 our $eventimpl = undef;
 
+=item register_default()
+
+Register the default libvirt event loop implementation
+
+=item run_default()
+
+Run a single iteration of the default event loop implementation
 
 =item register($impl)
 

@@ -3393,6 +3393,45 @@ get_info(vol)
   OUTPUT:
       RETVAL
 
+
+void
+download(vol, st, offsetsv, lengthsv, flags=0)
+      virStorageVolPtr vol;
+      virStreamPtr st;
+      SV *offsetsv;
+      SV *lengthsv;
+      unsigned int flags;
+ PREINIT:
+      unsigned long long offset;
+      unsigned long long length;
+  PPCODE:
+      offset = virt_SvIVull(offsetsv);
+      length = virt_SvIVull(lengthsv);
+
+      if (virStorageVolDownload(vol, st, offset, length, flags) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+
+void
+upload(vol, st, offsetsv, lengthsv, flags=0)
+      virStorageVolPtr vol;
+      virStreamPtr st;
+      SV *offsetsv;
+      SV *lengthsv;
+      unsigned int flags;
+ PREINIT:
+      unsigned long long offset;
+      unsigned long long length;
+  PPCODE:
+      offset = virt_SvIVull(offsetsv);
+      length = virt_SvIVull(lengthsv);
+
+      if (virStorageVolUpload(vol, st, offset, length, flags) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+
 void
 DESTROY(vol_rv)
       SV *vol_rv;
@@ -4041,6 +4080,16 @@ _register_impl()
 			   _event_add_timeout,
 			   _event_update_timeout,
 			   _event_remove_timeout);
+
+void
+register_default()
+  PPCODE:
+      virEventRegisterDefaultImpl();
+
+void
+run_default()
+  PPCODE:
+      virEventRunDefaultImpl();
 
 void
 _run_handle_callback_helper(watch, fd, event, cbref, opaqueref)

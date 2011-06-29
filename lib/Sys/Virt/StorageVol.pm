@@ -114,6 +114,18 @@ capacity for sparse, or grow-on-demand volumes. The allocation
 may also be larger than the capacity, if there is a metadata overhead
 for the volume format.
 
+=item $vol->download($st, $offset, $length);
+
+Download data from C<$vol> using the stream C<$st>. If C<$offset>
+and C<$length> are non-zero, then restrict data to the specified
+volume byte range.
+
+=item $vol->upload($st, $offset, $length);
+
+Upload data to C<$vol> using the stream C<$st>. If C<$offset>
+and C<$length> are non-zero, then restrict data to the specified
+volume byte range.
+
 =back
 
 =head1 CONSTANTS
