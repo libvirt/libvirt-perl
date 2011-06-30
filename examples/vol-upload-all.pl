@@ -20,10 +20,9 @@ my $vol = $c->get_storage_volume_by_path($volpath);
 open FILE, "<$f" or die "cannot open $f: $!";
 
 sub foo {
-	my $st = shift;
-	my $data = shift;
-	my $nbytes = shift;
-        return sysread FILE, $data, $nbytes;
+	my $st = $_[0];
+	my $nbytes = $_[2];
+        return sysread FILE, $_[1], $nbytes;
 };
 
 eval {
