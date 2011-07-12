@@ -1149,6 +1149,70 @@ encrypted.
 Returns a hash reference summarising the capabilities of the host
 node. The elements of the hash are as follows:
 
+=item my $info = $con->get_node_cpu_stats($cpuNum=-1, $flags=0)
+
+Returns a hash reference providing information about the host
+CPU statistics. If <$cpuNum> is omitted, it defaults to -1
+which causes it to return cummulative information for all
+CPUs in the host. If C<$cpuNum> is zero or larger, it returns
+information just for the specified number. The C<$flags>
+parameter is currently unused and defaults to zero. The
+fields in the returned hash reference are
+
+=over 4
+
+=item kernel
+
+The time spent in kernelspace
+
+=item user
+
+The time spent in userspace
+
+=item idle
+
+The idle time
+
+=item iowait
+
+The I/O wait time
+
+=item utilization
+
+The overall percentage utilization.
+
+=back
+
+=item my $info = $con->get_node_memory_stats($cellNum=-1, $flags=0)
+
+Returns a hash reference providing information about the host
+memory statistics. If <$cellNum> is omitted, it defaults to -1
+which causes it to return cummulative information for all
+NUMA cells in the host. If C<$cellNum> is zero or larger, it
+returns information just for the specified number. The C<$flags>
+parameter is currently unused and defaults to zero. The
+fields in the returned hash reference are
+
+=over 4
+
+=item total
+
+The total memory
+
+=item free
+
+The free memory
+
+=item buffers
+
+The memory consumed by buffers
+
+=item cache
+
+The memory consumed for cache
+
+=back
+
 =item $conn->domain_event_register($callback)
 
 Register a callback to received notificaitons of domain state change

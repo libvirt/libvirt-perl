@@ -146,6 +146,42 @@ sub _free_callback_opaque {
 
 1;
 
+=item my $watch = Sys::Virt::Event::add_handle($fd, $events, $coderef)
+
+Adds a watch on the file descriptor C<$fd> for the events C<$events>
+which is a mask of the FILE HANDLE EVENTS constants listed later.
+The C<$coderef> parameter is a subroutine to invoke when an event
+is triggered. The subroutine will be passed three parameters, the
+watch identifier, the file descriptor and the event mask. This
+method returns the watch identifier which can be used to update or
+remove the watch
+
+=item Sys::Virt::Event::update_handle($watch, $events)
+
+Update the event mask for the file descriptor watch C<$watch>
+to use the events C<$events>.
+
+=item Sys::Virt::Event::remove_handle($watch)
+
+Remove the event mask for the file descriptor watch C<$watch>.
+
+=item my $watch = Sys::Virt::Event::add_timeout($frequency, $coderef)
+
+Adds a timeout to trigger with C<$frequency> milliseconds interval.
+The C<$coderef> parameter is a subroutine to invoke when an event
+is triggered. The subroutine will be passed one parameter, the
+timer identifier. This method returns the watch identifier which
+can be used to update or remove the watch
+
+=item Sys::Virt::Event::update_timeout($timer, $frequency)
+
+Update the timeout C<$timer> to have the frequency C<$frequency>
+milliseconds.
+
+=item Sys::Virt::Event::remove_timeout($timer)
+
+Remove the timeout C<$timer>
+
 =back
 
 =head1 CONSTANTS

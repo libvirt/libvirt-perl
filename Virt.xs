@@ -697,6 +697,63 @@ _open_auth_callback(virConnectCredentialPtr cred,
   return success;
 }
 
+static void
+_event_handle_helper(int watch,
+                     int fd,
+                     int events,
+                     void *opaque)
+{
+    SV *cb = opaque;
+    dSP;
+
+    SvREFCNT_inc(cb);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(sv_2mortal(newSViv(watch)));
+    XPUSHs(sv_2mortal(newSViv(fd)));
+    XPUSHs(sv_2mortal(newSViv(events)));
+    PUTBACK;
+
+    call_sv(cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+}
+
+
+static void
+_event_timeout_helper(int timer,
+                      void *opaque)
+{
+    SV *cb = opaque;
+    dSP;
+
+    SvREFCNT_inc(cb);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(sv_2mortal(newSViv(timer)));
+    PUTBACK;
+
+    call_sv(cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+}
+
+
+static void
+_event_cb_free(void *opaque)
+{
+    SV *data = opaque;
+    SvREFCNT_dec(data);
+}
+
 
 static void
 _stream_event_callback(virStreamPtr st,
@@ -1074,6 +1131,76 @@ PREINIT:
       }
       Safefree(mem);
 
+
+HV *
+get_node_cpu_stats(con, cpuNum=VIR_NODE_CPU_STATS_ALL_CPUS, flags=0)
+      virConnectPtr con;
+      int cpuNum;
+      unsigned int flags;
+PREINIT:
+      virNodeCPUStatsPtr params;
+      int nparams;
+      int i;
+  CODE:
+      if (virNodeGetCPUStats(con, cpuNum, NULL, &nparams, flags) < 0) {
+            _croak_error(virGetLastError());
+      }
+
+      Newx(params, nparams, virNodeCPUStats);
+      if (virNodeGetCPUStats(con, cpuNum, params, &nparams, flags) < 0) {
+            _croak_error(virGetLastError());
+      }
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
+      for (i = 0 ; i < nparams ; i++) {
+          if (strcmp(params[i].field, VIR_NODE_CPU_STATS_KERNEL) == 0) {
+              (void)hv_store (RETVAL, "kernel", 6, virt_newSVull(params[i].value), 0);
+          } else if (strcmp(params[i].field, VIR_NODE_CPU_STATS_USER) == 0) {
+              (void)hv_store (RETVAL, "user", 4, virt_newSVull(params[i].value), 0);
+          } else if (strcmp(params[i].field, VIR_NODE_CPU_STATS_IDLE) == 0) {
+              (void)hv_store (RETVAL, "idle", 4, virt_newSVull(params[i].value), 0);
+          } else if (strcmp(params[i].field, VIR_NODE_CPU_STATS_IOWAIT) == 0) {
+              (void)hv_store (RETVAL, "iowait", 6, virt_newSVull(params[i].value), 0);
+          } else if (strcmp(params[i].field, VIR_NODE_CPU_STATS_UTILIZATION) == 0) {
+              (void)hv_store (RETVAL, "utilization", 11, virt_newSVull(params[i].value), 0);
+          }
+      }
+      Safefree(params);
+  OUTPUT:
+      RETVAL
+
+HV *
+get_node_memory_stats(con, cellNum=VIR_NODE_MEMORY_STATS_ALL_CELLS, flags=0)
+      virConnectPtr con;
+      int cellNum;
+      unsigned int flags;
+PREINIT:
+      virNodeMemoryStatsPtr params;
+      int nparams;
+      int i;
+  CODE:
+      if (virNodeGetMemoryStats(con, cellNum, NULL, &nparams, flags) < 0) {
+            _croak_error(virGetLastError());
+      }
+
+      Newx(params, nparams, virNodeMemoryStats);
+      if (virNodeGetMemoryStats(con, cellNum, params, &nparams, flags) < 0) {
+            _croak_error(virGetLastError());
+      }
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
+      for (i = 0 ; i < nparams ; i++) {
+          if (strcmp(params[i].field, VIR_NODE_MEMORY_STATS_TOTAL) == 0) {
+              (void)hv_store (RETVAL, "total", 6, virt_newSVull(params[i].value), 0);
+          } else if (strcmp(params[i].field, VIR_NODE_MEMORY_STATS_FREE) == 0) {
+              (void)hv_store (RETVAL, "free", 4, virt_newSVull(params[i].value), 0);
+          } else if (strcmp(params[i].field, VIR_NODE_MEMORY_STATS_BUFFERS) == 0) {
+              (void)hv_store (RETVAL, "buffers", 4, virt_newSVull(params[i].value), 0);
+          } else if (strcmp(params[i].field, VIR_NODE_MEMORY_STATS_CACHED) == 0) {
+              (void)hv_store (RETVAL, "cached", 6, virt_newSVull(params[i].value), 0);
+          }
+      }
+      Safefree(params);
+  OUTPUT:
+      RETVAL
 
 char *
 find_storage_pool_sources(con, type, srcspec, flags=0)
@@ -1934,6 +2061,24 @@ get_info(dom)
       (void)hv_store (RETVAL, "memory", 6, newSViv(info.memory), 0);
       (void)hv_store (RETVAL, "nrVirtCpu", 9, newSViv(info.nrVirtCpu), 0);
       (void)hv_store (RETVAL, "cpuTime", 7, virt_newSVull(info.cpuTime), 0);
+  OUTPUT:
+      RETVAL
+
+
+HV *
+get_control_info(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+  PREINIT:
+      virDomainControlInfo info;
+    CODE:
+      if (virDomainGetControlInfo(dom, &info, flags) < 0) {
+	_croak_error(virGetLastError());
+      }
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
+      (void)hv_store (RETVAL, "state", 5, newSViv(info.state), 0);
+      (void)hv_store (RETVAL, "details", 7, newSViv(info.details), 0);
+      (void)hv_store (RETVAL, "stateTime", 9, virt_newSVull(info.stateTime), 0);
   OUTPUT:
       RETVAL
 
@@ -2832,12 +2977,47 @@ memory_stats(dom, flags=0)
           case VIR_DOMAIN_MEMORY_STAT_AVAILABLE:
               (void)hv_store (RETVAL, "available", 9, virt_newSVll(stats[i].val), 0);
               break;
+
+          case VIR_DOMAIN_MEMORY_STAT_ACTUAL_BALLOON:
+              (void)hv_store (RETVAL, "actual_balloon", 14, virt_newSVll(stats[i].val), 0);
+              break;
           }
       }
       Safefree(stats);
   OUTPUT:
       RETVAL
 
+
+void
+send_key(dom, codeset, holdtime, keycodesSV, flags=0)
+      virDomainPtr dom;
+      unsigned int codeset;
+      unsigned int holdtime;
+      SV *keycodesSV;
+      unsigned int flags;
+PREINIT:
+      AV *keycodesAV;
+      unsigned int *keycodes;
+      int nkeycodes;
+      int i;
+   PPCODE:
+      if (!SvROK(keycodesSV))
+          return;
+      keycodesAV = (AV*)SvRV(keycodesSV);
+      nkeycodes = av_len(keycodesAV) + 1;
+      Newx(keycodes, nkeycodes, unsigned int);
+
+      for (i = 0 ; i < nkeycodes ; i++) {
+          SV **code = av_fetch(keycodesAV, i, 0);
+          keycodes[i] = SvIV(*code);
+      }
+
+      if (virDomainSendKey(dom, codeset, holdtime, keycodes, nkeycodes, flags) < 0) {
+          Safefree(keycodes);
+          _croak_error(virGetLastError());
+      }
+
+      Safefree(keycodes);
 
 SV *
 block_peek(dom, path, offset, size, flags=0)
@@ -2897,8 +3077,9 @@ get_security_label(dom)
 
 
 void
-get_vcpu_info(dom)
+get_vcpu_info(dom, flags=0)
       virDomainPtr dom;
+      unsigned int flags;
  PREINIT:
       virVcpuInfoPtr info;
       unsigned char *cpumaps;
@@ -2915,42 +3096,60 @@ get_vcpu_info(dom)
 	_croak_error(virGetLastError());
       }
 
-      Newx(info, dominfo.nrVirtCpu, virVcpuInfo);
       maplen = VIR_CPU_MAPLEN(VIR_NODEINFO_MAXCPUS(nodeinfo));
       Newx(cpumaps, dominfo.nrVirtCpu * maplen, unsigned char);
-      if ((nvCpus = virDomainGetVcpus(dom, info, dominfo.nrVirtCpu, cpumaps, maplen)) < 0) {
-	Safefree(info);
-	Safefree(cpumaps);
-	_croak_error(virGetLastError());
+      if (flags && (flags & VIR_DOMAIN_AFFECT_CONFIG)) {
+          Newx(info, dominfo.nrVirtCpu, virVcpuInfo);
+          if ((nvCpus = virDomainGetVcpus(dom, info, dominfo.nrVirtCpu, cpumaps, maplen)) < 0) {
+              Safefree(info);
+              Safefree(cpumaps);
+              _croak_error(virGetLastError());
+          }
+      } else {
+          info = NULL;
+          if ((nvCpus = virDomainGetVcpuPinInfo(dom, dominfo.nrVirtCpu, cpumaps, maplen, flags)) < 0) {
+              Safefree(cpumaps);
+              _croak_error(virGetLastError());
+          }
       }
 
       EXTEND(SP, nvCpus);
       for (i = 0 ; i < nvCpus ; i++) {
 	HV *rec = newHV();
-	(void)hv_store(rec, "number", 6, newSViv(info[i].number), 0);
-	(void)hv_store(rec, "state", 5, newSViv(info[i].state), 0);
-	(void)hv_store(rec, "cpuTime", 7, virt_newSVull(info[i].cpuTime), 0);
-	(void)hv_store(rec, "cpu", 3, newSViv(info[i].cpu), 0);
+	(void)hv_store(rec, "number", 6, newSViv(i), 0);
+        if (info) {
+            (void)hv_store(rec, "state", 5, newSViv(info[i].state), 0);
+            (void)hv_store(rec, "cpuTime", 7, virt_newSVull(info[i].cpuTime), 0);
+            (void)hv_store(rec, "cpu", 3, newSViv(info[i].cpu), 0);
+        }
 	(void)hv_store(rec, "affinity", 8, newSVpvn((char*)cpumaps + (i *maplen), maplen), 0);
 	PUSHs(newRV_noinc((SV *)rec));
       }
 
-      Safefree(info);
+      if (info)
+        Safefree(info);
       Safefree(cpumaps);
 
 
 void
-pin_vcpu(dom, vcpu, mask)
+pin_vcpu(dom, vcpu, mask, flags=0)
      virDomainPtr dom;
      unsigned int vcpu;
      SV *mask;
+     unsigned int flags;
 PREINIT:
      STRLEN masklen;
      unsigned char *maps;
  PPCODE:
      maps = (unsigned char *)SvPV(mask, masklen);
-     if (virDomainPinVcpu(dom, vcpu, maps, masklen) < 0) {
-	_croak_error(virGetLastError());
+     if (flags) {
+         if (virDomainPinVcpuFlags(dom, vcpu, maps, masklen, flags) < 0) {
+             _croak_error(virGetLastError());
+         }
+     } else {
+         if (virDomainPinVcpu(dom, vcpu, maps, masklen) < 0) {
+             _croak_error(virGetLastError());
+         }
      }
 
 
@@ -4372,6 +4571,74 @@ run_default()
   PPCODE:
       virEventRunDefaultImpl();
 
+
+int
+add_handle(fd, events, coderef)
+      int fd;
+      int events;
+      SV *coderef;
+PREINIT:
+      int watch;
+  CODE:
+      SvREFCNT_inc(coderef);
+
+      if ((watch = virEventAddHandle(fd, events, _event_handle_helper, coderef, _event_cb_free)) < 0) {
+          SvREFCNT_dec(coderef);
+          _croak_error(virGetLastError());
+      }
+      RETVAL = watch;
+ OUTPUT:
+      RETVAL
+
+void
+update_handle(watch, events)
+      int watch;
+      int events;
+  PPCODE:
+      virEventUpdateHandle(watch, events);
+
+void
+remove_handle(watch)
+      int watch;
+  PPCODE:
+      if (virEventRemoveHandle(watch) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+
+int
+add_timeout(frequency, coderef)
+      int frequency;
+      SV *coderef;
+PREINIT:
+      int timer;
+  CODE:
+      SvREFCNT_inc(coderef);
+
+      if ((timer = virEventAddTimeout(frequency, _event_timeout_helper, coderef, _event_cb_free)) < 0) {
+          SvREFCNT_dec(coderef);
+          _croak_error(virGetLastError());
+      }
+      RETVAL = timer;
+ OUTPUT:
+      RETVAL
+
+void
+update_timeout(timer, frequency)
+      int timer;
+      int frequency;
+  PPCODE:
+      virEventUpdateTimeout(timer, frequency);
+
+void
+remove_timeout(timer)
+      int timer;
+  PPCODE:
+      if (virEventRemoveTimeout(timer) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+
 void
 _run_handle_callback_helper(watch, fd, event, cbref, opaqueref)
       int watch;
@@ -4650,6 +4917,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_CRASHED, STATE_CRASHED);
 
       REGISTER_CONSTANT(VIR_DOMAIN_START_PAUSED, START_PAUSED);
+      REGISTER_CONSTANT(VIR_DOMAIN_START_AUTODESTROY, START_AUTODESTROY);
 
       REGISTER_CONSTANT(VIR_DOMAIN_NOSTATE_UNKNOWN, STATE_NOSTATE_UNKNOWN);
 
@@ -4710,6 +4978,13 @@ BOOT:
       REGISTER_CONSTANT(VIR_VCPU_BLOCKED, VCPU_BLOCKED);
 
 
+      REGISTER_CONSTANT(VIR_KEYCODE_SET_LINUX, KEYCODE_SET_LINUX);
+      REGISTER_CONSTANT(VIR_KEYCODE_SET_LINUX, KEYCODE_SET_XT);
+      REGISTER_CONSTANT(VIR_KEYCODE_SET_ATSET1, KEYCODE_SET_ATSET1);
+      REGISTER_CONSTANT(VIR_KEYCODE_SET_ATSET2, KEYCODE_SET_ATSET2);
+      REGISTER_CONSTANT(VIR_KEYCODE_SET_ATSET3, KEYCODE_SET_ATSET3);
+
+
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_DEFINED, EVENT_DEFINED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_UNDEFINED, EVENT_UNDEFINED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_STARTED, EVENT_STARTED);
@@ -4738,6 +5013,12 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_STOPPED_MIGRATED, EVENT_STOPPED_MIGRATED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_STOPPED_SAVED, EVENT_STOPPED_SAVED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_STOPPED_FAILED, EVENT_STOPPED_FAILED);
+
+
+      REGISTER_CONSTANT(VIR_DOMAIN_CONTROL_OK, CONTROL_OK);
+      REGISTER_CONSTANT(VIR_DOMAIN_CONTROL_JOB, CONTROL_JOB);
+      REGISTER_CONSTANT(VIR_DOMAIN_CONTROL_OCCUPIED, CONTROL_OCCUPIED);
+      REGISTER_CONSTANT(VIR_DOMAIN_CONTROL_ERROR, CONTROL_ERROR);
 
 
       REGISTER_CONSTANT(VIR_DOMAIN_DEVICE_MODIFY_CURRENT, DEVICE_MODIFY_CURRENT);

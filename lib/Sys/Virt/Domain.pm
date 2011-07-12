@@ -336,6 +336,41 @@ It is not known why the domain has shutoff
 
 =back
 
+=item my $info = $dom->get_control_info($flags=0)
+
+Returns a hash reference providing information about
+the control channel. The returned keys in the hash
+are
+
+=over 4
+
+=item C<state>
+
+One of the CONTROL INFO constants listed later
+
+=item C<details>
+
+Currently unsed, always 0.
+
+=item C<stateTime>
+
+The elapsed time since the control channel entered
+the current state.
+
+=back
+
+=item $dom->send_key($keycodeset, $holdtime, \@keycodes, $flags=0)
+
+Sends a sequence of keycodes to the guest domain. The
+C<$keycodeset> should be one of the constants listed
+later in the KEYCODE SET section. C<$holdtiem> is the
+duration, in milliseconds, to keep the key pressed
+before releasing it and sending the next keycode.
+C<@keycodes> is an array reference containing the list
+of keycodes to send to the guest. The elements in the
+array should be keycode values from the specified
+keycode set. C<$flags> is currently unused.
+
 =item my $info = $dom->get_block_info($dev, $flags=0)
 
 Returns a hash reference summarising the disk usage of
@@ -865,6 +900,31 @@ The domain is inactive, and crashed.
 =back
 
 
+=head2 CONTROL INFO
+
+The following constants can be used to determine what the
+guest domain control channel status is
+
+=over 4
+
+=item Sys::Virt::Domain::CONTROL_ERROR
+
+The control channel has a fatal error
+
+=item Sys::Virt::Domain::CONTROL_OK
+
+The control channel is ready for jobs
+
+=item Sys::Virt::Domain::CONTROL_OCCUPIED
+
+The control channel is busy
+
+=item Sys::Virt::Domain::CONTROL_JOB
+
+The control channel is busy with a job
+
+=back
+
 =head2 DOMAIN CREATION
 
 The following constants can be used to control the behaviour
@@ -876,8 +936,41 @@ of domain creation
 
 Keep the guest vCPUs paused after starting the guest
 
+=item Sys::Virt::Domain::START_AUTODESTROY
+
+Automatically destroy the guest when the connection is closed (or fails)
+
 =back
 
+
+=head2 KEYCODE SETS
+
+The following constants define the set of supported keycode
+sets
+
+=over 4
+
+=item Sys::Virt::Domain::KEYCODE_SET_LINUX
+
+The Linux event subsystem keycodes
+
+=item Sys::Virt::Domain::KEYCODE_SET_XT
+
+The original XT keycodes
+
+=item Sys::Virt::Domain::KEYCODE_SET_ATSET1
+
+The AT Set1 keycodes (aka XT)
+
+=item Sys::Virt::Domain::KEYCODE_SET_ATSET2
+
+The AT Set2 keycodes (aka AT)
+
+=item Sys::Virt::Domain::KEYCODE_SET_ATSET3
+
+The AT Set3 keycodes (aka PS2)
+
+=back
 
 =head2 MEMORY PEEK
 
