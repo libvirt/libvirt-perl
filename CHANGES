@@ -1,6 +1,11 @@
 Sys::Virt ChangeLog
 ===================
 
+New in 0.9.3:
+
+ - Add all new APIs in libvirt 0.9.3
+ - Requires libvirt >= 0.9.3
+
 New in 0.9.2:
 
  - Changed version numbering to track the corresponding

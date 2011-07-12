@@ -35,7 +35,7 @@ BuildRequires:  perl(ExtUtils::MakeMaker)
 BuildRequires:  perl(Test::Pod)
 BuildRequires:  perl(Test::Pod::Coverage)
 BuildRequires:  perl(XML::XPath)
-BuildRequires:  libvirt-devel >= 0.9.2
+BuildRequires:  libvirt-devel >= 0.9.3
 Requires:       perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 
 %description
