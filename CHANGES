@@ -1,6 +1,13 @@
 Sys::Virt ChangeLog
 ===================
 
+New in 0.9.4:
+
+ - Add all new APIs in libvirt 0.9.4
+ - Requires libvirt >= 0.9.4
+ - Add missing VIR_DUMP_* and VIR_MIGRATE_* constants
+   from previous releases
+
 New in 0.9.3:
 
  - Add all new APIs in libvirt 0.9.3
