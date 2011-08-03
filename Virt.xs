@@ -448,6 +448,47 @@ _domain_event_graphics_callback(virConnectPtr con,
     return 0;
 }
 
+static int
+_domain_event_block_job_callback(virConnectPtr con,
+                                 virDomainPtr dom,
+                                 const char *path,
+                                 int type,
+                                 int status,
+                                 void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *domref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+    XPUSHs(domref);
+    XPUSHs(sv_2mortal(newSVpv(path, 0)));
+    XPUSHs(sv_2mortal(newSViv(type)));
+    XPUSHs(sv_2mortal(newSViv(status)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
 static void
 _domain_event_free(void *opaque)
 {
@@ -967,13 +1008,57 @@ PREINIT:
       RETVAL
 
 void
-restore_domain(con, from)
+restore_domain(con, from, dxmlsv=&PL_sv_undef, flags=0)
       virConnectPtr con;
       const char *from;
+      SV *dxmlsv;
+      unsigned int flags;
+ PREINIT:
+      const char *dxml = NULL;
   PPCODE:
-      if((virDomainRestore(con, from)) < 0) {
+      if (SvOK(dxmlsv))
+	  dxml = SvPV_nolen(dxmlsv);
+
+      if (dxml || flags) {
+          if (virDomainRestoreFlags(con, from, dxml, flags) < 0) {
+	  _croak_error(virGetLastError());
+        }
+      } else {
+        if (virDomainRestore(con, from) < 0) {
+	  _croak_error(virGetLastError());
+        }
+      }
+
+
+SV *
+get_save_image_xml_description(con, file, flags=0)
+      virConnectPtr con;
+      const char *file;
+      unsigned int flags;
+  PREINIT:
+      char *xml;
+    CODE:
+      if (!(xml = virDomainSaveImageGetXMLDesc(con, file, flags))) {
+	 _croak_error(virGetLastError());
+      }
+      RETVAL = newSVpv(xml, 0);
+      free(xml);
+  OUTPUT:
+      RETVAL
+
+
+void
+define_save_image_xml(con, file, xml, flags=0)
+      virConnectPtr con;
+      const char *file;
+      const char *xml;
+      unsigned int flags;
+    PPCODE:
+if (virDomainSaveImageDefineXML(con, file, xml, flags) < 0) {
 	_croak_error(virGetLastError());
       }
+
+
 
 unsigned long
 _get_library_version(void)
@@ -1758,6 +1843,9 @@ PREINIT:
       case VIR_DOMAIN_EVENT_ID_CONTROL_ERROR:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_generic_callback);
           break;
+      case VIR_DOMAIN_EVENT_ID_BLOCK_JOB:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_block_job_callback);
+          break;
       default:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_generic_callback);
           break;
@@ -1996,12 +2084,25 @@ resume(dom)
 
 
 void
-save(dom, to)
+save(dom, to, dxmlsv=&PL_sv_undef, flags=0)
       virDomainPtr dom;
-      const char *to
+      const char *to;
+      SV *dxmlsv;
+      unsigned int flags;
+PREINIT:
+      const char *dxml = NULL;
   PPCODE:
-      if ((virDomainSave(dom, to)) < 0) {
-	_croak_error(virGetLastError());
+      if (SvOK(dxmlsv))
+	  dxml = SvPV_nolen(dxmlsv);
+
+      if (dxml || flags) {
+        if ((virDomainSaveFlags(dom, to, dxml, flags)) < 0) {
+	  _croak_error(virGetLastError());
+        }
+      } else {
+        if ((virDomainSave(dom, to)) < 0) {
+          _croak_error(virGetLastError());
+        }
       }
 
 
@@ -2157,12 +2258,59 @@ get_job_info(dom)
 
 
 void
-abort_job(dom)
+abort_block_job(dom, path, flags=0)
       virDomainPtr dom;
+      const char *path;
+      unsigned int flags;
     PPCODE:
-      if (virDomainAbortJob(dom) < 0) {
+      if (virDomainBlockJobAbort(dom, path, flags) < 0) {
 	_croak_error(virGetLastError());
       }
+
+
+HV *
+get_block_job_info(dom, path, flags=0)
+      virDomainPtr dom;
+      const char *path;
+      unsigned int flags;
+  PREINIT:
+      virDomainBlockJobInfo info;
+    CODE:
+      if (virDomainGetBlockJobInfo(dom, path, &info, flags) < 0) {
+	_croak_error(virGetLastError());
+      }
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
+      (void)hv_store (RETVAL, "type", 4, newSViv(info.type), 0);
+      (void)hv_store (RETVAL, "bandwidth", 9, virt_newSVull(info.bandwidth), 0);
+      (void)hv_store (RETVAL, "cur", 3, virt_newSVull(info.cur), 0);
+      (void)hv_store (RETVAL, "end", 3, virt_newSVull(info.end), 0);
+  OUTPUT:
+      RETVAL
+
+
+void
+set_block_job_speed(dom, path, bandwidth, flags=0)
+      virDomainPtr dom;
+      const char *path;
+      unsigned long bandwidth;
+      unsigned int flags;
+    PPCODE:
+      if (virDomainBlockJobSetSpeed(dom, path, bandwidth, flags) < 0) {
+	_croak_error(virGetLastError());
+      }
+
+
+void
+block_pull(dom, path, bandwidth, flags=0)
+      virDomainPtr dom;
+      const char *path;
+      unsigned long bandwidth;
+      unsigned int flags;
+    PPCODE:
+      if (virDomainBlockPull(dom, path, bandwidth, flags) < 0) {
+	_croak_error(virGetLastError());
+      }
+
 
 
 HV *
@@ -2706,11 +2854,18 @@ inject_nmi(dom, flags=0)
       }
 
 void
-undefine(dom)
+undefine(dom, flags=0)
       virDomainPtr dom;
+      unsigned int flags;
     PPCODE:
-      if (virDomainUndefine(dom) < 0) {
-	_croak_error(virGetLastError());
+      if (flags) {
+        if (virDomainUndefineFlags(dom, flags) < 0) {
+	  _croak_error(virGetLastError());
+        }
+      } else {
+        if (virDomainUndefine(dom) < 0) {
+	  _croak_error(virGetLastError());
+        }
       }
 
 void
@@ -3212,14 +3367,21 @@ current_snapshot(dom, flags=0)
       RETVAL
 
 void
-destroy(dom_rv)
+destroy(dom_rv, flags=0)
       SV *dom_rv;
+      unsigned int flags;
  PREINIT:
       virDomainPtr dom;
   PPCODE:
       dom = (virDomainPtr)SvIV((SV*)SvRV(dom_rv));
-      if (virDomainDestroy(dom) < 0) {
-	_croak_error(virGetLastError());
+      if (flags) {
+        if (virDomainDestroyFlags(dom, flags) < 0) {
+	  _croak_error(virGetLastError());
+        }
+      } else {
+        if (virDomainDestroy(dom) < 0) {
+	  _croak_error(virGetLastError());
+        }
       }
 
 void
@@ -4916,8 +5078,17 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_SHUTOFF, STATE_SHUTOFF);
       REGISTER_CONSTANT(VIR_DOMAIN_CRASHED, STATE_CRASHED);
 
+      REGISTER_CONSTANT(VIR_DUMP_CRASH, DUMP_CRASH);
+      REGISTER_CONSTANT(VIR_DUMP_LIVE, DUMP_LIVE);
+      REGISTER_CONSTANT(VIR_DUMP_BYPASS_CACHE, DUMP_BYPASS_CACHE);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_SAVE_BYPASS_CACHE, SAVE_BYPASS_CACHE);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_UNDEFINE_MANAGED_SAVE, UNDEFINE_MANAGED_SAVE);
+
       REGISTER_CONSTANT(VIR_DOMAIN_START_PAUSED, START_PAUSED);
       REGISTER_CONSTANT(VIR_DOMAIN_START_AUTODESTROY, START_AUTODESTROY);
+      REGISTER_CONSTANT(VIR_DOMAIN_START_BYPASS_CACHE, START_BYPASS_CACHE);
 
       REGISTER_CONSTANT(VIR_DOMAIN_NOSTATE_UNKNOWN, STATE_NOSTATE_UNKNOWN);
 
@@ -4966,6 +5137,9 @@ BOOT:
       REGISTER_CONSTANT(VIR_MIGRATE_PERSIST_DEST, MIGRATE_PERSIST_DEST);
       REGISTER_CONSTANT(VIR_MIGRATE_UNDEFINE_SOURCE, MIGRATE_UNDEFINE_SOURCE);
       REGISTER_CONSTANT(VIR_MIGRATE_PAUSED, MIGRATE_PAUSED);
+      REGISTER_CONSTANT(VIR_MIGRATE_NON_SHARED_DISK, MIGRATE_NON_SHARED_DISK);
+      REGISTER_CONSTANT(VIR_MIGRATE_NON_SHARED_INC, MIGRATE_NON_SHARED_INC);
+      REGISTER_CONSTANT(VIR_MIGRATE_CHANGE_PROTECTION, MIGRATE_CHANGE_PROTECTION);
 
 
       REGISTER_CONSTANT(VIR_DOMAIN_XML_SECURE, XML_SECURE);
@@ -4983,6 +5157,10 @@ BOOT:
       REGISTER_CONSTANT(VIR_KEYCODE_SET_ATSET1, KEYCODE_SET_ATSET1);
       REGISTER_CONSTANT(VIR_KEYCODE_SET_ATSET2, KEYCODE_SET_ATSET2);
       REGISTER_CONSTANT(VIR_KEYCODE_SET_ATSET3, KEYCODE_SET_ATSET3);
+      REGISTER_CONSTANT(VIR_KEYCODE_SET_OSX, KEYCODE_SET_OSX);
+      REGISTER_CONSTANT(VIR_KEYCODE_SET_XT_KBD, KEYCODE_SET_XT_KBD);
+      REGISTER_CONSTANT(VIR_KEYCODE_SET_USB, KEYCODE_SET_USB);
+      REGISTER_CONSTANT(VIR_KEYCODE_SET_WIN32, KEYCODE_SET_WIN32);
 
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_DEFINED, EVENT_DEFINED);
@@ -5042,6 +5220,12 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_JOB_FAILED, JOB_FAILED);
       REGISTER_CONSTANT(VIR_DOMAIN_JOB_CANCELLED, JOB_CANCELLED);
 
+      REGISTER_CONSTANT(VIR_DOMAIN_BLOCK_JOB_TYPE_UNKNOWN, BLOCK_JOB_TYPE_UNKNOWN);
+      REGISTER_CONSTANT(VIR_DOMAIN_BLOCK_JOB_TYPE_PULL, BLOCK_JOB_TYPE_PULL);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_BLOCK_JOB_COMPLETED, BLOCK_JOB_COMPLETED);
+      REGISTER_CONSTANT(VIR_DOMAIN_BLOCK_JOB_FAILED, BLOCK_JOB_FAILED);
+
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_LIFECYCLE, EVENT_ID_LIFECYCLE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_REBOOT, EVENT_ID_REBOOT);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_RTC_CHANGE, EVENT_ID_RTC_CHANGE);
@@ -5050,6 +5234,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_GRAPHICS, EVENT_ID_GRAPHICS);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_IO_ERROR_REASON, EVENT_ID_IO_ERROR_REASON);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_CONTROL_ERROR, EVENT_ID_CONTROL_ERROR);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_BLOCK_JOB, EVENT_ID_BLOCK_JOB);
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_NONE, EVENT_WATCHDOG_NONE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_PAUSE, EVENT_WATCHDOG_PAUSE);
@@ -5078,7 +5263,7 @@ BOOT:
 
       REGISTER_CONSTANT_STR(VIR_DOMAIN_BLKIO_WEIGHT, BLKIO_WEIGHT);
 
-
+      REGISTER_CONSTANT(VIR_DOMAIN_VCPU_CURRENT, VCPU_CURRENT);
       REGISTER_CONSTANT(VIR_DOMAIN_VCPU_LIVE, VCPU_LIVE);
       REGISTER_CONSTANT(VIR_DOMAIN_VCPU_CONFIG, VCPU_CONFIG);
 
@@ -5238,4 +5423,5 @@ BOOT:
       REGISTER_CONSTANT(VIR_ERR_INVALID_DOMAIN_SNAPSHOT, ERR_INVALID_DOMAIN_SNAPSHOT);
       REGISTER_CONSTANT(VIR_ERR_NO_DOMAIN_SNAPSHOT, ERR_NO_DOMAIN_SNAPSHOT);
       REGISTER_CONSTANT(VIR_ERR_INVALID_STREAM, ERR_INVALID_STREAM);
+      REGISTER_CONSTANT(VIR_ERR_ARGUMENT_UNSUPPORTED, ERR_ARGUMENT_UNSUPPORTED);
     }

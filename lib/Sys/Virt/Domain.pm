@@ -750,6 +750,29 @@ background job. The elements of the hash are as follows:
 
 Aborts the currently executing job
 
+=item my $info = $dom->get_block_job_info($path, $flags=0)
+
+Returns a hash reference summarising the execution state of
+the block job. The C<$path> parameter should be the fully
+qualified path of the block device being changed.
+
+=item $dom->set_block_job_speed($path, $bandwidth, $flags=0)
+
+Change the maximum I/O bandwidth used by the block job that
+is currently executing for C<$path>. The C<$bandwidth> argument
+is specified in KB/s
+
+=item $dom->abort_block_job($path, $flags=0)
+
+Abort the current job that is executing for the block device
+associated with C<$path>
+
+=item $dom->block_pull($path, $bandwith, $flags=0)
+
+Merge the backing files associated with C<$path> into the
+top level file. The C<$bandwidth> parameter specifies the
+maximum I/O rate to allow in KB/s.
+
 =item $count = $dom->num_of_snapshots()
 
 Return the number of saved snapshots of the domain
@@ -940,6 +963,10 @@ Keep the guest vCPUs paused after starting the guest
 
 Automatically destroy the guest when the connection is closed (or fails)
 
+=item Sys::Virt::Domain::START_BYPASS_CACHE
+
+Do not use OS I/O cache if starting a domain with a saved state image
+
 =back
 
 
@@ -969,6 +996,22 @@ The AT Set2 keycodes (aka AT)
 =item Sys::Virt::Domain::KEYCODE_SET_ATSET3
 
 The AT Set3 keycodes (aka PS2)
+
+=item Sys::Virt::Domain::KEYCODE_SET_OSX
+
+The OS-X keycodes
+
+=item Sys::Virt::Domain::KEYCODE_SET_XT_KBD
+
+The XT keycodes from the Linux Keyboard driver
+
+=item Sys::Virt::Domain::KEYCODE_SET_USB
+
+The USB HID keycode set
+
+=item Sys::Virt::Domain::KEYCODE_SET_WIN32
+
+The Windows keycode set
 
 =back
 
@@ -1132,8 +1175,36 @@ completes successfully.
 Do not re-start execution of the guest CPUs on the destination
 host after migration completes.
 
+=item Sys::Virt::Domain::MIGRATE_NON_SHARED_DISK
+
+Copy the complete contents of the disk images during migration
+
+=item Sys::Virt::Domain::MIGRATE_NON_SHARED_INC
+
+Copy the incrementally changed contents of the disk images
+during migration
+
+=item Sys::Virt::Domain::MIGRATE_CHANGE_PROTECTION
+
+Do not allow changes to the virtual domain configuration while
+migration is taking place. This option is automatically implied
+if doing a peer-2-peer migration.
+
 =back
 
+=head2 UNDEFINE CONSTANTS
+
+The following constants can be used when undefining virtual
+domain configurations
+
+=over 4
+
+=item Sys::Virt::Domain::UNDEFINE_MANAGED_SAVE
+
+Also remove any managed save image when undefining the virtual
+domain
+
+=back
 
 =head2 JOB TYPES
 
@@ -1223,6 +1294,10 @@ Flag to request the live value
 =item Sys::Virt::Domain::VCPU_CONFIG
 
 Flag to request the persistent config value
+
+=item Sys::Virt::Domain::VCPU_CURRENT
+
+Flag to request the current config value
 
 =back
 
@@ -1390,6 +1465,10 @@ File IO errors, typically from disks, with a root cause
 
 Errors from the virtualization control channel
 
+=item Sys::Virt::Domain::EVENT_ID_BLOCK_JOB
+
+Completion status of asynchronous block jobs
+
 =back
 
 =head2 IO ERROR EVENT CONSTANTS
@@ -1479,6 +1558,74 @@ An IPv4 address
 =item Sys::Virt::Domain::EVENT_GRAPHICS_ADDRESS_IPV6
 
 An IPv6 address
+
+=back
+
+=head2 DOMAIN BLOCK JOB TYPE CONSTANTS
+
+The following constants identify the different types of domain
+block jobs
+
+=over 4
+
+=item Sys::Virt::Domain::BLOCK_JOB_TYPE_UNKNOWN
+
+An unknown block job type
+
+=item Sys::Virt::Domain::BLOCK_JOB_TYPE_PULL
+
+The block pull job type
+
+=back
+
+=head2 DOMAIN BLOCK JOB COMPLETION CONSTANTS
+
+The following constants can be used to determine the completion
+status of a block job
+
+=over 4
+
+=item Sys::Virt::Domain::BLOCK_JOB_COMPLETED
+
+A successfully completed block job
+
+=item Sys::Virt::Domain::BLOCK_JOB_FAILED
+
+An unsuccessful block job
+
+=back
+
+=head2 DOMAIN SAVE / RESTORE CONSTANTS
+
+The following constants can be used when saving or restoring
+virtual machines
+
+=over 4
+
+=item Sys::Virt::Domain::SAVE_BYPASS_CACHE
+
+Do not use OS I/O cache when saving state.
+
+=back
+
+=head2 DOMAIN CORE DUMP CONSTANTS
+
+The following constants can be used when triggering domain
+core dumps
+
+=over 4
+
+=item Sys::Virt::Domain::DUMP_LIVE
+
+Do not pause execution while dumping the guest
+
+=item Sys::Virt::Domain::DUMP_CRASH
+
+Crash the guest after completing the core dump
+
+=item Sys::Virt::Domain::DUMP_BYPASS_CACHE
+
+Do not use OS I/O cache when writing core dump
 
 =back
 

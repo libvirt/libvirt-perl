@@ -564,6 +564,10 @@ No matching domain snapshot was found
 
 The stream object pointer was invalid
 
+=item Sys::Virt::Error::ERR_ARGUMENT_UNSUPPORTED
+
+The argument value was not supported by the driver
+
 =back
 
 =head1 AUTHORS

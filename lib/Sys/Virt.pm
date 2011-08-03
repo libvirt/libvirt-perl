@@ -71,7 +71,7 @@ use Sys::Virt::NWFilter;
 use Sys::Virt::DomainSnapshot;
 use Sys::Virt::Stream;
 
-our $VERSION = '0.9.3';
+our $VERSION = '0.9.4';
 require XSLoader;
 XSLoader::load('Sys::Virt', $VERSION);
 
@@ -758,6 +758,21 @@ used as the C<maxids> parameter to C<list_nwfilter_names>.
 
 Return a list of all nwfilter names currently known to the VMM. The names can
 be used with the C<get_nwfilter_by_name> method.
+
+=cut
+
+=item $vmm->define_save_image_xml($file, $dxml, $flags=0)
+
+Update the XML associated with a virtual machine's save image. The C<$file>
+parameter is the fully qualified path to the save image XML, while C<$dxml>
+is the new XML document to write. The C<$flags> parameter is currently
+unused and defaults to zero.
+
+=item $xml = $vmm->get_save_image_xml_description($file, $flags=1)
+
+Retrieve the current XML configuration associated with the virtual
+machine's save image identified by C<$file>. The C<$flags> parameter is currently
+unused and defaults to zero.
 
 =item my $dom = $vmm->get_domain_by_name($name)
 
