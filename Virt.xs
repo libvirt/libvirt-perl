@@ -2258,6 +2258,15 @@ get_job_info(dom)
 
 
 void
+abort_job(dom)
+      virDomainPtr dom;
+    PPCODE:
+      if (virDomainAbortJob(dom) < 0) {
+	_croak_error(virGetLastError());
+      }
+
+
+void
 abort_block_job(dom, path, flags=0)
       virDomainPtr dom;
       const char *path;
