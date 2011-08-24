@@ -50,7 +50,7 @@ sub _new {
     if (exists $params{name}) {
 	$self = Sys::Virt::DomainSnapshot::_lookup_by_name($dom,  $params{name});
     } elsif (exists $params{xml}) {
-	$self = Sys::Virt::DomainSnapshot::_create_xml($dom,  $params{xml});
+	$self = Sys::Virt::DomainSnapshot::_create_xml($dom,  $params{xml}, $params{flags} ? $params{flags} : 0);
     } else {
 	die "name or xml parameters are required";
     }

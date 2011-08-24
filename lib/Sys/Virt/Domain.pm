@@ -799,7 +799,7 @@ sub list_snapshots {
     my @snapshots;
     foreach my $name (@names) {
 	eval {
-	    push @snapshots, Sys::Virt::Domain->_new(connection => $self, name => $name);
+	    push @snapshots, Sys::Virt::DomainSnapshot->_new(domain => $self, name => $name);
 	};
 	if ($@) {
 	    # nada - snapshot went away before we could look it up
@@ -809,6 +809,20 @@ sub list_snapshots {
 }
 
 
+=item my $snapshot = $dom->get_snapshot_by_name($name)
+
+Return the domain snapshot with a name of C<$name>. The returned object is
+an instance of the L<Sys::Virt::DomainSnapshot> class.
+
+=cut
+
+sub get_snapshot_by_name {
+    my $self = shift;
+    my $name = shift;
+
+    return Sys::Virt::DomainSnapshot->_new(domain => $self, name => $name);
+}
+
 =item $dom->has_current_snapshot()
 
 Returns a true value if the domain has a currently active snapshot
@@ -816,6 +830,22 @@ Returns a true value if the domain has a currently active snapshot
 =item $snapshot = $dom->current_snapshot()
 
 Returns the currently active snapshot for the domain.
+
+=item $snapshot = $dom->create_snapshot($xml[, $flags])
+
+Create a new snapshot from the C<$xml>.
+
+=cut
+
+sub create_snapshot {
+    my $self = shift;
+    my $xml = shift;
+    my $flags = shift;
+
+    my $snapshot = Sys::Virt::DomainSnapshot->_new(domain => $self, xml => $xml, flags => $flags);
+
+    return $snapshot;
+}
 
 =over 4
 
