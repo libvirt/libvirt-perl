@@ -73,6 +73,22 @@ Deletes this snapshot object & its datra
 
 Revert the domain to the state associated with this snapshot
 
+=back
+
+=head1 CONSTANTS
+
+=head2 SNAPSHOT DELETION
+
+The following constants are useful when deleting snapshots
+
+=over 4
+
+=item Sys::Virt::DomainSnapshot::DELETE_CHILDREN
+
+=back
+
+=over 4
+
 =cut
 
 1;
