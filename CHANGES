@@ -1,6 +1,15 @@
 Sys::Virt ChangeLog
 ===================
 
+New in 0.9.5:
+
+ - Add all new APIs in libvirt 0.9.5
+ - Add missing snapshot creation/lookup methods
+ - Fix typo in method listing snapshots
+ - Add missing snapshot constant
+ - Add example for save/restore usage
+ - Re-add abort job binding accidentally deleted
+
 New in 0.9.4:
 
  - Add all new APIs in libvirt 0.9.4
