@@ -330,6 +330,14 @@ appropriate
 
 Repair an existing storage pool operating in degraded mode
 
+=item Sys::Virt::StoragePool::BUILD_NO_OVERWRITE
+
+Do not overwrite existing storage pool data
+
+=item Sys::Virt::StoragePool::BUILD_OVERWRITE
+
+Overwrite existing storage pool data
+
 =back
 
 =head1 AUTHORS

@@ -274,6 +274,10 @@ The libxl Xen driver
 
 The lock manager drivers
 
+=item Sys::Virt::Error::FROM_HYPERV
+
+The Hyper-V driver
+
 =back
 
 =head2 ERROR CODES
@@ -567,6 +571,14 @@ The stream object pointer was invalid
 =item Sys::Virt::Error::ERR_ARGUMENT_UNSUPPORTED
 
 The argument value was not supported by the driver
+
+=item Sys::Virt::Error::ERR_STORAGE_POOL_BUILT
+
+The storage pool has already been built
+
+=item Sys::Virt::Error::ERR_STORAGE_PROBE_FAILED
+
+Probing the storage pool failed
 
 =back
 

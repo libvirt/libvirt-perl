@@ -77,6 +77,34 @@ Revert the domain to the state associated with this snapshot
 
 =head1 CONSTANTS
 
+=head2 SNAPSHOT CREATION
+
+The following constants are useful when creating snapshots
+
+=over 4
+
+=item Sys::Virt::DomainSnapshot::CREATE_CURRENT
+
+Set the defined snapshot to be the current snapshot
+
+=item Sys::Virt::DomainSnapshot::CREATE_DISK_ONLY
+
+Only snapshot the disk, not the memory state
+
+=item Sys::Virt::DomainSnapshot::CREATE_HALT
+
+Stop the guest after creating the snapshot
+
+=item Sys::Virt::DomainSnapshot::CREATE_NO_METADATA
+
+Do not save any metadata for the snapshot
+
+=item Sys::Virt::DomainSnapshot::CREATE_REDEFINE
+
+Replace/set the metadata with the snapshot
+
+=back
+
 =head2 SNAPSHOT DELETION
 
 The following constants are useful when deleting snapshots
@@ -84,6 +112,49 @@ The following constants are useful when deleting snapshots
 =over 4
 
 =item Sys::Virt::DomainSnapshot::DELETE_CHILDREN
+
+Recursively delete any child snapshots
+
+=item Sys::Virt::DomainSnapshot::DELETE_CHILDREN_ONLY
+
+Only delete the child snapshots
+
+=item Sys::Virt::DomainSnapshot::DELETE_METADATA_ONLY
+
+Only delete the snapshot metadata
+
+=back
+
+=head2 SNAPSHOT LIST
+
+The following constants are useful when listing snapshots
+
+=over 4
+
+=item Sys::Virt::DomainSnapshot::LIST_METADATA
+
+Only list snapshots which have metadata
+
+=item Sys::Virt::DomainSnapshot::LIST_ROOTS
+
+Only list snapshots which are root nodes in the tree
+
+=back
+
+
+=head2 SNAPSHOT REVERT
+
+The following constants are useful when reverting snapshots
+
+=over 4
+
+=item Sys::Virt::DomainSnapshot::REVERT_PAUSED
+
+Leave the guest CPUs paused after reverting to the snapshot state
+
+=item Sys::Virt::DomainSnapshot::REVERT_RUNNING
+
+Start the guest CPUs after reverting to the snapshot state
 
 =back
 

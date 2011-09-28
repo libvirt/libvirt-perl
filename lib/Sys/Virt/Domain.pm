@@ -262,6 +262,10 @@ The guest is paused at admin request
 
 The guest is paused due to the watchdog
 
+=item Sys::Virt::Domain::STATE_PAUSED_SHUTTING_DOWN
+
+The guest is paused while domain shutdown takes place
+
 =item Sys::Virt::Domain::STATE_RUNNING_BOOTED
 
 The guest is running after being booted
@@ -710,6 +714,12 @@ Set the maximum allowed bandwidth during migration of the guest.
 The C<bandwidth> parameter is measured in kilobytes/second.
 The C<$flags> parameter is currently unused and defaults to zero.
 
+=item $bandwidth = $dom->migrate_get_max_speed($flag)
+
+Get the maximum allowed bandwidth during migration fo the guest.
+The returned <bandwidth> value is measured in kilobytes/second.
+The C<$flags> parameter is currently unused and defaults to zero.
+
 =item $dom->inject_nmi($flags)
 
 Trigger an NMI in the guest virtual machine. The C<$flags> parameter
@@ -997,6 +1007,10 @@ Automatically destroy the guest when the connection is closed (or fails)
 
 Do not use OS I/O cache if starting a domain with a saved state image
 
+=item Sys::Virt::Domain::START_FORCE_BOOT
+
+Boot the guest, even if there was a saved snapshot
+
 =back
 
 
@@ -1042,6 +1056,12 @@ The USB HID keycode set
 =item Sys::Virt::Domain::KEYCODE_SET_WIN32
 
 The Windows keycode set
+
+=item Sys::Virt::Domain::KEYCODE_SET_RFB
+
+The XT keycode set, with the extended scancodes using the
+high bit of the first byte, instead of the low bit of the
+second byte.
 
 =back
 
@@ -1234,6 +1254,11 @@ domain configurations
 Also remove any managed save image when undefining the virtual
 domain
 
+=item Sys::Virt::Domain::UNDEFINE_SNAPSHOTS_METADATA
+
+Also remove any snapshot metadata when undefining the virtual
+domain.
+
 =back
 
 =head2 JOB TYPES
@@ -1371,6 +1396,10 @@ emitted on the destination host.
 
 The domain resumed because the admin unpaused it.
 
+=item Sys::Virt::Domain::EVENT_RESUMED_FROM_SNAPSHOT
+
+The domain resumed becuase it was restored from a snapshot
+
 =back
 
 =item Sys::Virt::Domain::EVENT_STARTED
@@ -1441,6 +1470,23 @@ The domain has been suspended due to offline migration
 
 The domain has been suspended due to administrator pause
 request.
+
+=item Sys::Virt::Domain::EVENT_SUSPENDED_IOERROR
+
+The domain has been suspended due to a block device I/O
+error.
+
+=item Sys::Virt::Domain::EVENT_SUSPENDED_FROM_SNAPSHOT
+
+The domain has been suspended due to resume from snapshot
+
+=item Sys::Virt::Domain::EVENT_SUSPENDED_WATCHDOG
+
+The domain has been suspended due to the watchdog triggering
+
+=item Sys::Virt::Domain::EVENT_SUSPENDED_RESTORED
+
+The domain has been suspended due to restore from saved state
 
 =back
 
@@ -1635,6 +1681,16 @@ virtual machines
 =item Sys::Virt::Domain::SAVE_BYPASS_CACHE
 
 Do not use OS I/O cache when saving state.
+
+=item Sys::Virt::Domain::SAVE_PAUSED
+
+Mark the saved state as paused to prevent the guest CPUs
+starting upon restore.
+
+=item Sys::Virt::Domain::SAVE_RUNNING
+
+Mark the saved state as running to allow the guest CPUs
+to start upon restore.
 
 =back
 

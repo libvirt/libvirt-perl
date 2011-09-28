@@ -3014,6 +3014,20 @@ migrate_set_max_speed(dom, bandwidth, flags=0)
        _croak_error(virGetLastError());
      }
 
+unsigned long
+migrate_get_max_speed(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+  PREINIT:
+      unsigned long speed;
+    CODE:
+      if (virDomainMigrateGetMaxSpeed(dom, &speed, flags) < 0) {
+	_croak_error(virGetLastError());
+      }
+      RETVAL = speed;
+  OUTPUT:
+      RETVAL
+
 
 void
 attach_device(dom, xml, flags=0)
@@ -3061,21 +3075,84 @@ update_device(dom, xml, flags=0)
 
 
 HV *
-block_stats(dom, path)
+block_stats(dom, path, flags=0)
       virDomainPtr dom;
       const char *path;
+      unsigned int flags;
   PREINIT:
       virDomainBlockStatsStruct stats;
+      virTypedParameter *params;
+      int nparams;
+      unsigned int i;
+      const char *field;
     CODE:
-      if (virDomainBlockStats(dom, path, &stats, sizeof(stats)) < 0) {
-	_croak_error(virGetLastError());
+      nparams = 0;
+      RETVAL = NULL;
+      if (virDomainBlockStatsFlags(dom, path, NULL, &nparams, flags) < 0) {
+          virErrorPtr err = virGetLastError();
+          if (err && err->code == VIR_ERR_NO_SUPPORT && !flags) {
+              if (virDomainBlockStats(dom, path, &stats, sizeof(stats)) < 0) {
+                  _croak_error(virGetLastError());
+              }
+              RETVAL = (HV *)sv_2mortal((SV*)newHV());
+              (void)hv_store (RETVAL, "rd_req", 6, virt_newSVll(stats.rd_req), 0);
+              (void)hv_store (RETVAL, "rd_bytes", 8, virt_newSVll(stats.rd_bytes), 0);
+              (void)hv_store (RETVAL, "wr_req", 6, virt_newSVll(stats.wr_req), 0);
+              (void)hv_store (RETVAL, "wr_bytes", 8, virt_newSVll(stats.wr_bytes), 0);
+              (void)hv_store (RETVAL, "errs", 4, virt_newSVll(stats.errs), 0);
+          } else {
+              _croak_error(virGetLastError());
+          }
+      } else {
+          RETVAL = (HV *)sv_2mortal((SV*)newHV());
+          Newx(params, nparams, virTypedParameter);
+
+          if (virDomainBlockStatsFlags(dom, path, params, &nparams, flags) < 0) {
+              Safefree(params);
+              _croak_error(virGetLastError());
+          }
+
+          for (i = 0 ; i < nparams ; i++) {
+              SV *val = NULL;
+
+              switch (params[i].type) {
+              case VIR_DOMAIN_SCHED_FIELD_INT:
+                  val = newSViv(params[i].value.i);
+                  break;
+
+              case VIR_DOMAIN_SCHED_FIELD_UINT:
+                  val = newSViv((int)params[i].value.ui);
+                  break;
+
+              case VIR_DOMAIN_SCHED_FIELD_LLONG:
+                  val = virt_newSVll(params[i].value.l);
+                  break;
+
+              case VIR_DOMAIN_SCHED_FIELD_ULLONG:
+                  val = virt_newSVull(params[i].value.ul);
+                  break;
+
+              case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
+                  val = newSVnv(params[i].value.d);
+                  break;
+
+              case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
+                  val = newSViv(params[i].value.b);
+                  break;
+              }
+
+              field = params[i].field;
+              /* For back compat with previous hash above */
+              if (strcmp(field, "rd_operations") == 0)
+                  field = "rd_reqs";
+              else if (strcmp(field, "wr_operations") == 0)
+                  field = "wr_reqs";
+              else if (strcmp(field, "flush_operations") == 0)
+                  field = "flush_reqs";
+              (void)hv_store(RETVAL, field, strlen(params[i].field), val, 0);
+          }
+          Safefree(params);
       }
-      RETVAL = (HV *)sv_2mortal((SV*)newHV());
-      (void)hv_store (RETVAL, "rd_req", 6, virt_newSVll(stats.rd_req), 0);
-      (void)hv_store (RETVAL, "rd_bytes", 8, virt_newSVll(stats.rd_bytes), 0);
-      (void)hv_store (RETVAL, "wr_req", 6, virt_newSVll(stats.wr_req), 0);
-      (void)hv_store (RETVAL, "wr_bytes", 8, virt_newSVll(stats.wr_bytes), 0);
-      (void)hv_store (RETVAL, "errs", 4, virt_newSVll(stats.errs), 0);
   OUTPUT:
       RETVAL
 
@@ -5092,12 +5169,16 @@ BOOT:
       REGISTER_CONSTANT(VIR_DUMP_BYPASS_CACHE, DUMP_BYPASS_CACHE);
 
       REGISTER_CONSTANT(VIR_DOMAIN_SAVE_BYPASS_CACHE, SAVE_BYPASS_CACHE);
+      REGISTER_CONSTANT(VIR_DOMAIN_SAVE_RUNNING, SAVE_RUNNING);
+      REGISTER_CONSTANT(VIR_DOMAIN_SAVE_PAUSED, SAVE_PAUSED);
 
       REGISTER_CONSTANT(VIR_DOMAIN_UNDEFINE_MANAGED_SAVE, UNDEFINE_MANAGED_SAVE);
+      REGISTER_CONSTANT(VIR_DOMAIN_UNDEFINE_SNAPSHOTS_METADATA, UNDEFINE_SNAPSHOTS_METADATA);
 
       REGISTER_CONSTANT(VIR_DOMAIN_START_PAUSED, START_PAUSED);
       REGISTER_CONSTANT(VIR_DOMAIN_START_AUTODESTROY, START_AUTODESTROY);
       REGISTER_CONSTANT(VIR_DOMAIN_START_BYPASS_CACHE, START_BYPASS_CACHE);
+      REGISTER_CONSTANT(VIR_DOMAIN_START_FORCE_BOOT, START_FORCE_BOOT);
 
       REGISTER_CONSTANT(VIR_DOMAIN_NOSTATE_UNKNOWN, STATE_NOSTATE_UNKNOWN);
 
@@ -5120,6 +5201,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_PAUSED_IOERROR, STATE_PAUSED_IOERROR);
       REGISTER_CONSTANT(VIR_DOMAIN_PAUSED_WATCHDOG, STATE_PAUSED_WATCHDOG);
       REGISTER_CONSTANT(VIR_DOMAIN_PAUSED_FROM_SNAPSHOT, STATE_PAUSED_FROM_SNAPSHOT);
+      REGISTER_CONSTANT(VIR_DOMAIN_PAUSED_SHUTTING_DOWN, STATE_PAUSED_SHUTTING_DOWN);
 
       REGISTER_CONSTANT(VIR_DOMAIN_SHUTDOWN_UNKNOWN, STATE_SHUTDOWN_UNKNOWN);
       REGISTER_CONSTANT(VIR_DOMAIN_SHUTDOWN_USER, STATE_SHUTDOWN_USER);
@@ -5170,6 +5252,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_KEYCODE_SET_XT_KBD, KEYCODE_SET_XT_KBD);
       REGISTER_CONSTANT(VIR_KEYCODE_SET_USB, KEYCODE_SET_USB);
       REGISTER_CONSTANT(VIR_KEYCODE_SET_WIN32, KEYCODE_SET_WIN32);
+      REGISTER_CONSTANT(VIR_KEYCODE_SET_RFB, KEYCODE_SET_RFB);
 
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_DEFINED, EVENT_DEFINED);
@@ -5190,9 +5273,14 @@ BOOT:
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_SUSPENDED_PAUSED, EVENT_SUSPENDED_PAUSED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_SUSPENDED_MIGRATED, EVENT_SUSPENDED_MIGRATED);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_SUSPENDED_IOERROR, EVENT_SUSPENDED_IOERROR);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_SUSPENDED_WATCHDOG, EVENT_SUSPENDED_WATCHDOG);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_SUSPENDED_RESTORED, EVENT_SUSPENDED_RESTORED);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_SUSPENDED_FROM_SNAPSHOT, EVENT_SUSPENDED_FROM_SNAPSHOT);
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_RESUMED_UNPAUSED, EVENT_RESUMED_UNPAUSED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_RESUMED_MIGRATED, EVENT_RESUMED_MIGRATED);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_RESUMED_FROM_SNAPSHOT, EVENT_RESUMED_FROM_SNAPSHOT);
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_STOPPED_SHUTDOWN, EVENT_STOPPED_SHUTDOWN);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_STOPPED_DESTROYED, EVENT_STOPPED_DESTROYED);
@@ -5279,7 +5367,20 @@ BOOT:
 
       stash = gv_stashpv( "Sys::Virt::DomainSnapshot", TRUE );
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_DELETE_CHILDREN, DELETE_CHILDREN);
+      REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_DELETE_METADATA_ONLY, DELETE_METADATA_ONLY);
+      REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_DELETE_CHILDREN_ONLY, DELETE_CHILDREN_ONLY);
 
+      REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_CREATE_REDEFINE, CREATE_REDEFINE);
+      REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_CREATE_CURRENT, CREATE_CURRENT);
+      REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_CREATE_NO_METADATA, CREATE_NO_METADATA);
+      REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_CREATE_HALT, CREATE_HALT);
+      REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_CREATE_DISK_ONLY, CREATE_DISK_ONLY);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_LIST_ROOTS, LIST_ROOTS);
+      REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_LIST_METADATA, LIST_METADATA);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_REVERT_RUNNING, REVERT_RUNNING);
+      REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_REVERT_PAUSED, REVERT_PAUSED);
 
       stash = gv_stashpv( "Sys::Virt::StoragePool", TRUE );
       REGISTER_CONSTANT(VIR_STORAGE_POOL_INACTIVE, STATE_INACTIVE);
@@ -5290,6 +5391,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_STORAGE_POOL_BUILD_NEW, BUILD_NEW);
       REGISTER_CONSTANT(VIR_STORAGE_POOL_BUILD_REPAIR, BUILD_REPAIR);
       REGISTER_CONSTANT(VIR_STORAGE_POOL_BUILD_RESIZE, BUILD_RESIZE);
+      REGISTER_CONSTANT(VIR_STORAGE_POOL_BUILD_NO_OVERWRITE, BUILD_NO_OVERWRITE);
+      REGISTER_CONSTANT(VIR_STORAGE_POOL_BUILD_OVERWRITE, BUILD_OVERWRITE);
 
       REGISTER_CONSTANT(VIR_STORAGE_POOL_DELETE_NORMAL, DELETE_NORMAL);
       REGISTER_CONSTANT(VIR_STORAGE_POOL_DELETE_ZEROED, DELETE_ZEROED);
@@ -5299,6 +5402,7 @@ BOOT:
       stash = gv_stashpv( "Sys::Virt::StorageVol", TRUE );
       REGISTER_CONSTANT(VIR_STORAGE_VOL_FILE, TYPE_FILE);
       REGISTER_CONSTANT(VIR_STORAGE_VOL_BLOCK, TYPE_BLOCK);
+      REGISTER_CONSTANT(VIR_STORAGE_VOL_DIR, TYPE_DIR);
 
       REGISTER_CONSTANT(VIR_STORAGE_VOL_DELETE_NORMAL, DELETE_NORMAL);
       REGISTER_CONSTANT(VIR_STORAGE_VOL_DELETE_ZEROED, DELETE_ZEROED);
@@ -5365,6 +5469,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_FROM_EVENT, FROM_EVENT);
       REGISTER_CONSTANT(VIR_FROM_LIBXL, FROM_LIBXL);
       REGISTER_CONSTANT(VIR_FROM_LOCKING, FROM_LOCKING);
+      REGISTER_CONSTANT(VIR_FROM_HYPERV, FROM_HYPERV);
 
 
       REGISTER_CONSTANT(VIR_ERR_OK, ERR_OK);
@@ -5438,4 +5543,6 @@ BOOT:
       REGISTER_CONSTANT(VIR_ERR_NO_DOMAIN_SNAPSHOT, ERR_NO_DOMAIN_SNAPSHOT);
       REGISTER_CONSTANT(VIR_ERR_INVALID_STREAM, ERR_INVALID_STREAM);
       REGISTER_CONSTANT(VIR_ERR_ARGUMENT_UNSUPPORTED, ERR_ARGUMENT_UNSUPPORTED);
+      REGISTER_CONSTANT(VIR_ERR_STORAGE_PROBE_FAILED, ERR_STORAGE_PROBE_FAILED);
+      REGISTER_CONSTANT(VIR_ERR_STORAGE_POOL_BUILT, ERR_STORAGE_POOL_BUILT);
     }

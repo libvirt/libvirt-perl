@@ -148,6 +148,10 @@ The volume is a plain file
 
 The volume is a block device
 
+=item Sys::Virt::StorageVol::TYPE_DIR
+
+The volume is a directory
+
 =back
 
 =head2 DELETE MODES
