@@ -725,6 +725,15 @@ The C<$flags> parameter is currently unused and defaults to zero.
 Trigger an NMI in the guest virtual machine. The C<$flags> parameter
 is currently unused and defaults to 0.
 
+=item $dom->open_console($st, $devname, $flags)
+
+Open the text console for a serial, parallel or paravirt console
+device identified by C<$devname>, connecting it to the stream
+C<$st>. If C<$devname> is undefined, the default console will be
+opened. C<$st> must be a C<Sys::Virt::Stream> object used for
+bi-directional communication with the console. C<$flags> is
+currently unused, defaulting to 0.
+
 =item $dom->screenshot($st, $screen, $flags)
 
 Capture a screenshot of the virtual machine's monitor. The C<$screen>

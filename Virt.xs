@@ -2199,6 +2199,21 @@ PREINIT:
       XPUSHs(sv_2mortal(newSViv(reason)));
 
 
+void
+open_console(dom, st, devname, flags=0)
+      virDomainPtr dom;
+      virStreamPtr st;
+      SV *devname;
+      unsigned int flags;
+ PREINIT:
+      const char *devnamestr = NULL;
+  PPCODE:
+      if (SvOK(devname))
+          devnamestr = SvPV_nolen(devname);
+
+      if (virDomainOpenConsole(dom, devnamestr, st, flags) < 0) {
+          _croak_error(virGetLastError());
+      }
 
 void
 screenshot(dom, st, screen, flags=0)
