@@ -60,18 +60,22 @@ sub _new {
     return $self;
 }
 
-=item my $xml = $dom->get_xml_description()
+=item my $xml = $dom->get_xml_description($flags)
 
 Returns an XML document containing a complete description of
-the domain's configuration
+the domain's configuration.
 
-=item $dom->delete()
+=item $dom->delete($flags)
 
-Deletes this snapshot object & its datra
+Deletes this snapshot object & its data. The optional C<$flags> parameter controls
+what should be deleted via the C<Sys::Virt::DomainSnapshot::DELETE_*>
+constants.
 
-=item $dom->revert_to()
+=item $dom->revert_to($flags)
 
-Revert the domain to the state associated with this snapshot
+Revert the domain to the state associated with this snapshot. The optional
+C<$flags> control the state of the vm after the revert via the
+C<Sys::Virt::DomainSnapshot::REVERT_*> constants.
 
 =back
 
