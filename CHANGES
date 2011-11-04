@@ -6,6 +6,8 @@ New in 0.9.7:
  - Add all new APIs in libvirt 0.9.7
  - Add binding for virDomainOpenConsole
  - Fix missing $flags in documentation
+ - Added example integrating Sys::Virt::Domain->open_graphics
+   GTK3 and GTK-VNC
 
 New in 0.9.5:
 
