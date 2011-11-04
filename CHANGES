@@ -1,6 +1,12 @@
 Sys::Virt ChangeLog
 ===================
 
+New in 0.9.7:
+
+ - Add all new APIs in libvirt 0.9.7
+ - Add binding for virDomainOpenConsole
+ - Fix missing $flags in documentation
+
 New in 0.9.5:
 
  - Add all new APIs in libvirt 0.9.5

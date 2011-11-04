@@ -130,6 +130,12 @@ The constant for secrets which are to be used for storage
 volume encryption. The usage ID for secrets will refer to
 the fully qualified volume path.
 
+=item Sys::Virt::Secret::USAGE_TYPE_CEPH
+
+The constant for secrets which are to be used for authenticating
+to CEPH storage volumes. The usage ID for secrets will refer to
+the server name.
+
 =cut
 
 

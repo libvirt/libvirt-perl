@@ -71,11 +71,11 @@ use Sys::Virt::NWFilter;
 use Sys::Virt::DomainSnapshot;
 use Sys::Virt::Stream;
 
-our $VERSION = '0.9.5';
+our $VERSION = '0.9.7';
 require XSLoader;
 XSLoader::load('Sys::Virt', $VERSION);
 
-=item my $vmm = Sys::Virt->new(uri => $uri, readonly => $ro);
+=item my $vmm = Sys::Virt->new(uri => $uri, readonly => $ro, flags => $flags);
 
 Attach to the virtual machine monitor with the address of C<address>. The
 uri parameter may be omitted, in which case the default connection made
@@ -172,7 +172,10 @@ sub new {
     my %params = @_;
 
     my $uri = exists $params{address} ? $params{address} : exists $params{uri} ? $params{uri} : undef;
-    my $readonly = exists $params{readonly} ? $params{readonly} : 0;
+    my $flags = exists $params{flags} ? $params{flags} : 0;
+    if ($params{readonly}) {
+	$flags |= &Sys::Virt::CONNECT_RO;
+    }
     my $auth = exists $params{auth} ? $params{auth} : 0;
 
     my $authcb = exists $params{callback} ? $params{callback} : undef;
@@ -181,9 +184,9 @@ sub new {
     my $self;
 
     if ($auth) {
-	$self = Sys::Virt::_open_auth($uri, $readonly, $credlist, $authcb);
+	$self = Sys::Virt::_open_auth($uri, $credlist, $authcb, $flags);
     } else {
-	$self = Sys::Virt::_open($uri, $readonly);
+	$self = Sys::Virt::_open($uri, $flags);
     }
 
     bless $self, $class;
@@ -1384,6 +1387,22 @@ Returns the free memory on each NUMA cell between C<$start> and C<$end>.
 
 The following sets of constants are useful when dealing with APIs
 in this package
+
+=head2 CONNECTION
+
+When opening a connection the following constants can be used:
+
+=over 4
+
+=item Sys::Virt::CONNECT_RO
+
+Request a read-only connection
+
+=item Sys::Virt::CONNECT_NO_ALIASES
+
+Prevent the resolution of URI aliases
+
+=back
 
 =head2 CREDENTIAL TYPES
 

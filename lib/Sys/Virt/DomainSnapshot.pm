@@ -60,22 +60,62 @@ sub _new {
     return $self;
 }
 
-=item my $xml = $dom->get_xml_description($flags)
+=item my $xml = $domss->get_xml_description($flags)
 
 Returns an XML document containing a complete description of
 the domain's configuration.
 
-=item $dom->delete($flags)
+=item $domss->delete($flags)
 
 Deletes this snapshot object & its data. The optional C<$flags> parameter controls
 what should be deleted via the C<Sys::Virt::DomainSnapshot::DELETE_*>
 constants.
 
-=item $dom->revert_to($flags)
+=item $domss->revert_to($flags)
 
 Revert the domain to the state associated with this snapshot. The optional
 C<$flags> control the state of the vm after the revert via the
 C<Sys::Virt::DomainSnapshot::REVERT_*> constants.
+
+=item $parentss = $domss->get_parent();
+
+Return the parent of the snapshot, if any
+
+=item $count = $domss->num_of_child_snapshots()
+
+Return the number of saved snapshots which are children of this snapshot
+
+=item @names = $domss->list_child_snapshot_names()
+
+List the names of all saved snapshots which are children of this
+snapshot . The names can be used with the C<lookup_snapshot_by_name>
+
+=item @snapshots = $domss->list_child_snapshots()
+
+Return a list of all snapshots that are children of this snapshot. The elements
+in the returned list are instances of the L<Sys::Virt::DomainSnapshot> class.
+
+=cut
+
+
+sub list_child_snapshots {
+    my $self = shift;
+
+    my $nnames = $self->num_of_child_snapshots();
+    my @names = $self->list_child_snapshot_names($nnames);
+
+    my @snapshots;
+    foreach my $name (@names) {
+	eval {
+	    push @snapshots, Sys::Virt::DomainSnapshot->_new(domain => $self, name => $name);
+	};
+	if ($@) {
+	    # nada - snapshot went away before we could look it up
+	};
+    }
+    return @snapshots;
+}
+
 
 =back
 
@@ -143,6 +183,15 @@ Only list snapshots which have metadata
 
 Only list snapshots which are root nodes in the tree
 
+=item Sys::Virt::DomainSnapshot::LIST_DESCENDANTS
+
+Only list snapshots which are descendants of the current
+snapshot
+
+=item Sys::Virt::DomainSnapshot::LIST_LEAVES
+
+Only list leave nodes in the snapshot tree
+
 =back
 
 
@@ -159,6 +208,10 @@ Leave the guest CPUs paused after reverting to the snapshot state
 =item Sys::Virt::DomainSnapshot::REVERT_RUNNING
 
 Start the guest CPUs after reverting to the snapshot state
+
+=item Sys::Virt::DomainSnapshot::REVERT_FORCE
+
+Force the snapshot to revert, even if it is risky to do so
 
 =back
 

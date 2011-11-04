@@ -580,6 +580,10 @@ The storage pool has already been built
 
 Probing the storage pool failed
 
+=item Sys::Virt::Error::ERR_SNAPSHOT_REVERT_RISKY
+
+Reverting the snapshot could cause data loss
+
 =back
 
 =head1 AUTHORS

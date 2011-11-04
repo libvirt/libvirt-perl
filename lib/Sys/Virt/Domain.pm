@@ -430,6 +430,13 @@ Request that the guest OS perform a graceful shutdown and
 optionally restart. The optional C<$flags> parameter is
 currently unused and if omitted defaults to zero.
 
+=item $dom->reset([$flags])
+
+Perform a hardware reset of the virtual machine. The guest
+OS is given no opportunity to shutdown gracefully. The
+optional C<$flags> parameter is currently unused and if
+omitted defaults to zero.
+
 =item $dom->get_max_vcpus()
 
 Return the maximum number of vcpus that are configured
@@ -733,6 +740,14 @@ C<$st>. If C<$devname> is undefined, the default console will be
 opened. C<$st> must be a C<Sys::Virt::Stream> object used for
 bi-directional communication with the console. C<$flags> is
 currently unused, defaulting to 0.
+
+=item $dom->open_graphics($idx, $fd, $flags)
+
+Open the graphics console for a guest, identified by C<$idx>,
+counting from 0. The C<$fd> should be a file descriptor for an
+anoymous socket pair. The C<$flags> argument should be one of
+the constants listed at the end of this document, and defaults
+to 0.
 
 =item $dom->screenshot($st, $screen, $flags)
 
@@ -1110,6 +1125,19 @@ The virtual CPU is waiting to be scheduled
 =back
 
 
+=head2 OPEN GRAPHICS CONSTANTS
+
+The following constants are used when opening a connection
+to the guest graphics server
+
+=over 4
+
+=item Sys::Virt::Domain::OPEN_GRAPHICS_SKIPAUTH
+
+Skip authentication of the client
+
+=back
+
 =head2 XML DUMP OPTIONS
 
 The following constants are used to control the information
@@ -1344,6 +1372,44 @@ The I/O weight parameter
 
 =back
 
+=head2 SCHEDULER CONSTANTS
+
+=over 4
+
+=item Sys::Virt::Domain::SCHEDULER_CAP
+
+The VM cap tunable
+
+=item Sys::Virt::Domain::SCHEDULER_CPU_SHARES
+
+The CPU shares tunable
+
+=item Sys::Virt::Domain::SCHEDULER_LIMIT
+
+The VM limit tunable
+
+=item Sys::Virt::Domain::SCHEDULER_RESERVATION
+
+The VM reservation tunable
+
+=item Sys::Virt::Domain::SCHEDULER_SHARES
+
+The VM shares tunable
+
+=item Sys::Virt::Domain::SCHEDULER_VCPU_PERIOD
+
+The VCPU period tunable
+
+=item Sys::Virt::Domain::SCHEDULER_VCPU_QUOTA
+
+The VCPU quota tunable
+
+=item Sys::Virt::Domain::SCHEDULER_WEIGHT
+
+The VM weight tunable
+
+=back
+
 =head2 VCPU FLAGS
 
 The following constants are useful when getting/setting the
@@ -1554,6 +1620,10 @@ Errors from the virtualization control channel
 
 Completion status of asynchronous block jobs
 
+=item Sys::Virt::Domain::EVENT_ID_DISK_CHANGE
+
+Changes in disk media
+
 =back
 
 =head2 IO ERROR EVENT CONSTANTS
@@ -1644,6 +1714,22 @@ An IPv4 address
 
 An IPv6 address
 
+=item Sys::Virt::Domain::EVENT_GRAPHICS_ADDRESS_UNIX
+
+An UNIX socket path address
+
+=back
+
+=head2 DISK CHANGE EVENT CONSTANTS
+
+These constants describe the reason for a disk change event
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_DISK_CHANGE_MISSING_ON_START
+
+The disk media was missing when attempting to start the guest
+
 =back
 
 =head2 DOMAIN BLOCK JOB TYPE CONSTANTS
@@ -1721,6 +1807,10 @@ Crash the guest after completing the core dump
 =item Sys::Virt::Domain::DUMP_BYPASS_CACHE
 
 Do not use OS I/O cache when writing core dump
+
+=item Sys::Virt::Domain::DUMP_RESET
+
+Reset the virtual machine after finishing the dump
 
 =back
 

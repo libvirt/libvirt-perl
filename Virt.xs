@@ -338,6 +338,49 @@ _domain_event_io_error_callback(virConnectPtr con,
 }
 
 static int
+_domain_event_disk_change_callback(virConnectPtr con,
+                                   virDomainPtr dom,
+                                   const char *oldSrcPath,
+                                   const char *newSrcPath,
+                                   const char *devAlias,
+                                   int reason,
+                                   void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *domref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+    XPUSHs(domref);
+    XPUSHs(sv_2mortal(newSVpv(oldSrcPath, 0)));
+    XPUSHs(sv_2mortal(newSVpv(newSrcPath, 0)));
+    XPUSHs(sv_2mortal(newSVpv(devAlias, 0)));
+    XPUSHs(sv_2mortal(newSViv(reason)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+static int
 _domain_event_io_error_reason_callback(virConnectPtr con,
                                        virDomainPtr dom,
                                        const char *srcPath,
@@ -944,21 +987,16 @@ MODULE = Sys::Virt  PACKAGE = Sys::Virt
 PROTOTYPES: ENABLE
 
 virConnectPtr
-_open(name, readonly)
+_open(name, flags)
       SV *name;
-      int readonly;
+      unsigned int flags;
 PREINIT:
       const char *uri = NULL;
     CODE:
       if (SvOK(name))
 	  uri = SvPV_nolen(name);
 
-      if (readonly) {
-	RETVAL = virConnectOpenReadOnly(uri);
-      } else {
-	RETVAL = virConnectOpen(uri);
-      }
-      if (!RETVAL) {
+      if (!(RETVAL = virConnectOpenAuth(uri, NULL, flags))) {
 	_croak_error(virGetLastError());
       }
   OUTPUT:
@@ -966,11 +1004,11 @@ PREINIT:
 
 
 virConnectPtr
-_open_auth(name, readonly, creds, cb)
+_open_auth(name, creds, cb, flags)
       SV *name;
-      int readonly;
       SV *creds;
       SV *cb;
+      unsigned int flags;
 PREINIT:
       AV *credlist;
       virConnectAuth auth;
@@ -994,12 +1032,12 @@ PREINIT:
 	  auth.cbdata = cb;
 	  RETVAL = virConnectOpenAuth(uri,
 				      &auth,
-				      readonly ? VIR_CONNECT_RO : 0);
+                                      flags);
 	  Safefree(auth.credtype);
       } else {
 	  RETVAL = virConnectOpenAuth(uri,
 				      virConnectAuthPtrDefault,
-				      readonly ? VIR_CONNECT_RO : 0);
+                                      flags);
       }
       if (!RETVAL) {
 	_croak_error(virGetLastError());
@@ -1846,6 +1884,9 @@ PREINIT:
       case VIR_DOMAIN_EVENT_ID_BLOCK_JOB:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_block_job_callback);
           break;
+      case VIR_DOMAIN_EVENT_ID_DISK_CHANGE:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_disk_change_callback);
+          break;
       default:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_generic_callback);
           break;
@@ -2214,6 +2255,19 @@ open_console(dom, st, devname, flags=0)
       if (virDomainOpenConsole(dom, devnamestr, st, flags) < 0) {
           _croak_error(virGetLastError());
       }
+
+
+void
+open_graphics(dom, idx, fd, flags=0)
+      virDomainPtr dom;
+      unsigned int idx;
+      int fd;
+      unsigned int flags;
+  PPCODE:
+      if (virDomainOpenGraphics(dom, idx, fd, flags) < 0) {
+          _croak_error(virGetLastError());
+      }
+
 
 void
 screenshot(dom, st, screen, flags=0)
@@ -2865,6 +2919,15 @@ reboot(dom, flags=0)
       unsigned int flags;
     PPCODE:
       if (virDomainReboot(dom, flags) < 0) {
+	_croak_error(virGetLastError());
+      }
+
+void
+reset(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+    PPCODE:
+      if (virDomainReset(dom, flags) < 0) {
 	_croak_error(virGetLastError());
       }
 
@@ -4797,6 +4860,53 @@ delete(domss, flags=0)
       }
 
 
+virDomainSnapshotPtr
+get_parent(domss, flags=0)
+      virDomainSnapshotPtr domss;
+      unsigned int flags;
+    CODE:
+      if (!(RETVAL = virDomainSnapshotGetParent(domss, flags))) {
+          _croak_error(virGetLastError());
+      }
+  OUTPUT:
+      RETVAL
+
+
+int
+num_of_child_snapshots(domss, flags=0)
+      virDomainSnapshotPtr domss;
+      unsigned int flags;
+    CODE:
+      if ((RETVAL = virDomainSnapshotNumChildren(domss, flags)) < 0) {
+	_croak_error(virGetLastError());
+      }
+  OUTPUT:
+      RETVAL
+
+
+void
+list_child_snapshot_names(domss, maxnames, flags=0)
+      virDomainSnapshotPtr domss;
+      int maxnames;
+      unsigned int flags;
+ PREINIT:
+      char **names;
+      int nsnap;
+      int i;
+  PPCODE:
+      Newx(names, maxnames, char *);
+      if ((nsnap = virDomainSnapshotListChildrenNames(domss, names, maxnames, flags)) < 0) {
+	Safefree(names);
+	_croak_error(virGetLastError());
+      }
+      EXTEND(SP, nsnap);
+      for (i = 0 ; i < nsnap ; i++) {
+	PUSHs(sv_2mortal(newSVpv(names[i], 0)));
+        free(names[i]);
+      }
+      Safefree(names);
+
+
 void
 DESTROY(domss_rv)
       SV *domss_rv;
@@ -5141,10 +5251,8 @@ BOOT:
 
       stash = gv_stashpv( "Sys::Virt", TRUE );
 
-      /*
-       * Not required
-      RGISTER_CONSTANT(VIR_CONNECT_RO, CONNECT_RO);
-      */
+      REGISTER_CONSTANT(VIR_CONNECT_RO, CONNECT_RO);
+      REGISTER_CONSTANT(VIR_CONNECT_NO_ALIASES, CONNECT_NO_ALIASES);
 
       REGISTER_CONSTANT(VIR_CRED_USERNAME, CRED_USERNAME);
       REGISTER_CONSTANT(VIR_CRED_AUTHNAME, CRED_AUTHNAME);
@@ -5182,6 +5290,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DUMP_CRASH, DUMP_CRASH);
       REGISTER_CONSTANT(VIR_DUMP_LIVE, DUMP_LIVE);
       REGISTER_CONSTANT(VIR_DUMP_BYPASS_CACHE, DUMP_BYPASS_CACHE);
+      REGISTER_CONSTANT(VIR_DUMP_RESET, DUMP_RESET);
 
       REGISTER_CONSTANT(VIR_DOMAIN_SAVE_BYPASS_CACHE, SAVE_BYPASS_CACHE);
       REGISTER_CONSTANT(VIR_DOMAIN_SAVE_RUNNING, SAVE_RUNNING);
@@ -5232,6 +5341,7 @@ BOOT:
 
       REGISTER_CONSTANT(VIR_DOMAIN_CRASHED_UNKNOWN, STATE_CRASHED_UNKNOWN);
 
+      REGISTER_CONSTANT(VIR_DOMAIN_OPEN_GRAPHICS_SKIPAUTH, OPEN_GRAPHICS_SKIPAUTH);
 
       /* NB: skip VIR_DOMAIN_SCHED_FIELD_* constants, because
          those are not used from Perl code - handled internally
@@ -5347,6 +5457,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_IO_ERROR_REASON, EVENT_ID_IO_ERROR_REASON);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_CONTROL_ERROR, EVENT_ID_CONTROL_ERROR);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_BLOCK_JOB, EVENT_ID_BLOCK_JOB);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_DISK_CHANGE, EVENT_ID_DISK_CHANGE);
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_NONE, EVENT_WATCHDOG_NONE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_PAUSE, EVENT_WATCHDOG_PAUSE);
@@ -5365,7 +5476,9 @@ BOOT:
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_GRAPHICS_ADDRESS_IPV4, EVENT_GRAPHICS_ADDRESS_IPV4);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_GRAPHICS_ADDRESS_IPV6, EVENT_GRAPHICS_ADDRESS_IPV6);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_GRAPHICS_ADDRESS_UNIX, EVENT_GRAPHICS_ADDRESS_UNIX);
 
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_DISK_CHANGE_MISSING_ON_START, EVENT_DISK_CHANGE_MISSING_ON_START);
 
       REGISTER_CONSTANT_STR(VIR_DOMAIN_MEMORY_HARD_LIMIT, MEMORY_HARD_LIMIT);
       REGISTER_CONSTANT_STR(VIR_DOMAIN_MEMORY_SOFT_LIMIT, MEMORY_SOFT_LIMIT);
@@ -5374,6 +5487,15 @@ BOOT:
       REGISTER_CONSTANT_ULL(VIR_DOMAIN_MEMORY_PARAM_UNLIMITED, MEMORY_PARAM_UNLIMITED);
 
       REGISTER_CONSTANT_STR(VIR_DOMAIN_BLKIO_WEIGHT, BLKIO_WEIGHT);
+
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_SCHEDULER_CPU_SHARES, SCHEDULER_CPU_SHARES);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_SCHEDULER_VCPU_PERIOD, SCHEDULER_VCPU_PERIOD);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_SCHEDULER_VCPU_QUOTA, SCHEDULER_VCPU_QUOTA);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_SCHEDULER_WEIGHT, SCHEDULER_WEIGHT);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_SCHEDULER_CAP, SCHEDULER_CAP);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_SCHEDULER_LIMIT, SCHEDULER_LIMIT);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_SCHEDULER_RESERVATION, SCHEDULER_RESERVATION);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_SCHEDULER_SHARES, SCHEDULER_SHARES);
 
       REGISTER_CONSTANT(VIR_DOMAIN_VCPU_CURRENT, VCPU_CURRENT);
       REGISTER_CONSTANT(VIR_DOMAIN_VCPU_LIVE, VCPU_LIVE);
@@ -5392,10 +5514,13 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_CREATE_DISK_ONLY, CREATE_DISK_ONLY);
 
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_LIST_ROOTS, LIST_ROOTS);
+      REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_LIST_DESCENDANTS, LIST_DESCENDANTS);
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_LIST_METADATA, LIST_METADATA);
+      REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_LIST_LEAVES, LIST_LEAVES);
 
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_REVERT_RUNNING, REVERT_RUNNING);
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_REVERT_PAUSED, REVERT_PAUSED);
+      REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_REVERT_FORCE, REVERT_FORCE);
 
       stash = gv_stashpv( "Sys::Virt::StoragePool", TRUE );
       REGISTER_CONSTANT(VIR_STORAGE_POOL_INACTIVE, STATE_INACTIVE);
@@ -5427,6 +5552,7 @@ BOOT:
       stash = gv_stashpv( "Sys::Virt::Secret", TRUE );
       REGISTER_CONSTANT(VIR_SECRET_USAGE_TYPE_NONE, USAGE_TYPE_NONE);
       REGISTER_CONSTANT(VIR_SECRET_USAGE_TYPE_VOLUME, USAGE_TYPE_VOLUME);
+      REGISTER_CONSTANT(VIR_SECRET_USAGE_TYPE_CEPH, USAGE_TYPE_CEPH);
 
 
 
@@ -5560,4 +5686,5 @@ BOOT:
       REGISTER_CONSTANT(VIR_ERR_ARGUMENT_UNSUPPORTED, ERR_ARGUMENT_UNSUPPORTED);
       REGISTER_CONSTANT(VIR_ERR_STORAGE_PROBE_FAILED, ERR_STORAGE_PROBE_FAILED);
       REGISTER_CONSTANT(VIR_ERR_STORAGE_POOL_BUILT, ERR_STORAGE_POOL_BUILT);
+      REGISTER_CONSTANT(VIR_ERR_SNAPSHOT_REVERT_RISKY, ERR_SNAPSHOT_REVERT_RISKY);
     }
