@@ -1262,7 +1262,7 @@ get_node_cpu_stats(con, cpuNum=VIR_NODE_CPU_STATS_ALL_CPUS, flags=0)
       unsigned int flags;
 PREINIT:
       virNodeCPUStatsPtr params;
-      int nparams;
+      int nparams = 0;
       int i;
   CODE:
       if (virNodeGetCPUStats(con, cpuNum, NULL, &nparams, flags) < 0) {
@@ -1298,7 +1298,7 @@ get_node_memory_stats(con, cellNum=VIR_NODE_MEMORY_STATS_ALL_CELLS, flags=0)
       unsigned int flags;
 PREINIT:
       virNodeMemoryStatsPtr params;
-      int nparams;
+      int nparams = 0;
       int i;
   CODE:
       if (virNodeGetMemoryStats(con, cellNum, NULL, &nparams, flags) < 0) {
