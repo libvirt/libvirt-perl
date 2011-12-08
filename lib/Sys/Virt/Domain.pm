@@ -505,29 +505,7 @@ Return the scheduler type for the guest domain
 =item %stats = $dom->block_stats($path)
 
 Fetch the current I/O statistics for the block device given by C<$path>.
-The returned hash containins keys for
-
-=item my %params = $dom->get_scheduler_parameters()
-
-Return the set of scheduler tunable parameters for the guest.
-
-=item $dom->set_scheduler_parameters($params)
-
-Update the set of scheduler tunable parameters. The value names for
-tunables vary, and can be discovered using the C<get_scheduler_params>
-call
-
-=item my $params = $dom->get_memory_parameters()
-
-Return a hash reference containing the set of memory tunable
-parameters for the guest. The keys in the hash are one of the
-constants MEMORY PARAMETERS described later.
-
-=item $dom->set_memory_parameters($params)
-
-Update the memory tunable parameters for the guest. The
-C<$params> should be a hash reference whose keys are one
-of the MEMORY PARAMETERS constants.
+The returned hash contains keys for
 
 =over 4
 
@@ -553,6 +531,28 @@ Some kind of error count
 
 =back
 
+=item my %params = $dom->get_scheduler_parameters()
+
+Return the set of scheduler tunable parameters for the guest.
+
+=item $dom->set_scheduler_parameters($params)
+
+Update the set of scheduler tunable parameters. The value names for
+tunables vary, and can be discovered using the C<get_scheduler_params>
+call
+
+=item my $params = $dom->get_memory_parameters()
+
+Return a hash reference containing the set of memory tunable
+parameters for the guest. The keys in the hash are one of the
+constants MEMORY PARAMETERS described later.
+
+=item $dom->set_memory_parameters($params)
+
+Update the memory tunable parameters for the guest. The
+C<$params> should be a hash reference whose keys are one
+of the MEMORY PARAMETERS constants.
+
 =item my $params = $dom->get_blkio_parameters()
 
 Return a hash reference containing the set of blkio tunable
@@ -564,6 +564,26 @@ constants BLKIO PARAMETERS described later.
 Update the blkio tunable parameters for the guest. The
 C<$params> should be a hash reference whose keys are one
 of the BLKIO PARAMETERS constants.
+
+=item %stats = $dom->get_block_iotune($disk, $flags=0)
+
+Return a hash reference containing the set of blkio tunable
+parameters for the guest disk C<$disk>. The keys in the hash
+are one of the constants BLOCK IOTUNE PARAMETERS described later.
+
+=item $dom->set_block_iotune($disk, $params, $flags=0);
+
+Update the blkio tunable parameters for the guest disk C<$disk>. The
+C<$params> should be a hash reference whose keys are one
+of the BLOCK IOTUNE PARAMETERS constants.
+
+=item $dom->block_resize($disk, $newsize, $flags=0)
+
+Resize the disk C<$disk> to have new size C<$newsize>. If the disk
+is backed by a special image format, the actual resize is done by the
+hypervisor. If the disk is backed by a raw file, or block device,
+the resize must be done prior to invoking this API call, and it
+merely updates the hypervisor's view of the disk size.
 
 =over 4
 
@@ -1364,11 +1384,51 @@ The value of an unlimited memory parameter
 
 =head2 BLKIO PARAMETERS
 
+The following parameters control I/O tuning for the domain
+as a whole
+
 =over 4
 
 =item Sys::Virt::Domain::BLKIO_WEIGHT
 
 The I/O weight parameter
+
+=item Sys::Virt::Domain::BLKIO_DEVICE_WEIGHT
+
+The per-device I/O weight parameter
+
+=back
+
+=head2 BLKIO PARAMETERS
+
+The following parameters control I/O tuning for an individual
+guest disk.
+
+=over 4
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_TOTAL_BYTES_SEC
+
+The total bytes processed per second.
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_READ_BYTES_SEC
+
+The bytes read per second.
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_WRITE_BYTES_SEC
+
+The bytes written per second.
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_TOTAL_IOPS_SEC
+
+The total I/O operations processed per second.
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_READ_IOPS_SEC
+
+The I/O operations read per second.
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_WRITE_IOPS_SEC
+
+The I/O operations written per second.
 
 =back
 
@@ -1528,6 +1588,18 @@ The domain was saved to a state file
 =item Sys::Virt::Domain::EVENT_STOPPED_SHUTDOWN
 
 The domain stopped due to graceful shutdown of the guest.
+
+=back
+
+=item Sys::Virt::Domain::EVENT_SHUTDOWN
+
+The domain has shutdown but is not yet stopped
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_SHUTDOWN_FINISHED
+
+The domain finished shutting down
 
 =back
 

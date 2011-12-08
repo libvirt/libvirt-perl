@@ -1156,6 +1156,26 @@ is_secure(conn)
   OUTPUT:
       RETVAL
 
+int
+is_alive(conn)
+      virConnectPtr conn;
+    CODE:
+      if ((RETVAL = virConnectIsAlive(conn)) < 0) {
+          _croak_error(virGetLastError());
+      }
+  OUTPUT:
+      RETVAL
+
+void
+set_keep_alive(conn, interval, count)
+      virConnectPtr conn;
+      int interval;
+      unsigned int count;
+  PPCODE:
+      if (virConnectSetKeepAlive(conn, interval, count) < 0) {
+          _croak_error(virGetLastError());
+      }
+
 const char *
 get_type(con)
       virConnectPtr con;
@@ -1324,6 +1344,18 @@ PREINIT:
       Safefree(params);
   OUTPUT:
       RETVAL
+
+
+void
+node_suspend_for_duration(conn, target, duration, flags)
+      virConnectPtr conn;
+      unsigned int target;
+      SV *duration;
+      unsigned int flags;
+  PPCODE:
+      if (virNodeSuspendForDuration(conn, target, virt_SvIVull(duration), flags) < 0) {
+          _croak_error(virGetLastError());
+      }
 
 char *
 find_storage_pool_sources(con, type, srcspec, flags=0)
@@ -3153,6 +3185,129 @@ update_device(dom, xml, flags=0)
 
 
 HV *
+get_block_iotune(dom, disk, flags=0)
+      virDomainPtr dom;
+      const char *disk;
+      unsigned int flags;
+  PREINIT:
+      virTypedParameter *params;
+      int nparams;
+      unsigned int i;
+      const char *field;
+    CODE:
+      nparams = 0;
+      RETVAL = NULL;
+      if (virDomainGetBlockIoTune(dom, disk, NULL, &nparams, flags) < 0) {
+          _croak_error(virGetLastError());
+      }
+      RETVAL = (HV *)sv_2mortal((SV*)newHV());
+      Newx(params, nparams, virTypedParameter);
+
+      if (virDomainGetBlockIoTune(dom, disk, params, &nparams, flags) < 0) {
+          Safefree(params);
+          _croak_error(virGetLastError());
+      }
+
+      for (i = 0 ; i < nparams ; i++) {
+          SV *val = NULL;
+
+          switch (params[i].type) {
+          case VIR_DOMAIN_SCHED_FIELD_INT:
+              val = newSViv(params[i].value.i);
+              break;
+
+          case VIR_DOMAIN_SCHED_FIELD_UINT:
+              val = newSViv((int)params[i].value.ui);
+              break;
+
+          case VIR_DOMAIN_SCHED_FIELD_LLONG:
+              val = virt_newSVll(params[i].value.l);
+              break;
+
+          case VIR_DOMAIN_SCHED_FIELD_ULLONG:
+              val = virt_newSVull(params[i].value.ul);
+              break;
+
+          case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
+              val = newSVnv(params[i].value.d);
+              break;
+
+          case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
+              val = newSViv(params[i].value.b);
+              break;
+          }
+
+          field = params[i].field;
+          (void)hv_store(RETVAL, field, strlen(params[i].field), val, 0);
+      }
+      Safefree(params);
+  OUTPUT:
+      RETVAL
+
+
+void
+set_block_iotune(dom, disk, newparams, flags=0)
+      virDomainPtr dom;
+      const char *disk;
+      HV *newparams;
+      unsigned int flags;
+  PREINIT:
+      virTypedParameter *params;
+      int nparams;
+      unsigned int i;
+  PPCODE:
+      nparams = 0;
+      if (virDomainGetBlockIoTune(dom, disk, NULL, &nparams, flags) < 0) {
+          _croak_error(virGetLastError());
+      }
+      Newx(params, nparams, virTypedParameter);
+
+      if (virDomainGetBlockIoTune(dom, disk, params, &nparams, flags) < 0) {
+          Safefree(params);
+          _croak_error(virGetLastError());
+      }
+
+      for (i = 0 ; i < nparams ; i++) {
+	SV **val;
+
+	if (!hv_exists(newparams, params[i].field, strlen(params[i].field)))
+	  continue;
+
+	val = hv_fetch (newparams, params[i].field, strlen(params[i].field), 0);
+
+	switch (params[i].type) {
+	case VIR_DOMAIN_SCHED_FIELD_INT:
+	  params[i].value.i = SvIV(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_UINT:
+	  params[i].value.ui = SvIV(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_LLONG:
+	  params[i].value.l = virt_SvIVll(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_ULLONG:
+	  params[i].value.ul = virt_SvIVull(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
+	  params[i].value.d = SvNV(*val);
+	  break;
+
+	case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
+	  params[i].value.b = SvIV(*val);
+	  break;
+	}
+
+      }
+      if (virDomainSetBlockIoTune(dom, disk, params, nparams, flags) < 0) {
+          _croak_error(virGetLastError());
+      }
+
+
+HV *
 block_stats(dom, path, flags=0)
       virDomainPtr dom;
       const char *path;
@@ -3337,6 +3492,18 @@ PREINIT:
       }
 
       Safefree(keycodes);
+
+void
+block_resize(dom, disk, size, flags=0)
+      virDomainPtr dom;
+      const char *disk;
+      SV *size;
+      unsigned int flags;
+  PPCODE:
+      if (virDomainBlockResize(dom, disk, virt_SvIVull(size), flags) < 0) {
+	_croak_error(virGetLastError());
+      }
+
 
 SV *
 block_peek(dom, path, offset, size, flags=0)
@@ -5270,6 +5437,11 @@ BOOT:
       REGISTER_CONSTANT(VIR_CPU_COMPARE_IDENTICAL, CPU_COMPARE_IDENTICAL);
       REGISTER_CONSTANT(VIR_CPU_COMPARE_SUPERSET, CPU_COMPARE_SUPERSET);
 
+
+      REGISTER_CONSTANT(VIR_NODE_SUSPEND_TARGET_MEM, NODE_SUSPEND_TARGET_MEM);
+      REGISTER_CONSTANT(VIR_NODE_SUSPEND_TARGET_DISK, NODE_SUSPEND_TARGET_DISK);
+      REGISTER_CONSTANT(VIR_NODE_SUSPEND_TARGET_HYBRID, NODE_SUSPEND_TARGET_HYBRID);
+
       stash = gv_stashpv( "Sys::Virt::Event", TRUE );
 
       REGISTER_CONSTANT(VIR_EVENT_HANDLE_READABLE, HANDLE_READABLE);
@@ -5386,6 +5558,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_SUSPENDED, EVENT_SUSPENDED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_RESUMED, EVENT_RESUMED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_STOPPED, EVENT_STOPPED);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_SHUTDOWN, EVENT_SHUTDOWN);
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_DEFINED_ADDED, EVENT_DEFINED_ADDED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_DEFINED_UPDATED, EVENT_DEFINED_UPDATED);
@@ -5413,6 +5586,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_STOPPED_MIGRATED, EVENT_STOPPED_MIGRATED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_STOPPED_SAVED, EVENT_STOPPED_SAVED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_STOPPED_FAILED, EVENT_STOPPED_FAILED);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_SHUTDOWN_FINISHED, EVENT_SHUTDOWN_FINISHED);
 
 
       REGISTER_CONSTANT(VIR_DOMAIN_CONTROL_OK, CONTROL_OK);
@@ -5487,6 +5662,7 @@ BOOT:
       REGISTER_CONSTANT_ULL(VIR_DOMAIN_MEMORY_PARAM_UNLIMITED, MEMORY_PARAM_UNLIMITED);
 
       REGISTER_CONSTANT_STR(VIR_DOMAIN_BLKIO_WEIGHT, BLKIO_WEIGHT);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BLKIO_DEVICE_WEIGHT, BLKIO_DEVICE_WEIGHT);
 
       REGISTER_CONSTANT_STR(VIR_DOMAIN_SCHEDULER_CPU_SHARES, SCHEDULER_CPU_SHARES);
       REGISTER_CONSTANT_STR(VIR_DOMAIN_SCHEDULER_VCPU_PERIOD, SCHEDULER_VCPU_PERIOD);
@@ -5496,6 +5672,15 @@ BOOT:
       REGISTER_CONSTANT_STR(VIR_DOMAIN_SCHEDULER_LIMIT, SCHEDULER_LIMIT);
       REGISTER_CONSTANT_STR(VIR_DOMAIN_SCHEDULER_RESERVATION, SCHEDULER_RESERVATION);
       REGISTER_CONSTANT_STR(VIR_DOMAIN_SCHEDULER_SHARES, SCHEDULER_SHARES);
+
+
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BLOCK_IOTUNE_TOTAL_BYTES_SEC, BLOCK_IOTUNE_TOTAL_BYTES_SEC);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BLOCK_IOTUNE_READ_BYTES_SEC, BLOCK_IOTUNE_READ_BYTES_SEC);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BLOCK_IOTUNE_WRITE_BYTES_SEC, BLOCK_IOTUNE_WRITE_BYTES_SEC);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BLOCK_IOTUNE_TOTAL_IOPS_SEC, BLOCK_IOTUNE_TOTAL_BYTES_SEC);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BLOCK_IOTUNE_READ_IOPS_SEC, BLOCK_IOTUNE_READ_BYTES_SEC);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BLOCK_IOTUNE_WRITE_IOPS_SEC, BLOCK_IOTUNE_WRITE_BYTES_SEC);
+
 
       REGISTER_CONSTANT(VIR_DOMAIN_VCPU_CURRENT, VCPU_CURRENT);
       REGISTER_CONSTANT(VIR_DOMAIN_VCPU_LIVE, VCPU_LIVE);
@@ -5611,6 +5796,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_FROM_LIBXL, FROM_LIBXL);
       REGISTER_CONSTANT(VIR_FROM_LOCKING, FROM_LOCKING);
       REGISTER_CONSTANT(VIR_FROM_HYPERV, FROM_HYPERV);
+      REGISTER_CONSTANT(VIR_FROM_CAPABILITIES, FROM_CAPABILITIES);
 
 
       REGISTER_CONSTANT(VIR_ERR_OK, ERR_OK);

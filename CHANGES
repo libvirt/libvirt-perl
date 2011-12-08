@@ -1,6 +1,10 @@
 Sys::Virt ChangeLog
 ===================
 
+New in 0.9.8:
+
+ - Add all new APIs in libvirt 0.9.8
+
 New in 0.9.7:
 
  - Add all new APIs in libvirt 0.9.7

@@ -1162,6 +1162,17 @@ or encryption with a TCP stream.
 Returns a true value if the current connection data stream is
 encrypted.
 
+=item $conn->is_alive()
+
+Returns a true value if the connection is alive, as determined
+by keep-alive packets or other recent RPC traffic.
+
+=item $conn->set_keep_alive($interval, $count)
+
+Change the operation of the keep alive protocol to send C<$count>
+packets spaced C<$interval> seconds apart before considering the
+connection dead.
+
 =item my $info = $con->get_node_info()
 
 Returns a hash reference summarising the capabilities of the host
@@ -1230,6 +1241,12 @@ The memory consumed by buffers
 The memory consumed for cache
 
 =back
+
+=item $conn->node_suspend_for_duration($target, $duration, $flags=0)
+
+Suspend the the host, using mode C<$target> which is one of the NODE
+SUSPEND constants listed later. The C<$duration> parameter controls
+how long the node is suspended for before waking up.
 
 =item $conn->domain_event_register($callback)
 
@@ -1465,6 +1482,24 @@ The host has an identical CPU description
 =item Sys::Virt::CPU_COMPARE_SUPERSET
 
 The host offers a superset of the CPU descriptoon
+
+=back
+
+=head2 NODE SUSPEND CONSTANTS
+
+=over 4
+
+=item Sys::Virt::NODE_SUSPEND_TARGET_MEM
+
+Suspends to memory (equivalent of S3 on x86 architectures)
+
+=item Sys::Virt::NODE_SUSPEND_TARGET_DISK
+
+Suspends to disk (equivalent of S5 on x86 architectures)
+
+=item Sys::Virt::NODE_SUSPEND_TARGET_HYBRID
+
+Suspends to memory and disk (equivalent of S3+S5 on x86 architectures)
 
 =back
 

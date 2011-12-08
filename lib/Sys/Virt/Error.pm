@@ -278,6 +278,10 @@ The lock manager drivers
 
 The Hyper-V driver
 
+=item Sys::Virt::Error::FROM_CAPABILITIES
+
+The capabilities driver
+
 =back
 
 =head2 ERROR CODES
