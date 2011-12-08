@@ -1004,6 +1004,89 @@ _stream_recv_all_sink(virStreamPtr st,
 }
 
 
+static HV *
+vir_typed_param_to_hv(virTypedParameter *params, int nparams)
+{
+    HV *ret = (HV *)sv_2mortal((SV*)newHV());
+    unsigned int i;
+    const char *field;
+
+    for (i = 0 ; i < nparams ; i++) {
+        SV *val = NULL;
+
+        switch (params[i].type) {
+        case VIR_TYPED_PARAM_INT:
+            val = newSViv(params[i].value.i);
+            break;
+
+        case VIR_TYPED_PARAM_UINT:
+            val = newSViv((int)params[i].value.ui);
+            break;
+
+        case VIR_TYPED_PARAM_LLONG:
+            val = virt_newSVll(params[i].value.l);
+            break;
+
+        case VIR_TYPED_PARAM_ULLONG:
+            val = virt_newSVull(params[i].value.ul);
+            break;
+
+        case VIR_TYPED_PARAM_DOUBLE:
+            val = newSVnv(params[i].value.d);
+            break;
+
+        case VIR_TYPED_PARAM_BOOLEAN:
+            val = newSViv(params[i].value.b);
+            break;
+        }
+
+        field = params[i].field;
+        (void)hv_store(ret, field, strlen(params[i].field), val, 0);
+    }
+
+    return ret;
+}
+
+
+static void
+vir_typed_param_from_hv(HV *newparams, virTypedParameter *params, int nparams)
+{
+    unsigned int i;
+    for (i = 0 ; i < nparams ; i++) {
+        SV **val;
+
+        if (!hv_exists(newparams, params[i].field, strlen(params[i].field)))
+            continue;
+
+        val = hv_fetch (newparams, params[i].field, strlen(params[i].field), 0);
+
+        switch (params[i].type) {
+        case VIR_TYPED_PARAM_INT:
+            params[i].value.i = SvIV(*val);
+            break;
+
+        case VIR_TYPED_PARAM_UINT:
+            params[i].value.ui = SvIV(*val);
+            break;
+
+        case VIR_TYPED_PARAM_LLONG:
+            params[i].value.l = virt_SvIVll(*val);
+            break;
+
+        case VIR_TYPED_PARAM_ULLONG:
+            params[i].value.ul = virt_SvIVull(*val);
+            break;
+
+        case VIR_TYPED_PARAM_DOUBLE:
+            params[i].value.d = SvNV(*val);
+            break;
+
+        case VIR_TYPED_PARAM_BOOLEAN:
+            params[i].value.b = SvIV(*val);
+            break;
+        }
+    }
+}
 
 
 MODULE = Sys::Virt  PACKAGE = Sys::Virt
@@ -2439,16 +2522,15 @@ get_scheduler_parameters(dom, flags=0)
       virDomainPtr dom;
       unsigned int flags;
   PREINIT:
-      virSchedParameter *params;
+      virTypedParameter *params;
       int nparams;
-      unsigned int i;
       char *type;
     CODE:
       if (!(type = virDomainGetSchedulerType(dom, &nparams)))
           _croak_error();
 
       free(type);
-      Newx(params, nparams, virSchedParameter);
+      Newx(params, nparams, virTypedParameter);
       if (flags) {
           if (virDomainGetSchedulerParametersFlags(dom, params, &nparams, flags) < 0) {
               Safefree(params);
@@ -2460,38 +2542,7 @@ get_scheduler_parameters(dom, flags=0)
               _croak_error();
           }
       }
-      RETVAL = (HV *)sv_2mortal((SV*)newHV());
-      for (i = 0 ; i < nparams ; i++) {
-          SV *val = NULL;
-
-          switch (params[i].type) {
-          case VIR_DOMAIN_SCHED_FIELD_INT:
-              val = newSViv(params[i].value.i);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_UINT:
-              val = newSViv((int)params[i].value.ui);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_LLONG:
-              val = virt_newSVll(params[i].value.l);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_ULLONG:
-              val = virt_newSVull(params[i].value.ul);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
-              val = newSVnv(params[i].value.d);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
-              val = newSViv(params[i].value.b);
-              break;
-	}
-
-	(void)hv_store (RETVAL, params[i].field, strlen(params[i].field), val, 0);
-      }
+      RETVAL = vir_typed_param_to_hv(params, nparams);
       Safefree(params);
   OUTPUT:
       RETVAL
@@ -2503,16 +2554,15 @@ set_scheduler_parameters(dom, newparams, flags=0)
       HV *newparams;
       unsigned int flags;
   PREINIT:
-      virSchedParameter *params;
+      virTypedParameter *params;
       int nparams;
-      unsigned int i;
       char *type;
     PPCODE:
       if (!(type = virDomainGetSchedulerType(dom, &nparams)))
           _croak_error();
 
       free(type);
-      Newx(params, nparams, virSchedParameter);
+      Newx(params, nparams, virTypedParameter);
       if (flags) {
           if (virDomainGetSchedulerParametersFlags(dom, params, &nparams, flags) < 0) {
               Safefree(params);
@@ -2524,40 +2574,7 @@ set_scheduler_parameters(dom, newparams, flags=0)
               _croak_error();
           }
       }
-      for (i = 0 ; i < nparams ; i++) {
-          SV **val;
-
-          if (!hv_exists(newparams, params[i].field, strlen(params[i].field)))
-              continue;
-
-          val = hv_fetch (newparams, params[i].field, strlen(params[i].field), 0);
-
-          switch (params[i].type) {
-          case VIR_DOMAIN_SCHED_FIELD_INT:
-              params[i].value.i = SvIV(*val);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_UINT:
-              params[i].value.ui = SvIV(*val);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_LLONG:
-              params[i].value.l = virt_SvIVll(*val);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_ULLONG:
-            params[i].value.ul = virt_SvIVull(*val);
-            break;
-
-          case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
-              params[i].value.d = SvNV(*val);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
-              params[i].value.b = SvIV(*val);
-              break;
-          }
-      }
+      vir_typed_param_from_hv(newparams, params, nparams);
       if (flags) {
           if (virDomainSetSchedulerParametersFlags(dom, params, nparams, flags) < 0)
               _croak_error();
@@ -2574,13 +2591,11 @@ get_memory_parameters(dom)
   PREINIT:
       virMemoryParameter *params;
       int nparams;
-      unsigned int i;
     CODE:
       nparams = 0;
       if (virDomainGetMemoryParameters(dom, NULL, &nparams, 0) < 0)
           _croak_error();
 
-      RETVAL = (HV *)sv_2mortal((SV*)newHV());
       Newx(params, nparams, virMemoryParameter);
 
       if (virDomainGetMemoryParameters(dom, params, &nparams, 0) < 0) {
@@ -2588,37 +2603,7 @@ get_memory_parameters(dom)
           _croak_error();
       }
 
-      for (i = 0 ; i < nparams ; i++) {
-          SV *val = NULL;
-
-          switch (params[i].type) {
-          case VIR_DOMAIN_SCHED_FIELD_INT:
-              val = newSViv(params[i].value.i);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_UINT:
-              val = newSViv((int)params[i].value.ui);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_LLONG:
-              val = virt_newSVll(params[i].value.l);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_ULLONG:
-              val = virt_newSVull(params[i].value.ul);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
-              val = newSVnv(params[i].value.d);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
-              val = newSViv(params[i].value.b);
-              break;
-          }
-
-          (void)hv_store(RETVAL, params[i].field, strlen(params[i].field), val, 0);
-      }
+      RETVAL = vir_typed_param_to_hv(params, nparams);
       Safefree(params);
   OUTPUT:
       RETVAL
@@ -2629,9 +2614,8 @@ set_memory_parameters(dom, newparams)
       virDomainPtr dom;
       HV *newparams;
   PREINIT:
-      virMemoryParameter *params;
+      virTypedParameter *params;
       int nparams;
-      unsigned int i;
     PPCODE:
       nparams = 0;
       if (virDomainGetMemoryParameters(dom, NULL, &nparams, 0) < 0)
@@ -2644,41 +2628,8 @@ set_memory_parameters(dom, newparams)
           _croak_error();
       }
 
-      for (i = 0 ; i < nparams ; i++) {
-	SV **val;
+      vir_typed_param_from_hv(newparams, params, nparams);
 
-	if (!hv_exists(newparams, params[i].field, strlen(params[i].field)))
-	  continue;
-
-	val = hv_fetch (newparams, params[i].field, strlen(params[i].field), 0);
-
-	switch (params[i].type) {
-	case VIR_DOMAIN_SCHED_FIELD_INT:
-	  params[i].value.i = SvIV(*val);
-	  break;
-
-	case VIR_DOMAIN_SCHED_FIELD_UINT:
-	  params[i].value.ui = SvIV(*val);
-	  break;
-
-	case VIR_DOMAIN_SCHED_FIELD_LLONG:
-	  params[i].value.l = virt_SvIVll(*val);
-	  break;
-
-	case VIR_DOMAIN_SCHED_FIELD_ULLONG:
-	  params[i].value.ul = virt_SvIVull(*val);
-	  break;
-
-	case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
-	  params[i].value.d = SvNV(*val);
-	  break;
-
-	case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
-	  params[i].value.b = SvIV(*val);
-	  break;
-	}
-
-      }
       if (virDomainSetMemoryParameters(dom, params, nparams, 0) < 0)
           _croak_error();
       Safefree(params);
@@ -2688,15 +2639,13 @@ HV *
 get_blkio_parameters(dom)
       virDomainPtr dom;
   PREINIT:
-      virBlkioParameter *params;
+      virTypedParameter *params;
       int nparams;
-      unsigned int i;
     CODE:
       nparams = 0;
       if (virDomainGetBlkioParameters(dom, NULL, &nparams, 0) < 0)
           _croak_error();
 
-      RETVAL = (HV *)sv_2mortal((SV*)newHV());
       Newx(params, nparams, virBlkioParameter);
 
       if (virDomainGetBlkioParameters(dom, params, &nparams, 0) < 0) {
@@ -2704,37 +2653,7 @@ get_blkio_parameters(dom)
           _croak_error();
       }
 
-      for (i = 0 ; i < nparams ; i++) {
-          SV *val = NULL;
-
-          switch (params[i].type) {
-          case VIR_DOMAIN_SCHED_FIELD_INT:
-              val = newSViv(params[i].value.i);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_UINT:
-              val = newSViv((int)params[i].value.ui);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_LLONG:
-              val = virt_newSVll(params[i].value.l);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_ULLONG:
-              val = virt_newSVull(params[i].value.ul);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
-              val = newSVnv(params[i].value.d);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
-              val = newSViv(params[i].value.b);
-              break;
-          }
-
-          (void)hv_store(RETVAL, params[i].field, strlen(params[i].field), val, 0);
-      }
+      RETVAL = vir_typed_param_to_hv(params, nparams);
       Safefree(params);
   OUTPUT:
       RETVAL
@@ -2747,7 +2666,6 @@ set_blkio_parameters(dom, newparams)
   PREINIT:
       virBlkioParameter *params;
       int nparams;
-      unsigned int i;
     PPCODE:
       nparams = 0;
       if (virDomainGetBlkioParameters(dom, NULL, &nparams, 0) < 0)
@@ -2760,41 +2678,8 @@ set_blkio_parameters(dom, newparams)
           _croak_error();
       }
 
-      for (i = 0 ; i < nparams ; i++) {
-          SV **val;
+      vir_typed_param_from_hv(newparams, params, nparams);
 
-          if (!hv_exists(newparams, params[i].field, strlen(params[i].field)))
-              continue;
-
-          val = hv_fetch (newparams, params[i].field, strlen(params[i].field), 0);
-
-          switch (params[i].type) {
-          case VIR_DOMAIN_SCHED_FIELD_INT:
-              params[i].value.i = SvIV(*val);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_UINT:
-              params[i].value.ui = SvIV(*val);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_LLONG:
-              params[i].value.l = virt_SvIVll(*val);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_ULLONG:
-              params[i].value.ul = virt_SvIVull(*val);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
-              params[i].value.d = SvNV(*val);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
-              params[i].value.b = SvIV(*val);
-              break;
-          }
-
-      }
       if (virDomainSetBlkioParameters(dom, params, nparams, 0) < 0)
           _croak_error();
       Safefree(params);
@@ -3178,53 +3063,19 @@ get_block_iotune(dom, disk, flags=0)
   PREINIT:
       virTypedParameter *params;
       int nparams;
-      unsigned int i;
-      const char *field;
     CODE:
       nparams = 0;
       RETVAL = NULL;
       if (virDomainGetBlockIoTune(dom, disk, NULL, &nparams, flags) < 0)
           _croak_error();
-      RETVAL = (HV *)sv_2mortal((SV*)newHV());
-      Newx(params, nparams, virTypedParameter);
 
+      Newx(params, nparams, virTypedParameter);
       if (virDomainGetBlockIoTune(dom, disk, params, &nparams, flags) < 0) {
           Safefree(params);
           _croak_error();
       }
 
-      for (i = 0 ; i < nparams ; i++) {
-          SV *val = NULL;
-
-          switch (params[i].type) {
-          case VIR_DOMAIN_SCHED_FIELD_INT:
-              val = newSViv(params[i].value.i);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_UINT:
-              val = newSViv((int)params[i].value.ui);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_LLONG:
-              val = virt_newSVll(params[i].value.l);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_ULLONG:
-              val = virt_newSVull(params[i].value.ul);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
-              val = newSVnv(params[i].value.d);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
-              val = newSViv(params[i].value.b);
-              break;
-          }
-
-          field = params[i].field;
-          (void)hv_store(RETVAL, field, strlen(params[i].field), val, 0);
-      }
+      RETVAL = vir_typed_param_to_hv(params, nparams);
       Safefree(params);
   OUTPUT:
       RETVAL
@@ -3239,7 +3090,6 @@ set_block_iotune(dom, disk, newparams, flags=0)
   PREINIT:
       virTypedParameter *params;
       int nparams;
-      unsigned int i;
   PPCODE:
       nparams = 0;
       if (virDomainGetBlockIoTune(dom, disk, NULL, &nparams, flags) < 0)
@@ -3251,40 +3101,7 @@ set_block_iotune(dom, disk, newparams, flags=0)
           _croak_error();
       }
 
-      for (i = 0 ; i < nparams ; i++) {
-          SV **val;
-
-          if (!hv_exists(newparams, params[i].field, strlen(params[i].field)))
-              continue;
-
-          val = hv_fetch (newparams, params[i].field, strlen(params[i].field), 0);
-
-          switch (params[i].type) {
-          case VIR_DOMAIN_SCHED_FIELD_INT:
-              params[i].value.i = SvIV(*val);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_UINT:
-              params[i].value.ui = SvIV(*val);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_LLONG:
-              params[i].value.l = virt_SvIVll(*val);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_ULLONG:
-              params[i].value.ul = virt_SvIVull(*val);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
-              params[i].value.d = SvNV(*val);
-              break;
-
-          case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
-              params[i].value.b = SvIV(*val);
-              break;
-          }
-      }
+      vir_typed_param_from_hv(newparams, params, nparams);
       if (virDomainSetBlockIoTune(dom, disk, params, nparams, flags) < 0)
           _croak_error();
 
@@ -3319,7 +3136,6 @@ block_stats(dom, path, flags=0)
               _croak_error();
           }
       } else {
-          RETVAL = (HV *)sv_2mortal((SV*)newHV());
           Newx(params, nparams, virTypedParameter);
 
           if (virDomainBlockStatsFlags(dom, path, params, &nparams, flags) < 0) {
@@ -3327,44 +3143,20 @@ block_stats(dom, path, flags=0)
               _croak_error();
           }
 
+          RETVAL = vir_typed_param_to_hv(params, nparams);
           for (i = 0 ; i < nparams ; i++) {
-              SV *val = NULL;
-
-              switch (params[i].type) {
-              case VIR_DOMAIN_SCHED_FIELD_INT:
-                  val = newSViv(params[i].value.i);
-                  break;
-
-              case VIR_DOMAIN_SCHED_FIELD_UINT:
-                  val = newSViv((int)params[i].value.ui);
-                  break;
-
-              case VIR_DOMAIN_SCHED_FIELD_LLONG:
-                  val = virt_newSVll(params[i].value.l);
-                  break;
-
-              case VIR_DOMAIN_SCHED_FIELD_ULLONG:
-                  val = virt_newSVull(params[i].value.ul);
-                  break;
-
-              case VIR_DOMAIN_SCHED_FIELD_DOUBLE:
-                  val = newSVnv(params[i].value.d);
-                  break;
-
-              case VIR_DOMAIN_SCHED_FIELD_BOOLEAN:
-                  val = newSViv(params[i].value.b);
-                  break;
-              }
-
-              field = params[i].field;
+              field = NULL;
               /* For back compat with previous hash above */
-              if (strcmp(field, "rd_operations") == 0)
+              if (strcmp(params[i].field, "rd_operations") == 0)
                   field = "rd_reqs";
-              else if (strcmp(field, "wr_operations") == 0)
+              else if (strcmp(params[i].field, "wr_operations") == 0)
                   field = "wr_reqs";
-              else if (strcmp(field, "flush_operations") == 0)
+              else if (strcmp(params[i].field, "flush_operations") == 0)
                   field = "flush_reqs";
-              (void)hv_store(RETVAL, field, strlen(params[i].field), val, 0);
+              if (field) {
+                  SV *val = hv_delete(RETVAL, params[i].field, strlen(params[i].field), 0);
+                  (void)hv_store(RETVAL, field, strlen(field), val, 0);
+              }
           }
           Safefree(params);
       }
