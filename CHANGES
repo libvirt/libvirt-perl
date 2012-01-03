@@ -4,6 +4,8 @@ Sys::Virt ChangeLog
 New in 0.9.8:
 
  - Add all new APIs in libvirt 0.9.8
+ - Simplify XS level error reporting code
+ - Cleanup code handling typed parameters
 
 New in 0.9.7:
 
