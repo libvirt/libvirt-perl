@@ -110,10 +110,13 @@ Returns a true value if the domain is running and has a persistent
 configuration file defined that is out of date compared to the
 current live config.
 
-=item my $xml = $dom->get_xml_description()
+=item my $xml = $dom->get_xml_description($flags=0)
 
 Returns an XML document containing a complete description of
-the domain's configuration
+the domain's configuration. The optional $flags parameter
+controls generation of the XML document, defaulting to 0 if
+omitted. It can be one or more of the XML DUMP constants
+listed later in this document.
 
 =item my $type = $dom->get_os_type()
 
@@ -1198,6 +1201,11 @@ if it is currently running.
 
 Include security sensitive information in the XML dump, such as
 passwords.
+
+=item Sys::Virt::Domain::XML_UPDATE_CPU
+
+Update the CPU model definition to match the current executing
+state.
 
 =back
 
