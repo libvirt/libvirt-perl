@@ -2636,6 +2636,56 @@ set_memory_parameters(dom, newparams)
 
 
 HV *
+get_numa_parameters(dom)
+      virDomainPtr dom;
+  PREINIT:
+      virTypedParameter *params;
+      int nparams;
+    CODE:
+      nparams = 0;
+      if (virDomainGetNumaParameters(dom, NULL, &nparams, 0) < 0)
+          _croak_error();
+
+      Newx(params, nparams, virTypedParameter);
+
+      if (virDomainGetNumaParameters(dom, params, &nparams, 0) < 0) {
+          Safefree(params);
+          _croak_error();
+      }
+
+      RETVAL = vir_typed_param_to_hv(params, nparams);
+      Safefree(params);
+  OUTPUT:
+      RETVAL
+
+
+void
+set_numa_parameters(dom, newparams)
+      virDomainPtr dom;
+      HV *newparams;
+  PREINIT:
+      virTypedParameter *params;
+      int nparams;
+    PPCODE:
+      nparams = 0;
+      if (virDomainGetNumaParameters(dom, NULL, &nparams, 0) < 0)
+          _croak_error();
+
+      Newx(params, nparams, virTypedParameter);
+
+      if (virDomainGetNumaParameters(dom, params, &nparams, 0) < 0) {
+          Safefree(params);
+          _croak_error();
+      }
+
+      vir_typed_param_from_hv(newparams, params, nparams);
+
+      if (virDomainSetNumaParameters(dom, params, nparams, 0) < 0)
+          _croak_error();
+      Safefree(params);
+
+
+HV *
 get_blkio_parameters(dom)
       virDomainPtr dom;
   PREINIT:
@@ -3103,6 +3153,57 @@ set_block_iotune(dom, disk, newparams, flags=0)
 
       vir_typed_param_from_hv(newparams, params, nparams);
       if (virDomainSetBlockIoTune(dom, disk, params, nparams, flags) < 0)
+          _croak_error();
+
+
+HV *
+get_interface_parameters(dom, intf, flags=0)
+      virDomainPtr dom;
+      const char *intf;
+      unsigned int flags;
+  PREINIT:
+      virTypedParameter *params;
+      int nparams;
+    CODE:
+      nparams = 0;
+      RETVAL = NULL;
+      if (virDomainGetInterfaceParameters(dom, intf, NULL, &nparams, flags) < 0)
+          _croak_error();
+
+      Newx(params, nparams, virTypedParameter);
+      if (virDomainGetInterfaceParameters(dom, intf, params, &nparams, flags) < 0) {
+          Safefree(params);
+          _croak_error();
+      }
+
+      RETVAL = vir_typed_param_to_hv(params, nparams);
+      Safefree(params);
+  OUTPUT:
+      RETVAL
+
+
+void
+set_interface_parameters(dom, intf, newparams, flags=0)
+      virDomainPtr dom;
+      const char *intf;
+      HV *newparams;
+      unsigned int flags;
+  PREINIT:
+      virTypedParameter *params;
+      int nparams;
+  PPCODE:
+      nparams = 0;
+      if (virDomainGetInterfaceParameters(dom, intf, NULL, &nparams, flags) < 0)
+          _croak_error();
+      Newx(params, nparams, virTypedParameter);
+
+      if (virDomainGetInterfaceParameters(dom, intf, params, &nparams, flags) < 0) {
+          Safefree(params);
+          _croak_error();
+      }
+
+      vir_typed_param_from_hv(newparams, params, nparams);
+      if (virDomainSetInterfaceParameters(dom, intf, params, nparams, flags) < 0)
           _croak_error();
 
 
@@ -5434,6 +5535,22 @@ BOOT:
       REGISTER_CONSTANT_STR(VIR_DOMAIN_BLOCK_IOTUNE_WRITE_IOPS_SEC, BLOCK_IOTUNE_WRITE_BYTES_SEC);
 
 
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_NUMA_NODESET, NUMA_NODESET);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_NUMA_MODE, NUMA_MODE);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_NUMATUNE_MEM_STRICT, NUMATUNE_MEM_STRICT);
+      REGISTER_CONSTANT(VIR_DOMAIN_NUMATUNE_MEM_PREFERRED, NUMATUNE_MEM_PREFERRED);
+      REGISTER_CONSTANT(VIR_DOMAIN_NUMATUNE_MEM_INTERLEAVE, NUMATUNE_MEM_INTERLEAVE);
+
+
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BANDWIDTH_IN_AVERAGE, BANDWIDTH_IN_AVERAGE);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BANDWIDTH_IN_PEAK, BANDWIDTH_IN_PEAK);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BANDWIDTH_IN_BURST, BANDWIDTH_IN_BURST);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BANDWIDTH_OUT_AVERAGE, BANDWIDTH_OUT_AVERAGE);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BANDWIDTH_OUT_PEAK, BANDWIDTH_OUT_PEAK);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BANDWIDTH_OUT_BURST, BANDWIDTH_OUT_BURST);
+
+
       REGISTER_CONSTANT(VIR_DOMAIN_VCPU_CURRENT, VCPU_CURRENT);
       REGISTER_CONSTANT(VIR_DOMAIN_VCPU_LIVE, VCPU_LIVE);
       REGISTER_CONSTANT(VIR_DOMAIN_VCPU_CONFIG, VCPU_CONFIG);
@@ -5625,4 +5742,5 @@ BOOT:
       REGISTER_CONSTANT(VIR_ERR_STORAGE_PROBE_FAILED, ERR_STORAGE_PROBE_FAILED);
       REGISTER_CONSTANT(VIR_ERR_STORAGE_POOL_BUILT, ERR_STORAGE_POOL_BUILT);
       REGISTER_CONSTANT(VIR_ERR_SNAPSHOT_REVERT_RISKY, ERR_SNAPSHOT_REVERT_RISKY);
+      REGISTER_CONSTANT(VIR_ERR_OPERATION_ABORTED, ERR_OPERATION_ABORTED);
     }

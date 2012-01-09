@@ -588,6 +588,10 @@ Probing the storage pool failed
 
 Reverting the snapshot could cause data loss
 
+=item Sys::Virt::Error::ERR_OPERATION_ABORTED
+
+The asynchronous operation was aborted at admin request
+
 =back
 
 =head1 AUTHORS
