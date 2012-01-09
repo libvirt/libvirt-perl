@@ -30,19 +30,20 @@ abstract:     Extension for the libvirt library
 version:      @VERSION@
 author:
   - Daniel P. Berrange <dan@berrange.com>
-license: gpl
+license: perl
 generated_by: ExtUtils::MakeMaker version 6.30
 build_requires:
    Test::More:                    0
    Test::Pod:                     0
    Test::Pod::Coverage:           0
+   Test::CPAN::Changes:           0
    XML::XPath:                    0
    XML::XPath::XMLParser:         0
    Sys::Hostname:                 0
    Time::HiRes:                   0
 
 resources:
-  license: http://www.gnu.org/licenses/gpl.html
+  license: http://dev.perl.org/licenses/
   homepage: http://libvirt.org/
   repository: http://libvirt.org/git/?p=libvirt-perl.git;a=summary
   MailingList: http://www.redhat.com/mailman/listinfo/libvir-list
