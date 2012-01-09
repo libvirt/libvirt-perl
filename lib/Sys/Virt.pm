@@ -1178,6 +1178,42 @@ connection dead.
 Returns a hash reference summarising the capabilities of the host
 node. The elements of the hash are as follows:
 
+=over 4
+
+=item memory
+
+The amount of physical memory in the host
+
+=item model
+
+The model of the CPU, eg x86_64
+
+=item cpus
+
+The total number of logical CPUs
+
+=item mhz
+
+The peak MHZ of the CPU
+
+=item nodes
+
+The number of NUMA cells
+
+=item sockets
+
+The number of CPU sockets
+
+=item cores
+
+The number of cores per socket
+
+=item threads
+
+The number of threads per core
+
+=back
+
 =item my $info = $con->get_node_cpu_stats($cpuNum=-1, $flags=0)
 
 Returns a hash reference providing information about the host
@@ -1335,42 +1371,6 @@ Given an array ref whose elements are XML documents describing host CPUs,
 compute the baseline CPU model that is operable across all hosts. The
 XML for the baseline CPU model is returned. The optional C<$flags>
 parameter is currently unused and defaults to 0.
-
-=over 4
-
-=item memory
-
-The amount of physical memory in the host
-
-=item model
-
-The model of the CPU, eg x86_64
-
-=item cpus
-
-The total number of logical CPUs
-
-=item mhz
-
-The peak MHZ of the CPU
-
-=item nodes
-
-The number of NUMA cells
-
-=item sockets
-
-The number of CPU sockets
-
-=item cores
-
-The number of cores per socket
-
-=item threads
-
-The number of threads per core
-
-=back
 
 =item my $info = $con->get_node_security_model()
 
