@@ -1556,7 +1556,7 @@ get_hostname(con)
  PREINIT:
       char *host;
     CODE:
-      if ((host = virConnectGetHostname(con)) < 0)
+      if (!(host = virConnectGetHostname(con)))
           _croak_error();
 
       RETVAL = newSVpv(host, 0);
