@@ -1634,7 +1634,7 @@ The domain resumed because the admin unpaused it.
 
 =item Sys::Virt::Domain::EVENT_RESUMED_FROM_SNAPSHOT
 
-The domain resumed becuase it was restored from a snapshot
+The domain resumed because it was restored from a snapshot
 
 =back
 
