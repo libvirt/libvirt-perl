@@ -1,13 +1,12 @@
-Sys::Virt ChangeLog
-===================
+Revision history for perl module Sys::Virt
 
-New in 0.9.8:
+0.9.8 2012-01-03
 
  - Add all new APIs in libvirt 0.9.8
  - Simplify XS level error reporting code
  - Cleanup code handling typed parameters
 
-New in 0.9.7:
+0.9.7 2011-11-08
 
  - Add all new APIs in libvirt 0.9.7
  - Add binding for virDomainOpenConsole
@@ -15,7 +14,7 @@ New in 0.9.7:
  - Added example integrating Sys::Virt::Domain->open_graphics
    GTK3 and GTK-VNC
 
-New in 0.9.5:
+0.9.5 2011-09-28
 
  - Add all new APIs in libvirt 0.9.5
  - Add missing snapshot creation/lookup methods
@@ -24,33 +23,33 @@ New in 0.9.5:
  - Add example for save/restore usage
  - Re-add abort job binding accidentally deleted
 
-New in 0.9.4:
+0.9.4 2011-08-03
 
  - Add all new APIs in libvirt 0.9.4
  - Requires libvirt >= 0.9.4
  - Add missing VIR_DUMP_* and VIR_MIGRATE_* constants
    from previous releases
 
-New in 0.9.3:
+0.9.3 2011-07-12
 
  - Add all new APIs in libvirt 0.9.3
  - Requires libvirt >= 0.9.3
 
-New in 0.9.2:
+0.9.2 2011-07-08
 
  - Changed version numbering to track the corresponding
    minimum required libvirt releases
  - Add all new APIs in libvirt 0.9.2
  - Requires libvirt >= 0.9.2
 
-New in 0.2.8:
+0.2.8 2011-06-29
 
  - Add all new APIs in libvirt 0.9.0
  - Add examples for different ways of using stream
    APIs to download/upload storage volumes
  - Requires libvirt >= 0.9.0
 
-New in 0.2.7:
+0.2.7 2011-06-29
 
  - Honour flags parameter when dumping XML
  - Use thread local error APIs exclusively
@@ -62,25 +61,25 @@ New in 0.2.7:
  - Update example RPM spec to match Fedora
  - Requires libvirt >= 0.8.8
 
-New in 0.2.6:
+0.2.6 2011-02-16
 
  - Fix build with 0.8.7 libvirt by removing reference to
    non-existant constant only introduced in libvirt > 0.8.7
  - Fix test script when hostname is undefined
 
-New in 0.2.5:
+0.2.5 2011-02-04
 
  - Add all APIs + constants from 0.8.2, 0.8.5 and 0.8.7
    releases, with exception of virDomainOpenConsole
  - Add missing dep on XML::XPath
  - Requires libvirt >= 0.8.7
 
-New in 0.2.4:
+0.2.4 2010-05-19
 
  - Add all APIs + constants from 0.7.7, 0.8.0 & 0.8.1 releases
  - Requires libvirt >= 0.8.1
 
-New in 0.2.3:
+0.2.3 2010-01-15
 
  - New virSecretPtr APIs
  - Fix authentication callback handling of NULLs
@@ -92,7 +91,7 @@ New in 0.2.3:
  - Add new error codes
  - Require libvirt >= 0.7.5
 
-New in 0.2.2:
+0.2.2 2009-09-14
 
  - Add all new APIs upto libvirt 0.7.0 APIs (listing defined
    network interfaces)
@@ -102,7 +101,7 @@ New in 0.2.2:
  - Add missing APIs for defining network interfaces and
    starting defined interfaces
 
-New in 0.2.1:
+0.2.1 2009-08-25
 
  - Add all new APIs upto libvirt 0.6.4 (network interfaces,
    storage volume cloning and node device create/delete)
@@ -113,14 +112,14 @@ New in 0.2.1:
  - Fix some memory leaks in C layer
  - Remove bogus module imports from test suite
 
-New in 0.2.0:
+0.2.0 2009-03-25
 
  - Implement storage, node device, event APIs
  - Full covereage of all APIs in 0.6.1 release of libvirt
  - Full documentation coverage
  - Ability to authenticate when openning connections
 
-New in 0.1.2:
+0.1.2 2008-02-23
 
  - Added manual written META.yml
  - Added networking APIs
@@ -130,7 +129,7 @@ New in 0.1.2:
  - Fix return values for reboot/shutdown/undefine/create APIs
  - Expanded documentation coverage
 
-New in 0.1.1:
+0.1.1 2006-06-22
 
  - Fixed POD documentation names
  - Make Sys::Virt::Error use 'strict' and 'warnings' pragmas
@@ -143,7 +142,7 @@ New in 0.1.1:
    found by pkg-config
  - Added bindings for newly introduced APIs in libvirt 0.1.1
 
-New in 0.1.0:
+0.1.0 2006-04-25
 
  - Added Sys::Virt->get_node_info mapping to virNodeGetInfo
  - Exposed the constants for domain state in Sys::Virt::Domain

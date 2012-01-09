@@ -34,6 +34,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  perl(ExtUtils::MakeMaker)
 BuildRequires:  perl(Test::Pod)
 BuildRequires:  perl(Test::Pod::Coverage)
+BuildRequires:  perl(Test::CPAN::Changes)
 BuildRequires:  perl(XML::XPath)
 BuildRequires:  libvirt-devel >= 0.9.9
 Requires:       perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
@@ -73,7 +74,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc AUTHORS CHANGES LICENSE README examples/
+%doc AUTHORS Changes LICENSE README examples/
 %{perl_vendorarch}/auto/*
 %{perl_vendorarch}/Sys*
 %{_mandir}/man3/*

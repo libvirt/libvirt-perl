@@ -16,6 +16,9 @@ WriteMakefile(
 	      'VERSION_FROM' => 'lib/Sys/Virt.pm',
 	      'PREREQ_PM' => {
 		  'Test::More'  => 0,
+		  'Test::Pod'  => 0,
+		  'Test::Pod::Coverage'  => 0,
+		  'Test::CPAN::Changes'  => 0,
 		  'XML::XPath' => 0,
 		  },
 	      'AUTHOR' => 'Daniel Berrange <dan@berrange.com>',
