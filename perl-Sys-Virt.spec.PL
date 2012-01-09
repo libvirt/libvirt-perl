@@ -36,6 +36,7 @@ BuildRequires:  perl(Test::Pod)
 BuildRequires:  perl(Test::Pod::Coverage)
 BuildRequires:  perl(Test::CPAN::Changes)
 BuildRequires:  perl(XML::XPath)
+BuildRequires:  perl(Time::HiRes)
 BuildRequires:  libvirt-devel >= 0.9.9
 Requires:       perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 
