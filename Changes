@@ -1,5 +1,16 @@
 Revision history for perl module Sys::Virt
 
+0.9.9 2012-01-09
+
+ - Add all new APIs in libvirt 0.9.9
+ - Fix crash in get_hostname
+ - Fix docs typos & nesting screwups
+ - Add example for calculating CPU utilization of host
+ - Update META.yml with correct license info
+ - Add missing dep on Time::HiRes
+ - Convert CHANGES file to Changes & format to comply
+   with Test::CPAN::Changes
+
 0.9.8 2012-01-03
 
  - Add all new APIs in libvirt 0.9.8
