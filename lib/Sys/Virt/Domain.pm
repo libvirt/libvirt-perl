@@ -182,9 +182,9 @@ omitted will default to 0.
 
 =item $dom->destroy()
 
-Immediately terminate the machine, and remove it from the virtual
-machine monitor. The C<$dom> handle is invalid after this call
-completes and should not be used again.
+Immediately poweroff the machine. This is equivalent to removing the
+power plug. The guest OS is given no time to cleanup / save state.
+For a clean poweroff sequence, use the C<shutdown> method instead.
 
 =item my $info = $dom->get_info()
 
@@ -425,7 +425,10 @@ the current state.
 =item $dom->shutdown()
 
 Request that the guest OS perform a graceful shutdown and
-poweroff.
+poweroff. This usually requires some form of cooperation
+from the guest operating system, such as responding to an
+ACPI signal, or a guest agent process. For an immediate,
+forceful poweroff, use the C<destroy> method instead.
 
 =item $dom->reboot([$flags])
 
