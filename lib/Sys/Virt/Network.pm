@@ -135,13 +135,27 @@ start upon boot. Return false, otherwise
 Set the state of the autostart flag, which determines whether the
 virtual network will automatically start upon boot of the host OS.
 
+=back
+
+=head1 CONSTANTS
+
+=head1 XML CONSTANTS
+
+The following constants are used when querying XML
+
+=over 4
+
+=item Sys::Virt::Network::XML_INACTIVE
+
+Request the inactive XML, instead of the current possibly live config.
+
+=back
 
 =cut
 
 
 1;
 
-=back
 
 =head1 AUTHORS
 

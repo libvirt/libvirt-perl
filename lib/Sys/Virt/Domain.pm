@@ -95,6 +95,22 @@ Returns a printable string representation of the raw UUID, in the format
 
 Returns a string with a locally unique name of the domain
 
+=item my $str = $dom->get_metadata($type, $uri, $flags =0)
+
+Returns the metadata element of type C<$type> associated
+with the domain. If C<$type> is C<Sys::Virt::Domain::METADATA_ELEMENT>
+then the C<$uri> parameter specifies the XML namespace to
+retrieve, otherwise C<$uri> should be C<undef>. The optional
+C<$flags> parameter defaults to zero.
+
+=item $dom->set_metadata($type, $val, $key, $uri, $flags=0)
+
+Sets the metadata element of type C<$type> to hold the value
+C<$val>. If C<$type> is  C<Sys::Virt::Domain::METADATA_ELEMENT>
+then the C<$key> and C<$uri> elements specify an XML namespace
+to use, otherwise they should both be C<nudef>. The optional
+C<$flags> parameter defaults to zero.
+
 =item $dom->is_active()
 
 Returns a true value if the domain is currently running
@@ -146,6 +162,15 @@ by calling the C<resume> method.
 
 Resume execution of a domain previously halted with the C<suspend>
 method.
+
+=item $dom->pm_suspend_for_duration($target, $duration, $flags=0)
+
+Tells the guest OS to enter the power management suspend state
+identified by C<$target>. The C<$target> parameter should be
+one of the NODE SUSPEND CONTANTS listed in C<Sys::Virt>. The
+C<$duration> specifies when the guest should automatically
+wakeup. The C<$flags> parameter is optional and defaults to
+zero.
 
 =item $dom->save($filename)
 
@@ -363,6 +388,25 @@ Currently unsed, always 0.
 
 The elapsed time since the control channel entered
 the current state.
+
+=back
+
+=item my @errs = $dom->get_disk_errors($flags=0)
+
+Returns a list of all disk errors that have occurred on
+the backing store for the guest's virtual disks. The
+returned array elements are hash references, containing
+two keys
+
+=over 4
+
+=item C<path>
+
+The path of the disk with an error
+
+=item C<error>
+
+The error type
 
 =back
 
@@ -825,6 +869,14 @@ Ping the virtual CPU given by index C<$vcpu> to physical CPUs
 given by C<$mask>. The C<$mask> is a string representing a bitmask
 against physical CPUs, 8 cpus per character.
 
+=item my @stats = $dom->get_cpu_stats($startCpu, $numCpus, $flags=0)
+
+Requests the guests host physical CPU usage statistics, starting
+from host CPU <$startCpu> counting upto C<$numCpus>. If C<$startCpu>
+is -1 and C<$numCpus> is 1, then the utilization across all CPUs
+is returned. Returns an array of hash references, each element
+containing stats for one CPU.
+
 =item my $info = $dom->get_job_info()
 
 Returns a hash reference summarising the execution state of the
@@ -855,6 +907,12 @@ associated with C<$path>
 
 Merge the backing files associated with C<$path> into the
 top level file. The C<$bandwidth> parameter specifies the
+maximum I/O rate to allow in KB/s.
+
+=item $dom->block_rebase($path, $backingpath, $bandwith, $flags=0)
+
+Switch the backing path associated with C<$path> to instead
+use C<$backingpath>. The C<$bandwidth> parameter specifies the
 maximum I/O rate to allow in KB/s.
 
 =item $count = $dom->num_of_snapshots()
@@ -1150,6 +1208,10 @@ method's flags parameter
 
 Indicates that the offset is using virtual memory addressing.
 
+=item Sys::Virt::Domain::MEMORY_PHYSICAL
+
+Indicates that the offset is using physical memory addressing.
+
 =back
 
 
@@ -1230,6 +1292,10 @@ Modify only the live state of the domain
 =item Sys::Virt::Domain::DEVICE_MODIFY_CONFIG
 
 Modify only the persistent config of the domain
+
+=item Sys::Virt::Domain::DEVICE_MODIFY_FORCE
+
+Force the device to be modified
 
 =back
 
@@ -1593,6 +1659,10 @@ Flag to request the persistent config value
 
 Flag to request the current config value
 
+=item Sys::Virt::Domain::VCPU_MAXIMUM
+
+Flag to request adjustment of the maximum vCPU value
+
 =back
 
 =head2 STATE CHANGE EVENTS
@@ -1659,6 +1729,10 @@ The domain started due to an incoming migration
 
 The domain was restored from saved state file
 
+=item Sys::Virt::Domain::EVENT_STARTED_FROM_SNAPSHOT
+
+The domain was restored from a snapshot
+
 =back
 
 =item Sys::Virt::Domain::EVENT_STOPPED
@@ -1692,6 +1766,10 @@ The domain was saved to a state file
 =item Sys::Virt::Domain::EVENT_STOPPED_SHUTDOWN
 
 The domain stopped due to graceful shutdown of the guest.
+
+=item Sys::Virt::Domain::EVENT_STOPPED_FROM_SNAPSHOT
+
+The domain was stopped due to a snapshot
 
 =back
 
@@ -1987,6 +2065,145 @@ Do not use OS I/O cache when writing core dump
 =item Sys::Virt::Domain::DUMP_RESET
 
 Reset the virtual machine after finishing the dump
+
+=back
+
+=head2 DESTROY CONSTANTS
+
+The following constants are useful when terminating guests
+using the C<destroy> API.
+
+=over 4
+
+=item Sys::Virt::Domain::DESTROY_DEFAULT
+
+Destroy the guest using the default approach
+
+=item Sys::Virt::Domain::DESTROY_GRACEFUL
+
+Destroy the guest in a graceful manner
+
+=back
+
+=head2 SHUTDOWN CONSTANTS
+
+The following constants are useful when requesting that a
+guest terminate using the C<shutdown> API
+
+=over 4
+
+=item Sys::Virt::Domain::SHUTDOWN_DEFAULT
+
+Shutdown using the hypervisor's default mechanism
+
+=item Sys::Virt::Domain::SHUTDOWN_GUEST_AGENT
+
+Shutdown by issuing a command to a guest agent
+
+=item Sys::Virt::Domain::SHUTDOWN_ACPI_POWER_BTN
+
+Shutdown by injecting an ACPI power button press
+
+=back
+
+=head2 REBOOT CONSTANTS
+
+The following constants are useful when requesting that a
+guest terminate using the C<reboot> API
+
+=over 4
+
+=item Sys::Virt::Domain::REBOOT_DEFAULT
+
+Reboot using the hypervisor's default mechanism
+
+=item Sys::Virt::Domain::REBOOT_GUEST_AGENT
+
+Reboot by issuing a command to a guest agent
+
+=item Sys::Virt::Domain::REBOOT_ACPI_POWER_BTN
+
+Reboot by injecting an ACPI power button press
+
+=back
+
+=head2 METADATA CONSTANTS
+
+The following constants are useful when reading/writing
+metadata about a guest
+
+=over 4
+
+=item Sys::Virt::Domain::METADATA_TITLE
+
+The short human friendly title of the guest
+
+=item Sys::Virt::Domain::METADATA_DESCRIPTION
+
+The long free text description of the guest
+
+=item Sys::Virt::Domain::METADATA_ELEMENT
+
+The structured metadata elements for the guest
+
+=back
+
+=head2 DISK ERROR CONSTANTS
+
+The following constants are useful when interpreting
+disk error codes
+
+=over 4
+
+=item Sys::Virt::Domain::DISK_ERROR_NONE
+
+No error
+
+=item Sys::Virt::Domain::DISK_ERROR_NO_SPACE
+
+The host storage has run out of free space
+
+=item Sys::Virt::Domain::DISK_ERROR_UNSPEC
+
+An unspecified error has ocurred.
+
+=back
+
+=head2 MEMORY STATISTIC CONSTANTS
+
+=over 4
+
+=item Sys::Virt::Domain::MEMORY_STAT_SWAP_IN
+
+Swap in
+
+=item Sys::Virt::Domain::MEMORY_STAT_SWAP_OUT
+
+Swap out
+
+=item Sys::Virt::Domain::MEMORY_STAT_MINOR_FAULT
+
+Minor faults
+
+=item Sys::Virt::Domain::MEMORY_STAT_MAJOR_FAULT
+
+Major faults
+
+=item Sys::Virt::Domain::MEMORY_STAT_RSS
+
+Resident memory
+
+=item Sys::Virt::Domain::MEMORY_STAT_UNUSED
+
+Unused memory
+
+=item Sys::Virt::Domain::MEMORY_STAT_AVAILABLE
+
+Available memory
+
+=item Sys::Virt::Domain::MEMORY_STAT_ACTUAL_BALLOON
+
+Actual balloon limit
 
 =back
 

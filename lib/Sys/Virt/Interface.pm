@@ -98,12 +98,25 @@ Immediately terminate the machine, and remove it from the virtual
 machine monitor. The C<$iface> handle is invalid after this call
 completes and should not be used again.
 
-=cut
+=back
 
+=head1 CONSTANTS
 
-1;
+=head2 XML CONSTANTS
+
+The following constants are used when querying XML
+
+=over 4
+
+=item Sys::Virt::Interface::XML_INACTIVE
+
+Request the inactive XML, instead of the current possibly live config.
 
 =back
+
+=cut
+
+1;
 
 =head1 AUTHORS
 

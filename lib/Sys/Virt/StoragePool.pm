@@ -296,6 +296,10 @@ The storage pool is running and can be queried for volumes
 The storage pool is running, but its operation is degraded due
 to a failure.
 
+=item Sys::Virt::StoragePool::STATE_INACCESSIBLE
+
+The storage pool is not currently accessible
+
 =back
 
 =head2 DELETION MODES

@@ -60,6 +60,10 @@ sub _new {
     return $self;
 }
 
+=item my $str = $domss->get_name()
+
+Return the name of the snapshot
+
 =item my $xml = $domss->get_xml_description($flags)
 
 Returns an XML document containing a complete description of
@@ -146,6 +150,14 @@ Do not save any metadata for the snapshot
 =item Sys::Virt::DomainSnapshot::CREATE_REDEFINE
 
 Replace/set the metadata with the snapshot
+
+=item Sys::Virt::DomainSnapshot::CREATE_QUIESCE
+
+Quiesce the guest disks while taking the snapshot
+
+=item Sys::Virt::DomainSnapshot::CREATE_REUSE_EXT
+
+Reuse the existing snapshot data files (if any)
 
 =back
 

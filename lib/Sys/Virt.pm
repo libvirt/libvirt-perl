@@ -1217,7 +1217,7 @@ The number of threads per core
 =item my $info = $con->get_node_cpu_stats($cpuNum=-1, $flags=0)
 
 Returns a hash reference providing information about the host
-CPU statistics. If <$cpuNum> is omitted, it defaults to -1
+CPU statistics. If <$cpuNum> is omitted, it defaults to C<Sys::Virt::NODE_CPU_STATS_ALL_CPUS>
 which causes it to return cummulative information for all
 CPUs in the host. If C<$cpuNum> is zero or larger, it returns
 information just for the specified number. The C<$flags>
@@ -1251,7 +1251,7 @@ The overall percentage utilization.
 =item my $info = $con->get_node_memory_stats($cellNum=-1, $flags=0)
 
 Returns a hash reference providing information about the host
-memory statistics. If <$cellNum> is omitted, it defaults to -1
+memory statistics. If <$cellNum> is omitted, it defaults to C<Sys::Virt::NODE_MEMORY_STATS_ALL_CELLS>
 which causes it to return cummulative information for all
 NUMA cells in the host. If C<$cellNum> is zero or larger, it
 returns information just for the specified number. The C<$flags>
@@ -1500,6 +1500,27 @@ Suspends to disk (equivalent of S5 on x86 architectures)
 =item Sys::Virt::NODE_SUSPEND_TARGET_HYBRID
 
 Suspends to memory and disk (equivalent of S3+S5 on x86 architectures)
+
+=back
+
+=head2 NODE VCPU CONSTANTS
+
+=over 4
+
+=item Sys::Virt::NODE_CPU_STATS_ALL_CPUS
+
+Request statistics for all CPUs
+
+=back
+
+=head2 NODE MEMORY CONSTANTS
+
+=over 4
+
+=item Sys::Virt::NODE_MEMORY_STATS_ALL_CELLS
+
+Request statistics for all memory cells
+
 
 =back
 

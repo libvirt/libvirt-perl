@@ -96,12 +96,27 @@ Immediately delete the storage volume freeing its storage resources.
 The C<flags> parameter indicates any special action to be taken when
 deleting the volume.
 
+=item $vol->resize($newcapacity, $flags=0)
+
+Adjust the size of the storage volume. The C<$newcapacity> value
+semantics depend on the C<$flags> parameter. If C<$flags>
+specifies C<RESIZE_DELTA> then the C<$newcapacity> is relative
+to the current size. If C<$flags> specifies C<RESIZE_SHRINK>
+then the C<$newcapacity> value is the amount of space to remove
+
 =item $vol->wipe($flags = 0)
 
 Clear the data in the storage volume to avoid future information
-leak. The C<flags> parameter indicates any special approach to be
-taken when wiping the data. It defaults to zero, which causes the
-volume to be filled with zeros.
+leak. The C<flags> parameter is currently unused and defaults
+to zero.
+
+=item $vol->wipe_pattern($algorithm, $flags = 0)
+
+Clear the data in the storage volume to avoid future information
+leak. The C<$algorithm> parameter specifies the data pattern used
+to erase data, and should be one of the WIPE ALGORITHM CONSTANTS
+listed later. The C<flags> parameter is currently unused and defaults
+to zero.
 
 =item my %info = $vol->get_info()
 
@@ -168,6 +183,74 @@ Do a plain delete without any attempt to scrub data.
 =item Sys::Virt::StorageVol::DELETE_ZEROED
 
 Zero out current allocated blocks when deleteing the volume
+
+=back
+
+=head2 WIPE ALGORITHM CONSTANTS
+
+The following constants specify the algorithm for erasing
+data
+
+=over 4
+
+=item Sys::Virt::StorageVol::WIPE_ALG_BSI
+
+9-pass method recommended by the German Center
+of Security in Information Technologies
+
+=item Sys::Virt::StorageVol::WIPE_ALG_DOD
+
+4-pass Dod 5220.22-M section, 8-306 procedure
+
+=item Sys::Virt::StorageVol::WIPE_ALG_GUTMANN
+
+The canonical 35-pass sequence
+
+=item Sys::Virt::StorageVol::WIPE_ALG_NNSA
+
+4-pass NNSA Policy Letter NAP-14.1-C (XVI-8)
+
+=item Sys::Virt::StorageVol::WIPE_ALG_PFITZNER7
+
+7-pass random
+
+=item Sys::Virt::StorageVol::WIPE_ALG_PFITZNER33
+
+33-pass random
+
+=item Sys::Virt::StorageVol::WIPE_ALG_RANDOM
+
+1-pass random
+
+=item Sys::Virt::StorageVol::WIPE_ALG_SCHNEIER
+
+7-pass method described by Bruce Schneier in "Applied
+Cryptography" (1996)
+
+=item Sys::Virt::StorageVol::WIPE_ALG_ZERO
+
+1-pass, all zeroes
+
+=back
+
+VOLUME RESIZE CONSTANTS
+
+The following constants control how storage volumes can
+be resized
+
+=over 4
+
+=item Sys::Virt::StorageVol::RESIZE_ALLOCATE
+
+Fully allocate the extra space required during resize
+
+=item Sys::Virt::StorageVol::RESIZE_DELTA
+
+Treat the new capacity as a delta to the current capacity
+
+=item Sys::Virt::StorageVol::RESIZE_SHRINK
+
+Treat the new capacity as an amount to remove from the capacity
 
 =back
 
