@@ -1,5 +1,11 @@
 Revision history for perl module Sys::Virt
 
+0.9.10 2012-02-12
+
+ - Add all new APIs in libvirt 0.9.10
+ - Add some constants missing from previous releases
+ - Clarify docs for shutdown/destroy APIs (rt #73908)
+
 0.9.9 2012-01-09
 
  - Add all new APIs in libvirt 0.9.9
