@@ -896,7 +896,7 @@ qualified path of the block device being changed.
 
 Change the maximum I/O bandwidth used by the block job that
 is currently executing for C<$path>. The C<$bandwidth> argument
-is specified in KB/s
+is specified in MB/s
 
 =item $dom->abort_block_job($path, $flags=0)
 
