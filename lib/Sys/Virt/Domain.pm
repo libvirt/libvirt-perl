@@ -907,13 +907,13 @@ associated with C<$path>
 
 Merge the backing files associated with C<$path> into the
 top level file. The C<$bandwidth> parameter specifies the
-maximum I/O rate to allow in KB/s.
+maximum I/O rate to allow in MB/s.
 
 =item $dom->block_rebase($path, $backingpath, $bandwith, $flags=0)
 
 Switch the backing path associated with C<$path> to instead
 use C<$backingpath>. The C<$bandwidth> parameter specifies the
-maximum I/O rate to allow in KB/s.
+maximum I/O rate to allow in MB/s.
 
 =item $count = $dom->num_of_snapshots()
 
