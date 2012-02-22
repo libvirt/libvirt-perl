@@ -3358,6 +3358,7 @@ block_stats(dom, path, flags=0)
                   field = "flush_reqs";
               if (field) {
                   SV *val = hv_delete(RETVAL, params[i].field, strlen(params[i].field), 0);
+                  SvREFCNT_inc(val);
                   (void)hv_store(RETVAL, field, strlen(field), val, 0);
               }
           }
