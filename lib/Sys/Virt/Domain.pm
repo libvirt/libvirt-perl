@@ -812,13 +812,13 @@ The C<$flags> parameter is currently unused and defaults to zero.
 =item $dom->migrate_set_max_speed($bandwidth, $flags)
 
 Set the maximum allowed bandwidth during migration of the guest.
-The C<bandwidth> parameter is measured in kilobytes/second.
+The C<bandwidth> parameter is measured in MB/second.
 The C<$flags> parameter is currently unused and defaults to zero.
 
 =item $bandwidth = $dom->migrate_get_max_speed($flag)
 
 Get the maximum allowed bandwidth during migration fo the guest.
-The returned <bandwidth> value is measured in kilobytes/second.
+The returned <bandwidth> value is measured in MB/second.
 The C<$flags> parameter is currently unused and defaults to zero.
 
 =item $dom->inject_nmi($flags)
