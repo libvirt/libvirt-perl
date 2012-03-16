@@ -1011,6 +1011,7 @@ vir_typed_param_to_hv(virTypedParameter *params, int nparams)
     HV *ret = (HV *)sv_2mortal((SV*)newHV());
     unsigned int i;
     const char *field;
+    STRLEN val_length;
 
     for (i = 0 ; i < nparams ; i++) {
         SV *val = NULL;
@@ -1039,6 +1040,12 @@ vir_typed_param_to_hv(virTypedParameter *params, int nparams)
         case VIR_TYPED_PARAM_BOOLEAN:
             val = newSViv(params[i].value.b);
             break;
+
+        case VIR_TYPED_PARAM_STRING:
+            val_length = strlen(params[i].value.s);
+            val = newSVpv(params[i].value.s, val_length);
+            break;
+
         }
 
         field = params[i].field;
@@ -1049,10 +1056,14 @@ vir_typed_param_to_hv(virTypedParameter *params, int nparams)
 }
 
 
-static void
+static int
 vir_typed_param_from_hv(HV *newparams, virTypedParameter *params, int nparams)
 {
     unsigned int i;
+    char * ptr;
+    STRLEN len;
+    int needString = 0;
+
     for (i = 0 ; i < nparams ; i++) {
         SV **val;
 
@@ -1085,8 +1096,15 @@ vir_typed_param_from_hv(HV *newparams, virTypedParameter *params, int nparams)
         case VIR_TYPED_PARAM_BOOLEAN:
             params[i].value.b = SvIV(*val);
             break;
+
+        case VIR_TYPED_PARAM_STRING:
+            needString = 1;
+            ptr = SvPV(*val, len);
+            params[i].value.s = (char *)ptr;
+            break;
         }
     }
+    return needString;
 }
 
 
@@ -2799,8 +2817,9 @@ set_blkio_parameters(dom, newparams)
       virDomainPtr dom;
       HV *newparams;
   PREINIT:
-      virBlkioParameter *params;
+      virTypedParameter *params;
       int nparams;
+      int needString;
     PPCODE:
       nparams = 0;
       if (virDomainGetBlkioParameters(dom, NULL, &nparams, 0) < 0)
@@ -2813,9 +2832,10 @@ set_blkio_parameters(dom, newparams)
           _croak_error();
       }
 
-      vir_typed_param_from_hv(newparams, params, nparams);
+      needString = vir_typed_param_from_hv(newparams, params, nparams);
 
-      if (virDomainSetBlkioParameters(dom, params, nparams, 0) < 0)
+      if (virDomainSetBlkioParameters(dom, params, nparams,
+                                      needString ? VIR_TYPED_PARAM_STRING_OKAY: 0) < 0)
           _croak_error();
       Safefree(params);
 
