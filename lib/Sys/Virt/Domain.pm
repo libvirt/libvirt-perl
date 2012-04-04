@@ -552,10 +552,10 @@ to query the setting of the live config or inactive config.
 
 Return the scheduler type for the guest domain
 
-=item %stats = $dom->block_stats($path)
+=item $stats = $dom->block_stats($path)
 
 Fetch the current I/O statistics for the block device given by C<$path>.
-The returned hash contains keys for
+The returned hash reference contains keys for
 
 =over 4
 
@@ -581,9 +581,11 @@ Some kind of error count
 
 =back
 
-=item my %params = $dom->get_scheduler_parameters($flags=0)
+=item my $params = $dom->get_scheduler_parameters($flags=0)
 
-Return the set of scheduler tunable parameters for the guest.
+Return the set of scheduler tunable parameters for the guest,
+as a hash reference. The precise set of keys in the hash
+are specific to the hypervisor.
 
 =item $dom->set_scheduler_parameters($params, $flags=0)
 
@@ -615,7 +617,7 @@ Update the blkio tunable parameters for the guest. The
 C<$params> should be a hash reference whose keys are one
 of the BLKIO PARAMETERS constants.
 
-=item %stats = $dom->get_block_iotune($disk, $flags=0)
+=item $stats = $dom->get_block_iotune($disk, $flags=0)
 
 Return a hash reference containing the set of blkio tunable
 parameters for the guest disk C<$disk>. The keys in the hash
@@ -742,12 +744,13 @@ Total memory seen by guest
 
 =back
 
-=item %info = $dom->get_security_label()
+=item $info = $dom->get_security_label()
 
 Fetch information about the security label assigned to the guest
-domain. The returned hash has two keys, C<model> gives the name
-of the security model in effect (eg C<selinux>), while C<label>
-provides the name of the security label applied to the domain.
+domain. The returned hash reference has two keys, C<model> gives
+the name of the security model in effect (eg C<selinux>), while
+C<label> provides the name of the security label applied to the
+domain.
 
 =item $ddom = $dom->migrate(destcon, flags, dname, uri, bandwidth)
 

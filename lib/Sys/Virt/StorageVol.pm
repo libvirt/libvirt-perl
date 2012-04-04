@@ -118,11 +118,11 @@ to erase data, and should be one of the WIPE ALGORITHM CONSTANTS
 listed later. The C<flags> parameter is currently unused and defaults
 to zero.
 
-=item my %info = $vol->get_info()
+=item my $info = $vol->get_info()
 
 Retrieve live information about the storage volume. The returned
-C<%info> hash contains three keys. C<type> indicates whether the
-volume is a file or block device. C<capacity> provides the maximum
+C<$info> hash reference contains three keys. C<type> indicates whether
+the volume is a file or block device. C<capacity> provides the maximum
 logical size of the volume. C<allocation> provides the current
 physical usage of the volume. The allocation may be less than the
 capacity for sparse, or grow-on-demand volumes. The allocation

@@ -150,10 +150,10 @@ and if omitted defaults to zero.
 Delete the storage pool. The C<$flags> parameter allows the data to
 be optionally wiped during delete and if omitted defaults to zero.
 
-=item %info = $pool->get_info()
+=item $info = $pool->get_info()
 
 Retrieve information about the current storage pool state. The
-returned hash has the following keys
+returned hash reference has the following keys
 
 =over 4
 
