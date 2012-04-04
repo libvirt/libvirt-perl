@@ -45,7 +45,14 @@ a consistent API.
 Any operations in the Sys::Virt API which have failure scenarios
 will result in an instance of the L<Sys::Virt::Error> module being
 thrown. To catch these errors, simply wrap the method in an eval
-block. For details of the information contained in the error objects,
+block:
+
+  eval { my $vmm = Sys::Virt->new(address => $addr); };
+  if ($@) {
+    print STDERR "Unable to open connection to $addr" . $@->message . "\n";
+  }
+
+For details of the information contained in the error objects,
 consult the L<Sys::Virt::Error> manual page.
 
 =head1 METHODS
