@@ -314,6 +314,14 @@ The Hyper-V driver
 
 The capabilities driver
 
+=item Sys::Virt::Error::FROM_AUTH
+
+The authentication handling code
+
+=item Sys::Virt::Error::FROM_URI
+
+The URI handling code
+
 =back
 
 =head2 ERROR CODE CONSTANTS
@@ -647,6 +655,14 @@ The user cancelled the authentication process
 =item Sys::Virt::Error::ERR_NO_DOMAIN_METADATA
 
 The requested metadata does not exist
+
+=item Sys::Virt::Error::ERR_MIGRATE_UNSAFE
+
+The migration operation would be unsafe to perform
+
+=item Sys::Virt::ERror::ERR_OVERFLOW
+
+The calculation would overflow
 
 =back
 

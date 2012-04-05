@@ -163,6 +163,10 @@ by calling the C<resume> method.
 Resume execution of a domain previously halted with the C<suspend>
 method.
 
+=item $dom->pm_wakeup()
+
+Wakeup the guest from power management suspend state
+
 =item $dom->pm_suspend_for_duration($target, $duration, $flags=0)
 
 Tells the guest OS to enter the power management suspend state
@@ -326,6 +330,10 @@ It is not known why the domain has started
 
 The guest is running after a resume
 
+=item Sys::Virt::Domain::STATE_RUNNING_WAKEUP
+
+The guest is running after wakeup from power management suspend
+
 =item Sys::Virt::Domain::STATE_SHUTDOWN_UNKNOWN
 
 It is not known why the domain has shutdown
@@ -365,6 +373,10 @@ The guest is shutoff due to controlled shutdown
 =item Sys::Virt::Domain::STATE_SHUTOFF_UNKNOWN
 
 It is not known why the domain has shutoff
+
+=item Sys::Virt::Domain::STATE_PMSUSPENDED_UNKNOWN
+
+It is not known why the domain was suspended
 
 =back
 
@@ -655,17 +667,18 @@ of the NUMA PARAMETERS constants.
 
 =item $dom->block_resize($disk, $newsize, $flags=0)
 
-Resize the disk C<$disk> to have new size C<$newsize>. If the disk
+Resize the disk C<$disk> to have new size C<$newsize> KB. If the disk
 is backed by a special image format, the actual resize is done by the
 hypervisor. If the disk is backed by a raw file, or block device,
 the resize must be done prior to invoking this API call, and it
-merely updates the hypervisor's view of the disk size.
+merely updates the hypervisor's view of the disk size. The following
+flags may be used
 
 =over 4
 
-=item C<weight>
+=item Sys::Virt::Domain::BLOCK_RESIZE_BYTES
 
-Relative I/O weighting
+Treat C<$newsize> as if it were in bytes, rather than KB.
 
 =back
 
@@ -1095,6 +1108,10 @@ The domain is inactive, and shut down.
 
 The domain is inactive, and crashed.
 
+=item Sys::Virt::Domain::STATE_PMSUSPENDED
+
+The domain is active, but in power management suspend state
+
 =back
 
 
@@ -1253,6 +1270,25 @@ Skip authentication of the client
 
 =back
 
+
+=head2 OPEN CONSOLE CONSTANTS
+
+The following constants are used when opening a connection
+to the guest console
+
+=over 4
+
+=item Sys::Virt::Domain::OPEN_CONSOLE_FORCE
+
+Force opening of the console, disconnecting any other
+open session
+
+=item Sys::Virt::Domain::OPEN_CONSOLE_SAFE
+
+Check if the console driver supports safe operations
+
+=back
+
 =head2 XML DUMP OPTIONS
 
 The following constants are used to control the information
@@ -1400,6 +1436,11 @@ during migration
 Do not allow changes to the virtual domain configuration while
 migration is taking place. This option is automatically implied
 if doing a peer-2-peer migration.
+
+=item Sys::Virt::Domain::MIGRATE_UNSAFE
+
+Migrate even if the compatibility check indicates the migration
+will be unsafe to the guest.
 
 =back
 
@@ -1736,6 +1777,10 @@ The domain was restored from saved state file
 
 The domain was restored from a snapshot
 
+=item Sys::Virt::Domain::EVENT_STARTED_WAKEUP
+
+The domain was woken up from suspend
+
 =back
 
 =item Sys::Virt::Domain::EVENT_STOPPED
@@ -1835,6 +1880,18 @@ removed by administrator.
 
 =back
 
+=item Sys::Virt::Domain::EVENT_PMSUSPENDED
+
+The domain has stopped running
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_PMSUSPENDED_UNKNOWN
+
+The domain has suspend for an unknown reason
+
+=back
+
 =back
 
 =head2 EVENT ID CONSTANTS
@@ -1880,6 +1937,18 @@ Completion status of asynchronous block jobs
 =item Sys::Virt::Domain::EVENT_ID_DISK_CHANGE
 
 Changes in disk media
+
+=item Sys::Virt::Domain::EVENT_ID_TRAY_CHANGE
+
+CDROM media tray state
+
+=item Sys::Virt::Domain::EVENT_ID_PMSUSPEND
+
+Power management initiated suspend
+
+=item Sys::Virt::Domain::EVENT_ID_PMWAKEUP
+
+Power management initiated wakeup
 
 =back
 
@@ -1986,6 +2055,22 @@ These constants describe the reason for a disk change event
 =item Sys::Virt::Domain::EVENT_DISK_CHANGE_MISSING_ON_START
 
 The disk media was missing when attempting to start the guest
+
+=back
+
+=head2 TRAY CHANGE CONSTANTS
+
+These constants describe the reason for a tray change event
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_TRAY_CHANGE_CLOSE
+
+The tray was closed
+
+=item Sys::Virt::Domain::EVENT_TRAY_CHANGE_OPEN
+
+The tray was opened
 
 =back
 

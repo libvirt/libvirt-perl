@@ -159,6 +159,10 @@ Quiesce the guest disks while taking the snapshot
 
 Reuse the existing snapshot data files (if any)
 
+=item Sys::Virt::DomainSnapshot::CREATE_ATOMIC
+
+Create multiple disk snapshots atomically
+
 =back
 
 =head2 SNAPSHOT DELETION
