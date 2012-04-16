@@ -6,6 +6,10 @@ use XML::XPath;
 
 use Test::More;
 
+unless ($ENV{TEST_MAINTAINER}) {
+    plan skip_all => "Test only for module maintainer. Set TEST_MAINTAINER=1 to run";
+}
+
 my $apifile = `pkg-config --variable=libvirt_api libvirt`;
 chomp $apifile;
 

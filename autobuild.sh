@@ -23,6 +23,7 @@ if [ -z "$USE_COVER" ]; then
 fi
 
 if [ -z "$SKIP_TESTS" -o "$SKIP_TESTS" = "0" ]; then
+  export TEST_MAINTAINER=1
   if [ "$USE_COVER" = "1" ]; then
     cover -delete
     HARNESS_PERL_SWITCHES=-MDevel::Cover make test
