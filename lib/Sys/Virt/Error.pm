@@ -322,6 +322,10 @@ The authentication handling code
 
 The URI handling code
 
+=item Sys::Virt::Error::FROM_DBUS
+
+The DBus handling code
+
 =back
 
 =head2 ERROR CODE CONSTANTS
@@ -660,9 +664,13 @@ The requested metadata does not exist
 
 The migration operation would be unsafe to perform
 
-=item Sys::Virt::ERror::ERR_OVERFLOW
+=item Sys::Virt::Error::ERR_OVERFLOW
 
 The calculation would overflow
+
+=item Sys::Virt::Error::ERR_BLOCK_COPY_ACTIVE
+
+Action prevented by block copy job
 
 =back
 

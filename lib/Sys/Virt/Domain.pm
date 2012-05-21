@@ -2089,6 +2089,10 @@ An unknown block job type
 
 The block pull job type
 
+=item Sys::Virt::Domain::BLOCK_JOB_TYPE_COPY
+
+The block copy job type
+
 =back
 
 =head2 DOMAIN BLOCK JOB COMPLETION CONSTANTS
@@ -2105,6 +2109,50 @@ A successfully completed block job
 =item Sys::Virt::Domain::BLOCK_JOB_FAILED
 
 An unsuccessful block job
+
+=item Sys::Virt::Domain::BLOCK_JOB_CANCELED
+
+A block job canceled byy the user
+
+=back
+
+=head2 DOMAIN BLOCK REBASE CONSTANTS
+
+The following constants are useful when rebasing block devices
+
+=over 4
+
+=item Sys::Virt::Domain::BLOCK_REBASE_SHALLOW
+
+Limit copy to top of source backing chain
+
+=item Sys::Virt::Domain::BLOCK_REBASE_REUSE_EXT
+
+Reuse existing external file for copy
+
+=item Sys::Virt::Domain::BLOCK_REBASE_COPY_RAW
+
+Make destination file raw
+
+=item Sys::Virt::Domain::BLOCK_REBASE_COPY
+
+Start a copy job
+
+=back
+
+=head2 DOMAIN BLOCK JOB ABORT CONSTANTS
+
+The following constants are useful when aborting job copy jobs
+
+=over 4
+
+=item Sys::Virt::Domain::BLOCK_JOB_ABORT_ASYNC
+
+Request only, do not wait for completion
+
+=item Sys::Virt::Domain::BLOCK_JOB_ABORT_PIVOT
+
+Pivot to mirror when ending a copy job
 
 =back
 
