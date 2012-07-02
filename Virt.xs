@@ -1762,6 +1762,27 @@ list_defined_domain_names(con, maxnames)
       Safefree(names);
 
 
+void
+list_all_domains(con, flags=0)
+      virConnectPtr con;
+      unsigned int flags;
+ PREINIT:
+      virDomainPtr *doms;
+      int i, ndom;
+      SV *domrv;
+  PPCODE:
+      if ((ndom = virConnectListAllDomains(con, &doms, flags)) < 0)
+          _croak_error();
+
+      EXTEND(SP, ndom);
+      for (i = 0 ; i < ndom ; i++) {
+          domrv = sv_newmortal();
+          sv_setref_pv(domrv, "Sys::Virt::Domain", doms[i]);
+          PUSHs(domrv);
+      }
+      free(doms);
+
+
 int
 num_of_networks(con)
       virConnectPtr con;
@@ -3841,6 +3862,27 @@ list_snapshot_names(dom, maxnames, flags=0)
       Safefree(names);
 
 
+void
+list_all_snapshots(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+ PREINIT:
+      virDomainSnapshotPtr *domsss;
+      int i, ndomss;
+      SV *domssrv;
+  PPCODE:
+      if ((ndomss = virDomainListAllSnapshots(dom, &domsss, flags)) < 0)
+          _croak_error();
+
+      EXTEND(SP, ndomss);
+      for (i = 0 ; i < ndomss ; i++) {
+          domssrv = sv_newmortal();
+          sv_setref_pv(domssrv, "Sys::Virt::DomainSnapshot", domsss[i]);
+          PUSHs(domssrv);
+      }
+      free(domsss);
+
+
 int
 has_current_snapshot(dom, flags=0)
       virDomainPtr dom;
@@ -5232,6 +5274,28 @@ num_of_child_snapshots(domss, flags=0)
       RETVAL
 
 
+int
+is_current(domss, flags=0)
+      virDomainSnapshotPtr domss;
+      unsigned int flags;
+    CODE:
+      if ((RETVAL = virDomainSnapshotIsCurrent(domss, flags)) < 0)
+          _croak_error();
+  OUTPUT:
+      RETVAL
+
+
+int
+has_metadata(domss, flags=0)
+      virDomainSnapshotPtr domss;
+      unsigned int flags;
+    CODE:
+      if ((RETVAL = virDomainSnapshotHasMetadata(domss, flags)) < 0)
+          _croak_error();
+  OUTPUT:
+      RETVAL
+
+
 void
 list_child_snapshot_names(domss, maxnames, flags=0)
       virDomainSnapshotPtr domss;
@@ -5253,6 +5317,27 @@ list_child_snapshot_names(domss, maxnames, flags=0)
           free(names[i]);
       }
       Safefree(names);
+
+
+void
+list_all_children(domss, flags=0)
+      virDomainSnapshotPtr domss;
+      unsigned int flags;
+ PREINIT:
+      virDomainSnapshotPtr *domsss;
+      int i, ndomss;
+      SV *domssrv;
+  PPCODE:
+      if ((ndomss = virDomainSnapshotListAllChildren(domss, &domsss, flags)) < 0)
+          _croak_error();
+
+      EXTEND(SP, ndomss);
+      for (i = 0 ; i < ndomss ; i++) {
+          domssrv = sv_newmortal();
+          sv_setref_pv(domssrv, "Sys::Virt::DomainSnapshot", domsss[i]);
+          PUSHs(domssrv);
+      }
+      free(domsss);
 
 
 void
@@ -5650,6 +5735,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DUMP_LIVE, DUMP_LIVE);
       REGISTER_CONSTANT(VIR_DUMP_BYPASS_CACHE, DUMP_BYPASS_CACHE);
       REGISTER_CONSTANT(VIR_DUMP_RESET, DUMP_RESET);
+      REGISTER_CONSTANT(VIR_DUMP_MEMORY_ONLY, DUMP_MEMORY_ONLY);
 
       REGISTER_CONSTANT(VIR_DOMAIN_SAVE_BYPASS_CACHE, SAVE_BYPASS_CACHE);
       REGISTER_CONSTANT(VIR_DOMAIN_SAVE_RUNNING, SAVE_RUNNING);
@@ -5960,6 +6046,21 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_BLOCK_REBASE_COPY_RAW, BLOCK_REBASE_COPY_RAW);
       REGISTER_CONSTANT(VIR_DOMAIN_BLOCK_REBASE_COPY, BLOCK_REBASE_COPY);
 
+      REGISTER_CONSTANT(VIR_CONNECT_LIST_DOMAINS_ACTIVE, LIST_ACTIVE);
+      REGISTER_CONSTANT(VIR_CONNECT_LIST_DOMAINS_AUTOSTART, LIST_AUTOSTART);
+      REGISTER_CONSTANT(VIR_CONNECT_LIST_DOMAINS_HAS_SNAPSHOT, LIST_HAS_SNAPSHOT);
+      REGISTER_CONSTANT(VIR_CONNECT_LIST_DOMAINS_INACTIVE, LIST_INACTIVE);
+      REGISTER_CONSTANT(VIR_CONNECT_LIST_DOMAINS_MANAGEDSAVE, LIST_MANAGEDSAVE);
+      REGISTER_CONSTANT(VIR_CONNECT_LIST_DOMAINS_NO_AUTOSTART, LIST_NO_AUTOSTART);
+      REGISTER_CONSTANT(VIR_CONNECT_LIST_DOMAINS_NO_MANAGEDSAVE, LIST_NO_MANAGEDSAVE);
+      REGISTER_CONSTANT(VIR_CONNECT_LIST_DOMAINS_NO_SNAPSHOT, LIST_NO_SNAPSHOT);
+      REGISTER_CONSTANT(VIR_CONNECT_LIST_DOMAINS_OTHER, LIST_OTHER);
+      REGISTER_CONSTANT(VIR_CONNECT_LIST_DOMAINS_PAUSED, LIST_PAUSED);
+      REGISTER_CONSTANT(VIR_CONNECT_LIST_DOMAINS_PERSISTENT, LIST_PERSISTENT);
+      REGISTER_CONSTANT(VIR_CONNECT_LIST_DOMAINS_RUNNING, LIST_RUNNING);
+      REGISTER_CONSTANT(VIR_CONNECT_LIST_DOMAINS_SHUTOFF, LIST_SHUTOFF);
+      REGISTER_CONSTANT(VIR_CONNECT_LIST_DOMAINS_TRANSIENT, LIST_TRANSIENT);
+
 
       stash = gv_stashpv( "Sys::Virt::DomainSnapshot", TRUE );
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_DELETE_CHILDREN, DELETE_CHILDREN);
@@ -5979,6 +6080,9 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_LIST_DESCENDANTS, LIST_DESCENDANTS);
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_LIST_METADATA, LIST_METADATA);
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_LIST_LEAVES, LIST_LEAVES);
+      REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_LIST_NO_LEAVES, LIST_NO_LEAVES);
+      REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_LIST_NO_METADATA, LIST_NO_METADATA);
+
 
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_REVERT_RUNNING, REVERT_RUNNING);
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_REVERT_PAUSED, REVERT_PAUSED);
@@ -6000,6 +6104,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_STORAGE_POOL_DELETE_NORMAL, DELETE_NORMAL);
       REGISTER_CONSTANT(VIR_STORAGE_POOL_DELETE_ZEROED, DELETE_ZEROED);
 
+      REGISTER_CONSTANT(VIR_STORAGE_XML_INACTIVE, XML_INACTIVE);
+
 
       stash = gv_stashpv( "Sys::Virt::Network", TRUE );
       REGISTER_CONSTANT(VIR_NETWORK_XML_INACTIVE, XML_INACTIVE);
@@ -6013,6 +6119,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_STORAGE_VOL_FILE, TYPE_FILE);
       REGISTER_CONSTANT(VIR_STORAGE_VOL_BLOCK, TYPE_BLOCK);
       REGISTER_CONSTANT(VIR_STORAGE_VOL_DIR, TYPE_DIR);
+      REGISTER_CONSTANT(VIR_STORAGE_VOL_NETWORK, TYPE_DIR);
 
       REGISTER_CONSTANT(VIR_STORAGE_VOL_DELETE_NORMAL, DELETE_NORMAL);
       REGISTER_CONSTANT(VIR_STORAGE_VOL_DELETE_ZEROED, DELETE_ZEROED);

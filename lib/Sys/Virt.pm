@@ -373,8 +373,10 @@ sub create_node_device {
 
 =item my @doms = $vmm->list_domains()
 
-Return a list of all domains currently known to the VMM. The elements
-in the returned list are instances of the L<Sys::Virt::Domain> class.
+Return a list of all running domains currently known to the VMM. The elements
+in the returned list are instances of the L<Sys::Virt::Domain> class. This
+method requires O(n) RPC calls, so the C<list_all_domains> method is
+recommended as a more efficient alternative.
 
 =cut
 
@@ -409,7 +411,8 @@ be used with the C<get_domain_by_id> method.
 
 Return a list of all domains defined, but not currently running, on the
 VMM. The elements in the returned list are instances of the
-L<Sys::Virt::Domain> class.
+L<Sys::Virt::Domain> class. This method requires O(n) RPC calls, so the
+C<list_all_domains> method is recommended as a more efficient alternative.
 
 =cut
 
@@ -440,6 +443,13 @@ used as the C<maxnames> parameter to C<list_defined_domain_names>.
 
 Return a list of names of all domains defined, but not currently running, on
 the VMM. The names can be used with the C<get_domain_by_name> method.
+
+=item my @doms = $vmm->list_all_domains($flags)
+
+Return a list of all domains currently known to the VMM, whether
+running or shutoff. The elements in the returned list are instances
+of the L<Sys::Virt::Domain> class. The C<$flags> parameter can be
+used to filter the list of return domains.
 
 =item my @nets = $vmm->list_networks()
 

@@ -344,6 +344,20 @@ Overwrite existing storage pool data
 
 =back
 
+=head2 XML DOCUMENTS
+
+The following constants are useful when requesting
+XML for storage pools
+
+=over 4
+
+=item Sys::Virt::StoragePool::XML_INACTIVE
+
+Return XML describing the inactive state of the storage
+pool.
+
+=back
+
 =head1 AUTHORS
 
 Daniel P. Berrange <berrange@redhat.com>

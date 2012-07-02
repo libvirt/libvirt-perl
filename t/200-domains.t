@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 56;
+use Test::More tests => 58;
 
 BEGIN {
         use_ok('Sys::Virt');
@@ -20,6 +20,10 @@ is($nid, 1, "1 active domain");
 
 my @domids = $conn->list_domain_ids($nid);
 is_deeply(\@domids, [1], "domain ids");
+
+my @doms = $conn->list_all_domains();
+is(int(@doms), 1, "1 active domain");
+is($doms[0]->get_id, "1", "domain id matches");
 
 my $dom = $conn->get_domain_by_id($domids[0]);
 isa_ok($dom, "Sys::Virt::Domain");
@@ -45,7 +49,7 @@ isa_ok($dom3, "Sys::Virt::Domain");
 is($dom3->get_name, "test", "name");
 is($dom3->get_id, "1", "id");
 
-my @doms = $conn->list_domains();
+@doms = $conn->list_domains();
 is($#doms, 0, "one domain");
 isa_ok($doms[0], "Sys::Virt::Domain");
 

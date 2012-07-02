@@ -85,6 +85,15 @@ C<Sys::Virt::DomainSnapshot::REVERT_*> constants.
 
 Return the parent of the snapshot, if any
 
+=item $res = $domss->is_current()
+
+Returns a true value if this is the current snapshot. False otherwise.
+
+=item $res = $domss->has_metadata()
+
+Returns a true value if this snapshot has metadata associated with
+it.
+
 =item $count = $domss->num_of_child_snapshots()
 
 Return the number of saved snapshots which are children of this snapshot
@@ -98,6 +107,8 @@ snapshot . The names can be used with the C<lookup_snapshot_by_name>
 
 Return a list of all snapshots that are children of this snapshot. The elements
 in the returned list are instances of the L<Sys::Virt::DomainSnapshot> class.
+This method requires O(n) RPC calls, so the C<list_all_children> method is
+recommended as a more efficient alternative.
 
 =cut
 
@@ -120,6 +131,12 @@ sub list_child_snapshots {
     return @snapshots;
 }
 
+=item my @snapshots = $dom->list_all_children($flags)
+
+Return a list of all domain snapshots that are children of this
+snapshot. The elements in the returned list are instances of the
+L<Sys::Virt::DomainSnapshot> class. The C<$flags> parameter can be
+used to filter the list of return domain snapshots.
 
 =back
 
@@ -206,7 +223,15 @@ snapshot
 
 =item Sys::Virt::DomainSnapshot::LIST_LEAVES
 
-Only list leave nodes in the snapshot tree
+Only list leaf nodes in the snapshot tree
+
+=item Sys::Virt::DomainSnapshot::LIST_NO_LEAVES
+
+Only list non-leaf nodes in the snapshot tree
+
+=item Sys::Virt::DomainSnapshot::LIST_NO_METADATA
+
+Only list snapshots without metadata
 
 =back
 

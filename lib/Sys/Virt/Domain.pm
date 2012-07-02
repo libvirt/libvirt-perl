@@ -944,6 +944,8 @@ used with the C<lookup_snapshot_by_name>
 
 Return a list of all snapshots currently known to the domain. The elements
 in the returned list are instances of the L<Sys::Virt::DomainSnapshot> class.
+This method requires O(n) RPC calls, so the C<list_all_snapshots> method is
+recommended as a more efficient alternative.
 
 =cut
 
@@ -966,6 +968,14 @@ sub list_snapshots {
     return @snapshots;
 }
 
+
+
+=item my @snapshots = $dom->list_all_snapshots($flags)
+
+Return a list of all domain snapshots associated with this domain.
+The elements in the returned list are instances of the
+L<Sys::Virt::DomainSnapshot> class. The C<$flags> parameter can be
+used to filter the list of return domain snapshots.
 
 =item my $snapshot = $dom->get_snapshot_by_name($name)
 
@@ -2202,6 +2212,11 @@ Do not use OS I/O cache when writing core dump
 
 Reset the virtual machine after finishing the dump
 
+=item Sys::Virt::Domain::DUMP_MEMORY_ONLY
+
+Only include guest RAM in the dump, not the device
+state
+
 =back
 
 =head2 DESTROY CONSTANTS
@@ -2340,6 +2355,70 @@ Available memory
 =item Sys::Virt::Domain::MEMORY_STAT_ACTUAL_BALLOON
 
 Actual balloon limit
+
+=back
+
+=head2 DOMAIN LIST CONSTANTS
+
+The following constants can be used when listing domains
+
+=over 4
+
+=item Sys::Virt::Domain::LIST_ACTIVE
+
+Only list domains that are currently active (running, or paused)
+
+=item Sys::Virt::Domain::LIST_AUTOSTART
+
+Only list domains that are set to automatically start on boot
+
+=item Sys::Virt::Domain::LIST_HAS_SNAPSHOT
+
+Only list domains that have a stored snapshot
+
+=item Sys::Virt::Domain::LIST_INACTIVE
+
+Only list domains that are currently inactive (shutoff, saved)
+
+=item Sys::Virt::Domain::LIST_MANAGEDSAVE
+
+Only list domains that have current managed save state
+
+=item Sys::Virt::Domain::LIST_NO_AUTOSTART
+
+Only list domains that are not set to automatically start on boto
+
+=item Sys::Virt::Domain::LIST_NO_MANAGEDSAVE
+
+Only list domains that do not have any managed save state
+
+=item Sys::Virt::Domain::LIST_NO_SNAPSHOT
+
+Only list domains that do not have a stored snapshot
+
+=item Sys::Virt::Domain::LIST_OTHER
+
+Only list domains that are not running, paused or shutoff
+
+=item Sys::Virt::Domain::LIST_PAUSED
+
+Only list domains that are paused
+
+=item Sys::Virt::Domain::LIST_PERSISTENT
+
+Only list domains which have a persistent config
+
+=item Sys::Virt::Domain::LIST_RUNNING
+
+Only list domains that are currently running
+
+=item Sys::Virt::Domain::LIST_SHUTOFF
+
+Only list domains that are currently shutoff
+
+=item Sys::Virt::Domain::LIST_TRANSIENT
+
+Only list domains that do not have a persistent config
 
 =back
 
