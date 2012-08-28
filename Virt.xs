@@ -2844,19 +2844,20 @@ set_scheduler_parameters(dom, newparams, flags=0)
 
 
 HV *
-get_memory_parameters(dom)
+get_memory_parameters(dom, flags=0)
       virDomainPtr dom;
+      unsigned int flags;
   PREINIT:
       virMemoryParameter *params;
       int nparams;
     CODE:
       nparams = 0;
-      if (virDomainGetMemoryParameters(dom, NULL, &nparams, 0) < 0)
+      if (virDomainGetMemoryParameters(dom, NULL, &nparams, flags) < 0)
           _croak_error();
 
       Newx(params, nparams, virMemoryParameter);
 
-      if (virDomainGetMemoryParameters(dom, params, &nparams, 0) < 0) {
+      if (virDomainGetMemoryParameters(dom, params, &nparams, flags) < 0) {
           Safefree(params);
           _croak_error();
       }
@@ -2868,45 +2869,47 @@ get_memory_parameters(dom)
 
 
 void
-set_memory_parameters(dom, newparams)
+set_memory_parameters(dom, newparams, flags=0)
       virDomainPtr dom;
       HV *newparams;
+      unsigned int flags;
   PREINIT:
       virTypedParameter *params;
       int nparams;
     PPCODE:
       nparams = 0;
-      if (virDomainGetMemoryParameters(dom, NULL, &nparams, 0) < 0)
+      if (virDomainGetMemoryParameters(dom, NULL, &nparams, flags) < 0)
           _croak_error();
 
       Newx(params, nparams, virMemoryParameter);
 
-      if (virDomainGetMemoryParameters(dom, params, &nparams, 0) < 0) {
+      if (virDomainGetMemoryParameters(dom, params, &nparams, flags) < 0) {
           Safefree(params);
           _croak_error();
       }
 
       vir_typed_param_from_hv(newparams, params, nparams);
 
-      if (virDomainSetMemoryParameters(dom, params, nparams, 0) < 0)
+      if (virDomainSetMemoryParameters(dom, params, nparams, flags) < 0)
           _croak_error();
       Safefree(params);
 
 
 HV *
-get_numa_parameters(dom)
+get_numa_parameters(dom, flags=0)
       virDomainPtr dom;
+      unsigned int flags;
   PREINIT:
       virTypedParameter *params;
       int nparams;
     CODE:
       nparams = 0;
-      if (virDomainGetNumaParameters(dom, NULL, &nparams, 0) < 0)
+      if (virDomainGetNumaParameters(dom, NULL, &nparams, flags) < 0)
           _croak_error();
 
       Newx(params, nparams, virTypedParameter);
 
-      if (virDomainGetNumaParameters(dom, params, &nparams, 0) < 0) {
+      if (virDomainGetNumaParameters(dom, params, &nparams, flags) < 0) {
           Safefree(params);
           _croak_error();
       }
@@ -2918,45 +2921,47 @@ get_numa_parameters(dom)
 
 
 void
-set_numa_parameters(dom, newparams)
+set_numa_parameters(dom, newparams, flags=0)
       virDomainPtr dom;
       HV *newparams;
+      unsigned int flags;
   PREINIT:
       virTypedParameter *params;
       int nparams;
     PPCODE:
       nparams = 0;
-      if (virDomainGetNumaParameters(dom, NULL, &nparams, 0) < 0)
+      if (virDomainGetNumaParameters(dom, NULL, &nparams, flags) < 0)
           _croak_error();
 
       Newx(params, nparams, virTypedParameter);
 
-      if (virDomainGetNumaParameters(dom, params, &nparams, 0) < 0) {
+      if (virDomainGetNumaParameters(dom, params, &nparams, flags) < 0) {
           Safefree(params);
           _croak_error();
       }
 
       vir_typed_param_from_hv(newparams, params, nparams);
 
-      if (virDomainSetNumaParameters(dom, params, nparams, 0) < 0)
+      if (virDomainSetNumaParameters(dom, params, nparams, flags) < 0)
           _croak_error();
       Safefree(params);
 
 
 HV *
-get_blkio_parameters(dom)
+get_blkio_parameters(dom, flags=0)
       virDomainPtr dom;
+      unsigned int flags;
   PREINIT:
       virTypedParameter *params;
       int nparams;
     CODE:
       nparams = 0;
-      if (virDomainGetBlkioParameters(dom, NULL, &nparams, 0) < 0)
+      if (virDomainGetBlkioParameters(dom, NULL, &nparams, flags) < 0)
           _croak_error();
 
       Newx(params, nparams, virBlkioParameter);
 
-      if (virDomainGetBlkioParameters(dom, params, &nparams, 0) < 0) {
+      if (virDomainGetBlkioParameters(dom, params, &nparams, flags) < 0) {
           Safefree(params);
           _croak_error();
       }
@@ -2968,21 +2973,22 @@ get_blkio_parameters(dom)
 
 
 void
-set_blkio_parameters(dom, newparams)
+set_blkio_parameters(dom, newparams, flags=0)
       virDomainPtr dom;
       HV *newparams;
+      unsigned int flags;
   PREINIT:
       virTypedParameter *params;
       int nparams;
       int needString;
     PPCODE:
       nparams = 0;
-      if (virDomainGetBlkioParameters(dom, NULL, &nparams, 0) < 0)
+      if (virDomainGetBlkioParameters(dom, NULL, &nparams, flags) < 0)
           _croak_error();
 
       Newx(params, nparams, virBlkioParameter);
 
-      if (virDomainGetBlkioParameters(dom, params, &nparams, 0) < 0) {
+      if (virDomainGetBlkioParameters(dom, params, &nparams, flags) < 0) {
           Safefree(params);
           _croak_error();
       }
@@ -2990,7 +2996,7 @@ set_blkio_parameters(dom, newparams)
       needString = vir_typed_param_from_hv(newparams, params, nparams);
 
       if (virDomainSetBlkioParameters(dom, params, nparams,
-                                      needString ? VIR_TYPED_PARAM_STRING_OKAY: 0) < 0)
+                                      needString ? flags | VIR_TYPED_PARAM_STRING_OKAY: flags) < 0)
           _croak_error();
       Safefree(params);
 

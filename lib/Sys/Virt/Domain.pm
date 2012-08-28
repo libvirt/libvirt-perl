@@ -609,25 +609,33 @@ call
 
 Return a hash reference containing the set of memory tunable
 parameters for the guest. The keys in the hash are one of the
-constants MEMORY PARAMETERS described later.
+constants MEMORY PARAMETERS described later. The C<$flags>
+parameter accepts one or more the CONFIG OPTION constants
+documented later, and defaults to 0 if omitted.
 
 =item $dom->set_memory_parameters($params, $flags=0)
 
 Update the memory tunable parameters for the guest. The
 C<$params> should be a hash reference whose keys are one
-of the MEMORY PARAMETERS constants.
+of the MEMORY PARAMETERS constants. The C<$flags>
+parameter accepts one or more the CONFIG OPTION constants
+documented later, and defaults to 0 if omitted.
 
 =item my $params = $dom->get_blkio_parameters($flags=0)
 
 Return a hash reference containing the set of blkio tunable
 parameters for the guest. The keys in the hash are one of the
-constants BLKIO PARAMETERS described later.
+constants BLKIO PARAMETERS described later. The C<$flags>
+parameter accepts one or more the CONFIG OPTION constants
+documented later, and defaults to 0 if omitted.
 
 =item $dom->set_blkio_parameters($params, $flags=0)
 
 Update the blkio tunable parameters for the guest. The
 C<$params> should be a hash reference whose keys are one
-of the BLKIO PARAMETERS constants.
+of the BLKIO PARAMETERS constants. The C<$flags>
+parameter accepts one or more the CONFIG OPTION constants
+documented later, and defaults to 0 if omitted.
 
 =item $stats = $dom->get_block_iotune($disk, $flags=0)
 
@@ -657,13 +665,17 @@ of the INTERFACE PARAMETERS constants.
 
 Return a hash reference containing the set of numa tunable
 parameters for the guest. The keys in the hash are one of the
-constants NUMA PARAMETERS described later.
+constants NUMA PARAMETERS described later. The C<$flags>
+parameter accepts one or more the CONFIG OPTION constants
+documented later, and defaults to 0 if omitted.
 
 =item $dom->set_numa_parameters($params, $flags=0)
 
 Update the numa tunable parameters for the guest. The
 C<$params> should be a hash reference whose keys are one
-of the NUMA PARAMETERS constants.
+of the NUMA PARAMETERS constants. The C<$flags>
+parameter accepts one or more the CONFIG OPTION constants
+documented later, and defaults to 0 if omitted.
 
 =item $dom->block_resize($disk, $newsize, $flags=0)
 
