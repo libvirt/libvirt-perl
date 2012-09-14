@@ -167,6 +167,10 @@ The volume is a block device
 
 The volume is a directory
 
+=item Sys::Virt::StorageVol::TYPE_NETWORK
+
+The volume is a network source
+
 =back
 
 =head2 DELETE MODES

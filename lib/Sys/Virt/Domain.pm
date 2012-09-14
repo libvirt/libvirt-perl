@@ -334,6 +334,10 @@ The guest is running after a resume
 
 The guest is running after wakeup from power management suspend
 
+=item Sys::Virt::Domain::STATE_BLOCKED_UNKNOWN
+
+The guest is blocked for an unknown reason
+
 =item Sys::Virt::Domain::STATE_SHUTDOWN_UNKNOWN
 
 It is not known why the domain has shutdown
