@@ -2187,7 +2187,7 @@ PREINIT:
       virConnectDomainEventGenericCallback callback;
     CODE:
       con = (virConnectPtr)SvIV((SV*)SvRV(conref));
-      if (SvOK(domref)) {
+      if (SvROK(domref)) {
           dom = (virDomainPtr)SvIV((SV*)SvRV(domref));
       } else {
           dom = NULL;
