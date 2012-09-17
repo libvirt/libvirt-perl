@@ -1,5 +1,13 @@
 Revision history for perl module Sys::Virt
 
+0.10.0 2012-09-17
+
+ - Add all new APIs and constants in libvirt 0.10.0
+ - Add example program showing use of event callbacks
+ - Fix crash when registering event callback with 'undef'
+   for the domain parameter
+ - Fix typos in the definition of some docs
+
 0.9.13 2012-07-02
 
  - Add all new APIs and constants in libvirt 0.9.13
