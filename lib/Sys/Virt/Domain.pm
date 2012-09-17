@@ -904,13 +904,29 @@ vCPU is currently scheduled, C<cpuTime> the cummulative execution
 time of the vCPU, C<state> the running state and C<affinity> giving
 the allowed shedular placement. The value for C<affinity> is a
 string representing a bitmask against physical CPUs, 8 cpus per
-character.
+character. To extract the bits use the C<unpack> function with
+the C<b*> template.
 
 =item $dom->pin_vcpu($vcpu, $mask)
 
-Ping the virtual CPU given by index C<$vcpu> to physical CPUs
+Pin the virtual CPU given by index C<$vcpu> to physical CPUs
 given by C<$mask>. The C<$mask> is a string representing a bitmask
 against physical CPUs, 8 cpus per character.
+
+=item $mask = $dom->get_emulator_pin_info()
+
+Obtain information about the CPU affinity of the emulator process.
+The returned C<$mask> is a bitstring against physical CPUs, 8 cpus
+per character. To extract the bits use the C<unpack> function with
+the C<b*> template.
+
+=item $dom->pin_emulator($newmask, $flags=0)
+
+Pin the emulator threads to the physical CPUs identified by the
+affinity in C<$newmask>. The C<$newmask> is a bitstring against
+the physical CPUa, 8 cpus per character. To create a suitable
+bitstring, use the C<vec> function with a value of C<1> for the
+C<BITS> parameter.
 
 =item my @stats = $dom->get_cpu_stats($startCpu, $numCpus, $flags=0)
 

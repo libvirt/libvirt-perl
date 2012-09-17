@@ -3971,6 +3971,46 @@ PREINIT:
      }
 
 
+void
+pin_emulator(dom, mask, flags=0)
+     virDomainPtr dom;
+     SV *mask;
+     unsigned int flags;
+PREINIT:
+     STRLEN masklen;
+     unsigned char *maps;
+ PPCODE:
+     maps = (unsigned char *)SvPV(mask, masklen);
+     if (virDomainPinEmulator(dom, maps, masklen, flags) < 0)
+         _croak_error();
+
+
+SV *
+get_emulator_pin_info(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+ PREINIT:
+      unsigned char *cpumaps;
+      int maplen;
+      virNodeInfo nodeinfo;
+      int nCpus;
+   CODE:
+      if (virNodeGetInfo(virDomainGetConnect(dom), &nodeinfo) < 0)
+          _croak_error();
+
+      nCpus = VIR_NODEINFO_MAXCPUS(nodeinfo);
+      maplen = VIR_CPU_MAPLEN(nCpus);
+      Newx(cpumaps, maplen, unsigned char);
+      if ((virDomainGetEmulatorPinInfo(dom, cpumaps, maplen, flags)) < 0) {
+          Safefree(cpumaps);
+          _croak_error();
+      }
+      RETVAL = newSVpvn((char*)cpumaps, maplen);
+      Safefree(cpumaps);
+ OUTPUT:
+      RETVAL
+
+
 int
 num_of_snapshots(dom, flags=0)
       virDomainPtr dom;
