@@ -3841,6 +3841,27 @@ get_security_label(dom)
 
 
 void
+get_security_label_list(dom)
+      virDomainPtr dom;
+ PREINIT:
+      virSecurityLabelPtr seclabels;
+      int nlabels;
+      int i;
+    PPCODE:
+      if ((nlabels = virDomainGetSecurityLabelList(dom, &seclabels)) < 0)
+          _croak_error();
+
+      EXTEND(SP, nlabels);
+      for (i = 0 ; i < nlabels ; i++) {
+          HV *rec = (HV *)sv_2mortal((SV*)newHV());
+          (void)hv_store (rec, "label", 5, newSVpv(seclabels[i].label, 0), 0);
+          (void)hv_store (rec, "enforcing", 9, newSViv(seclabels[i].enforcing), 0);
+          PUSHs(newRV_noinc((SV*)rec));
+      }
+      free(seclabels);
+
+
+void
 get_cpu_stats(dom, start_cpu, ncpus, flags=0)
       virDomainPtr dom;
       int start_cpu;

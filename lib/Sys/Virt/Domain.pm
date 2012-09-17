@@ -783,7 +783,14 @@ Fetch information about the security label assigned to the guest
 domain. The returned hash reference has two keys, C<model> gives
 the name of the security model in effect (eg C<selinux>), while
 C<label> provides the name of the security label applied to the
-domain.
+domain. This method only returns information about the first
+security label. To retrieve all labels, use C<get_security_label_list>.
+
+=item @info = $dom->get_security_label_list()
+
+Fetches information about all security labels assigned to the
+guest domain. The elements in the returned array are all
+hash references, whose keys are as described for C<get_security_label>.
 
 =item $ddom = $dom->migrate(destcon, flags, dname, uri, bandwidth)
 
