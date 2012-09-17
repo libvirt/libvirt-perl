@@ -712,6 +712,44 @@ _domain_event_free(void *opaque)
 }
 
 
+static void
+_close_callback(virConnectPtr con,
+                int reason,
+                void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    XPUSHs(sv_2mortal(newSViv(reason)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+}
+
+
+static void
+_close_callback_free(void *opaque)
+{
+  SV *sv = opaque;
+  SvREFCNT_dec(sv);
+}
+
+
 static int
 _event_add_handle(int fd,
 		  int events,
@@ -2258,6 +2296,32 @@ domain_event_deregister_any(con, callbackID)
       int callbackID;
  PPCODE:
       virConnectDomainEventDeregisterAny(con, callbackID);
+
+
+void
+register_close_callback(conref, cb)
+      SV* conref;
+      SV* cb;
+PREINIT:
+      AV *opaque;
+      virConnectPtr con;
+ PPCODE:
+      con = (virConnectPtr)SvIV((SV*)SvRV(conref));
+      opaque = newAV();
+      SvREFCNT_inc(cb);
+      SvREFCNT_inc(conref);
+      av_push(opaque, conref);
+      av_push(opaque, cb);
+      if (virConnectRegisterCloseCallback(con, _close_callback,
+                                          opaque, _close_callback_free) < 0)
+          _croak_error();
+
+
+void
+unregister_close_callback(con)
+      virConnectPtr con;
+ PPCODE:
+      virConnectUnregisterCloseCallback(con, _close_callback);
 
 
 void
@@ -5770,6 +5834,10 @@ BOOT:
       REGISTER_CONSTANT(VIR_NODE_CPU_STATS_ALL_CPUS, NODE_CPU_STATS_ALL_CPUS);
       REGISTER_CONSTANT(VIR_NODE_MEMORY_STATS_ALL_CELLS, NODE_MEMORY_STATS_ALL_CELLS);
 
+      REGISTER_CONSTANT(VIR_CONNECT_CLOSE_REASON_CLIENT, CLOSE_REASON_CLIENT);
+      REGISTER_CONSTANT(VIR_CONNECT_CLOSE_REASON_EOF, CLOSE_REASON_EOF);
+      REGISTER_CONSTANT(VIR_CONNECT_CLOSE_REASON_ERROR, CLOSE_REASON_ERROR);
+      REGISTER_CONSTANT(VIR_CONNECT_CLOSE_REASON_KEEPALIVE, CLOSE_REASON_KEEPALIVE);
 
       stash = gv_stashpv( "Sys::Virt::Event", TRUE );
 

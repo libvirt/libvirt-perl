@@ -1382,6 +1382,18 @@ unregistering the event.
 Unregister a callback, associated with the C<$callbackID> previously
 obtained from C<domain_event_register_any>.
 
+=item $conn->register_close_callback($coderef);
+
+Register a callback to be invoked when the connection is closed.
+The callback will be invoked with two parameters, the C<$conn>
+it was registered against, and the reason for the close event.
+The reason value will be one of the C<CLOSE REASON CONSTANTS>
+listed later in this document.
+
+=item $conn->unregister_close_callback();
+
+Remove the previously registered close callback.
+
 =item my $xml = $con->baseline_cpu(\@xml, $flags=0)
 
 Given an array ref whose elements are XML documents describing host CPUs,
@@ -1538,6 +1550,32 @@ Request statistics for all CPUs
 
 Request statistics for all memory cells
 
+=back
+
+=head2 CLOSE REASON CONSTANTS
+
+The following constants related to the connection close callback,
+describe the reason for the closing of the connection.
+
+=over 4
+
+=item Sys::Virt::CLOSE_REASON_CLIENT
+
+The client application requested the connection be closed
+
+=item Sys::Virt::CLOSE_REASON_EOF
+
+End-of-file was encountered reading data from the connection
+
+=item Sys::Virt::CLOSE_REASON_ERROR
+
+An I/O error was encountered reading/writing data from/to the
+connection
+
+=item Sys::Virt::CLOSE_REASON_KEEPALIVE
+
+The connection keepalive timer triggered due to lack of response
+from the server
 
 =back
 

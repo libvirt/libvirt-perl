@@ -91,6 +91,8 @@ virStreamEventCallback
 virStreamSinkFunc
 virStreamSourceFunc
 
+virConnectCloseFunc
+
 );
 
 foreach my $func (sort { $a cmp $b } @functions) {
