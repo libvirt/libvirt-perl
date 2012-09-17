@@ -666,6 +666,44 @@ _domain_event_block_job_callback(virConnectPtr con,
 }
 
 
+static int
+_domain_event_balloonchange_callback(virConnectPtr con,
+                                     virDomainPtr dom,
+                                     unsigned long long actual,
+                                     void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *domref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+    XPUSHs(domref);
+    XPUSHs(sv_2mortal(virt_newSVull(actual)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
 static void
 _domain_event_free(void *opaque)
 {
@@ -2195,6 +2233,9 @@ PREINIT:
       case VIR_DOMAIN_EVENT_ID_PMWAKEUP:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_pmwakeup_callback);
           break;
+      case VIR_DOMAIN_EVENT_ID_BALLOON_CHANGE:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_balloonchange_callback);
+          break;
       default:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_generic_callback);
           break;
@@ -2376,6 +2417,17 @@ get_name(dom)
       virDomainPtr dom;
     CODE:
       if (!(RETVAL = virDomainGetName(dom)))
+          _croak_error();
+  OUTPUT:
+      RETVAL
+
+
+const char *
+get_hostname(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+    CODE:
+      if (!(RETVAL = virDomainGetHostname(dom, flags)))
           _croak_error();
   OUTPUT:
       RETVAL
@@ -5934,6 +5986,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_PMSUSPEND, EVENT_ID_PMSUSPEND);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_PMWAKEUP, EVENT_ID_PMWAKEUP);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_TRAY_CHANGE, EVENT_ID_TRAY_CHANGE);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_BALLOON_CHANGE, EVENT_ID_BALLOON_CHANGE);
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_NONE, EVENT_WATCHDOG_NONE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_PAUSE, EVENT_WATCHDOG_PAUSE);
@@ -6217,6 +6270,9 @@ BOOT:
       REGISTER_CONSTANT(VIR_FROM_AUTH, FROM_AUTH);
       REGISTER_CONSTANT(VIR_FROM_URI, FROM_URI);
       REGISTER_CONSTANT(VIR_FROM_DBUS, FROM_DBUS);
+      REGISTER_CONSTANT(VIR_FROM_DEVICE, FROM_DEVICE);
+      REGISTER_CONSTANT(VIR_FROM_PARALLELS, FROM_PARALLELS);
+      REGISTER_CONSTANT(VIR_FROM_SSH, FROM_SSH);
 
 
       REGISTER_CONSTANT(VIR_ERR_OK, ERR_OK);
@@ -6303,4 +6359,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_ERR_MIGRATE_UNSAFE, ERR_MIGRATE_UNSAFE);
       REGISTER_CONSTANT(VIR_ERR_OVERFLOW, ERR_OVERFLOW);
       REGISTER_CONSTANT(VIR_ERR_BLOCK_COPY_ACTIVE, ERR_BLOCK_COPY_ACTIVE);
+      REGISTER_CONSTANT(VIR_ERR_AGENT_UNRESPONSIVE, ERR_AGENT_UNRESPONSIVE);
+      REGISTER_CONSTANT(VIR_ERR_OPERATION_UNSUPPORTED, ERR_OPERATION_UNSUPPORTED);
+      REGISTER_CONSTANT(VIR_ERR_SSH, ERR_SSH);
     }

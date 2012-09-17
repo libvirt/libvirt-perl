@@ -95,6 +95,10 @@ Returns a printable string representation of the raw UUID, in the format
 
 Returns a string with a locally unique name of the domain
 
+=item my $hostname = $dom->get_hostname()
+
+Returns a string representing the hostname of the guest
+
 =item my $str = $dom->get_metadata($type, $uri, $flags =0)
 
 Returns the metadata element of type C<$type> associated
@@ -1975,6 +1979,10 @@ Power management initiated suspend
 =item Sys::Virt::Domain::EVENT_ID_PMWAKEUP
 
 Power management initiated wakeup
+
+=item Sys::Virt::Domain::EVENT_ID_BALLOON_CHANGE
+
+Balloon target changes
 
 =back
 
