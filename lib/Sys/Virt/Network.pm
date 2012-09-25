@@ -120,6 +120,14 @@ Immediately terminate the machine, and remove it from the virtual
 machine monitor. The C<$net> handle is invalid after this call
 completes and should not be used again.
 
+=item $net->update($command, $section, $parentIndex, $xml, $flags=0)
+
+Update the network configuration with C<$xml>. The C<$section> parameter,
+which must be one of the XML SECTION CONSTANTS listed later, indicates
+what schema is used in C<$xml>. The C<$command> parameter determines
+what action is taken. Finally, the C<$flags> parameter can be use to
+control which config is affected.
+
 =item $net->get_bridge_name()
 
 Return the name of the bridge device associated with the virtual

@@ -4283,6 +4283,18 @@ create(net)
 
 
 void
+update(net, command, section, parentIndex, xml, flags=0)
+      virNetworkPtr net;
+      unsigned int command;
+      unsigned int section;
+      int parentIndex;
+      const char *xml;
+      unsigned int flags;
+    PPCODE:
+      if (virNetworkUpdate(net, command, section, parentIndex, xml, flags) < 0)
+          _croak_error();
+
+void
 set_autostart(net, autostart)
       virNetworkPtr net;
       int autostart;
