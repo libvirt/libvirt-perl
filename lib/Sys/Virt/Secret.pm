@@ -117,6 +117,13 @@ Sets the value for the secret to be C<$bytes>.
 
 =head1 CONSTANTS
 
+This section documents constants that are used with various
+APIs described above
+
+=head2 SECRET USAGE TYPE
+
+The following constants refer to the different usage types
+
 =over 4
 
 =item Sys::Virt::Secret::USAGE_TYPE_NONE
@@ -136,12 +143,36 @@ The constant for secrets which are to be used for authenticating
 to CEPH storage volumes. The usage ID for secrets will refer to
 the server name.
 
+=back
+
+=head2 LIST FILTERING
+
+The following constants are used to filter object lists
+
+=over 4
+
+=item Sys::Virt::Secret::LIST_EPHEMERAL
+
+Include any secrets marked as ephemeral
+
+=item Sys::Virt::Secret::LIST_NO_EPHEMERAL
+
+Include any secrets not marked as ephemeral
+
+=item Sys::Virt::Secret::LIST_PRIVATE
+
+Include any secrets marked as private
+
+=item Sys::Virt::Secret::LIST_NO_PRIVATE
+
+Include any secrets not marked as private
+
+=back
+
 =cut
 
 
 1;
-
-=back
 
 =head1 AUTHORS
 

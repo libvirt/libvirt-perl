@@ -358,6 +358,79 @@ pool.
 
 =back
 
+=head1 LIST FILTERING
+
+The following constants are used to filter object lists
+
+=over 4
+
+=item Sys::Virt::StoragePool::LIST_ACTIVE
+
+Include storage pools which are active
+
+=item Sys::Virt::StoragePool::LIST_INACTIVE
+
+Include storage pools which are inactive
+
+=item Sys::Virt::StoragePool::LIST_AUTOSTART
+
+Include storage pools which are marked for autostart
+
+=item Sys::Virt::StoragePool::LIST_NO_AUTOSTART
+
+Include storage pools which are not marked for autostart
+
+=item Sys::Virt::StoragePool::LIST_PERSISTENT
+
+Include storage pools which are persistent
+
+=item Sys::Virt::StoragePool::LIST_TRANSIENT
+
+Include storage pools which are transient
+
+=item Sys::Virt::StoragePool::LIST_DIR
+
+Include directory storage pools
+
+=item Sys::Virt::StoragePool::LIST_DISK
+
+Include disk storage pools
+
+=item Sys::Virt::StoragePool::LIST_FS
+
+Include filesytem storage pools
+
+=item Sys::Virt::StoragePool::LIST_ISCSI
+
+Include iSCSI storage pools
+
+=item Sys::Virt::StoragePool::LIST_LOGICAL
+
+Include LVM storage pools
+
+=item Sys::Virt::StoragePool::LIST_MPATH
+
+Include multipath storage pools
+
+=item Sys::Virt::StoragePool::LIST_NETFS
+
+Include network filesystem storage pools
+
+=item Sys::Virt::StoragePool::LIST_RBD
+
+Include RBD storage pools
+
+=item Sys::Virt::StoragePool::LIST_SCSI
+
+Include SCSI storage pools
+
+=item Sys::Virt::StoragePool::LIST_SHEEPDOG
+
+Include sheepdog storage pools
+
+
+=back
+
 =head1 AUTHORS
 
 Daniel P. Berrange <berrange@redhat.com>

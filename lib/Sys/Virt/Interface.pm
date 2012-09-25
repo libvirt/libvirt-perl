@@ -102,6 +102,27 @@ completes and should not be used again.
 
 =head1 CONSTANTS
 
+=head1 CONSTANTS
+
+This section documents constants that are used with various
+APIs described above
+
+=head2 LIST FILTERING
+
+The following constants are used to filter object lists
+
+=over 4
+
+=item Sys::Virt::Interface::LIST_ACTIVE
+
+Include interfaces that are active
+
+=item Sys::Virt::Interface::LIST_INACTIVE
+
+Include interfaces that are not active
+
+=back
+
 =head2 XML CONSTANTS
 
 The following constants are used when querying XML

@@ -99,12 +99,61 @@ with it.
 
 Return a list of all capabilities in the device.
 
+=back
+
+=head1 CONSTANTS
+
+This section documents constants that are used with various
+APIs described above
+
+=head2 LIST FILTERING
+
+The following constants are used to filter object lists
+
+=over 4
+
+=item Sys::Virt::NodeDevice::LIST_CAP_NET
+
+Include devices with the network capability
+
+=item Sys::Virt::NodeDevice::LIST_CAP_PCI_DEV
+
+Include devices with the PCI device capability
+
+=item Sys::Virt::NodeDevice::LIST_CAP_SCSI
+
+Include devices with the SCSI capability
+
+=item Sys::Virt::NodeDevice::LIST_CAP_SCSI_HOST
+
+Include devices with the SCSI host capability
+
+=item Sys::Virt::NodeDevice::LIST_CAP_SCSI_TARGET
+
+Include devices with the SCSI target capability
+
+=item Sys::Virt::NodeDevice::LIST_CAP_STORAGE
+
+Include devices with the storage capability
+
+=item Sys::Virt::NodeDevice::LIST_CAP_SYSTEM
+
+Include devices with the system capability
+
+=item Sys::Virt::NodeDevice::LIST_CAP_USB_DEV
+
+Include devices with the USB device capability
+
+=item Sys::Virt::NodeDevice::LIST_CAP_USB_INTERFACE
+
+Include devices with the USB interface capability
+
+=back
+
 =cut
 
 
 1;
-
-=back
 
 =head1 AUTHORS
 

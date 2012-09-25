@@ -1939,9 +1939,9 @@ The domain has stopped running
 
 =over 4
 
-=item Sys::Virt::Domain::EVENT_PMSUSPENDED_UNKNOWN
+=item Sys::Virt::Domain::EVENT_PMSUSPENDED_MEMORY
 
-The domain has suspend for an unknown reason
+The domain has suspend to RAM.
 
 =back
 
@@ -2150,6 +2150,10 @@ The block pull job type
 
 The block copy job type
 
+=item Sys::Virt::Domain::BLOCK_JOB_TYPE_COMMIT
+
+The block commit job type
+
 =back
 
 =head2 DOMAIN BLOCK JOB COMPLETION CONSTANTS
@@ -2210,6 +2214,22 @@ Request only, do not wait for completion
 =item Sys::Virt::Domain::BLOCK_JOB_ABORT_PIVOT
 
 Pivot to mirror when ending a copy job
+
+=back
+
+=head2 DOMAIN BLOCK COMMIT JOB CONSTANTS
+
+The following constants are useful with block commit job types
+
+=over 4
+
+=item Sys::Virt::Domain::BLOCK_COMMIT_DELETE
+
+Delete any files that are invalid after commit
+
+=item Sys::Virt::Domain::BLOCK_COMMIT_SHALLOW
+
+NULL base means next backing file, not whole chain
 
 =back
 

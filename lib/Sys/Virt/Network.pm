@@ -139,7 +139,42 @@ virtual network will automatically start upon boot of the host OS.
 
 =head1 CONSTANTS
 
-=head1 XML CONSTANTS
+This section documents constants that are used with various
+APIs described above
+
+=head2 LIST FILTERING
+
+The following constants are used to filter object lists
+
+=over 4
+
+=item Sys::Virt::Network::LIST_ACTIVE
+
+Include networks which are active
+
+=item Sys::Virt::Network::LIST_INACTIVE
+
+Include networks which are not active
+
+=item Sys::Virt::Network::LIST_AUTOSTART
+
+Include networks which are set to autostart
+
+=item Sys::Virt::Network::LIST_NO_AUTOSTART
+
+Include networks which are not set to autostart
+
+=item Sys::Virt::Network::LIST_PERSISTENT
+
+Include networks which are persistent
+
+=item Sys::Virt::Network::LIST_TRANSIENT
+
+Include networks which are transient
+
+=back
+
+=head2 XML CONSTANTS
 
 The following constants are used when querying XML
 
@@ -148,6 +183,111 @@ The following constants are used when querying XML
 =item Sys::Virt::Network::XML_INACTIVE
 
 Request the inactive XML, instead of the current possibly live config.
+
+=back
+
+=head1 XML SECTION CONSTANTS
+
+The following constants are used to refer to sections
+of the XML document
+
+=over 4
+
+=item Sys::Virt::Network::SECTION_BRIDGE
+
+The bridge device element
+
+=item Sys::Virt::Network::SECTION_DNS_HOST
+
+The DNS host record section
+
+=item Sys::Virt::Network::SECTION_DNS_SRV
+
+The DNS SRV record section
+
+=item Sys::Virt::Network::SECTION_DNS_TXT
+
+The DNS TXT record section
+
+=item Sys::Virt::Network::SECTION_DOMAIN
+
+The domain name section
+
+=item Sys::Virt::Network::SECTION_FORWARD
+
+The forward device section
+
+=item Sys::Virt::Network::SECTION_FORWARD_INTERFACE
+
+The forward interface section
+
+=item Sys::Virt::Network::SECTION_FORWARD_PF
+
+The forward physical function section
+
+=item Sys::Virt::Network::SECTION_IP
+
+The IP address section
+
+=item Sys::Virt::Network::SECTION_IP_DHCP_HOST
+
+The IP address DHCP host section
+
+=item Sys::Virt::Network::SECTION_IP_DHCP_RANGE
+
+The IP address DHCP range section
+
+=item Sys::Virt::Network::SECTION_PORTGROUP
+
+The port group section
+
+=item Sys::Virt::Network::SECTION_NONE
+
+The top level domain element
+
+=back
+
+=head2 XML UPDATE FLAGS
+
+=over 4
+
+=item Sys::Virt::Network::UPDATE_AFFECT_CURRENT
+
+Affect whatever the current object state is
+
+=item Sys::Virt::Network::UPDATE_AFFECT_CONFIG
+
+Always update the config file
+
+=item Sys::Virt::Network::UPDATE_AFFECT_LIVE
+
+Always update the live config
+
+=back
+
+=head2 XML UPDATE COMMANDS
+
+=over 4
+
+=item Sys::Virt::Network::UPDATE_COMMAND_NONE
+
+No update
+
+=item Sys::Virt::Network::UPDATE_COMMAND_DELETE
+
+Remove the matching entry
+
+=item Sys::Virt::Network::UPDATE_COMMAND_MODIFY
+
+Modify the matching entry
+
+=item Sys::Virt::Network::UPDATE_COMMAND_ADD_FIRST
+
+Insert the matching entry at the start
+
+=item Sys::Virt::Network::UPDATE_COMMAND_ADD_LAST
+
+Insert the matching entry at the end
 
 =back
 
