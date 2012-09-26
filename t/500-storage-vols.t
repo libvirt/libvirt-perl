@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10;
+use Test::More tests => 12;
 
 BEGIN {
         use_ok('Sys::Virt');
@@ -26,6 +26,10 @@ EOF
 
 my $newvol = $pool->create_volume($volxml);
 isa_ok($newvol, "Sys::Virt::StorageVol");
+
+my @vols = $pool->list_all_volumes();
+is(int(@vols), 1, "1 storage vol");
+is($vols[0]->get_name, "demo-vol", "storage vol name matches");
 
 
 my $key = $newvol->get_key();

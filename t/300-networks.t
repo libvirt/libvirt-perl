@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 29;
+use Test::More tests => 31;
 
 BEGIN {
         use_ok('Sys::Virt');
@@ -20,6 +20,11 @@ is($nid, 1, "1 active network");
 
 my @netnames = $conn->list_network_names($nid);
 is_deeply(\@netnames, ["default"], "network names");
+
+my @nets = $conn->list_all_networks();
+is(int(@nets), 1, "1 active network");
+is($nets[0]->get_name, "default", "network name matches");
+
 
 my $net = $conn->get_network_by_name($netnames[0]);
 isa_ok($net, "Sys::Virt::Network");
@@ -41,7 +46,7 @@ my $net3 = $conn->get_network_by_uuid($uuidstr);
 isa_ok($net3, "Sys::Virt::Network");
 is($net3->get_name, "default", "name");
 
-my @nets = $conn->list_networks();
+@nets = $conn->list_networks();
 is($#nets, 0, "one network");
 isa_ok($nets[0], "Sys::Virt::Network");
 

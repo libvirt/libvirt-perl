@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 23;
+use Test::More tests => 25;
 
 BEGIN {
         use_ok('Sys::Virt');
@@ -25,12 +25,17 @@ my $iface = $conn->get_interface_by_name($ifacenames[0]);
 isa_ok($iface, "Sys::Virt::Interface");
 
 is($iface->get_name, "eth1", "name");
-# Disable till 0.7.6 libvirt
-SKIP: {
-    skip "libvirt < 0.7.6 is broken", 1;
 
-    ok($iface->is_active(), "interface is active");
-};
+my @ifaces;
+SKIP: {
+    skip "Impl missing in test driver in libvirt 0.10.2", 2;
+
+    @ifaces = $conn->list_all_interfaces();
+    is(int(@ifaces), 1, "1 active interface");
+    is($ifaces[0]->get_name, "2eth1", "interface name matches");
+}
+
+ok($iface->is_active(), "interface is active");
 
 # Lookup again via MAC to verify we get the same
 my $mac = $iface->get_mac();
@@ -39,7 +44,7 @@ my $iface2 = $conn->get_interface_by_mac($mac);
 isa_ok($iface2, "Sys::Virt::Interface");
 is($iface2->get_name, "eth1", "name");
 
-my @ifaces = $conn->list_interfaces();
+@ifaces = $conn->list_interfaces();
 is($#ifaces, 0, "one interface");
 isa_ok($ifaces[0], "Sys::Virt::Interface");
 
