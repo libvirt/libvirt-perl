@@ -28,6 +28,7 @@ my $xp = XML::XPath->new($xml);
 
 my @enums;
 my @functions;
+my @macros;
 
 my $set = $xp->find('/api/files/file/exports[@type="function"]/@symbol');
 foreach my $n ($set->get_nodelist) {
@@ -41,6 +42,11 @@ foreach my $n ($set->get_nodelist) {
     push @enums, $n->getData();
 }
 
+$set = $xp->find('/api/files/file/exports[@type="macro"]/@symbol');
+foreach my $n ($set->get_nodelist) {
+    $count++;
+    push @macros, $n->getData();
+}
 
 open XS, "<Virt.xs" or die "cannot read Virt.xs: $!";
 
@@ -117,6 +123,44 @@ foreach my $enum (sort { $a cmp $b } @enums) {
     }
 
     ok($xs =~ /REGISTER_CONSTANT(_STR)?\($enum,/, $enum);
+}
+
+
+@blacklist = qw(
+LIBVIR_VERSION_NUMBER
+VIR_COPY_CPUMAP
+VIR_CPU_MAPLEN
+VIR_CPU_USABLE
+VIR_DOMAIN_BLKIO_FIELD_LENGTH
+VIR_DOMAIN_BLOCK_STATS_FIELD_LENGTH
+VIR_DOMAIN_EVENT_CALLBACK
+VIR_DOMAIN_MEMORY_FIELD_LENGTH
+VIR_DOMAIN_MEMORY_PARAM_UNLIMITED
+VIR_DOMAIN_SCHED_FIELD_LENGTH
+VIR_GET_CPUMAP
+VIR_NODEINFO_MAXCPUS
+VIR_NODE_CPU_STATS_FIELD_LENGTH
+VIR_NODE_MEMORY_STATS_FIELD_LENGTH
+VIR_SECURITY_DOI_BUFLEN
+VIR_SECURITY_LABEL_BUFLEN
+VIR_SECURITY_MODEL_BUFLEN
+VIR_TYPED_PARAM_FIELD_LENGTH
+VIR_UNUSE_CPU
+VIR_USE_CPU
+VIR_UUID_BUFLEN
+VIR_UUID_STRING_BUFLEN
+_virBlkioParameter
+_virMemoryParameter
+_virSchedParameter
+);
+
+foreach my $macro (sort { $a cmp $b } @macros) {
+    if (grep {/$macro/} @blacklist) {
+	ok(1, $macro);
+	next;
+    }
+
+    ok($xs =~ /REGISTER_CONSTANT(_STR)?\($macro,/, $macro);
 }
 
 done_testing($count);

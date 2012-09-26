@@ -2496,6 +2496,108 @@ Only list domains that do not have a persistent config
 
 =back
 
+=head2 SEND KEY CONSTANTS
+
+The following constants are to be used with the C<send_key>
+API
+
+=over 4
+
+=item Sys::Virt::Domain::SEND_KEY_MAX_KEYS
+
+The maximum number of keys that can be sent in a single
+call to C<send_key>
+
+=back
+
+=head2 BLOCK STATS CONSTANTS
+
+The following constants provide the names of well known
+block stats fields
+
+=over 4
+
+=item Sys::Virt::Domain::BLOCK_STATS_ERRS
+
+The number of I/O errors
+
+=item Sys::Virt::Domain::BLOCK_STATS_FLUSH_REQ
+
+The number of flush requests
+
+=item Sys::Virt::Domain::BLOCK_STATS_FLUSH_TOTAL_TIMES
+
+The time spent processing flush requests
+
+=item Sys::Virt::Domain::BLOCK_STATS_READ_BYTES
+
+The amount of data read
+
+=item Sys::Virt::Domain::BLOCK_STATS_READ_REQ
+
+The number of read requests
+
+=item Sys::Virt::Domain::BLOCK_STATS_READ_TOTAL_TIMES
+
+The time spent processing read requests
+
+=item Sys::Virt::Domain::BLOCK_STATS_WRITE_BYTES
+
+The amount of data written
+
+=item Sys::Virt::Domain::BLOCK_STATS_WRITE_REQ
+
+The number of write requests
+
+=item Sys::Virt::Domain::BLOCK_STATS_WRITE_TOTAL_TIMES
+
+The time spent processing write requests
+
+=back
+
+=head2 CPU STATS CONSTANTS
+
+The following constants provide the names of well known
+cpu stats fields
+
+=over 4
+
+=item Sys::Virt::Domain::CPU_STATS_CPUTIME
+
+The total CPU time, including both hypervisor and
+vCPU time.
+
+=item Sys::Virt::Domain::CPU_STATS_USERTIME
+
+THe total time in kernel
+
+=item Sys::Virt::Domain::CPU_STATS_SYSTEMTIME
+
+The total time in userspace
+
+=item Sys::Virt::Domain::CPU_STATS_VCPUTIME
+
+The total vCPU time.
+
+=back
+
+=head2 CPU STATS CONSTANTS
+
+The following constants provide the names of well known
+schedular parameters
+
+=over 4
+
+=item Sys::Virt::SCHEDULER_EMULATOR_PERIOD
+
+The duration of the time period for scheduling the emulator
+
+=item Sys::Virt::SCHEDULER_EMULATOR_QUOTA
+
+The quota for the emulator in one schedular time period
+
+=back
+
 =head1 AUTHORS
 
 Daniel P. Berrange <berrange@redhat.com>

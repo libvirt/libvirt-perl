@@ -1703,6 +1703,58 @@ from the server
 
 =back
 
+=head2 CPU STATS CONSTANTS
+
+The following constants provide the names of known CPU stats fields
+
+=over 4
+
+=item Sys::Virt::NODE_CPU_STATS_IDLE
+
+Time spent idle
+
+=item Sys::Virt::NODE_CPU_STATS_IOWAIT
+
+Time spent waiting for I/O to complete
+
+=item Sys::Virt::NODE_CPU_STATS_KERNEL
+
+Time spent executing kernel code
+
+=item Sys::Virt::NODE_CPU_STATS_USER
+
+Time spent executing user code
+
+=item Sys::Virt::NODE_CPU_STATS_UTILIZATION
+
+Percentage utilization of the CPU.
+
+=back
+
+=head2 MEMORY STAS CONSTANTS
+
+The following constants provide the names of known memory stats fields
+
+=over 4
+
+=item Sys::Virt::NODE_MEMORY_STATS_BUFFERS
+
+The amount of memory consumed by I/O buffers
+
+=item Sys::Virt::NODE_MEMORY_STATS_CACHED
+
+The amount of memory consumed by disk cache
+
+=item Sys::Virt::NODE_MEMORY_STATS_FREE
+
+The amount of free memory
+
+=item Sys::Virt::NODE_MEMORY_STATS_TOTAL
+
+The total amount of memory
+
+=back
+
 =head1 BUGS
 
 Hopefully none, but the XS code needs to be audited to ensure it
