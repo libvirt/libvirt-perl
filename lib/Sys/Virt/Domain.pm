@@ -968,10 +968,17 @@ Merge the backing files associated with C<$path> into the
 top level file. The C<$bandwidth> parameter specifies the
 maximum I/O rate to allow in MB/s.
 
-=item $dom->block_rebase($path, $backingpath, $bandwith, $flags=0)
+=item $dom->block_rebase($path, $base, $bandwith, $flags=0)
 
 Switch the backing path associated with C<$path> to instead
-use C<$backingpath>. The C<$bandwidth> parameter specifies the
+use C<$base>. The C<$bandwidth> parameter specifies the
+maximum I/O rate to allow in MB/s.
+
+=item $dom->block_commit($path, $base, $top, $bandwith, $flags=0)
+
+Commit changes there were made to the temporary top level file C<$top>.
+Takes all the differences between C<$top> and C<$base> and merge them
+into C<$base>. The C<$bandwidth> parameter specifies the
 maximum I/O rate to allow in MB/s.
 
 =item $count = $dom->num_of_snapshots()

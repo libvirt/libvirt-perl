@@ -2916,6 +2916,19 @@ block_rebase(dom, path, base, bandwidth, flags=0)
 
 
 void
+block_commit(dom, path, base, top, bandwidth, flags=0)
+      virDomainPtr dom;
+      const char *path;
+      const char *base;
+      const char *top;
+      unsigned long bandwidth;
+      unsigned int flags;
+    PPCODE:
+      if (virDomainBlockCommit(dom, path, base, top, bandwidth, flags) < 0)
+          _croak_error();
+
+
+void
 get_disk_errors(dom, flags=0)
       virDomainPtr dom;
       unsigned int flags;
