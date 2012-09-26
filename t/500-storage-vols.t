@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Test::More tests => 10;
 
 BEGIN {
         use_ok('Sys::Virt');
@@ -40,3 +40,9 @@ my $vol2 = $conn->get_storage_volume_by_key($key);
 isa_ok($vol2, "Sys::Virt::StorageVol");
 
 is($vol2->get_path(), $newvol->get_path(), "path matches");
+
+my $newpool = $conn->get_storage_pool_by_volume($vol2);
+
+isa_ok($newpool, "Sys::Virt::StoragePool");
+
+is($newpool->get_uuid(), $pool->get_uuid(), "Pool UUID matches");

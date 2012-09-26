@@ -60,6 +60,8 @@ sub _new {
 	} else {
 	    die "UUID must be either 16 unsigned bytes, or 32/36 hex characters long";
 	}
+    } elsif (exists $params{volume}) {
+	$self = Sys::Virt::StoragePool::_lookup_by_volume($params{volume});
     } elsif (exists $params{xml}) {
 	if ($params{nocreate}) {
 	    $self = Sys::Virt::StoragePool::_define_xml($con,  $params{xml});

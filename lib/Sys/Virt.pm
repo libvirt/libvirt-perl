@@ -899,6 +899,22 @@ sub get_storage_pool_by_uuid {
 }
 
 
+=item my $pool = $vmm->get_storage_pool_by_volume($vol)
+
+Return the storage pool with a storage volume C<$vol>. The C<$vol> parameter
+must be an instance of the L<Sys::Virt::StorageVol> class. The returned object is
+an instance of the L<Sys::Virt::StoragePool> class.
+
+=cut
+
+sub get_storage_pool_by_volume {
+    my $self = shift;
+    my $volume = shift;
+
+    return Sys::Virt::StoragePool->_new(connection => $self, volume => $volume);
+}
+
+
 =item my $vol = $vmm->get_storage_volume_by_path($path)
 
 Return the storage volume with a location of C<$path>. The returned object is
