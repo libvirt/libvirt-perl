@@ -1663,6 +1663,59 @@ PREINIT:
       RETVAL
 
 
+HV *
+get_node_memory_parameters(conn, flags=0)
+      virConnectPtr conn;
+      unsigned int flags;
+  PREINIT:
+      virTypedParameter *params;
+      int nparams;
+    CODE:
+      nparams = 0;
+      if (virNodeGetMemoryParameters(conn, NULL, &nparams, flags) < 0)
+          _croak_error();
+
+      Newx(params, nparams, virTypedParameter);
+
+      if (virNodeGetMemoryParameters(conn, params, &nparams, flags) < 0) {
+          Safefree(params);
+          _croak_error();
+      }
+
+      RETVAL = vir_typed_param_to_hv(params, nparams);
+      Safefree(params);
+  OUTPUT:
+      RETVAL
+
+
+void
+set_node_memory_parameters(conn, newparams, flags=0)
+      virConnectPtr conn;
+      HV *newparams;
+      unsigned int flags;
+  PREINIT:
+      virTypedParameter *params;
+      int nparams;
+    PPCODE:
+      nparams = 0;
+      if (virNodeGetMemoryParameters(conn, NULL, &nparams, flags) < 0)
+          _croak_error();
+
+      Newx(params, nparams, virTypedParameter);
+
+      if (virNodeGetMemoryParameters(conn, params, &nparams, flags) < 0) {
+          Safefree(params);
+          _croak_error();
+      }
+
+      vir_typed_param_from_hv(newparams, params, nparams);
+
+      if (virNodeSetMemoryParameters(conn, params, nparams, flags) < 0)
+          _croak_error();
+      Safefree(params);
+
+
+
 void
 node_suspend_for_duration(conn, target, duration, flags)
       virConnectPtr conn;
@@ -5911,6 +5964,15 @@ BOOT:
       REGISTER_CONSTANT(VIR_CONNECT_CLOSE_REASON_EOF, CLOSE_REASON_EOF);
       REGISTER_CONSTANT(VIR_CONNECT_CLOSE_REASON_ERROR, CLOSE_REASON_ERROR);
       REGISTER_CONSTANT(VIR_CONNECT_CLOSE_REASON_KEEPALIVE, CLOSE_REASON_KEEPALIVE);
+
+      REGISTER_CONSTANT_STR(VIR_NODE_MEMORY_SHARED_PAGES_TO_SCAN, NODE_MEMORY_SHARED_PAGES_TO_SCAN);
+      REGISTER_CONSTANT_STR(VIR_NODE_MEMORY_SHARED_SLEEP_MILLISECS, NODE_MEMORY_SHARED_SLEEP_MILLISECS);
+      REGISTER_CONSTANT_STR(VIR_NODE_MEMORY_SHARED_PAGES_SHARED, NODE_MEMORY_SHARED_PAGES_SHARED);
+      REGISTER_CONSTANT_STR(VIR_NODE_MEMORY_SHARED_PAGES_SHARING, NODE_MEMORY_SHARED_PAGES_SHARING);
+      REGISTER_CONSTANT_STR(VIR_NODE_MEMORY_SHARED_PAGES_UNSHARED, NODE_MEMORY_SHARED_PAGES_UNSHARED);
+      REGISTER_CONSTANT_STR(VIR_NODE_MEMORY_SHARED_PAGES_VOLATILE, NODE_MEMORY_SHARED_PAGES_VOLATILE);
+      REGISTER_CONSTANT_STR(VIR_NODE_MEMORY_SHARED_FULL_SCANS, NODE_MEMORY_SHARED_FULL_SCANS);
+
 
       stash = gv_stashpv( "Sys::Virt::Event", TRUE );
 

@@ -1295,6 +1295,21 @@ The memory consumed for cache
 
 =back
 
+=item my $params = $conn->get_node_memory_parameters($flags=0)
+
+Return a hash reference containing the set of memory tunable
+parameters for the node. The keys in the hash are one of the
+constants MEMORY PARAMETERS described later. The C<$flags>
+parameter is currently unused, and defaults to 0 if omitted.
+
+=item $conn->set_node_memory_parameters($params, $flags=0)
+
+Update the memory tunable parameters for the node. The
+C<$params> should be a hash reference whose keys are one
+of the MEMORY PARAMETERS constants. The C<$flags>
+parameter is currently unused, and defaults to 0 if omitted.
+
+
 =item $conn->node_suspend_for_duration($target, $duration, $flags=0)
 
 Suspend the the host, using mode C<$target> which is one of the NODE
@@ -1549,6 +1564,43 @@ Request statistics for all CPUs
 =item Sys::Virt::NODE_MEMORY_STATS_ALL_CELLS
 
 Request statistics for all memory cells
+
+=back
+
+=head2 MEMORY PARAMETERS
+
+The following constants are used to name memory
+parameters of the node
+
+=over 4
+
+=item Sys::Virt::NODE_MEMORY_SHARED_FULL_SCANS
+
+How many times all mergeable areas have been scanned.
+
+=item Sys::Virt::NODE_MEMORY_SHARED_PAGES_SHARED
+
+How many the shared memory pages are being used.
+
+=item Sys::Virt::NODE_MEMORY_SHARED_PAGES_SHARING
+
+How many sites are sharing the pages
+
+=item Sys::Virt::NODE_MEMORY_SHARED_PAGES_TO_SCAN
+
+How many present pages to scan before the shared memory service goes to sleep
+
+=item Sys::Virt::NODE_MEMORY_SHARED_PAGES_UNSHARED
+
+How many pages unique but repeatedly checked for merging.
+
+=item Sys::Virt::NODE_MEMORY_SHARED_PAGES_VOLATILE
+
+How many pages changing too fast to be placed in a tree.
+
+=item Sys::Virt::NODE_MEMORY_SHARED_SLEEP_MILLISECS
+
+How many milliseconds the shared memory service should sleep before next scan.
 
 =back
 
