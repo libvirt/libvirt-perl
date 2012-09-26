@@ -1912,6 +1912,132 @@ list_all_domains(con, flags=0)
       free(doms);
 
 
+void
+list_all_interfaces(con, flags=0)
+      virConnectPtr con;
+      unsigned int flags;
+ PREINIT:
+      virInterfacePtr *ifaces;
+      int i, niface;
+      SV *ifacerv;
+  PPCODE:
+      if ((niface = virConnectListAllInterfaces(con, &ifaces, flags)) < 0)
+          _croak_error();
+
+      EXTEND(SP, niface);
+      for (i = 0 ; i < niface ; i++) {
+          ifacerv = sv_newmortal();
+          sv_setref_pv(ifacerv, "Sys::Virt::Interface", ifaces[i]);
+          PUSHs(ifacerv);
+      }
+      free(ifaces);
+
+
+void
+list_all_nwfilters(con, flags=0)
+      virConnectPtr con;
+      unsigned int flags;
+ PREINIT:
+      virNWFilterPtr *nwfilters;
+      int i, nnwfilter;
+      SV *nwfilterrv;
+  PPCODE:
+      if ((nnwfilter = virConnectListAllNWFilters(con, &nwfilters, flags)) < 0)
+          _croak_error();
+
+      EXTEND(SP, nnwfilter);
+      for (i = 0 ; i < nnwfilter ; i++) {
+          nwfilterrv = sv_newmortal();
+          sv_setref_pv(nwfilterrv, "Sys::Virt::NWFilters", nwfilters[i]);
+          PUSHs(nwfilterrv);
+      }
+      free(nwfilters);
+
+
+void
+list_all_networks(con, flags=0)
+      virConnectPtr con;
+      unsigned int flags;
+ PREINIT:
+      virNetworkPtr *nets;
+      int i, nnet;
+      SV *netrv;
+  PPCODE:
+      if ((nnet = virConnectListAllNetworks(con, &nets, flags)) < 0)
+          _croak_error();
+
+      EXTEND(SP, nnet);
+      for (i = 0 ; i < nnet ; i++) {
+          netrv = sv_newmortal();
+          sv_setref_pv(netrv, "Sys::Virt::Network", nets[i]);
+          PUSHs(netrv);
+      }
+      free(nets);
+
+
+void
+list_all_node_devices(con, flags=0)
+      virConnectPtr con;
+      unsigned int flags;
+ PREINIT:
+      virNodeDevicePtr *devs;
+      int i, ndev;
+      SV *devrv;
+  PPCODE:
+      if ((ndev = virConnectListAllNodeDevices(con, &devs, flags)) < 0)
+          _croak_error();
+
+      EXTEND(SP, ndev);
+      for (i = 0 ; i < ndev ; i++) {
+          devrv = sv_newmortal();
+          sv_setref_pv(devrv, "Sys::Virt::NodeDevice", devs[i]);
+          PUSHs(devrv);
+      }
+      free(devs);
+
+
+void
+list_all_secrets(con, flags=0)
+      virConnectPtr con;
+      unsigned int flags;
+ PREINIT:
+      virSecretPtr *secrets;
+      int i, nsecret;
+      SV *secretrv;
+  PPCODE:
+      if ((nsecret = virConnectListAllSecrets(con, &secrets, flags)) < 0)
+          _croak_error();
+
+      EXTEND(SP, nsecret);
+      for (i = 0 ; i < nsecret ; i++) {
+          secretrv = sv_newmortal();
+          sv_setref_pv(secretrv, "Sys::Virt::Secret", secrets[i]);
+          PUSHs(secretrv);
+      }
+      free(secrets);
+
+
+void
+list_all_storage_pools(con, flags=0)
+      virConnectPtr con;
+      unsigned int flags;
+ PREINIT:
+      virStoragePoolPtr *pools;
+      int i, npool;
+      SV *poolrv;
+  PPCODE:
+      if ((npool = virConnectListAllStoragePools(con, &pools, flags)) < 0)
+          _croak_error();
+
+      EXTEND(SP, npool);
+      for (i = 0 ; i < npool ; i++) {
+          poolrv = sv_newmortal();
+          sv_setref_pv(poolrv, "Sys::Virt::StoragePool", pools[i]);
+          PUSHs(poolrv);
+      }
+      free(pools);
+
+
 int
 num_of_networks(con)
       virConnectPtr con;
@@ -4674,6 +4800,29 @@ list_storage_vol_names(pool, maxnames)
           free(names[i]);
       }
       Safefree(names);
+
+
+void
+list_all_volumes(pool, flags=0)
+      virStoragePoolPtr pool;
+      unsigned int flags;
+ PREINIT:
+      virStorageVolPtr *vols;
+      int i, nvolss;
+      SV *volssrv;
+  PPCODE:
+      if ((nvolss = virStoragePoolListAllVolumes(pool, &vols, flags)) < 0)
+          _croak_error();
+
+      EXTEND(SP, nvolss);
+      for (i = 0 ; i < nvolss ; i++) {
+          volssrv = sv_newmortal();
+          sv_setref_pv(volssrv, "Sys::Virt::StorageVol", vols[i]);
+          PUSHs(volssrv);
+      }
+      free(vols);
+
+
 
 
 void

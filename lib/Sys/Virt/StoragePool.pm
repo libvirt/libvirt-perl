@@ -193,7 +193,9 @@ be used with the C<get_volume_by_name> method.
 
 Return a list of all volumes in the storage pool.
 The elements in the returned list are instances of the
-L<Sys::Virt::StorageVol> class.
+L<Sys::Virt::StorageVol> class. This method requires O(n)
+RPC calls, so the C<list_all_volumes> method is
+recommended as a more efficient alternative.
 
 =cut
 
@@ -215,6 +217,13 @@ sub list_volumes {
     return @volumes;
 }
 
+
+=item my @volumes = $dom->list_all_volumes($flags)
+
+Return a list of all storage volumes associated with this domain.
+The elements in the returned list are instances of the
+L<Sys::Virt::StorageVol> class. The C<$flags> parameter can be
+used to filter the list of return storage volumes.
 
 =item my $vol = $pool->get_volume_by_name($name)
 

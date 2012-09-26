@@ -449,12 +449,14 @@ the VMM. The names can be used with the C<get_domain_by_name> method.
 Return a list of all domains currently known to the VMM, whether
 running or shutoff. The elements in the returned list are instances
 of the L<Sys::Virt::Domain> class. The C<$flags> parameter can be
-used to filter the list of return domains.
+used to filter the list of returned domains.
 
 =item my @nets = $vmm->list_networks()
 
 Return a list of all networks currently known to the VMM. The elements
 in the returned list are instances of the L<Sys::Virt::Network> class.
+This method requires O(n) RPC calls, so the C<list_all_networks> method
+is recommended as a more efficient alternative.
 
 =cut
 
@@ -490,7 +492,8 @@ be used with the C<get_network_by_name> method.
 
 Return a list of all networks defined, but not currently running, on the
 VMM. The elements in the returned list are instances of the
-L<Sys::Virt::Network> class.
+L<Sys::Virt::Network> class. This method requires O(n) RPC calls, so the
+C<list_all_networks> method is recommended as a more efficient alternative.
 
 =cut
 
@@ -522,10 +525,19 @@ used as the C<maxnames> parameter to C<list_defined_network_names>.
 Return a list of names of all networks defined, but not currently running, on
 the host. The names can be used with the C<get_network_by_name> method.
 
+=item my @nets = $vmm->list_all_networks($flags)
+
+Return a list of all networks currently known to the VMM, whether
+running or shutoff. The elements in the returned list are instances
+of the L<Sys::Virt::Network> class. The C<$flags> parameter can be
+used to filter the list of returned networks.
+
 =item my @pools = $vmm->list_storage_pools()
 
 Return a list of all storage pools currently known to the host. The elements
 in the returned list are instances of the L<Sys::Virt::StoragePool> class.
+This method requires O(n) RPC calls, so the C<list_all_storage_pools> method
+is recommended as a more efficient alternative.
 
 =cut
 
@@ -561,7 +573,8 @@ be used with the C<get_network_by_id> method.
 
 Return a list of all storage pools defined, but not currently running, on the
 host. The elements in the returned list are instances of the
-L<Sys::Virt::StoragePool> class.
+L<Sys::Virt::StoragePool> class. This method requires O(n) RPC calls, so the
+C<list_all_storage_pools> method is recommended as a more efficient alternative.
 
 =cut
 
@@ -593,12 +606,21 @@ used as the C<maxnames> parameter to C<list_defined_storage_pool_names>.
 Return a list of names of all storage pools defined, but not currently running, on
 the host. The names can be used with the C<get_storage_pool_by_name> method.
 
+=item my @pools = $vmm->list_all_storage_pools($flags)
+
+Return a list of all storage pools currently known to the VMM, whether
+running or shutoff. The elements in the returned list are instances
+of the L<Sys::Virt::StoragePool> class. The C<$flags> parameter can be
+used to filter the list of returned pools.
+
 =item my @devs = $vmm->list_node_devices($capability)
 
 Return a list of all devices currently known to the host OS. The elements
 in the returned list are instances of the L<Sys::Virt::NodeDevice> class.
 The optional C<capability> parameter allows the list to be restricted to
-only devices with a particular capability type.
+only devices with a particular capability type. This method requires O(n)
+RPC calls, so the C<list_all_node_devices> method is recommended as a
+more efficient alternative.
 
 =cut
 
@@ -639,10 +661,19 @@ only devices with a particular capability type, and should be left
 as C<undef> if the full list is required. The optional <flags>
 parameter is currently unused and defaults to 0 if omitted.
 
+=item my @devs = $vmm->list_all_node_devices($flags)
+
+Return a list of all node devices currently known to the VMM. The
+elements in the returned list are instances of the
+L<Sys::Virt::NodeDevice> class. The C<$flags> parameter can be
+used to filter the list of returned devices.
+
 =item my @ifaces = $vmm->list_interfaces()
 
 Return a list of all network interfaces currently known to the VMM. The elements
 in the returned list are instances of the L<Sys::Virt::Interface> class.
+This method requires O(n) RPC calls, so the C<list_all_interfaces> method is
+recommended as a more efficient alternative.
 
 =cut
 
@@ -678,6 +709,8 @@ be used with the C<get_interface_by_name> method.
 
 Return a list of all network interfaces currently known to the VMM. The elements
 in the returned list are instances of the L<Sys::Virt::Interface> class.
+This method requires O(n) RPC calls, so the C<list_all_interfaces> method is
+recommended as a more efficient alternative.
 
 =cut
 
@@ -709,10 +742,19 @@ used as the C<maxnames> parameter to C<list_defined_interface_names>.
 Return a list of inactive interface names currently known to the VMM. The names can
 be used with the C<get_interface_by_name> method.
 
+=item my @ifaces = $vmm->list_all_interfaces($flags)
+
+Return a list of all interfaces currently known to the VMM, whether
+running or shutoff. The elements in the returned list are instances
+of the L<Sys::Virt::Interface> class. The C<$flags> parameter can be
+used to filter the list of returned interfaces.
+
 =item my @ifaces = $vmm->list_secrets()
 
 Return a list of all secrets currently known to the VMM. The elements
 in the returned list are instances of the L<Sys::Virt::Secret> class.
+This method requires O(n) RPC calls, so the C<list_all_secrets> method
+is recommended as a more efficient alternative.
 
 =cut
 
@@ -744,10 +786,19 @@ used as the C<maxuuids> parameter to C<list_secrets>.
 Return a list of all secret uuids currently known to the VMM. The uuids can
 be used with the C<get_secret_by_uuid> method.
 
+=item my @secrets = $vmm->list_all_secrets($flags)
+
+Return a list of all secrets currently known to the VMM. The elements
+in the returned list are instances of the L<Sys::Virt::Network> class.
+The C<$flags> parameter can be used to filter the list of returned
+secrets.
+
 =item my @nets = $vmm->list_nwfilters()
 
 Return a list of all nwfilters currently known to the VMM. The elements
 in the returned list are instances of the L<Sys::Virt::NWFilter> class.
+This method requires O(n) RPC calls, so the C<list_all_nwfilters> method
+is recommended as a more efficient alternative.
 
 =cut
 
@@ -779,7 +830,12 @@ used as the C<maxids> parameter to C<list_nwfilter_names>.
 Return a list of all nwfilter names currently known to the VMM. The names can
 be used with the C<get_nwfilter_by_name> method.
 
-=cut
+=item my @nwfilters = $vmm->list_all_nwfilters($flags)
+
+Return a list of all nwfilters currently known to the VMM. The elements
+in the returned list are instances of the L<Sys::Virt::NWFilter> class.
+The C<$flags> parameter can be used to filter the list of returned
+secrets.
 
 =item $vmm->define_save_image_xml($file, $dxml, $flags=0)
 
