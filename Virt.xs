@@ -1649,11 +1649,11 @@ PREINIT:
       RETVAL = (HV *)sv_2mortal((SV*)newHV());
       for (i = 0 ; i < nparams ; i++) {
           if (strcmp(params[i].field, VIR_NODE_MEMORY_STATS_TOTAL) == 0) {
-              (void)hv_store (RETVAL, "total", 6, virt_newSVull(params[i].value), 0);
+              (void)hv_store (RETVAL, "total", 5, virt_newSVull(params[i].value), 0);
           } else if (strcmp(params[i].field, VIR_NODE_MEMORY_STATS_FREE) == 0) {
               (void)hv_store (RETVAL, "free", 4, virt_newSVull(params[i].value), 0);
           } else if (strcmp(params[i].field, VIR_NODE_MEMORY_STATS_BUFFERS) == 0) {
-              (void)hv_store (RETVAL, "buffers", 4, virt_newSVull(params[i].value), 0);
+              (void)hv_store (RETVAL, "buffers", 7, virt_newSVull(params[i].value), 0);
           } else if (strcmp(params[i].field, VIR_NODE_MEMORY_STATS_CACHED) == 0) {
               (void)hv_store (RETVAL, "cached", 6, virt_newSVull(params[i].value), 0);
           }
