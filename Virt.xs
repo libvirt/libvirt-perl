@@ -1248,13 +1248,12 @@ vir_typed_param_to_hv(virTypedParameter *params, int nparams)
 }
 
 
-static int
+static void
 vir_typed_param_from_hv(HV *newparams, virTypedParameter *params, int nparams)
 {
     unsigned int i;
     char * ptr;
     STRLEN len;
-    int needString = 0;
 
     for (i = 0 ; i < nparams ; i++) {
         SV **val;
@@ -1290,13 +1289,11 @@ vir_typed_param_from_hv(HV *newparams, virTypedParameter *params, int nparams)
             break;
 
         case VIR_TYPED_PARAM_STRING:
-            needString = 1;
             ptr = SvPV(*val, len);
             params[i].value.s = (char *)ptr;
             break;
         }
     }
-    return needString;
 }
 
 
@@ -3288,7 +3285,6 @@ set_blkio_parameters(dom, newparams, flags=0)
   PREINIT:
       virTypedParameter *params;
       int nparams;
-      int needString;
     PPCODE:
       nparams = 0;
       if (virDomainGetBlkioParameters(dom, NULL, &nparams, flags) < 0)
@@ -3301,10 +3297,10 @@ set_blkio_parameters(dom, newparams, flags=0)
           _croak_error();
       }
 
-      needString = vir_typed_param_from_hv(newparams, params, nparams);
+      vir_typed_param_from_hv(newparams, params, nparams);
 
       if (virDomainSetBlkioParameters(dom, params, nparams,
-                                      needString ? flags | VIR_TYPED_PARAM_STRING_OKAY: flags) < 0)
+                                      flags) < 0)
           _croak_error();
       Safefree(params);
 
