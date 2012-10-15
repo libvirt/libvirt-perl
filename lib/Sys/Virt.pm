@@ -1361,7 +1361,7 @@ The free memory
 
 The memory consumed by buffers
 
-=item cache
+=item cached
 
 The memory consumed for cache
 
