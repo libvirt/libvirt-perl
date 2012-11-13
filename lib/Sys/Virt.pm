@@ -25,7 +25,7 @@ Sys::Virt - Represent and manage a libvirt hypervisor connection
 
 =head1 SYNOPSIS
 
-  my $vmm = Sys::Virt->new(address => $addr);
+  my $vmm = Sys::Virt->new(uri => $uri);
 
   my @domains = $vmm->list_domains();
 
@@ -47,7 +47,7 @@ will result in an instance of the L<Sys::Virt::Error> module being
 thrown. To catch these errors, simply wrap the method in an eval
 block:
 
-  eval { my $vmm = Sys::Virt->new(address => $addr); };
+  eval { my $vmm = Sys::Virt->new(uri => $uri); };
   if ($@) {
     print STDERR "Unable to open connection to $addr" . $@->message . "\n";
   }
@@ -84,8 +84,8 @@ XSLoader::load('Sys::Virt', $VERSION);
 
 =item my $vmm = Sys::Virt->new(uri => $uri, readonly => $ro, flags => $flags);
 
-Attach to the virtual machine monitor with the address of C<address>. The
-uri parameter may be omitted, in which case the default connection made
+Attach to the virtualization host identified by C<uri>. The
+C<uri> parameter may be omitted, in which case the default connection made
 will be to the local Xen hypervisor. Some example URIs include:
 
 =over 4
@@ -146,11 +146,11 @@ be set with a default result if applicable
 
 As a simple example returning hardcoded credentials
 
-    my $address  = "qemu+tcp://192.168.122.1/system";
+    my $uri  = "qemu+tcp://192.168.122.1/system";
     my $username = "test";
     my $password = "123456";
 
-    my $con = Sys::Virt->new(address => $address,
+    my $con = Sys::Virt->new(uri => $uri,
                              auth => 1,
                              credlist => [
                                Sys::Virt::CRED_AUTHNAME,
@@ -170,6 +170,11 @@ As a simple example returning hardcoded credentials
                }
                return 0;
          });
+
+
+For backwards compatibility with earlier releases, the C<address>
+parameter is accepted as a synonym for the C<uri> parameter. The
+use of C<uri> is recommended for all newly written code.
 
 =cut
 
