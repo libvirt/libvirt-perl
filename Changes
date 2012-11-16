@@ -1,5 +1,16 @@
 Revision history for perl module Sys::Virt
 
+1.0.0 2012-11-16
+
+ - Add all new APIs and constants in libvirt 1.0.0
+ - Fix inconsistent usage of 'uri' in Sys::Virt POD docs
+ - Fix typos in POD docs
+ - Don't explicitly set VIR_TYPED_PARAM_STRING_OKAY flag
+ - Fix hash key field lengths
+ - Add tests for object list APIs
+ - Fix default values for flags parameters
+ - Fix setting of node memory parameters
+
 0.10.2 2012-09-26
 
  - Add all new APIs and constants in libvirt 0.10.2
