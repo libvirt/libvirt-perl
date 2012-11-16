@@ -1284,7 +1284,7 @@ The model of the CPU, eg x86_64
 
 =item cpus
 
-The total number of logical CPUs
+The total number of logical CPUs.
 
 =item mhz
 
@@ -1307,6 +1307,22 @@ The number of cores per socket
 The number of threads per core
 
 =back
+
+NB, more accurate information about the total number of CPUs
+and those online can be obtained using the C<get_node_cpu_map>
+method.
+
+=item my ($totcpus, $onlinemap, $totonline) = $con->get_node_cpu_map();
+
+Returns an array containing information about the CPUs available
+on the host. The first element, C<totcpus>, specifies the total
+number of CPUs available to the host regardles of their online
+stat. The second element, C<onlinemap>, provides a bitmap detailing
+which CPUs are currently online. The third element, C<totonline>,
+specifies the total number of online CPUs. The values in the bitmap
+can be extracted using the C<unpack> method as follows:
+
+  my @onlinemap = split(//, unpack("b*", $onlinemap));
 
 =item my $info = $con->get_node_cpu_stats($cpuNum=-1, $flags=0)
 

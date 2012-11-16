@@ -47,3 +47,12 @@ for (my $i = 0 ; $i < $iterations ; $i++) {
 
     $then = $now;
 }
+
+my ($totcpus, $onlinemask, $nonline) = $hv->get_node_cpu_map();
+
+printf "CPUs total %d, online %d\n", $totcpus, $nonline;
+
+my @bits = split(//, unpack("b*", $onlinemask));
+for (my $i = 0 ; $i < $totcpus ; $i++) {
+    printf "  %d: %d\n", $i, $bits[$i];
+}

@@ -1551,6 +1551,23 @@ get_node_security_model(con)
    OUTPUT:
       RETVAL
 
+void
+get_node_cpu_map(con, flags=0)
+      virConnectPtr con;
+      unsigned int flags;
+ PREINIT:
+      unsigned char *cpumaps;
+      unsigned int online;
+      int ncpus;
+  PPCODE:
+      if ((ncpus = virNodeGetCPUMap(con, &cpumaps, &online, flags)) < 0)
+          _croak_error();
+
+      EXTEND(SP, 3);
+      PUSHs(sv_2mortal(newSViv(ncpus)));
+      PUSHs(sv_2mortal(newSVpvn((char*)cpumaps, VIR_CPU_MAPLEN(ncpus))));
+      PUSHs(sv_2mortal(newSViv(online)));
+      free(cpumaps);
 
 SV *
 get_node_free_memory(con)
