@@ -945,6 +945,60 @@ containing stats for one CPU.
 Returns a hash reference summarising the execution state of the
 background job. The elements of the hash are as follows:
 
+=over 4
+
+=item type
+
+The type of job, one of the JOB TYPE constants listed later in
+this document.
+
+=item timeElapsed
+
+The elapsed time in milliseconds
+
+=item timeRemaining
+
+The expected remaining time in milliseconds. Only set if the
+C<type> is JOB_UNBOUNDED.
+
+=item dataTotal
+
+The total amount of data expected to be processed by the job, in bytes.
+
+=item dataProcessed
+
+The current amount of data processed by the job, in bytes.
+
+=item dataRemaining
+
+The expected amount of data remaining to be processed by the job, in bytes.
+
+=item memTotal
+
+The total amount of mem expected to be processed by the job, in bytes.
+
+=item memProcessed
+
+The current amount of mem processed by the job, in bytes.
+
+=item memRemaining
+
+The expected amount of mem remaining to be processed by the job, in bytes.
+
+=item fileTotal
+
+The total amount of file expected to be processed by the job, in bytes.
+
+=item fileProcessed
+
+The current amount of file processed by the job, in bytes.
+
+=item fileRemaining
+
+The expected amount of file remaining to be processed by the job, in bytes.
+
+=back
+
 =item $dom->abort_job()
 
 Aborts the currently executing job
@@ -1068,63 +1122,6 @@ sub create_snapshot {
 
     return $snapshot;
 }
-
-=over 4
-
-=item type
-
-The type of job, one of the JOB TYPE constants listed later in
-this document.
-
-=item timeElapsed
-
-The elapsed time in milliseconds
-
-=item timeRemaining
-
-The expected remaining time in milliseconds. Only set if the
-C<type> is JOB_UNBOUNDED.
-
-=item dataTotal
-
-The total amount of data expected to be processed by the job, in bytes.
-
-=item dataProcessed
-
-The current amount of data processed by the job, in bytes.
-
-=item dataRemaining
-
-The expected amount of data remaining to be processed by the job, in bytes.
-
-=item memTotal
-
-The total amount of mem expected to be processed by the job, in bytes.
-
-=item memProcessed
-
-The current amount of mem processed by the job, in bytes.
-
-=item memRemaining
-
-The expected amount of mem remaining to be processed by the job, in bytes.
-
-=item fileTotal
-
-The total amount of file expected to be processed by the job, in bytes.
-
-=item fileProcessed
-
-The current amount of file processed by the job, in bytes.
-
-=item fileRemaining
-
-The expected amount of file remaining to be processed by the job, in bytes.
-
-=back
-
-=cut
-
 
 1;
 
