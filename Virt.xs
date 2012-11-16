@@ -1286,18 +1286,30 @@ vir_typed_param_to_hv(virTypedParameter *params, int nparams)
 }
 
 
-static void
+static int
 vir_typed_param_from_hv(HV *newparams, virTypedParameter *params, int nparams)
 {
     unsigned int i;
     char * ptr;
     STRLEN len;
+    int ret = 0;
 
+    /* We only want to set parameters which we're actually changing
+     * so here we figure out which elements of 'params' we need to
+     * update, and overwrite the others
+     */
     for (i = 0 ; i < nparams ; i++) {
-        SV **val;
-
-        if (!hv_exists(newparams, params[i].field, strlen(params[i].field)))
+        if (!hv_exists(newparams, params[i].field, strlen(params[i].field))) {
+            if ((nparams-i) > 1)
+                memmove(params+i, params+i+1, sizeof(*params)*(nparams-(i+1)));
             continue;
+        }
+
+        ret++;
+    }
+
+    for (i = 0 ; i < ret ; i++) {
+        SV **val;
 
         val = hv_fetch (newparams, params[i].field, strlen(params[i].field), 0);
 
@@ -1332,6 +1344,8 @@ vir_typed_param_from_hv(HV *newparams, virTypedParameter *params, int nparams)
             break;
         }
     }
+
+    return ret;
 }
 
 
@@ -1760,7 +1774,7 @@ set_node_memory_parameters(conn, newparams, flags=0)
           _croak_error();
       }
 
-      vir_typed_param_from_hv(newparams, params, nparams);
+      nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
       if (virNodeSetMemoryParameters(conn, params, nparams, flags) < 0)
           _croak_error();
@@ -3195,7 +3209,7 @@ set_scheduler_parameters(dom, newparams, flags=0)
               _croak_error();
           }
       }
-      vir_typed_param_from_hv(newparams, params, nparams);
+      nparams = vir_typed_param_from_hv(newparams, params, nparams);
       if (flags) {
           if (virDomainSetSchedulerParametersFlags(dom, params, nparams, flags) < 0)
               _croak_error();
@@ -3251,7 +3265,7 @@ set_memory_parameters(dom, newparams, flags=0)
           _croak_error();
       }
 
-      vir_typed_param_from_hv(newparams, params, nparams);
+      nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
       if (virDomainSetMemoryParameters(dom, params, nparams, flags) < 0)
           _croak_error();
@@ -3303,7 +3317,7 @@ set_numa_parameters(dom, newparams, flags=0)
           _croak_error();
       }
 
-      vir_typed_param_from_hv(newparams, params, nparams);
+      nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
       if (virDomainSetNumaParameters(dom, params, nparams, flags) < 0)
           _croak_error();
@@ -3355,7 +3369,7 @@ set_blkio_parameters(dom, newparams, flags=0)
           _croak_error();
       }
 
-      vir_typed_param_from_hv(newparams, params, nparams);
+      nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
       if (virDomainSetBlkioParameters(dom, params, nparams,
                                       flags) < 0)
@@ -3796,7 +3810,7 @@ set_block_iotune(dom, disk, newparams, flags=0)
           _croak_error();
       }
 
-      vir_typed_param_from_hv(newparams, params, nparams);
+      nparams = vir_typed_param_from_hv(newparams, params, nparams);
       if (virDomainSetBlockIoTune(dom, disk, params, nparams, flags) < 0)
           _croak_error();
 
@@ -3847,7 +3861,7 @@ set_interface_parameters(dom, intf, newparams, flags=0)
           _croak_error();
       }
 
-      vir_typed_param_from_hv(newparams, params, nparams);
+      nparams = vir_typed_param_from_hv(newparams, params, nparams);
       if (virDomainSetInterfaceParameters(dom, intf, params, nparams, flags) < 0)
           _croak_error();
 
