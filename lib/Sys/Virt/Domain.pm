@@ -1109,7 +1109,8 @@ Returns the currently active snapshot for the domain.
 
 =item $snapshot = $dom->create_snapshot($xml[, $flags])
 
-Create a new snapshot from the C<$xml>.
+Create a new snapshot from the C<$xml>. The C<$flags> parameter accepts
+the B<SNAPSHOT CREATION> constants listed in C<Sys::Virt::DomainSnapshots>.
 
 =cut
 

@@ -131,7 +131,7 @@ sub list_child_snapshots {
     return @snapshots;
 }
 
-=item my @snapshots = $dom->list_all_children($flags)
+=item my @snapshots = $domss->list_all_children($flags)
 
 Return a list of all domain snapshots that are children of this
 snapshot. The elements in the returned list are instances of the
