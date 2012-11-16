@@ -384,7 +384,11 @@ It is not known why the domain has shutoff
 
 =item Sys::Virt::Domain::STATE_PMSUSPENDED_UNKNOWN
 
-It is not known why the domain was suspended
+It is not known why the domain was suspended to RAM
+
+=item Sys::Virt::Domain::STATE_PMSUSPENDED_DISK_UNKNOWN
+
+It is not known why the domain was suspended to disk
 
 =back
 
@@ -1371,6 +1375,10 @@ passwords.
 Update the CPU model definition to match the current executing
 state.
 
+=item Sys::Virt::Domain::XML_MIGRATABLE
+
+Update the XML to allow migration to older versions of libvirt
+
 =back
 
 =head2 DEVICE HOTPLUG OPTIONS
@@ -1950,6 +1958,10 @@ The domain has stopped running
 
 The domain has suspend to RAM.
 
+=item Sys::Virt::Domain::EVENT_PMSUSPENDED_DISK
+
+The domain has suspend to Disk.
+
 =back
 
 =back
@@ -2004,7 +2016,11 @@ CDROM media tray state
 
 =item Sys::Virt::Domain::EVENT_ID_PMSUSPEND
 
-Power management initiated suspend
+Power management initiated suspend to RAM
+
+=item Sys::Virt::Domain::EVENT_ID_PMSUSPEND_DISK
+
+Power management initiated suspend to Disk
 
 =item Sys::Virt::Domain::EVENT_ID_PMWAKEUP
 
@@ -2181,6 +2197,10 @@ An unsuccessful block job
 =item Sys::Virt::Domain::BLOCK_JOB_CANCELED
 
 A block job canceled byy the user
+
+=item Sys::Virt::Domain::BLOCK_JOB_READY
+
+A block job is running
 
 =back
 

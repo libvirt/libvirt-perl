@@ -338,6 +338,10 @@ The libSSH2 socket client
 
 The Parallels virtualization driver
 
+=item Sys::Virt::Error::FROM_LOCKSPACE
+
+The lockspace handling code
+
 =back
 
 =head2 ERROR CODE CONSTANTS
@@ -695,6 +699,10 @@ The operation is not supported on this host
 =item Sys::Virt::Error::ERR_SSH
 
 The SSH operation failed
+
+=item Sys::Virt::Error::ERR_RESOURCE_BUSY
+
+The resource requested is already in use
 
 =back
 
