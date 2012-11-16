@@ -512,6 +512,44 @@ _domain_event_pmsuspend_callback(virConnectPtr con,
 
 
 static int
+_domain_event_pmsuspend_disk_callback(virConnectPtr con,
+                                      virDomainPtr dom,
+                                      int reason,
+                                      void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *domref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+    XPUSHs(domref);
+    XPUSHs(sv_2mortal(newSViv(reason)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
+static int
 _domain_event_io_error_reason_callback(virConnectPtr con,
                                        virDomainPtr dom,
                                        const char *srcPath,
@@ -2460,6 +2498,9 @@ PREINIT:
           break;
       case VIR_DOMAIN_EVENT_ID_PMSUSPEND:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_pmsuspend_callback);
+          break;
+      case VIR_DOMAIN_EVENT_ID_PMSUSPEND_DISK:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_pmsuspend_disk_callback);
           break;
       case VIR_DOMAIN_EVENT_ID_PMWAKEUP:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_pmwakeup_callback);
