@@ -1769,7 +1769,7 @@ set_node_memory_parameters(conn, newparams, flags=0)
 
 
 void
-node_suspend_for_duration(conn, target, duration, flags)
+node_suspend_for_duration(conn, target, duration, flags=0)
       virConnectPtr conn;
       unsigned int target;
       SV *duration;
@@ -2821,7 +2821,7 @@ resume(dom)
 
 
 void
-pm_wakeup(dom, flags)
+pm_wakeup(dom, flags=0)
       virDomainPtr dom;
       unsigned int flags;
   PPCODE:
@@ -3522,7 +3522,7 @@ reboot(dom, flags=0)
 
 
 void
-pm_suspend_for_duration(dom, target, duration, flags)
+pm_suspend_for_duration(dom, target, duration, flags=0)
       virDomainPtr dom;
       unsigned int target;
       SV *duration;
