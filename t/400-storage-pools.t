@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 31;
+use Test::More tests => 32;
 
 BEGIN {
         use_ok('Sys::Virt');
@@ -22,8 +22,9 @@ my @poolnames = $conn->list_storage_pool_names($nid);
 is_deeply(\@poolnames, ["default-pool"], "storage_pool names");
 
 my @pools = $conn->list_all_storage_pools();
-is(int(@pools), 1, "1 active pools");
-is($pools[0]->get_name, "default-pool", "storage pool name matches");
+isa_ok($pools[0], "Sys::Virt::StoragePool");
+is(int(@pools), 1, "1 active pool");
+is($pools[0]->get_name, "default-pool", "pool name matches");
 
 my $pool = $conn->get_storage_pool_by_name($poolnames[0]);
 isa_ok($pool, "Sys::Virt::StoragePool");
