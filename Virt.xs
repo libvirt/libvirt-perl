@@ -2014,7 +2014,7 @@ list_all_nwfilters(con, flags=0)
       EXTEND(SP, nnwfilter);
       for (i = 0 ; i < nnwfilter ; i++) {
           nwfilterrv = sv_newmortal();
-          sv_setref_pv(nwfilterrv, "Sys::Virt::NWFilters", nwfilters[i]);
+          sv_setref_pv(nwfilterrv, "Sys::Virt::NWFilter", nwfilters[i]);
           PUSHs(nwfilterrv);
       }
       free(nwfilters);
