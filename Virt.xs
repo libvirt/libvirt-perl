@@ -6007,7 +6007,7 @@ send(st, data, nbytes)
     CODE:
       if (SvOK(data)) {
 	  rawdata = SvPV(data, len);
-          if (nbytes < 0 || nbytes > len)
+          if (nbytes > len)
               nbytes = len;
       } else {
           rawdata = "";
