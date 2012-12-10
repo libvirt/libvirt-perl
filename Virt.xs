@@ -123,7 +123,7 @@ _croak_error(void)
 
 
 void
-_populate_constant(HV *stash, char *name, int val)
+_populate_constant(HV *stash, const char *name, int val)
 {
     SV *valsv;
 
@@ -134,7 +134,7 @@ _populate_constant(HV *stash, char *name, int val)
 
 
 void
-_populate_constant_str(HV *stash, char *name, const char *value)
+_populate_constant_str(HV *stash, const char *name, const char *value)
 {
     SV *valsv;
 
@@ -144,7 +144,7 @@ _populate_constant_str(HV *stash, char *name, const char *value)
 
 
 void
-_populate_constant_ull(HV *stash, char *name, unsigned long long val)
+_populate_constant_ull(HV *stash, const char *name, unsigned long long val)
 {
     SV *valsv;
 
