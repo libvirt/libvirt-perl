@@ -4171,7 +4171,7 @@ get_vcpu_info(dom, flags=0)
  PREINIT:
       virVcpuInfoPtr info;
       unsigned char *cpumaps;
-      int maplen;
+      size_t maplen;
       virNodeInfo nodeinfo;
       virDomainInfo dominfo;
       int nvCpus;
