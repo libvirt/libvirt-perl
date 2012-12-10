@@ -2982,15 +2982,21 @@ open_graphics(dom, idx, fd, flags=0)
           _croak_error();
 
 
-void
+SV *
 screenshot(dom, st, screen, flags=0)
       virDomainPtr dom;
       virStreamPtr st;
       unsigned int screen;
       unsigned int flags;
-  PPCODE:
-      if (virDomainScreenshot(dom, st, screen, flags) < 0)
+ PREINIT:
+      char *mimetype;
+    CODE:
+      if (!(mimetype = virDomainScreenshot(dom, st, screen, flags)))
           _croak_error();
+      RETVAL = newSVpv(mimetype, 0);
+      free(mimetype);
+  OUTPUT:
+      RETVAL
 
 
 HV *
@@ -4342,7 +4348,7 @@ current_snapshot(dom, flags=0)
       virDomainPtr dom;
       unsigned int flags;
     CODE:
-      if ((RETVAL = virDomainSnapshotCurrent(dom, flags)) < 0)
+      if (!(RETVAL = virDomainSnapshotCurrent(dom, flags)))
           _croak_error();
   OUTPUT:
       RETVAL

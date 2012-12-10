@@ -890,13 +890,13 @@ anoymous socket pair. The C<$flags> argument should be one of
 the constants listed at the end of this document, and defaults
 to 0.
 
-=item $dom->screenshot($st, $screen, $flags)
+=item my $mimetype = $dom->screenshot($st, $screen, $flags)
 
 Capture a screenshot of the virtual machine's monitor. The C<$screen>
 parameter controls which monitor is captured when using a multi-head
 or multi-card configuration. C<$st> must be a C<Sys::Virt::Stream>
 object from which the data can be read. C<$flags> is currently unused
-and defaults to 0.
+and defaults to 0. The mimetype of the screenshot is returned
 
 =item @vcpuinfo = $dom->get_vcpu_info()
 
