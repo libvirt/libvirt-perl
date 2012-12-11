@@ -839,8 +839,7 @@ be used with the C<get_nwfilter_by_name> method.
 
 Return a list of all nwfilters currently known to the VMM. The elements
 in the returned list are instances of the L<Sys::Virt::NWFilter> class.
-The C<$flags> parameter can be used to filter the list of returned
-secrets.
+The C<$flags> parameter is currently unused and defaults to zero.
 
 =item $vmm->define_save_image_xml($file, $dxml, $flags=0)
 
