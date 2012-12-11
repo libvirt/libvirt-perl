@@ -189,7 +189,7 @@ can be used as the C<maxnames> parameter to C<list_storage_vol_names>.
 Return a list of all volume names in this storage pool. The names can
 be used with the C<get_volume_by_name> method.
 
-=item my @nets = $pool->list_volumes()
+=item my @vols = $pool->list_volumes()
 
 Return a list of all volumes in the storage pool.
 The elements in the returned list are instances of the
@@ -211,16 +211,16 @@ sub list_volumes {
 	    push @volumes, Sys::Virt::StorageVol->_new(pool => $self, name => $name);
 	};
 	if ($@) {
-	    # nada - domain went away before we could look it up
+	    # nada - volume went away before we could look it up
 	};
     }
     return @volumes;
 }
 
 
-=item my @volumes = $dom->list_all_volumes($flags)
+=item my @volumes = $pool->list_all_volumes($flags)
 
-Return a list of all storage volumes associated with this domain.
+Return a list of all storage volumes associated with this pool.
 The elements in the returned list are instances of the
 L<Sys::Virt::StorageVol> class. The C<$flags> parameter can be
 used to filter the list of return storage volumes.
