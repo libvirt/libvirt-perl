@@ -40,7 +40,7 @@ my $gccflags = "-W -Waddress -Wall -Warray-bounds -Wattributes \\
  -Wunused-value -Wunused-variable -Wvariadic-macros \\
  -Wvector-operation-performance -Wvolatile-register-var \\
  -Wwrite-strings -Wno-sign-compare -Wjump-misses-init \\
- -Wno-format-nonliteral -Wframe-larger-than=4096 \\
+ -Wno-format-nonliteral -Wframe-larger-than=8192 \\
  -Wno-suggest-attribute=pure -Wno-suggest-attribute=const -Werror";
 
 my $cflags;
