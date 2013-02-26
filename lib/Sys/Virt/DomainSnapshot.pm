@@ -180,6 +180,10 @@ Reuse the existing snapshot data files (if any)
 
 Create multiple disk snapshots atomically
 
+=item Sys::Virt::DomainSnapshot::CREATE_LIVE
+
+Create snapshot while the guest is running
+
 =back
 
 =head2 SNAPSHOT DELETION
@@ -232,6 +236,27 @@ Only list non-leaf nodes in the snapshot tree
 =item Sys::Virt::DomainSnapshot::LIST_NO_METADATA
 
 Only list snapshots without metadata
+
+=item Sys::Virt::DomainSnapshot::LIST_ACTIVE
+
+Only list snapshots taken while the guest was running
+
+=item Sys::Virt::DomainSnapshot::LIST_INACTIVE
+
+Only list snapshots taken while the guest was inactive
+
+=item Sys::Virt::DomainSnapshot::LIST_EXTERNAL
+
+Only list snapshots stored in external disk images
+
+=item Sys::Virt::DomainSnapshot::LIST_INTERNAL
+
+Only list snapshots stored in internal disk images
+
+=item Sys::Virt::DomainSnapshot::LIST_DISK_ONLY
+
+Only list snapshots taken while the guest was running,
+which did not include memory state.
 
 =back
 

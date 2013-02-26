@@ -342,6 +342,10 @@ The Parallels virtualization driver
 
 The lockspace handling code
 
+=item Sys::Virt::Error::FROM_INITCTL
+
+The initctl client code
+
 =back
 
 =head2 ERROR CODE CONSTANTS

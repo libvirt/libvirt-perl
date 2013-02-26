@@ -173,6 +173,19 @@ The volume is a network source
 
 =back
 
+=head2 CREATE MODES
+
+The following constants are useful for the C<flags> parameter of
+the C<create> method
+
+=over 4
+
+=item Sys::Virt::StorageVol::CREATE_PREALLOC_METADATA
+
+Preallocate header metadata when creating the volume.
+
+=back
+
 =head2 DELETE MODES
 
 The following constants are useful for the C<flags> parameter of

@@ -302,6 +302,10 @@ The guest is paused due to the watchdog
 
 The guest is paused while domain shutdown takes place
 
+=item Sys::Virt::Domain::STATE_PAUSED_SNAPSHOT
+
+The guest is paused while a snapshot takes place
+
 =item Sys::Virt::Domain::STATE_RUNNING_BOOTED
 
 The guest is running after being booted
@@ -1126,6 +1130,20 @@ sub create_snapshot {
 
 1;
 
+=item $dom->fs_trim($mountPoint, $minimum, $flags=0);
+
+Issue an FS_TRIM command to the device at C<$mountPoint>
+to remove chunks of unused space that are at least
+C<$minimum> bytes in length. C<$flags> is currently
+unused and defaults to zero.
+
+=item $dom->send_process_signal($pid, $signum, $flags=0);
+
+Send the process C<$pid> the signal C<$signum>. The
+C<$signum> value must be one of the constants listed
+later, not a POSIX or Linux signal value. C<$flags>
+is currently unused and defaults to zero.
+
 =back
 
 =head1 CONSTANTS
@@ -1507,6 +1525,10 @@ if doing a peer-2-peer migration.
 
 Migrate even if the compatibility check indicates the migration
 will be unsafe to the guest.
+
+=item Sys::Virt::Domain::MIGRATE_OFFLINE
+
+Migrate the guest config if the guest is not currently running
 
 =back
 
@@ -1931,6 +1953,10 @@ The domain has been suspended due to the watchdog triggering
 
 The domain has been suspended due to restore from saved state
 
+=item Sys::Virt::Domain::EVENT_SUSPENDED_API_ERROR
+
+The domain has been suspended due to an API error
+
 =back
 
 =item Sys::Virt::Domain::EVENT_UNDEFINED
@@ -2347,6 +2373,14 @@ Shutdown by issuing a command to a guest agent
 
 Shutdown by injecting an ACPI power button press
 
+=item Sys::Virt::Domain::SHUTDOWN_INITCTL
+
+Shutdown by talking to initctl (containers only)
+
+=item Sys::Virt::Domain::SHUTDOWN_SIGNAL
+
+Shutdown by sending SIGTERM to the init process
+
 =back
 
 =head2 REBOOT CONSTANTS
@@ -2367,6 +2401,14 @@ Reboot by issuing a command to a guest agent
 =item Sys::Virt::Domain::REBOOT_ACPI_POWER_BTN
 
 Reboot by injecting an ACPI power button press
+
+=item Sys::Virt::Domain::REBOOT_INITCTL
+
+Reboot by talking to initctl (containers only)
+
+=item Sys::Virt::Domain::REBOOT_SIGNAL
+
+Reboot by sending SIGHUP to the init process
 
 =back
 
@@ -2613,6 +2655,276 @@ The duration of the time period for scheduling the emulator
 =item Sys::Virt::SCHEDULER_EMULATOR_QUOTA
 
 The quota for the emulator in one schedular time period
+
+=back
+
+=head2 PROCESS SIGNALS
+
+The following constants provide the names of signals
+which can be sent to guest processes. They mostly
+correspond to POSIX signal names.
+
+=over 4
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_NOP
+
+SIGNOP
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_HUP
+
+SIGHUP
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_INT
+
+SIGINT
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_QUIT
+
+SIGQUIT
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_ILL
+
+SIGILL
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_TRAP
+
+SIGTRAP
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_ABRT
+
+SIGABRT
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_BUS
+
+SIGBUS
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_FPE
+
+SIGFPE
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_KILL
+
+SIGKILL
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_USR1
+
+SIGUSR1
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_SEGV
+
+SIGSEGV
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_USR2
+
+SIGUSR2
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_PIPE
+
+SIGPIPE
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_ALRM
+
+SIGALRM
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_TERM
+
+SIGTERM
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_STKFLT
+
+SIGSTKFLT
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_CHLD
+
+SIGCHLD
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_CONT
+
+SIGCONT
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_STOP
+
+SIGSTOP
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_TSTP
+
+SIGTSTP
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_TTIN
+
+SIGTTIN
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_TTOU
+
+SIGTTOU
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_URG
+
+SIGURG
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_XCPU
+
+SIGXCPU
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_XFSZ
+
+SIGXFSZ
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_VTALRM
+
+SIGVTALRM
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_PROF
+
+SIGPROF
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_WINCH
+
+SIGWINCH
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_POLL
+
+SIGPOLL
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_PWR
+
+SIGPWR
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_SYS
+
+SIGSYS
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT0
+
+SIGRT0
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT1
+
+SIGRT1
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT2
+
+SIGRT2
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT3
+
+SIGRT3
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT4
+
+SIGRT4
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT5
+
+SIGRT5
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT6
+
+SIGRT6
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT7
+
+SIGRT7
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT8
+
+SIGRT8
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT9
+
+SIGRT9
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT10
+
+SIGRT10
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT11
+
+SIGRT11
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT12
+
+SIGRT12
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT13
+
+SIGRT13
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT14
+
+SIGRT14
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT15
+
+SIGRT15
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT16
+
+SIGRT16
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT17
+
+SIGRT17
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT18
+
+SIGRT18
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT19
+
+SIGRT19
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT20
+
+SIGRT20
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT21
+
+SIGRT21
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT22
+
+SIGRT22
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT23
+
+SIGRT23
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT24
+
+SIGRT24
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT25
+
+SIGRT25
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT26
+
+SIGRT26
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT27
+
+SIGRT27
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT28
+
+SIGRT28
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT29
+
+SIGRT29
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT30
+
+SIGRT30
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT31
+
+SIGRT31
+
+=item Sys::Virt::Domain::PROCESS_SIGNAL_RT32
+
+SIGRT32
 
 =back
 
