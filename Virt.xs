@@ -31,7 +31,7 @@
  * we serialize to/from strings on these platforms
  */
 
-long long
+static long long
 virt_SvIVll(SV *sv) {
 #ifdef USE_64_BIT_ALL
     return SvIV(sv);
@@ -41,7 +41,7 @@ virt_SvIVll(SV *sv) {
 }
 
 
-unsigned long long
+static unsigned long long
 virt_SvIVull(SV *sv) {
 #ifdef USE_64_BIT_ALL
     return SvIV(sv);
@@ -56,7 +56,7 @@ virt_SvIVull(SV *sv) {
 #endif
 
 
-SV *
+static SV *
 virt_newSVll(long long val) {
 #ifdef USE_64_BIT_ALL
     return newSViv(val);
@@ -73,7 +73,7 @@ virt_newSVll(long long val) {
 #define PRIu64 "llu"
 #endif
 
-SV *
+static SV *
 virt_newSVull(unsigned long long val) {
 #ifdef USE_64_BIT_ALL
     return newSVuv(val);
@@ -87,12 +87,13 @@ virt_newSVull(unsigned long long val) {
 
 
 
-void ignoreVirErrorFunc(void * userData, virErrorPtr error) {
+static void
+ignoreVirErrorFunc(void * userData, virErrorPtr error) {
   /* Do nothing */
 }
 
 
-SV *
+static SV *
 _sv_from_error(virErrorPtr error)
 {
     HV *hv;
@@ -109,7 +110,7 @@ _sv_from_error(virErrorPtr error)
 }
 
 
-void
+static void
 _croak_error(void)
 {
     virErrorPtr error = virGetLastError();
@@ -122,7 +123,7 @@ _croak_error(void)
 }
 
 
-void
+static void
 _populate_constant(HV *stash, const char *name, int val)
 {
     SV *valsv;
@@ -133,7 +134,7 @@ _populate_constant(HV *stash, const char *name, int val)
 }
 
 
-void
+static void
 _populate_constant_str(HV *stash, const char *name, const char *value)
 {
     SV *valsv;
@@ -143,7 +144,7 @@ _populate_constant_str(HV *stash, const char *name, const char *value)
 }
 
 
-void
+static void
 _populate_constant_ull(HV *stash, const char *name, unsigned long long val)
 {
     SV *valsv;
