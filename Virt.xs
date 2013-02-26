@@ -2973,6 +2973,22 @@ open_console(dom, st, devname, flags=0)
 
 
 void
+open_channel(dom, st, devname, flags=0)
+      virDomainPtr dom;
+      virStreamPtr st;
+      SV *devname;
+      unsigned int flags;
+ PREINIT:
+      const char *devnamestr = NULL;
+  PPCODE:
+      if (SvOK(devname))
+          devnamestr = SvPV_nolen(devname);
+
+      if (virDomainOpenChannel(dom, devnamestr, st, flags) < 0)
+          _croak_error();
+
+
+void
 open_graphics(dom, idx, fd, flags=0)
       virDomainPtr dom;
       unsigned int idx;
@@ -6332,6 +6348,8 @@ BOOT:
 
       REGISTER_CONSTANT(VIR_DOMAIN_CONSOLE_FORCE, OPEN_CONSOLE_FORCE);
       REGISTER_CONSTANT(VIR_DOMAIN_CONSOLE_SAFE, OPEN_CONSOLE_SAFE);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_CHANNEL_FORCE, OPEN_CHANNEL_FORCE);
 
       REGISTER_CONSTANT_STR(VIR_DOMAIN_SCHEDULER_EMULATOR_PERIOD, SCHEDULER_EMULATOR_PERIOD);
       REGISTER_CONSTANT_STR(VIR_DOMAIN_SCHEDULER_EMULATOR_QUOTA, SCHEDULER_EMULATOR_QUOTA);

@@ -100,6 +100,24 @@ virStreamSourceFunc
 
 virConnectCloseFunc
 
+virTypedParamsAddBoolean
+virTypedParamsAddDouble
+virTypedParamsAddFromString
+virTypedParamsAddInt
+virTypedParamsAddLLong
+virTypedParamsAddString
+virTypedParamsAddUInt
+virTypedParamsAddULLong
+virTypedParamsClear
+virTypedParamsFree
+virTypedParamsGet
+virTypedParamsGetBoolean
+virTypedParamsGetDouble
+virTypedParamsGetInt
+virTypedParamsGetLLong
+virTypedParamsGetString
+virTypedParamsGetUInt
+virTypedParamsGetULLong
 );
 
 foreach my $func (sort { $a cmp $b } @functions) {

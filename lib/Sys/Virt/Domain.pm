@@ -886,6 +886,14 @@ opened. C<$st> must be a C<Sys::Virt::Stream> object used for
 bi-directional communication with the console. C<$flags> is
 currently unused, defaulting to 0.
 
+=item $dom->open_channel($st, $devname, $flags)
+
+Open the text console for a data channel device identified by
+C<$devname>, connecting it to the stream C<$st>. C<$st> must
+be a C<Sys::Virt::Stream> object used for bi-directional
+communication with the channel. C<$flags> is currently unused,
+defaulting to 0.
+
 =item $dom->open_graphics($idx, $fd, $flags)
 
 Open the graphics console for a guest, identified by C<$idx>,
@@ -1366,6 +1374,20 @@ open session
 =item Sys::Virt::Domain::OPEN_CONSOLE_SAFE
 
 Check if the console driver supports safe operations
+
+=back
+
+=head2 OPEN CHANNEL CONSTANTS
+
+The following constants are used when opening a connection
+to the guest channel
+
+=over 4
+
+=item Sys::Virt::Domain::OPEN_CHANNEL_FORCE
+
+Force opening of the channel, disconnecting any other
+open session
 
 =back
 
