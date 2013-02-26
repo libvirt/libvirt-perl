@@ -10,6 +10,8 @@ set -e
 make -k realclean ||:
 rm -rf MANIFEST blib pm_to_blib
 
+export TEST_MAINTAINER=1
+
 perl Makefile.PL  PREFIX=$AUTOBUILD_INSTALL_ROOT
 
 rm -f MANIFEST
@@ -23,7 +25,6 @@ if [ -z "$USE_COVER" ]; then
 fi
 
 if [ -z "$SKIP_TESTS" -o "$SKIP_TESTS" = "0" ]; then
-  export TEST_MAINTAINER=1
   if [ "$USE_COVER" = "1" ]; then
     cover -delete
     HARNESS_PERL_SWITCHES=-MDevel::Cover make test
