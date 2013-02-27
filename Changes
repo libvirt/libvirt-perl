@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+1.0.2 2013-02-27
+
+ - Add all new APIs in libvirt 1.0.2
+
 1.0.1 2013-02-26
 
  - Add all new APIs and constants in libvirt 1.0.1
