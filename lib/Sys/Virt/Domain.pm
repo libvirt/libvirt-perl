@@ -872,6 +872,18 @@ Get the maximum allowed bandwidth during migration fo the guest.
 The returned <bandwidth> value is measured in MB/second.
 The C<$flags> parameter is currently unused and defaults to zero.
 
+=item $dom->migrate_set_compression_cache($cacheSize, $flags)
+
+Set the maximum allowed compression cache size during migration of
+the guest. The C<cacheSize> parameter is measured in bytes.
+The C<$flags> parameter is currently unused and defaults to zero.
+
+=item $cacheSize = $dom->migrate_get_compression_cache($flag)
+
+Get the maximum allowed compression cache size during migration of
+the guest. The returned <bandwidth> value is measured in bytes.
+The C<$flags> parameter is currently unused and defaults to zero.
+
 =item $dom->inject_nmi($flags)
 
 Trigger an NMI in the guest virtual machine. The C<$flags> parameter
@@ -1008,6 +1020,108 @@ The current amount of file processed by the job, in bytes.
 =item fileRemaining
 
 The expected amount of file remaining to be processed by the job, in bytes.
+
+=back
+
+=item my ($type, $stats) = $dom->get_job_stats()
+
+Returns an array summarising the execution state of the
+background job. The C<$type> value is one of the JOB TYPE
+constants listed later in this document. The C<$stats>
+value is a hash reference, whose elements are one of the
+following constants.
+
+=over 4
+
+=item type
+
+The type of job, one of the JOB TYPE constants listed later in
+this document.
+
+=item Sys::Virt::Domain::JOB_TIME_ELAPSED
+
+The elapsed time in milliseconds
+
+=item Sys::Virt::Domain::JOB_TIME_REMAINING
+
+The expected remaining time in milliseconds. Only set if the
+C<type> is JOB_UNBOUNDED.
+
+=item Sys::Virt::Domain::JOB_DATA_TOTAL
+
+The total amount of data expected to be processed by the job, in bytes.
+
+=item Sys::Virt::Domain::JOB_DATA_PROCESSED
+
+The current amount of data processed by the job, in bytes.
+
+=item Sys::Virt::Domain::JOB_DATA_REMAINING
+
+The expected amount of data remaining to be processed by the job, in bytes.
+
+=item Sys::Virt::Domain::JOB_MEMORY_TOTAL
+
+The total amount of mem expected to be processed by the job, in bytes.
+
+=item Sys::Virt::Domain::JOB_MEMORY_PROCESSED
+
+The current amount of mem processed by the job, in bytes.
+
+=item Sys::Virt::Domain::JOB_MEMORY_REMAINING
+
+The expected amount of mem remaining to be processed by the job, in bytes.
+
+=item Sys::Virt::Domain::JOB_MEMORY_CONSTANT
+
+The number of pages filled with a constant byte which have
+been transferred
+
+=item Sys::Virt::Domain::JOB_MEMORY_NORMAL
+
+The number of pages transferred without any compression
+
+=item Sys::Virt::Domain::JOB_MEMORY_NORMAL_BYTES
+
+The number of bytes transferred without any compression
+
+=item Sys::Virt::Domain::JOB_DISK_TOTAL
+
+The total amount of file expected to be processed by the job, in bytes.
+
+=item Sys::Virt::Domain::JOB_DISK_PROCESSED
+
+The current amount of file processed by the job, in bytes.
+
+=item Sys::Virt::Domain::JOB_DISK_REMAINING
+
+The expected amount of file remaining to be processed by the job, in bytes.
+
+=item Sys::Virt::Domain::JOB_COMPRESSION_CACHE
+
+The size of the compression cache in bytes
+
+=item Sys::Virt::Domain::JOB_COMPRESSION_BYTES
+
+The number of compressed bytes transferred
+
+=item Sys::Virt::Domain::JOB_COMPRESSION_PAGES
+
+The number of compressed pages transferred
+
+=item Sys::Virt::Domain::JOB_COMPRESSION_CACHE_MISSES
+
+The number of changing pages not in compression cache
+
+=item Sys::Virt::Domain::JOB_COMPRESSION_OVERFLOW
+
+The number of changing pages in the compression cache but sent
+uncompressed since the compressed page was larger than the
+non-compressed page.
+
+=item Sys::Virt::Domain::JOB_DOWNTIME
+
+The number of milliseconds of downtime expected during
+migration switchover.
 
 =back
 
@@ -1551,6 +1665,10 @@ will be unsafe to the guest.
 =item Sys::Virt::Domain::MIGRATE_OFFLINE
 
 Migrate the guest config if the guest is not currently running
+
+=item Sys::Virt::Domain::MIGRATE_COMPRESSED
+
+Enable compression of the migration data stream
 
 =back
 

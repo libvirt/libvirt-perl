@@ -51,6 +51,10 @@ sub _new {
     my $self;
     if (exists $params{name}) {
 	$self = Sys::Virt::NodeDevice::_lookup_by_name($con,  $params{name});
+    } elsif (exists $params{wwpn}) {
+	$self = Sys::Virt::NodeDevice::_lookup_scsihost_by_wwn($con,
+							       $params{wwpn},
+							       $params{wwnn});
     } elsif (exists $params{xml}) {
 	$self = Sys::Virt::NodeDevice::_create_xml($con, $params{xml});
     } else {

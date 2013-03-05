@@ -3062,6 +3062,31 @@ get_job_info(dom)
 
 
 void
+get_job_stats(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+  PREINIT:
+      int type;
+      virTypedParameter *params;
+      int nparams;
+      HV *paramsHv;
+      SV *typeSv;
+    PPCODE:
+      if (virDomainGetJobStats(dom, &type, &params, &nparams, flags) < 0) {
+          Safefree(params);
+          _croak_error();
+      }
+
+      typeSv = newSViv(type);
+      paramsHv = vir_typed_param_to_hv(params, nparams);
+      Safefree(params);
+
+      EXTEND(SP, 2);
+      PUSHs(newRV_noinc((SV*)typeSv));
+      PUSHs(newRV_noinc((SV*)paramsHv));
+
+
+void
 abort_job(dom)
       virDomainPtr dom;
     PPCODE:
@@ -3743,6 +3768,34 @@ migrate_get_max_speed(dom, flags=0)
           _croak_error();
 
       RETVAL = speed;
+  OUTPUT:
+      RETVAL
+
+
+void
+migrate_set_compression_cache(dom, cacheSizeSv, flags=0)
+      virDomainPtr dom;
+      SV *cacheSizeSv;
+      unsigned int flags;
+ PREINIT:
+      unsigned long long cacheSize;
+  PPCODE:
+      cacheSize = virt_SvIVull(cacheSizeSv);
+      if (virDomainMigrateSetCompressionCache(dom, cacheSize, flags) < 0)
+          _croak_error();
+
+
+SV *
+migrate_get_compression_cache(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+  PREINIT:
+      unsigned long long cacheSize;
+    CODE:
+      if (virDomainMigrateGetCompressionCache(dom, &cacheSize, flags) < 0)
+          _croak_error();
+
+      RETVAL = virt_newSVull(cacheSize);
   OUTPUT:
       RETVAL
 
@@ -5194,6 +5247,19 @@ _lookup_by_name(con, name)
       RETVAL
 
 
+virNodeDevicePtr
+_lookup_scsihost_by_wwn(con, wwnn, wwpn, flags=0)
+      virConnectPtr con;
+      const char *wwnn;
+      const char *wwpn;
+      unsigned int flags;
+    CODE:
+      if (!(RETVAL = virNodeDeviceLookupSCSIHostByWWN(con, wwnn, wwpn, flags)))
+          _croak_error();
+  OUTPUT:
+      RETVAL
+
+
 const char *
 get_name(dev)
       virNodeDevicePtr dev;
@@ -6381,6 +6447,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_MIGRATE_CHANGE_PROTECTION, MIGRATE_CHANGE_PROTECTION);
       REGISTER_CONSTANT(VIR_MIGRATE_UNSAFE, MIGRATE_UNSAFE);
       REGISTER_CONSTANT(VIR_MIGRATE_OFFLINE, MIGRATE_OFFLINE);
+      REGISTER_CONSTANT(VIR_MIGRATE_COMPRESSED, MIGRATE_COMPRESSED);
 
 
       REGISTER_CONSTANT(VIR_DOMAIN_XML_SECURE, XML_SECURE);
@@ -6485,6 +6552,27 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_JOB_COMPLETED, JOB_COMPLETED);
       REGISTER_CONSTANT(VIR_DOMAIN_JOB_FAILED, JOB_FAILED);
       REGISTER_CONSTANT(VIR_DOMAIN_JOB_CANCELLED, JOB_CANCELLED);
+
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_COMPRESSION_BYTES, JOB_COMPRESSION_BYTES);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_COMPRESSION_CACHE, JOB_COMPRESSION_CACHE);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_COMPRESSION_CACHE_MISSES, JOB_COMPRESSION_CACHE_MISSES);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_COMPRESSION_OVERFLOW, JOB_COMPRESSION_OVERFLOW);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_COMPRESSION_PAGES, JOB_COMPRESSION_PAGES);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_DATA_PROCESSED, JOB_DATA_PROCESSED);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_DATA_REMAINING, JOB_DATA_REMAINING);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_DATA_TOTAL, JOB_DATA_TOTAL);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_DISK_PROCESSED, JOB_DISK_PROCESSED);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_DISK_REMAINING, JOB_DISK_REMAINING);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_DISK_TOTAL, JOB_DISK_TOTAL);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_DOWNTIME, JOB_DOWNTIME);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_MEMORY_CONSTANT, JOB_MEMORY_CONSTANT);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_MEMORY_NORMAL, JOB_MEMORY_NORMAL);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_MEMORY_NORMAL_BYTES, JOB_MEMORY_NORMAL_BYTES);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_MEMORY_PROCESSED, JOB_MEMORY_PROCESSED);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_MEMORY_REMAINING, JOB_MEMORY_REMAINING);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_MEMORY_TOTAL, JOB_MEMORY_TOTAL);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_TIME_ELAPSED, JOB_TIME_ELAPSED);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_JOB_TIME_REMAINING, JOB_TIME_REMAINING);
 
       REGISTER_CONSTANT(VIR_DOMAIN_BLOCK_JOB_TYPE_UNKNOWN, BLOCK_JOB_TYPE_UNKNOWN);
       REGISTER_CONSTANT(VIR_DOMAIN_BLOCK_JOB_TYPE_PULL, BLOCK_JOB_TYPE_PULL);
