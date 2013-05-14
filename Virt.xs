@@ -5297,11 +5297,25 @@ get_xml_description(dev, flags=0)
 
 
 void
-dettach(dev)
+dettach(dev, driversv, flags=0)
       virNodeDevicePtr dev;
-    PPCODE:
-      if (virNodeDeviceDettach(dev) < 0)
-          _croak_error();
+      SV *driversv;
+      unsigned int flags;
+  PREINIT:
+      const char *driver = NULL;
+      STRLEN len;
+   PPCODE:
+      if (SvOK(driversv)) {
+	  driver = SvPV(driversv, len);
+      }
+
+      if (flags || driver) {
+          if (virNodeDeviceDetachFlags(dev, driver, flags) < 0)
+              _croak_error();
+      } else {
+          if (virNodeDeviceDettach(dev) < 0)
+              _croak_error();
+      }
 
 
 void
@@ -6934,6 +6948,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_CONNECT_LIST_NODE_DEVICES_CAP_SCSI_TARGET, LIST_CAP_SCSI_TARGET);
       REGISTER_CONSTANT(VIR_CONNECT_LIST_NODE_DEVICES_CAP_SCSI, LIST_CAP_SCSI);
       REGISTER_CONSTANT(VIR_CONNECT_LIST_NODE_DEVICES_CAP_STORAGE, LIST_CAP_STORAGE);
+      REGISTER_CONSTANT(VIR_CONNECT_LIST_NODE_DEVICES_CAP_FC_HOST, LIST_CAP_FC_HOST);
+      REGISTER_CONSTANT(VIR_CONNECT_LIST_NODE_DEVICES_CAP_VPORTS, LIST_CAP_VPORTS);
 
 
       stash = gv_stashpv( "Sys::Virt::StorageVol", TRUE );
@@ -6967,6 +6983,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_SECRET_USAGE_TYPE_NONE, USAGE_TYPE_NONE);
       REGISTER_CONSTANT(VIR_SECRET_USAGE_TYPE_VOLUME, USAGE_TYPE_VOLUME);
       REGISTER_CONSTANT(VIR_SECRET_USAGE_TYPE_CEPH, USAGE_TYPE_CEPH);
+      REGISTER_CONSTANT(VIR_SECRET_USAGE_TYPE_ISCSI, USAGE_TYPE_ISCSI);
 
 
       REGISTER_CONSTANT(VIR_CONNECT_LIST_SECRETS_EPHEMERAL, LIST_EPHEMERAL);
@@ -7044,6 +7061,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_FROM_SSH, FROM_SSH);
       REGISTER_CONSTANT(VIR_FROM_LOCKSPACE, FROM_LOCKSPACE);
       REGISTER_CONSTANT(VIR_FROM_INITCTL, FROM_INITCTL);
+      REGISTER_CONSTANT(VIR_FROM_CGROUP, FROM_CGROUP);
+      REGISTER_CONSTANT(VIR_FROM_IDENTITY, FROM_IDENTITY);
 
 
       REGISTER_CONSTANT(VIR_ERR_OK, ERR_OK);

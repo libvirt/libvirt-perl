@@ -346,6 +346,14 @@ The lockspace handling code
 
 The initctl client code
 
+=item Sys::Virt::Error::FROM_CGROUP
+
+The cgroups code
+
+=item Sys::Virt::Error::FROM_IDENTITY
+
+The identity management code
+
 =back
 
 =head2 ERROR CODE CONSTANTS

@@ -152,6 +152,14 @@ Include devices with the USB device capability
 
 Include devices with the USB interface capability
 
+=item Sys::Virt::NodeDevice::LIST_CAP_FC_HOST
+
+Include devices with the fibre channel host capability
+
+=item Sys::Virt::NodeDevice::LIST_CAP_VPORTS
+
+Include devices with the NPIV vport capability
+
 =back
 
 =cut
