@@ -7,6 +7,9 @@ NAME=Sys-Virt
 
 set -e
 
+test -n "$1" && RESULTS=$1 || RESULTS=results.log
+: ${AUTOBUILD_INSTALL_ROOT=$HOME/builder}
+
 make -k realclean ||:
 rm -rf MANIFEST blib pm_to_blib
 
@@ -27,13 +30,23 @@ fi
 if [ -z "$SKIP_TESTS" -o "$SKIP_TESTS" = "0" ]; then
   if [ "$USE_COVER" = "1" ]; then
     cover -delete
-    HARNESS_PERL_SWITCHES=-MDevel::Cover make test
+    export HARNESS_PERL_SWITCHES=-MDevel::Cover
+  fi
+
+  # set -o pipefail is a bashism; this use of exec is the POSIX alternative
+  exec 3>&1
+  st=$(
+      exec 4>&1 >&3
+      { make test 2>&1 3>&- 4>&-; echo $? >&4; } | tee "$RESULTS"
+  )
+  exec 3>&-
+  test "$st" = 0
+
+  if [ "$USE_COVER" = "1" ]; then
     cover
     mkdir blib/coverage
     cp -a cover_db/*.html cover_db/*.css blib/coverage
     mv blib/coverage/coverage.html blib/coverage/index.html
-  else
-    make test
   fi
 fi
 

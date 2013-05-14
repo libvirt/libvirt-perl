@@ -7,7 +7,8 @@ Virt.bs
 Virt.c
 Virt.o
 perl-Sys-Virt.spec
-Sys-Virt-.*.tar.gz
+Sys-Virt-*.tar.gz
 MANIFEST
 cover_db
 META.yml
+results.log
