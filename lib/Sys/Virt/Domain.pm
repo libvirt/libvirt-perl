@@ -112,7 +112,7 @@ C<$flags> parameter defaults to zero.
 Sets the metadata element of type C<$type> to hold the value
 C<$val>. If C<$type> is  C<Sys::Virt::Domain::METADATA_ELEMENT>
 then the C<$key> and C<$uri> elements specify an XML namespace
-to use, otherwise they should both be C<nudef>. The optional
+to use, otherwise they should both be C<undef>. The optional
 C<$flags> parameter defaults to zero.
 
 =item $dom->is_active()
