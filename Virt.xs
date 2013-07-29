@@ -1293,23 +1293,23 @@ vir_typed_param_from_hv(HV *newparams, virTypedParameter *params, int nparams)
     unsigned int i;
     char * ptr;
     STRLEN len;
-    int ret = 0;
 
     /* We only want to set parameters which we're actually changing
      * so here we figure out which elements of 'params' we need to
      * update, and overwrite the others
      */
-    for (i = 0 ; i < nparams ; i++) {
+    for (i = 0 ; i < nparams ;) {
         if (!hv_exists(newparams, params[i].field, strlen(params[i].field))) {
             if ((nparams-i) > 1)
                 memmove(params+i, params+i+1, sizeof(*params)*(nparams-(i+1)));
+            nparams--;
             continue;
         }
 
-        ret++;
+        i++;
     }
 
-    for (i = 0 ; i < ret ; i++) {
+    for (i = 0 ; i < nparams ; i++) {
         SV **val;
 
         val = hv_fetch (newparams, params[i].field, strlen(params[i].field), 0);
@@ -1346,7 +1346,7 @@ vir_typed_param_from_hv(HV *newparams, virTypedParameter *params, int nparams)
         }
     }
 
-    return ret;
+    return nparams;
 }
 
 
