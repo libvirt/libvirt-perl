@@ -1829,6 +1829,10 @@ Migrate the guest config if the guest is not currently running
 
 Enable compression of the migration data stream
 
+=item Sys::Virt::Domain::MIGRATE_ABORT_ON_ERROR
+
+Abort if an I/O error occurrs on the disk
+
 =back
 
 =head2 UNDEFINE CONSTANTS
@@ -2093,6 +2097,10 @@ Flag to request the current config value
 =item Sys::Virt::Domain::VCPU_MAXIMUM
 
 Flag to request adjustment of the maximum vCPU value
+
+=item Sys::Virt::Domain::VCPU_GUEST
+
+Flag to request the guest VCPU mask
 
 =back
 

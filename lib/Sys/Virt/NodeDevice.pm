@@ -160,6 +160,10 @@ Include devices with the fibre channel host capability
 
 Include devices with the NPIV vport capability
 
+=item Sys::Virt::NodeDevice::LIST_CAP_SCSI_GENERIC
+
+Include devices with the SCSI generic capability
+
 =back
 
 =cut

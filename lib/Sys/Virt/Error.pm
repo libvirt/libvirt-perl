@@ -354,6 +354,10 @@ The cgroups code
 
 The identity management code
 
+=item Sys::Virt::Error::FROM_ACCESS
+
+The access control code
+
 =back
 
 =head2 ERROR CODE CONSTANTS
@@ -715,6 +719,10 @@ The SSH operation failed
 =item Sys::Virt::Error::ERR_RESOURCE_BUSY
 
 The resource requested is already in use
+
+=item Sys::Virt::Error::ERR_ACCESS_DENIED
+
+Not authorized to perform the operation
 
 =back
 

@@ -68,6 +68,7 @@ virErrorFunc
 virFreeError
 virResetLastError
 virSaveLastError
+virGetLastErrorMessage
 
 virConnectAuthCallbackPtr
 virConnectOpen
@@ -99,6 +100,11 @@ virStreamSinkFunc
 virStreamSourceFunc
 
 virConnectCloseFunc
+
+virDomainMigrate
+virDomainMigrate2
+virDomainMigrateToURI
+virDomainMigrateToURI2
 
 virTypedParamsAddBoolean
 virTypedParamsAddDouble
