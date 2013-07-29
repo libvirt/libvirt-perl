@@ -1,5 +1,12 @@
 Revision history for perl module Sys::Virt
 
+1.1.0 2013-07-29
+
+ - Add support for v3 of migration APIs
+ - Add all new constants in libvirt 1.1.0
+ - Fix handling of sparse typed parameters
+ - Fix misc typos in docs
+
 1.0.5 2013-05-14
 
  - Add all new APIs in libvirt 1.0.4 and 1.0.5
