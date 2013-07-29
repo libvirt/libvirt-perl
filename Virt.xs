@@ -3641,97 +3641,98 @@ create(dom, flags=0)
 
 
 virDomainPtr
-migrate(dom, destcon, flags=0, dname=&PL_sv_undef, uri=&PL_sv_undef, bandwidth=0)
+_migrate(dom, destcon, newparams, flags=0)
      virDomainPtr dom;
      virConnectPtr destcon;
+     HV *newparams;
      unsigned long flags;
-     SV *dname;
-     SV *uri;
-     unsigned long bandwidth;
-PREINIT:
-     const char *dnamestr = NULL;
-     const char *uristr = NULL;
-   CODE:
-     if (SvOK(dname))
-         dnamestr = SvPV_nolen(dname);
-     if (SvOK(uri))
-         uristr = SvPV_nolen(uri);
+  PREINIT:
+     virTypedParameter *params;
+     int nparams;
+    CODE:
+     nparams = 5;
+     Newx(params, nparams, virTypedParameter);
 
-     if ((RETVAL = virDomainMigrate(dom, destcon, flags, dnamestr, uristr, bandwidth)) == NULL)
+     memcpy(params[0].field, VIR_MIGRATE_PARAM_URI,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[0].type = VIR_TYPED_PARAM_STRING;
+
+     memcpy(params[1].field, VIR_MIGRATE_PARAM_DEST_NAME,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[1].type = VIR_TYPED_PARAM_STRING;
+
+     memcpy(params[2].field, VIR_MIGRATE_PARAM_DEST_XML,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[2].type = VIR_TYPED_PARAM_STRING;
+
+     memcpy(params[3].field, VIR_MIGRATE_PARAM_GRAPHICS_URI,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[3].type = VIR_TYPED_PARAM_STRING;
+
+     memcpy(params[4].field, VIR_MIGRATE_PARAM_BANDWIDTH,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[4].type = VIR_TYPED_PARAM_ULLONG;
+
+
+     nparams = vir_typed_param_from_hv(newparams, params, nparams);
+
+     /* No need to support virDomainMigrate/virDomainMigrate2, since
+      * virDomainMigrate3 takes care to call the older APIs internally
+      * if it is possible todo so
+      */
+     if ((RETVAL = virDomainMigrate3(dom, destcon, params, nparams, flags)) == NULL) {
+         Safefree(params);
          _croak_error();
+     }
+     Safefree(params);
  OUTPUT:
      RETVAL
 
 
 void
-migrate_to_uri(dom, desturi, flags=0, dname=&PL_sv_undef, bandwidth=0)
+_migrate_to_uri(dom, desturi, newparams, flags=0)
      virDomainPtr dom;
      const char *desturi;
+     HV *newparams;
      unsigned long flags;
-     SV *dname;
-     unsigned long bandwidth;
-PREINIT:
-     const char *dnamestr = NULL;
+  PREINIT:
+     virTypedParameter *params;
+     int nparams;
   PPCODE:
-     if (SvOK(dname))
-         dnamestr = SvPV_nolen(dname);
+     nparams = 5;
+     Newx(params, nparams, virTypedParameter);
 
-     if (virDomainMigrateToURI(dom, desturi, flags, dnamestr, bandwidth) < 0)
+     memcpy(params[0].field, VIR_MIGRATE_PARAM_URI,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[0].type = VIR_TYPED_PARAM_STRING;
+
+     memcpy(params[1].field, VIR_MIGRATE_PARAM_DEST_NAME,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[1].type = VIR_TYPED_PARAM_STRING;
+
+     memcpy(params[2].field, VIR_MIGRATE_PARAM_DEST_XML,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[2].type = VIR_TYPED_PARAM_STRING;
+
+     memcpy(params[3].field, VIR_MIGRATE_PARAM_GRAPHICS_URI,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[3].type = VIR_TYPED_PARAM_STRING;
+
+     memcpy(params[4].field, VIR_MIGRATE_PARAM_BANDWIDTH,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[4].type = VIR_TYPED_PARAM_ULLONG;
+
+     nparams = vir_typed_param_from_hv(newparams, params, nparams);
+
+     /* No need to support virDomainMigrateToURI/virDomainMigrateToURI2, since
+      * virDomainMigrate3 takes care to call the older APIs internally
+      * if it is possible todo so
+      */
+     if (virDomainMigrateToURI3(dom, desturi, params, nparams, flags) < 0) {
+         Safefree(params);
          _croak_error();
-
-
-virDomainPtr
-migrate2(dom, destcon, dxml=&PL_sv_undef, flags=0, dname=&PL_sv_undef, uri=&PL_sv_undef, bandwidth=0)
-     virDomainPtr dom;
-     virConnectPtr destcon;
-     SV *dxml;
-     unsigned long flags;
-     SV *dname;
-     SV *uri;
-     unsigned long bandwidth;
-PREINIT:
-     const char *dnamestr = NULL;
-     const char *uristr = NULL;
-     const char *dxmlstr = NULL;
-   CODE:
-     if (SvOK(dxml))
-         dxmlstr = SvPV_nolen(dxml);
-     if (SvOK(dname))
-         dnamestr = SvPV_nolen(dname);
-     if (SvOK(uri))
-         uristr = SvPV_nolen(uri);
-
-     if ((RETVAL = virDomainMigrate2(dom, destcon, dxmlstr,
-                                     flags, dnamestr, uristr, bandwidth)) == NULL)
-       _croak_error();
- OUTPUT:
-     RETVAL
-
-
-void
-migrate_to_uri2(dom, dconnuri, miguri=&PL_sv_undef, dxml=&PL_sv_undef, flags=0, dname=&PL_sv_undef, bandwidth=0)
-     virDomainPtr dom;
-     const char *dconnuri;
-     SV *miguri;
-     SV *dxml;
-     unsigned long flags;
-     SV *dname;
-     unsigned long bandwidth;
-PREINIT:
-     const char *miguristr = NULL;
-     const char *dxmlstr = NULL;
-     const char *dnamestr = NULL;
-  PPCODE:
-     if (SvOK(dxml))
-         dxmlstr = SvPV_nolen(dxml);
-     if (SvOK(miguri))
-         miguristr = SvPV_nolen(miguri);
-     if (SvOK(dname))
-         dnamestr = SvPV_nolen(dname);
-
-     if (virDomainMigrateToURI2(dom, dconnuri, miguristr, dxmlstr,
-                                flags, dnamestr, bandwidth) < 0)
-         _croak_error();
+     }
+     Safefree(params);
 
 
 void

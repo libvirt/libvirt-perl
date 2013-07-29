@@ -800,56 +800,215 @@ Fetches information about all security labels assigned to the
 guest domain. The elements in the returned array are all
 hash references, whose keys are as described for C<get_security_label>.
 
-=item $ddom = $dom->migrate(destcon, flags, dname, uri, bandwidth)
+=item $ddom = $dom->migrate(destcon, \%params, flags=0)
 
 Migrate a domain to an alternative host. The C<destcon> parameter
 should be a C<Sys::Virt> connection to the remote target host.
-If the C<flags> parameter is zero offline migration will be
-performed. The C<Sys::Virt::Domain::MIGRATE_LIVE> constant can be
-used to request live migration. The C<dname> parameter allows the
-guest to be renamed on the target host, if set to C<undef>, the
-domains' current name will be maintained. In normal circumstances,
-the source host determines the target hostname from the URI associated
-with the C<destcon> connection. If the destination host is multi-homed
-it may be necessary to supply an alternate destination hostame
-via the C<uri> parameter. The C<bandwidth> parameter allows network
-usage to be throttled during migration. If set to zero, no throttling
-will be performed. The C<flags>, C<dname>, C<uri> and C<bandwidth>
-parameters are all optional, and if omitted default to zero, C<undef>,
-C<undef>, and zero respectively.
+The C<flags> parameter takes one or more of the C<Sys::Virt::Domain::MIGRATE_XXX>
+constants described later in this document. The C<%params> parameter is
+a hash reference used to set various parameters for the migration
+operation, with the following valid keys.
+
+=over 4
+
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_URI>
+
+The URI to use for initializing the domain migration. It takes a
+hypervisor specific format. The uri_transports element of the hypervisor
+capabilities XML includes details of the supported URI schemes. When
+omitted libvirt will auto-generate suitable default URI. It is typically
+only necessary to specify this URI if the destination host has multiple
+interfaces and a specific interface is required to transmit migration data.
+
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_DEST_NAME>
+
+The name to be used for the domain on the destination host. Omitting
+this parameter keeps the domain name the same. This field is only
+allowed to be used with hypervisors that support domain renaming
+during migration.
+
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_DEST_XML>
+
+The new configuration to be used for the domain on the destination host.
+The configuration must include an identical set of virtual devices, to
+ensure a stable guest ABI across migration. Only parameters related to
+host side configuration can be changed in the XML. Hypervisors which
+support this field will forbid migration if the provided XML would cause
+a change in the guest ABI. This field cannot be used to rename the domain
+during migration (use VIR_MIGRATE_PARAM_DEST_NAME field for that purpose).
+Domain name in the destination XML must match the original domain name.
+
+Omitting this parameter keeps the original domain configuration. Using this
+field with hypervisors that do not support changing domain configuration
+during migration will result in a failure.
+
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_GRAPHICS_URI>
+
+URI to use for migrating client's connection to domain's graphical console
+as VIR_TYPED_PARAM_STRING. If specified, the client will be asked to
+automatically reconnect using these parameters instead of the automatically
+computed ones. This can be useful if, e.g., the client does not have a direct
+access to the network virtualization hosts are connected to and needs to
+connect through a proxy. The URI is formed as follows:
+
+      protocol://hostname[:port]/[?parameters]
+
+where protocol is either "spice" or "vnc" and parameters is a list of
+protocol specific parameters separated by '&'. Currently recognized
+parameters are "tlsPort" and "tlsSubject". For example,
+
+      spice://target.host.com:1234/?tlsPort=4567
+
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_BANDWIDTH>
+
+The maximum bandwidth (in MiB/s) that will be used for migration. If
+set to 0 or omitted, libvirt will choose a suitable default. Some
+hypervisors do not support this feature and will return an error if
+this field is used and is not 0.
+
+=back
+
+=item $ddom = $dom->migrate(destcon, flags=0, dname=undef, uri=undef, bandwidth=0)
+
+Migrate a domain to an alternative host. Use of positional parameters
+with C<migrate> is deprecated in favour of passing a hash reference
+as described above.
+
+=cut
+
+sub migrate {
+    my $dom = shift;
+    my $destcon = shift;
+
+    if (ref $_[0] &&
+	ref $_[0] eq "HASH") {
+	my $params = shift;
+	my $flags = shift;
+
+	return $dom->_migrate($destcon, $params, $flags);
+    } else {
+	my $flags = shift;
+	my $dname = shift;
+	my $uri = shift;
+	my $bandwidth = shift;
+	my $params = {};
+
+	$params->{&Sys::Virt::Domain::MIGRATE_PARAM_DEST_NAME} = $dname
+	    if defined $dname;
+	$params->{&Sys::Virt::Domain::MIGRATE_PARAM_URI} = $uri
+	    if defined $uri;
+	$params->{&Sys::Virt::Domain::MIGRATE_PARAM_BANDWIDTH} = $bandwidth
+	    if defined $bandwidth;
+
+	return $dom->_migrate($destcon, $params, $flags);
+    }
+}
+
 
 =item $ddom = $dom->migrate2(destcon, dxml, flags, dname, uri, bandwidth)
 
-Migrate a domain to an alternative host. This function works in the
-same way as C<migrate>, except is also allows C<dxml> to specify a
-changed XML configuration for the guest on the target host.
+Migrate a domain to an alternative host. This method is deprecated in
+favour of passing a hash ref to C<migrate>.
 
-=item $dom->migrate_to_uri(desturi, flags, dname, bandwidth)
+=cut
+
+sub migrate2 {
+    my $dom = shift;
+    my $destcon = shift;
+    my $dxml = shift;
+    my $flags = shift;
+    my $dname = shift;
+    my $uri = shift;
+    my $bandwidth = shift;
+    my $params = {};
+
+    $params->{&Sys::Virt::Domain::MIGRATE_PARAM_DEST_XML} = $dxml
+	if defined $dxml;
+    $params->{&Sys::Virt::Domain::MIGRATE_PARAM_DEST_NAME} = $dname
+	if defined $dname;
+    $params->{&Sys::Virt::Domain::MIGRATE_PARAM_URI} = $uri
+	if defined $uri;
+    $params->{&Sys::Virt::Domain::MIGRATE_PARAM_BANDWIDTH} = $bandwidth
+	if defined $bandwidth;
+
+    return $dom->_migrate($destcon, $params, $flags);
+}
+
+
+=item $ddom = $dom->migrate_to_uri(destcon, \%params, flags=0)
 
 Migrate a domain to an alternative host. The C<destri> parameter
 should be a valid libvirt connection URI for the remote target host.
-If the C<flags> parameter is zero offline migration will be
-performed. The C<Sys::Virt::Domain::MIGRATE_LIVE> constant can be
-used to request live migration. The C<dname> parameter allows the
-guest to be renamed on the target host, if set to C<undef>, the
-domains' current name will be maintained. In normal circumstances,
-the source host determines the target hostname from the URI associated
-with the C<destcon> connection. If the destination host is multi-homed
-it may be necessary to supply an alternate destination hostame
-via the C<uri> parameter. The C<bandwidth> parameter allows network
-usage to be throttled during migration. If set to zero, no throttling
-will be performed. The C<flags>, C<dname> and C<bandwidth>
-parameters are all optional, and if omitted default to zero, C<undef>,
-C<undef>, and zero respectively.
+The C<flags> parameter takes one or more of the C<Sys::Virt::Domain::MIGRATE_XXX>
+constants described later in this document. The C<%params> parameter is
+a hash reference used to set various parameters for the migration
+operation, with the same keys described for the C<migrate> API.
+
+=item $dom->migrate_to_uri(desturi, flags, dname, bandwidth)
+
+Migrate a domain to an alternative host. Use of positional parameters
+with C<migrate_to_uri> is deprecated in favour of passing a hash reference
+as described above.
+
+=cut
+
+sub migrate_to_uri {
+    my $dom = shift;
+    my $desturi = shift;
+
+    if (ref $_[0] &&
+	ref $_[0] eq "HASH") {
+	my $params = shift;
+	my $flags = shift;
+
+	return $dom->_migrate_to_uri($desturi, $params, $flags);
+    } else {
+	my $flags = shift;
+	my $dname = shift;
+	my $uri = shift;
+	my $bandwidth = shift;
+	my $params = {};
+
+	$params->{&Sys::Virt::Domain::MIGRATE_PARAM_DEST_NAME} = $dname
+	    if defined $dname;
+	$params->{&Sys::Virt::Domain::MIGRATE_PARAM_URI} = $uri
+	    if defined $uri;
+	$params->{&Sys::Virt::Domain::MIGRATE_PARAM_BANDWIDTH} = $bandwidth
+	    if defined $bandwidth;
+
+	return $dom->_migrate_to_uri($desturi, $params, $flags);
+    }
+}
+
 
 =item $dom->migrate_to_uri2(dconnuri, miguri, dxml, flags, dname, bandwidth)
 
-Migrate a domain to an alternative host. This function works in almost
-the same way as C<migrate_to_uri>, except is also allows C<dxml> to
-specify a changed XML configuration for the guest on the target host.
-The C<dconnuri> must always specify the URI of the remote libvirtd
-daemon, or be C<undef>. The C<miguri> parameter can be used to specify
-the URI for initiating the migration operation, or be C<undef>.
+Migrate a domain to an alternative host. This method is deprecated in
+favour of passing a hash ref to C<migrate_to_uri>.
+
+=cut
+
+sub migrate_to_uri2 {
+    my $dom = shift;
+    my $desturi = shift;
+    my $dxml = shift;
+    my $flags = shift;
+    my $dname = shift;
+    my $uri = shift;
+    my $bandwidth = shift;
+    my $params = {};
+
+    $params->{&Sys::Virt::Domain::MIGRATE_PARAM_DEST_XML} = $dxml
+	if defined $dxml;
+    $params->{&Sys::Virt::Domain::MIGRATE_PARAM_DEST_NAME} = $dname
+	if defined $dname;
+    $params->{&Sys::Virt::Domain::MIGRATE_PARAM_URI} = $uri
+	if defined $uri;
+    $params->{&Sys::Virt::Domain::MIGRATE_PARAM_BANDWIDTH} = $bandwidth
+	if defined $bandwidth;
+
+    return $dom->_migrate_to_uri2($desturi, $params, $flags);
+}
 
 
 =item $dom->migrate_set_max_downtime($downtime, $flags)
