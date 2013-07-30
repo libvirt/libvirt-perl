@@ -358,6 +358,10 @@ The identity management code
 
 The access control code
 
+=item Sys::Virt::Error::FROM_SYSTEMD
+
+The systemd init service
+
 =back
 
 =head2 ERROR CODE CONSTANTS
@@ -723,6 +727,10 @@ The resource requested is already in use
 =item Sys::Virt::Error::ERR_ACCESS_DENIED
 
 Not authorized to perform the operation
+
+=item Sys::Virt::Error::ERR_DBUS_SERVICE
+
+An error from a DBus service API
 
 =back
 

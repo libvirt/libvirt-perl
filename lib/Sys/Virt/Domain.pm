@@ -64,7 +64,12 @@ sub _new {
 	if ($params{nocreate}) {
 	    $self = Sys::Virt::Domain::_define_xml($con,  $params{xml});
 	} else {
-	    $self = Sys::Virt::Domain::_create($con,  $params{xml}, $params{flags});
+	    if (exists $params{fds}) {
+		$self = Sys::Virt::Domain::_create_with_files($con,  $params{xml},
+							      $params{fds}, $params{flags});
+	    } else {
+		$self = Sys::Virt::Domain::_create($con,  $params{xml}, $params{flags});
+	    }
 	}
     } else {
 	die "address, id or uuid parameters are required";
@@ -149,6 +154,15 @@ Start a domain whose configuration was previously defined using the
 C<define_domain> method in L<Sys::Virt>. The C<$flags> parameter
 accepts one of the DOMAIN CREATION constants documented later, and
 defaults to 0 if omitted.
+
+=item $dom->create_with_files($fds, $flags)
+
+Start a domain whose configuration was previously defined using the
+C<define_domain> method in L<Sys::Virt>. The C<$fds> parameter is an
+array of UNIX file descriptors which will be passed to the init
+process of the container. This is only supported with container based
+virtualization.The C<$flags> parameter accepts one of the DOMAIN
+CREATION constants documented later, and defaults to 0 if omitted.
 
 =item $dom->undefine()
 
@@ -262,6 +276,10 @@ API, and the C<$reason> values come from:
 
 It is not known why the domain has crashed
 
+=item Sys::Virt::Domain::STATE_CRASHED_PANICKED
+
+The domain has crashed due to a kernel panic
+
 =item Sys::Virt::Domain::STATE_NOSTATE_UNKNOWN
 
 It is not known why the domain has no state
@@ -306,6 +324,10 @@ The guest is paused while domain shutdown takes place
 
 The guest is paused while a snapshot takes place
 
+=item Sys::Virt::Domain::STATE_PAUSED_CRASHED
+
+The guest is paused due to a kernel panic
+
 =item Sys::Virt::Domain::STATE_RUNNING_BOOTED
 
 The guest is running after being booted
@@ -341,6 +363,10 @@ The guest is running after a resume
 =item Sys::Virt::Domain::STATE_RUNNING_WAKEUP
 
 The guest is running after wakeup from power management suspend
+
+=item Sys::Virt::Domain::STATE_RUNNING_CRASHED
+
+The guest was restarted after crashing
 
 =item Sys::Virt::Domain::STATE_BLOCKED_UNKNOWN
 
@@ -493,6 +519,12 @@ must be less than, or equal to the domain's max memory limit.
 The C<$flags> parameter can control whether the update affects
 the live guest, or inactive config, defaulting to modifying
 the current state.
+
+=item $dom->set_memory_stats_period($period, $flags)
+
+Set the period on which guests memory stats are refreshed,
+with C<$period> being a value in seconds. The C<$flags>
+parameter is currently unused.
 
 =item $dom->shutdown()
 
@@ -2295,6 +2327,18 @@ The domain has suspend to Disk.
 
 =back
 
+=item Sys::Virt::Domain::EVENT_CRASHED
+
+The domain has crashed
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_CRASHED_PANICKED
+
+The domain has crashed due to a kernel panic
+
+=back
+
 =back
 
 =head2 EVENT ID CONSTANTS
@@ -2360,6 +2404,10 @@ Power management initiated wakeup
 =item Sys::Virt::Domain::EVENT_ID_BALLOON_CHANGE
 
 Balloon target changes
+
+=item Sys::Virt::Domain::EVENT_ID_DEVICE_REMOVED
+
+Asynchronous guest device removal
 
 =back
 

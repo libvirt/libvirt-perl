@@ -743,6 +743,44 @@ _domain_event_balloonchange_callback(virConnectPtr con,
 }
 
 
+static int
+_domain_event_device_removed_callback(virConnectPtr con,
+                                      virDomainPtr dom,
+                                      const char *devAlias,
+                                      void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *domref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+    XPUSHs(domref);
+    XPUSHs(sv_2mortal(newSVpv(devAlias, 0)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
 static void
 _domain_event_free(void *opaque)
 {
@@ -2523,6 +2561,9 @@ PREINIT:
       case VIR_DOMAIN_EVENT_ID_BALLOON_CHANGE:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_balloonchange_callback);
           break;
+      case VIR_DOMAIN_EVENT_ID_DEVICE_REMOVED:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_device_removed_callback);
+          break;
       default:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_generic_callback);
           break;
@@ -2629,6 +2670,39 @@ _create(con, xml, flags=0)
           if (!(RETVAL = virDomainCreateLinux(con, xml, 0)))
               _croak_error();
       }
+  OUTPUT:
+      RETVAL
+
+
+virDomainPtr
+_create_with_files(con, xml, fdssv, flags=0)
+      virConnectPtr con;
+      const char *xml;
+      SV *fdssv;
+      unsigned int flags;
+ PREINIT:
+      AV *fdsav;
+      unsigned int nfds;
+      int *fds;
+      int i;
+    CODE:
+      if (!SvROK(fdssv))
+          return;
+      fdsav = (AV*)SvRV(fdssv);
+      nfds = av_len(fdsav) + 1;
+      Newx(fds, nfds, int);
+
+      for (i = 0 ; i < nfds ; i++) {
+          SV **fd = av_fetch(fdsav, i, 0);
+          fds[i] = SvIV(*fd);
+      }
+
+      if (!(RETVAL = virDomainCreateXMLWithFiles(con, xml, nfds, fds, flags))) {
+          Safefree(fds);
+          _croak_error();
+      }
+
+      Safefree(fds);
   OUTPUT:
       RETVAL
 
@@ -3459,6 +3533,16 @@ set_memory(dom, val, flags=0)
       }
 
 
+void
+set_memory_stats_period(dom, val, flags=0)
+      virDomainPtr dom;
+      int val;
+      unsigned int flags;
+  PPCODE:
+      if (virDomainSetMemoryStatsPeriod(dom, val, flags) < 0)
+          _croak_error();
+
+
 int
 get_max_vcpus(dom)
       virDomainPtr dom;
@@ -3638,6 +3722,37 @@ create(dom, flags=0)
           if (virDomainCreate(dom) < 0)
               _croak_error();
       }
+
+
+
+void
+create_with_files(dom, fdssv, flags=0)
+      virDomainPtr dom;
+      SV *fdssv;
+      unsigned int flags;
+ PREINIT:
+      AV *fdsav;
+      unsigned int nfds;
+      int *fds;
+      int i;
+  PPCODE:
+      if (!SvROK(fdssv))
+          return;
+      fdsav = (AV*)SvRV(fdssv);
+      nfds = av_len(fdsav) + 1;
+      Newx(fds, nfds, int);
+
+      for (i = 0 ; i < nfds ; i++) {
+          SV **fd = av_fetch(fdsav, i, 0);
+          fds[i] = SvIV(*fd);
+      }
+
+      if (virDomainCreateWithFiles(dom, nfds, fds, flags) < 0) {
+          Safefree(fds);
+          _croak_error();
+      }
+
+      Safefree(fds);
 
 
 virDomainPtr
@@ -6393,6 +6508,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_RUNNING_MIGRATION_CANCELED, STATE_RUNNING_MIGRATION_CANCELED);
       REGISTER_CONSTANT(VIR_DOMAIN_RUNNING_SAVE_CANCELED, STATE_RUNNING_SAVE_CANCELED);
       REGISTER_CONSTANT(VIR_DOMAIN_RUNNING_WAKEUP, STATE_RUNNING_WAKEUP);
+      REGISTER_CONSTANT(VIR_DOMAIN_RUNNING_CRASHED, STATE_RUNNING_CRASHED);
 
       REGISTER_CONSTANT(VIR_DOMAIN_BLOCKED_UNKNOWN, STATE_BLOCKED_UNKNOWN);
 
@@ -6406,6 +6522,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_PAUSED_FROM_SNAPSHOT, STATE_PAUSED_FROM_SNAPSHOT);
       REGISTER_CONSTANT(VIR_DOMAIN_PAUSED_SHUTTING_DOWN, STATE_PAUSED_SHUTTING_DOWN);
       REGISTER_CONSTANT(VIR_DOMAIN_PAUSED_SNAPSHOT, STATE_PAUSED_SNAPSHOT);
+      REGISTER_CONSTANT(VIR_DOMAIN_PAUSED_CRASHED, STATE_PAUSED_CRASHED);
 
       REGISTER_CONSTANT(VIR_DOMAIN_SHUTDOWN_UNKNOWN, STATE_SHUTDOWN_UNKNOWN);
       REGISTER_CONSTANT(VIR_DOMAIN_SHUTDOWN_USER, STATE_SHUTDOWN_USER);
@@ -6420,6 +6537,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_SHUTOFF_FROM_SNAPSHOT, STATE_SHUTOFF_FROM_SNAPSHOT);
 
       REGISTER_CONSTANT(VIR_DOMAIN_CRASHED_UNKNOWN, STATE_CRASHED_UNKNOWN);
+      REGISTER_CONSTANT(VIR_DOMAIN_CRASHED_PANICKED, STATE_CRASHED_PANICKED);
 
       REGISTER_CONSTANT(VIR_DOMAIN_PMSUSPENDED_UNKNOWN, STATE_PMSUSPENDED_UNKNOWN);
 
@@ -6507,6 +6625,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_SHUTDOWN, EVENT_SHUTDOWN);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_PMSUSPENDED, EVENT_PMSUSPENDED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_PMSUSPENDED_DISK, EVENT_PMSUSPENDED_DISK);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_CRASHED, EVENT_CRASHED);
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_DEFINED_ADDED, EVENT_DEFINED_ADDED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_DEFINED_UPDATED, EVENT_DEFINED_UPDATED);
@@ -6518,6 +6637,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_STARTED_RESTORED, EVENT_STARTED_RESTORED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_STARTED_FROM_SNAPSHOT, EVENT_STARTED_FROM_SNAPSHOT);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_STARTED_WAKEUP, EVENT_STARTED_WAKEUP);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_CRASHED_PANICKED, EVENT_CRASHED_PANICKED);
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_SUSPENDED_PAUSED, EVENT_SUSPENDED_PAUSED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_SUSPENDED_MIGRATED, EVENT_SUSPENDED_MIGRATED);
@@ -6623,6 +6744,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_PMWAKEUP, EVENT_ID_PMWAKEUP);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_TRAY_CHANGE, EVENT_ID_TRAY_CHANGE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_BALLOON_CHANGE, EVENT_ID_BALLOON_CHANGE);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_DEVICE_REMOVED, EVENT_ID_DEVICE_REMOVED);
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_NONE, EVENT_WATCHDOG_NONE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_PAUSE, EVENT_WATCHDOG_PAUSE);
@@ -7073,6 +7195,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_FROM_CGROUP, FROM_CGROUP);
       REGISTER_CONSTANT(VIR_FROM_IDENTITY, FROM_IDENTITY);
       REGISTER_CONSTANT(VIR_FROM_ACCESS, FROM_ACCESS);
+      REGISTER_CONSTANT(VIR_FROM_SYSTEMD, FROM_SYSTEMD);
 
 
       REGISTER_CONSTANT(VIR_ERR_OK, ERR_OK);
@@ -7164,4 +7287,5 @@ BOOT:
       REGISTER_CONSTANT(VIR_ERR_SSH, ERR_SSH);
       REGISTER_CONSTANT(VIR_ERR_RESOURCE_BUSY, ERR_RESOURCE_BUSY);
       REGISTER_CONSTANT(VIR_ERR_ACCESS_DENIED, ERR_ACCESS_DENIED);
+      REGISTER_CONSTANT(VIR_ERR_DBUS_SERVICE, ERR_DBUS_SERVICE);
     }
