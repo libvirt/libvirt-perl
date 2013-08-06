@@ -1113,7 +1113,7 @@ or multi-card configuration. C<$st> must be a C<Sys::Virt::Stream>
 object from which the data can be read. C<$flags> is currently unused
 and defaults to 0. The mimetype of the screenshot is returned
 
-=item @vcpuinfo = $dom->get_vcpu_info()
+=item @vcpuinfo = $dom->get_vcpu_info($flags=0)
 
 Obtain information about the state of all virtual CPUs in a running
 guest domain. The returned list will have one element for each vCPU,
@@ -1124,7 +1124,9 @@ time of the vCPU, C<state> the running state and C<affinity> giving
 the allowed shedular placement. The value for C<affinity> is a
 string representing a bitmask against physical CPUs, 8 cpus per
 character. To extract the bits use the C<unpack> function with
-the C<b*> template.
+the C<b*> template. NB The C<state>, C<cpuTime>, C<cpu> values are
+only available if using C<$flags> value of 0, and the domain is
+currently running; otherwise they will all be set to zero.
 
 =item $dom->pin_vcpu($vcpu, $mask)
 

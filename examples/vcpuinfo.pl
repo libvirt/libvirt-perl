@@ -9,12 +9,12 @@ my $con = Sys::Virt->new(address => $addr, readonly => 1);
 
 print "VMM type: ", $con->get_type(), "\n";
 
-foreach my $dom (sort { $a->get_id <=> $b->get_id } $con->list_domains) {
+foreach my $dom (sort { $a->get_id <=> $b->get_id } $con->list_all_domains) {
     print "Domain: {\n";
     print "  ID: ", $dom->get_id(), " '" , $dom->get_name(), "'\n";
     print "  UUID: ", $dom->get_uuid_string(), "\n";
     my $nodeinfo = $con->get_node_info;
-    my @info = $dom->get_vcpu_info;
+    my @info = $dom->get_vcpu_info(Sys::Virt::Domain::AFFECT_CONFIG);
 
     foreach my $info (@info) {
 	print "  VCPU: {\n";
