@@ -5288,10 +5288,8 @@ const char *
 get_parent(dev)
       virNodeDevicePtr dev;
     CODE:
-      if (!(RETVAL = virNodeDeviceGetParent(dev))) {
-          if (virGetLastError() != NULL)
-              _croak_error();
-      }
+      if (!(RETVAL = virNodeDeviceGetParent(dev)))
+          _croak_error();
   OUTPUT:
       RETVAL
 
