@@ -2515,7 +2515,11 @@ These constants describe the reason for a disk change event
 
 =item Sys::Virt::Domain::EVENT_DISK_CHANGE_MISSING_ON_START
 
-The disk media was missing when attempting to start the guest
+The disk media was cleared, as its source was missing when attempting to start the guest
+
+=item Sys::Virt::Domain::EVENT_DISK_DROP_MISSING_ON_START
+
+The disk device was dropped, as its source was missing whe  attempting to start the guest
 
 =back
 
