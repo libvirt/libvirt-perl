@@ -1907,6 +1907,27 @@ PREINIT:
   OUTPUT:
       RETVAL
 
+void
+get_cpu_model_names(con, arch, flags=0)
+      virConnectPtr con;
+      char *arch;
+      unsigned int flags;
+PREINIT:
+      int nnames;
+      int i;
+      char **names = NULL;
+  PPCODE:
+      if ((nnames = virConnectGetCPUModelNames(con, arch, &names, flags)) < 0)
+          _croak_error();
+
+      EXTEND(SP, nnames);
+      for (i = 0 ; i < nnames ; i++) {
+          PUSHs(sv_2mortal(newSVpv(names[i], 0)));
+          free(names[i]);
+      }
+      Safefree(names);
+
+
 
 int
 get_max_vcpus(con, type)

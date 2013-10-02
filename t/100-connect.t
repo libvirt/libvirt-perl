@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 24;
+use Test::More tests => 25;
 use XML::XPath;
 use XML::XPath::XMLParser;
 use Sys::Hostname;
@@ -77,3 +77,7 @@ SKIP: {
 
 ok($conn->is_secure(), "connection is secure");
 ok(!$conn->is_encrypted(), "connection is not encrypted");
+
+my @models = $conn->get_cpu_model_names($info->{model});
+
+ok($#models > -1, "got some cpu models");
