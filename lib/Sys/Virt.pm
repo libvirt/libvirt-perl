@@ -790,7 +790,7 @@ sub list_secrets {
     my $self = shift;
 
     my $nuuids = $self->num_of_secrets();
-    my @uuids = $self->list_secrets($nuuids);
+    my @uuids = $self->list_secret_uuids($nuuids);
 
     my @secrets;
     foreach my $uuid (@uuids) {
