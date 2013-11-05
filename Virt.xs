@@ -3786,7 +3786,7 @@ _migrate(dom, destcon, newparams, flags=0)
      virTypedParameter *params;
      int nparams;
     CODE:
-     nparams = 5;
+     nparams = 6;
      Newx(params, nparams, virTypedParameter);
 
      memcpy(params[0].field, VIR_MIGRATE_PARAM_URI,
@@ -3808,6 +3808,10 @@ _migrate(dom, destcon, newparams, flags=0)
      memcpy(params[4].field, VIR_MIGRATE_PARAM_BANDWIDTH,
             VIR_TYPED_PARAM_FIELD_LENGTH);
      params[4].type = VIR_TYPED_PARAM_ULLONG;
+
+     memcpy(params[5].field, VIR_MIGRATE_PARAM_LISTEN_ADDRESS,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[5].type = VIR_TYPED_PARAM_STRING;
 
 
      nparams = vir_typed_param_from_hv(newparams, params, nparams);
@@ -3857,6 +3861,10 @@ _migrate_to_uri(dom, desturi, newparams, flags=0)
      memcpy(params[4].field, VIR_MIGRATE_PARAM_BANDWIDTH,
             VIR_TYPED_PARAM_FIELD_LENGTH);
      params[4].type = VIR_TYPED_PARAM_ULLONG;
+
+     memcpy(params[5].field, VIR_MIGRATE_PARAM_LISTEN_ADDRESS,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[5].type = VIR_TYPED_PARAM_STRING;
 
      nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
@@ -6625,6 +6633,7 @@ BOOT:
       REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_DEST_XML, MIGRATE_PARAM_DEST_XML);
       REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_GRAPHICS_URI, MIGRATE_PARAM_GRAPHICS_URI);
       REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_URI, MIGRATE_PARAM_URI);
+      REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_LISTEN_ADDRESS, MIGRATE_PARAM_LISTEN_ADDRESS);
 
       REGISTER_CONSTANT(VIR_DOMAIN_XML_SECURE, XML_SECURE);
       REGISTER_CONSTANT(VIR_DOMAIN_XML_INACTIVE, XML_INACTIVE);
@@ -7326,4 +7335,5 @@ BOOT:
       REGISTER_CONSTANT(VIR_ERR_RESOURCE_BUSY, ERR_RESOURCE_BUSY);
       REGISTER_CONSTANT(VIR_ERR_ACCESS_DENIED, ERR_ACCESS_DENIED);
       REGISTER_CONSTANT(VIR_ERR_DBUS_SERVICE, ERR_DBUS_SERVICE);
+      REGISTER_CONSTANT(VIR_ERR_STORAGE_VOL_EXIST, ERR_STORAGE_VOL_EXIST);
     }

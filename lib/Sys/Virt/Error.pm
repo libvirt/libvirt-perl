@@ -732,6 +732,10 @@ Not authorized to perform the operation
 
 An error from a DBus service API
 
+=item Sys::Virt::Error::ERR_STORAGE_VOL_EXIST
+
+The storage volume already exists
+
 =back
 
 =head1 AUTHORS

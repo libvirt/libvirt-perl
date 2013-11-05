@@ -898,6 +898,14 @@ set to 0 or omitted, libvirt will choose a suitable default. Some
 hypervisors do not support this feature and will return an error if
 this field is used and is not 0.
 
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_LISTEN_ADDRESS>
+
+The address on which to listen for incoming migration connections.
+If omitted, libvirt will listen on the wildcard address (0.0.0.0
+or ::). This default may be a security risk if guests, or other
+untrusted users have the ability to connect to the virtualization
+host, thus use of an explicit restricted listen address is recommended.
+
 =back
 
 =item $ddom = $dom->migrate(destcon, flags=0, dname=undef, uri=undef, bandwidth=0)
