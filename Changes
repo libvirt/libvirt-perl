@@ -1,5 +1,10 @@
 Revision history for perl module Sys::Virt
 
+1.2.0 2013-12-02
+
+ - Add all new constants in libvirt 1.2.0
+ - Fix reversed args for virNodeDeviceLookupSCSIHostByWWN
+
 1.1.4 2013-11-05
 
  - Add all new constants in libvirt 1.1.4
