@@ -171,6 +171,10 @@ The volume is a directory
 
 The volume is a network source
 
+=item Sys::Virt::StorageVol::TYPE_NETDIR
+
+The volume is a network directory
+
 =back
 
 =head2 CREATE MODES
