@@ -179,6 +179,7 @@ VIR_UUID_STRING_BUFLEN
 _virBlkioParameter
 _virMemoryParameter
 _virSchedParameter
+LIBVIR_CHECK_VERSION
 );
 
 foreach my $macro (sort { $a cmp $b } @macros) {
