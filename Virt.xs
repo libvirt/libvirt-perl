@@ -1925,7 +1925,7 @@ PREINIT:
           PUSHs(sv_2mortal(newSVpv(names[i], 0)));
           free(names[i]);
       }
-      Safefree(names);
+      free(names);
 
 
 
