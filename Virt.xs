@@ -3789,28 +3789,28 @@ _migrate(dom, destcon, newparams, flags=0)
      nparams = 6;
      Newx(params, nparams, virTypedParameter);
 
-     memcpy(params[0].field, VIR_MIGRATE_PARAM_URI,
-            VIR_TYPED_PARAM_FIELD_LENGTH);
+     strncpy(params[0].field, VIR_MIGRATE_PARAM_URI,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
      params[0].type = VIR_TYPED_PARAM_STRING;
 
-     memcpy(params[1].field, VIR_MIGRATE_PARAM_DEST_NAME,
-            VIR_TYPED_PARAM_FIELD_LENGTH);
+     strncpy(params[1].field, VIR_MIGRATE_PARAM_DEST_NAME,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
      params[1].type = VIR_TYPED_PARAM_STRING;
 
-     memcpy(params[2].field, VIR_MIGRATE_PARAM_DEST_XML,
-            VIR_TYPED_PARAM_FIELD_LENGTH);
+     strncpy(params[2].field, VIR_MIGRATE_PARAM_DEST_XML,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
      params[2].type = VIR_TYPED_PARAM_STRING;
 
-     memcpy(params[3].field, VIR_MIGRATE_PARAM_GRAPHICS_URI,
-            VIR_TYPED_PARAM_FIELD_LENGTH);
+     strncpy(params[3].field, VIR_MIGRATE_PARAM_GRAPHICS_URI,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
      params[3].type = VIR_TYPED_PARAM_STRING;
 
-     memcpy(params[4].field, VIR_MIGRATE_PARAM_BANDWIDTH,
-            VIR_TYPED_PARAM_FIELD_LENGTH);
+     strncpy(params[4].field, VIR_MIGRATE_PARAM_BANDWIDTH,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
      params[4].type = VIR_TYPED_PARAM_ULLONG;
 
-     memcpy(params[5].field, VIR_MIGRATE_PARAM_LISTEN_ADDRESS,
-            VIR_TYPED_PARAM_FIELD_LENGTH);
+     strncpy(params[5].field, VIR_MIGRATE_PARAM_LISTEN_ADDRESS,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
      params[5].type = VIR_TYPED_PARAM_STRING;
 
 
@@ -3842,28 +3842,28 @@ _migrate_to_uri(dom, desturi, newparams, flags=0)
      nparams = 5;
      Newx(params, nparams, virTypedParameter);
 
-     memcpy(params[0].field, VIR_MIGRATE_PARAM_URI,
-            VIR_TYPED_PARAM_FIELD_LENGTH);
+     strncpy(params[0].field, VIR_MIGRATE_PARAM_URI,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
      params[0].type = VIR_TYPED_PARAM_STRING;
 
-     memcpy(params[1].field, VIR_MIGRATE_PARAM_DEST_NAME,
-            VIR_TYPED_PARAM_FIELD_LENGTH);
+     strncpy(params[1].field, VIR_MIGRATE_PARAM_DEST_NAME,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
      params[1].type = VIR_TYPED_PARAM_STRING;
 
-     memcpy(params[2].field, VIR_MIGRATE_PARAM_DEST_XML,
-            VIR_TYPED_PARAM_FIELD_LENGTH);
+     strncpy(params[2].field, VIR_MIGRATE_PARAM_DEST_XML,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
      params[2].type = VIR_TYPED_PARAM_STRING;
 
-     memcpy(params[3].field, VIR_MIGRATE_PARAM_GRAPHICS_URI,
-            VIR_TYPED_PARAM_FIELD_LENGTH);
+     strncpy(params[3].field, VIR_MIGRATE_PARAM_GRAPHICS_URI,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
      params[3].type = VIR_TYPED_PARAM_STRING;
 
-     memcpy(params[4].field, VIR_MIGRATE_PARAM_BANDWIDTH,
-            VIR_TYPED_PARAM_FIELD_LENGTH);
+     strncpy(params[4].field, VIR_MIGRATE_PARAM_BANDWIDTH,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
      params[4].type = VIR_TYPED_PARAM_ULLONG;
 
-     memcpy(params[5].field, VIR_MIGRATE_PARAM_LISTEN_ADDRESS,
-            VIR_TYPED_PARAM_FIELD_LENGTH);
+     strncpy(params[5].field, VIR_MIGRATE_PARAM_LISTEN_ADDRESS,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
      params[5].type = VIR_TYPED_PARAM_STRING;
 
      nparams = vir_typed_param_from_hv(newparams, params, nparams);
