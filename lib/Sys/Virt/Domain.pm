@@ -1975,6 +1975,22 @@ The I/O weight parameter
 
 The per-device I/O weight parameter
 
+=item Sys::Virt::Domain::BLKIO_DEVICE_READ_BPS
+
+The per-device I/O bytes read per second
+
+=item Sys::Virt::Domain::BLKIO_DEVICE_READ_IOPS
+
+The per-device I/O operations read per second
+
+=item Sys::Virt::Domain::BLKIO_DEVICE_WRITE_BPS
+
+The per-device I/O bytes write per second
+
+=item Sys::Virt::Domain::BLKIO_DEVICE_WRITE_IOPS
+
+The per-device I/O operations write per second
+
 =back
 
 =head2 BLKIO TUNING PARAMETERS

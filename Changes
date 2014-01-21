@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+1.2.2
+
+ - Add new domain blk I/O constants
+
 1.2.1 2014-01-21
 
  - Add new network event APIs from libvirt 1.2.1
