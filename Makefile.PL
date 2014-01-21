@@ -20,7 +20,7 @@ my $gccflags = "-W -Waddress -Wall -Warray-bounds -Wattributes \\
  -Wformat-extra-args -Wformat-security -Wformat-y2k \\
  -Wformat-zero-length -Wformat=2 -Wfree-nonheap-object \\
  -Wignored-qualifiers -Wimplicit -Wimplicit-function-declaration \\
- -Wimplicit-int -Winit-self -Winline -Wint-to-pointer-cast \\
+ -Wimplicit-int -Winit-self -Wint-to-pointer-cast \\
  -Winvalid-memory-model -Winvalid-pch -Wjump-misses-init \\
  -Wlogical-op -Wmain -Wmaybe-uninitialized -Wmissing-braces \\
  -Wmissing-declarations -Wmissing-field-initializers \\
