@@ -1531,6 +1531,38 @@ unregistering the event.
 Unregister a callback, associated with the C<$callbackID> previously
 obtained from C<domain_event_register_any>.
 
+=item $callback = $conn->network_event_register_any($dom, $eventID, $callback)
+
+Register a callback to received notifications of network events.
+The C<$dom> parameter can be C<undef> to request events on all
+known networks, or a specific C<Sys::Virt::Network> object to
+filter events. The C<$eventID> parameter is one of the EVENT ID
+constants described later in this document. The C<$callback> is
+a subroutine reference that will receive the events.
+
+All callbacks receive a C<Sys::Virt> connection as the first parameter
+and a C<Sys::Virt::Network> object indiciating the network on which the
+event occurred as the second parameter. Subsequent parameters vary
+according to the event type
+
+=over
+
+=item EVENT_ID_LIFECYCLE
+
+Extra C<event> and C<detail> parameters defining the lifecycle
+transition that occurred.
+
+=back
+
+The return value is a unique callback ID that must be used when
+unregistering the event.
+
+
+=item $conn->network_event_deregister_any($callbackID)
+
+Unregister a callback, associated with the C<$callbackID> previously
+obtained from C<network_event_register_any>.
+
 =item $conn->register_close_callback($coderef);
 
 Register a callback to be invoked when the connection is closed.

@@ -1,7 +1,7 @@
 /* -*- c -*-
  *
- * Copyright (C) 2006 Red Hat
- * Copyright (C) 2006-2007 Daniel P. Berrange
+ * Copyright (C) 2006-2014 Red Hat
+ * Copyright (C) 2006-2014 Daniel P. Berrange
  *
  * This program is free software; You can redistribute it and/or modify
  * it under either:
@@ -781,8 +781,92 @@ _domain_event_device_removed_callback(virConnectPtr con,
 }
 
 
+static int
+_network_event_lifecycle_callback(virConnectPtr con,
+				  virNetworkPtr net,
+				  int event,
+				  int detail,
+				  void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *netref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    netref = sv_newmortal();
+    sv_setref_pv(netref, "Sys::Virt::Network", (void*)net);
+    virNetworkRef(net);
+    XPUSHs(netref);
+    XPUSHs(sv_2mortal(newSViv(event)));
+    XPUSHs(sv_2mortal(newSViv(detail)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
+static int
+_network_event_generic_callback(virConnectPtr con,
+				virNetworkPtr net,
+				void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *netref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    netref = sv_newmortal();
+    sv_setref_pv(netref, "Sys::Virt::Network", (void*)net);
+    virNetworkRef(net);
+    XPUSHs(netref);
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
 static void
 _domain_event_free(void *opaque)
+{
+  SV *sv = opaque;
+  SvREFCNT_dec(sv);
+}
+
+
+static void
+_network_event_free(void *opaque)
 {
   SV *sv = opaque;
   SvREFCNT_dec(sv);
@@ -2607,6 +2691,53 @@ domain_event_deregister_any(con, callbackID)
       int callbackID;
  PPCODE:
       virConnectDomainEventDeregisterAny(con, callbackID);
+
+
+int
+network_event_register_any(conref, netref, eventID, cb)
+      SV* conref;
+      SV* netref;
+      int eventID;
+      SV* cb;
+PREINIT:
+      AV *opaque;
+      virConnectPtr con;
+      virNetworkPtr net;
+      virConnectNetworkEventGenericCallback callback;
+    CODE:
+      con = (virConnectPtr)SvIV((SV*)SvRV(conref));
+      if (SvROK(netref)) {
+          net = (virNetworkPtr)SvIV((SV*)SvRV(netref));
+      } else {
+          net = NULL;
+      }
+
+      switch (eventID) {
+      case VIR_NETWORK_EVENT_ID_LIFECYCLE:
+          callback = VIR_NETWORK_EVENT_CALLBACK(_network_event_lifecycle_callback);
+          break;
+      default:
+          callback = VIR_NETWORK_EVENT_CALLBACK(_network_event_generic_callback);
+          break;
+      }
+
+      opaque = newAV();
+      SvREFCNT_inc(cb);
+      SvREFCNT_inc(conref);
+      av_push(opaque, conref);
+      av_push(opaque, cb);
+      if ((RETVAL = virConnectNetworkEventRegisterAny(con, net, eventID, callback, opaque, _network_event_free)) < 0)
+          _croak_error();
+OUTPUT:
+      RETVAL
+
+
+void
+network_event_deregister_any(con, callbackID)
+      virConnectPtr con;
+      int callbackID;
+ PPCODE:
+      virConnectNetworkEventDeregisterAny(con, callbackID);
 
 
 void
@@ -7106,6 +7237,14 @@ BOOT:
       REGISTER_CONSTANT(VIR_CONNECT_LIST_NETWORKS_NO_AUTOSTART, LIST_NO_AUTOSTART);
       REGISTER_CONSTANT(VIR_CONNECT_LIST_NETWORKS_PERSISTENT, LIST_PERSISTENT);
       REGISTER_CONSTANT(VIR_CONNECT_LIST_NETWORKS_TRANSIENT, LIST_TRANSIENT);
+
+      REGISTER_CONSTANT(VIR_NETWORK_EVENT_ID_LIFECYCLE, EVENT_ID_LIFECYCLE);
+
+      REGISTER_CONSTANT(VIR_NETWORK_EVENT_DEFINED, EVENT_DEFINED);
+      REGISTER_CONSTANT(VIR_NETWORK_EVENT_UNDEFINED, EVENT_UNDEFINED);
+      REGISTER_CONSTANT(VIR_NETWORK_EVENT_STARTED, EVENT_STARTED);
+      REGISTER_CONSTANT(VIR_NETWORK_EVENT_STOPPED, EVENT_STOPPED);
+
 
       stash = gv_stashpv( "Sys::Virt::Interface", TRUE );
       REGISTER_CONSTANT(VIR_INTERFACE_XML_INACTIVE, XML_INACTIVE);

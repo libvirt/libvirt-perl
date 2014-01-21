@@ -299,6 +299,44 @@ Insert the matching entry at the end
 
 =back
 
+=head2 EVENT ID CONSTANTS
+
+=over 4
+
+=item Sys::Virt::Network::EVENT_ID_LIFECYCLE
+
+Network lifecycle events
+
+=back
+
+=head2 LIFECYCLE CHANGE EVENTS
+
+The following constants allow network lifecycle change events to be
+interpreted. The events contain both a state change, and a
+reason though the reason is currently unsed.
+
+=over 4
+
+=item Sys::Virt::Network::EVENT_DEFINED
+
+Indicates that a persistent configuration has been defined for
+the network.
+
+=item Sys::Virt::Network::EVENT_STARTED
+
+The network has started running
+
+=item Sys::Virt::Network::EVENT_STOPPED
+
+The network has stopped running
+
+=item Sys::Virt::Network::EVENT_UNDEFINED
+
+The persistent configuration has gone away
+
+=back
+
+
 =cut
 
 
