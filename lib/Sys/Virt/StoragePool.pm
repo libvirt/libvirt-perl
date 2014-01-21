@@ -439,6 +439,9 @@ Include SCSI storage pools
 
 Include sheepdog storage pools
 
+=item Sys::Virt::StoragePool::LIST_GLUSTER
+
+Include gluster storage pools
 
 =back
 
