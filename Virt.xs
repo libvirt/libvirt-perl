@@ -1808,6 +1808,8 @@ PREINIT:
               (void)hv_store (RETVAL, "idle", 4, virt_newSVull(params[i].value), 0);
           } else if (strcmp(params[i].field, VIR_NODE_CPU_STATS_IOWAIT) == 0) {
               (void)hv_store (RETVAL, "iowait", 6, virt_newSVull(params[i].value), 0);
+          } else if (strcmp(params[i].field, VIR_NODE_CPU_STATS_INTR) == 0) {
+              (void)hv_store (RETVAL, "intr", 4, virt_newSVull(params[i].value), 0);
           } else if (strcmp(params[i].field, VIR_NODE_CPU_STATS_UTILIZATION) == 0) {
               (void)hv_store (RETVAL, "utilization", 11, virt_newSVull(params[i].value), 0);
           }
@@ -6614,6 +6616,7 @@ BOOT:
       REGISTER_CONSTANT_STR(VIR_NODE_CPU_STATS_IOWAIT, NODE_CPU_STATS_IOWAIT);
       REGISTER_CONSTANT_STR(VIR_NODE_CPU_STATS_KERNEL, NODE_CPU_STATS_KERNEL);
       REGISTER_CONSTANT_STR(VIR_NODE_CPU_STATS_USER, NODE_CPU_STATS_USER);
+      REGISTER_CONSTANT_STR(VIR_NODE_CPU_STATS_INTR, NODE_CPU_STATS_INTR);
       REGISTER_CONSTANT_STR(VIR_NODE_CPU_STATS_UTILIZATION, NODE_CPU_STATS_UTILIZATION);
 
       REGISTER_CONSTANT(VIR_NODE_MEMORY_STATS_ALL_CELLS, NODE_MEMORY_STATS_ALL_CELLS);

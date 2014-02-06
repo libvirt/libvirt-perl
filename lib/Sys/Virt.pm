@@ -1836,6 +1836,10 @@ Time spent executing kernel code
 
 Time spent executing user code
 
+=item Sys::Virt::NODE_CPU_STATS_INTR
+
+Time spent processing interrupts
+
 =item Sys::Virt::NODE_CPU_STATS_UTILIZATION
 
 Percentage utilization of the CPU.
