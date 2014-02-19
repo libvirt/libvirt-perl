@@ -362,6 +362,10 @@ The access control code
 
 The systemd init service
 
+=item Sys::Virt::Error::FROM_BHYVE
+
+The FreeBSD BHyve driver
+
 =back
 
 =head2 ERROR CODE CONSTANTS

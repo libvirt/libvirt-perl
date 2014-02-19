@@ -3,6 +3,7 @@ Revision history for perl module Sys::Virt
 1.2.2 2014-00-00
 
  - Add new domain blk I/O constants
+ - Add BHyve error code
 
 1.2.1 2014-01-21
 
