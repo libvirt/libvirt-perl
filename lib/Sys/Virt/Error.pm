@@ -366,6 +366,10 @@ The systemd init service
 
 The FreeBSD BHyve driver
 
+=item Sys::Virt::Error::FROM_CRYPTO
+
+The cryptographic helper APIs.
+
 =back
 
 =head2 ERROR CODE CONSTANTS
