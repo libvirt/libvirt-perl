@@ -3,6 +3,7 @@ Revision history for perl module Sys::Virt
 1.2.3 2014-00-00
 
  - Add VIR_FROM_CRYPTO error constant
+ - Add VIR_MIGRATE_AUTO_CONVERGE migration constant
 
 1.2.2 2014-03-03
 

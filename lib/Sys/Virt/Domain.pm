@@ -1875,6 +1875,11 @@ Enable compression of the migration data stream
 
 Abort if an I/O error occurrs on the disk
 
+=item Sys::Virt::Domain::MIGRATE_AUTO_CONVERGE
+
+Force convergance of the migration operation by
+throttling guest runtime
+
 =back
 
 =head2 UNDEFINE CONSTANTS
