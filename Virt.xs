@@ -3136,7 +3136,7 @@ void
 core_dump_format(dom, to, format, flags=0)
       virDomainPtr dom;
       const char *to;
-      const char *format;
+      unsigned int format;
       unsigned int flags;
     PPCODE:
       if (virDomainCoreDumpWithFormat(dom, to, format, flags) < 0)
