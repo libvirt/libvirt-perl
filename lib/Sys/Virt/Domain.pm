@@ -227,6 +227,34 @@ image to C<$filename> so it can be analysed by tools such as C<crash>.
 The optional C<$flags> flags parameter is currently unused and if
 omitted will default to 0.
 
+=item $dom->core_dump_format($filename, $format, [, $flags])
+
+Trigger a core dump of the guest virtual machine, saving its memory
+image to C<$filename> so it can be analysed by tools such as C<crash>.
+The C<$format> parameter is one of the core dump format constants.
+The optional C<$flags> flags parameter is currently unused and if
+omitted will default to 0.
+
+=over 4
+
+=item Sys::Virt::Domain::CORE_DUMP_FORMAT_RAW
+
+The raw ELF format
+
+=item Sys::Virt::Domain::CORE_DUMP_FORMAT_KDUMP_ZLIB
+
+The zlib compressed ELF format
+
+=item Sys::Virt::Domain::CORE_DUMP_FORMAT_KDUMP_SNAPPY
+
+The snappy compressed ELF format
+
+=item Sys::Virt::Domain::CORE_DUMP_FORMAT_KDUMP_LZO
+
+The lzo compressed ELF format
+
+=back
+
 =item $dom->destroy()
 
 Immediately poweroff the machine. This is equivalent to removing the

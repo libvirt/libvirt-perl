@@ -3125,10 +3125,21 @@ managed_save_remove(dom, flags=0)
 void
 core_dump(dom, to, flags=0)
       virDomainPtr dom;
-      const char *to
+      const char *to;
       unsigned int flags;
     PPCODE:
       if (virDomainCoreDump(dom, to, flags) < 0)
+          _croak_error();
+
+
+void
+core_dump_format(dom, to, format, flags=0)
+      virDomainPtr dom;
+      const char *to;
+      const char *format;
+      unsigned int flags;
+    PPCODE:
+      if (virDomainCoreDumpWithFormat(dom, to, format, flags) < 0)
           _croak_error();
 
 
@@ -7142,6 +7153,10 @@ BOOT:
 
       REGISTER_CONSTANT(VIR_DOMAIN_SEND_KEY_MAX_KEYS, SEND_KEY_MAX_KEYS);
 
+      REGISTER_CONSTANT(VIR_DOMAIN_CORE_DUMP_FORMAT_RAW, CORE_DUMP_FORMAT_RAW);
+      REGISTER_CONSTANT(VIR_DOMAIN_CORE_DUMP_FORMAT_KDUMP_LZO, CORE_DUMP_FORMAT_KDUMP_LZO);
+      REGISTER_CONSTANT(VIR_DOMAIN_CORE_DUMP_FORMAT_KDUMP_SNAPPY, CORE_DUMP_FORMAT_KDUMP_SNAPPY);
+      REGISTER_CONSTANT(VIR_DOMAIN_CORE_DUMP_FORMAT_KDUMP_ZLIB, CORE_DUMP_FORMAT_KDUMP_ZLIB);
 
       stash = gv_stashpv( "Sys::Virt::DomainSnapshot", TRUE );
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_DELETE_CHILDREN, DELETE_CHILDREN);
