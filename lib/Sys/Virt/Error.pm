@@ -370,6 +370,10 @@ The FreeBSD BHyve driver
 
 The cryptographic helper APIs.
 
+=item Sys::Virt::Error::FROM_FIREWALL
+
+The firewall helper APIs.
+
 =back
 
 =head2 ERROR CODE CONSTANTS
