@@ -2799,6 +2799,10 @@ Shutdown by talking to initctl (containers only)
 
 Shutdown by sending SIGTERM to the init process
 
+=item Sys::Virt::Domain::SHUTDOWN_PARAVIRT
+
+Shutdown by issuing a paravirt power control command
+
 =back
 
 =head2 REBOOT CONSTANTS
@@ -2827,6 +2831,10 @@ Reboot by talking to initctl (containers only)
 =item Sys::Virt::Domain::REBOOT_SIGNAL
 
 Reboot by sending SIGHUP to the init process
+
+=item Sys::Virt::Domain::REBOOT_PARAVIRT
+
+Reboot by issuing a paravirt power control command
 
 =back
 
