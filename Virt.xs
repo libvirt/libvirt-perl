@@ -4741,6 +4741,67 @@ fs_trim(dom, mountPoint, minimumsv, flags=0)
 
 
 void
+fs_freeze(dom, mountPointsSV, flags=0)
+      virDomainPtr dom;
+      SV *mountPointsSV;
+      unsigned int flags;
+PREINIT:
+      AV *mountPointsAV;
+      const char **mountPoints;
+      unsigned int nMountPoints;
+      unsigned int i;
+PPCODE:
+      mountPointsAV = (AV*)SvRV(mountPointsSV);
+      nMountPoints = av_len(mountPointsAV) + 1;
+      if (nMountPoints) {
+          Newx(mountPoints, nMountPoints, const char *);
+          for (i = 0 ; i < nMountPoints ; i++) {
+              SV **mountPoint = av_fetch(mountPointsAV, i, 0);
+              mountPoints[i] = SvPV_nolen(*mountPoint);
+          }
+      } else {
+	  mountPoints = NULL;
+      }
+
+      if (virDomainFSFreeze(dom, mountPoints, nMountPoints, flags) < 0) {
+          Safefree(mountPoints);
+          _croak_error();
+      }
+
+      Safefree(mountPoints);
+
+
+void
+fs_thaw(dom, mountPointsSV, flags=0)
+      virDomainPtr dom;
+      SV *mountPointsSV;
+      unsigned int flags;
+PREINIT:
+      AV *mountPointsAV;
+      const char **mountPoints;
+      unsigned int nMountPoints;
+      unsigned int i;
+PPCODE:
+      mountPointsAV = (AV*)SvRV(mountPointsSV);
+      nMountPoints = av_len(mountPointsAV) + 1;
+      if (nMountPoints) {
+          Newx(mountPoints, nMountPoints, const char *);
+          for (i = 0 ; i < nMountPoints ; i++) {
+              SV **mountPoint = av_fetch(mountPointsAV, i, 0);
+              mountPoints[i] = SvPV_nolen(*mountPoint);
+          }
+      } else {
+	  mountPoints = NULL;
+      }
+      if (virDomainFSThaw(dom, mountPoints, nMountPoints, flags) < 0) {
+          Safefree(mountPoints);
+          _croak_error();
+      }
+
+      Safefree(mountPoints);
+
+
+void
 send_process_signal(dom, pidsv, signum, flags=0)
       virDomainPtr dom;
       SV *pidsv;

@@ -1488,6 +1488,20 @@ to remove chunks of unused space that are at least
 C<$minimum> bytes in length. C<$flags> is currently
 unused and defaults to zero.
 
+=item $dom->fs_freeze(\@mountPoints, $flags=0);
+
+Freeze all the filesystems associated with the C<@mountPoints>
+array reference. If <@mountPoints> is an empty list, then all
+filesystems will be frozen. C<$flags> is currently
+unused and defaults to zero.
+
+=item $dom->fs_thaw(\@mountPoints, $flags=0);
+
+Thaw all the filesystems associated with the C<@mountPoints>
+array reference. If <@mountPoints> is an empty list, then all
+filesystems will be thawed. C<$flags> is currently
+unused and defaults to zero.
+
 =item $dom->send_process_signal($pid, $signum, $flags=0);
 
 Send the process C<$pid> the signal C<$signum>. The
