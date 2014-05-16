@@ -4,6 +4,7 @@ Revision history for perl module Sys::Virt
 
  - Add VIR_DOMAIN_{REBOOT,SHUTDOWN}_PARAVIRT constants
  - Add virDomainFSFreeze/virDomainFSThaw APIs
+ - Add virDomainSetTime/virDomainGetTime APIs
 
 1.2.4 2014-05-06
 

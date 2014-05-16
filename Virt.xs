@@ -3161,6 +3161,37 @@ get_info(dom)
   OUTPUT:
       RETVAL
 
+AV *
+get_time(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+  PREINIT:
+      long long secs;
+      unsigned int nsecs;
+    CODE:
+      if (virDomainGetTime(dom, &secs, &nsecs, flags) < 0)
+          _croak_error();
+
+      RETVAL = (AV *)sv_2mortal((SV*)newAV());
+      (void)av_push(RETVAL, virt_newSVull(secs));
+      (void)av_push(RETVAL, newSViv(nsecs));
+  OUTPUT:
+      RETVAL
+
+
+void
+set_time(dom, secssv, nsecs, flags=0)
+      virDomainPtr dom;
+      SV *secssv;
+      unsigned int nsecs;
+      unsigned int flags;
+  PREINIT:
+      long long secs;
+  PPCODE:
+      secs = virt_SvIVll(secssv);
+
+      if (virDomainSetTime(dom, secs, nsecs, flags) < 0)
+	_croak_error();
 
 HV *
 get_control_info(dom, flags=0)
@@ -7220,6 +7251,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_CORE_DUMP_FORMAT_KDUMP_LZO, CORE_DUMP_FORMAT_KDUMP_LZO);
       REGISTER_CONSTANT(VIR_DOMAIN_CORE_DUMP_FORMAT_KDUMP_SNAPPY, CORE_DUMP_FORMAT_KDUMP_SNAPPY);
       REGISTER_CONSTANT(VIR_DOMAIN_CORE_DUMP_FORMAT_KDUMP_ZLIB, CORE_DUMP_FORMAT_KDUMP_ZLIB);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_TIME_SYNC, TIME_SYNC);
 
       stash = gv_stashpv( "Sys::Virt::DomainSnapshot", TRUE );
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_DELETE_CHILDREN, DELETE_CHILDREN);

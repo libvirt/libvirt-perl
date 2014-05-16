@@ -473,6 +473,25 @@ the current state.
 
 =back
 
+=item my ($secs, $nsecs) = $dom->get_time($flags=0);
+
+Get the current time of the guest, in seconds and nanoseconds.
+The C<$flags> parameter is currently unused and defaults to
+zero.
+
+=item $dom->set_time($secs, $nsecs, $flags=0);
+
+Set the current time of the guest, in seconds and nanoseconds.
+The C<$flags> parameter accepts one of
+
+=over 4
+
+=item C<Sys::Virt::Domain::TIME_SYNC>
+
+Re-sync domain time from domain's RTC.
+
+=back
+
 =item my @errs = $dom->get_disk_errors($flags=0)
 
 Returns a list of all disk errors that have occurred on
