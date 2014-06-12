@@ -2652,6 +2652,10 @@ The block copy job type
 
 The block commit job type
 
+=item Sys::Virt::Domain::BLOCK_JOB_TYPE_ACTIVE_COMMIT
+
+The block active commit job type
+
 =back
 
 =head2 DOMAIN BLOCK JOB COMPLETION CONSTANTS
@@ -2732,6 +2736,10 @@ Delete any files that are invalid after commit
 =item Sys::Virt::Domain::BLOCK_COMMIT_SHALLOW
 
 NULL base means next backing file, not whole chain
+
+=item Sys::Virt::Domain::BLOCK_COMMIT_ACTIVE
+
+Allow two phase commit when top is active layer
 
 =back
 
