@@ -2471,7 +2471,13 @@ Errors from the virtualization control channel
 
 =item Sys::Virt::Domain::EVENT_ID_BLOCK_JOB
 
-Completion status of asynchronous block jobs
+Completion status of asynchronous block jobs,
+identified by source file name.
+
+=item Sys::Virt::Domain::EVENT_ID_BLOCK_JOB_2
+
+Completion status of asynchronous block jobs,
+identified by target device name.
 
 =item Sys::Virt::Domain::EVENT_ID_DISK_CHANGE
 
