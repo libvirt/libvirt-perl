@@ -1765,10 +1765,11 @@ get_node_cells_free_memory(con, start, end)
       int end;
 PREINIT:
       unsigned long long *mem;
-      int i, num;
+      int i, num, ncells;
  PPCODE:
-      Newx(mem, end-start, unsigned long long);
-      if ((num = virNodeGetCellsFreeMemory(con, mem, start, end)) < 0) {
+      ncells = (end - start) + 1;
+      Newx(mem, ncells, unsigned long long);
+      if ((num = virNodeGetCellsFreeMemory(con, mem, start, ncells)) < 0) {
           Safefree(mem);
           _croak_error();
       }
