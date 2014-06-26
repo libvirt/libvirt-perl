@@ -14,3 +14,8 @@ my $info = $hv->get_node_info();
 my @models = $hv->get_cpu_model_names($info->{model});
 
 print join ("\n", sort{ lc $a cmp lc $b } @models), "\n";
+
+my @info = $hv->get_node_free_pages([2048], 0, 0);
+
+use Data::Dumper;
+print Dumper(\@info);

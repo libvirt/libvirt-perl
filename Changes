@@ -5,6 +5,7 @@ Revision history for perl module Sys::Virt
  - Add VIR_DOMAIN_BLOCK_JOB_TYPE_ACTIVE_COMMIT and
    VIR_DOMAIN_BLOCK_COMMIT_ACTIVE constants
  - Add VIR_DOMAIN_EVENT_ID_BLOCK_JOB_2 constant
+ - Add virNodeGetFreePages method
 
 1.2.5 2014-06-02
 

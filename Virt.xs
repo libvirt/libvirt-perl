@@ -1781,6 +1781,57 @@ PREINIT:
       Safefree(mem);
 
 
+void
+get_node_free_pages(con, pagesizes, start, end, flags=0)
+     virConnectPtr con;
+     SV *pagesizes;
+     int start;
+     int end;
+     unsigned int flags;
+PREINIT:
+     AV *pagesizeslist;
+     unsigned int *pages;
+     unsigned int npages;
+     unsigned long long *counts;
+     int ncells;
+     int i, j;
+ PPCODE:
+     ncells = (end - start) + 1;
+     pagesizeslist = (AV *)SvRV(pagesizes);
+     npages = av_len(pagesizeslist) + 1;
+     Newx(pages, npages, unsigned int);
+     for (i = 0; i < npages; i++) {
+         SV **pagesize = av_fetch(pagesizeslist, i, 0);
+	 pages[i] = SvIV(*pagesize);
+     }
+
+     Newx(counts, npages * ncells, unsigned long long);
+
+     if (virNodeGetFreePages(con, npages, pages, start,
+			     ncells, counts, flags) < 0) {
+         Safefree(counts);
+         Safefree(pages);
+         _croak_error();
+     }
+     EXTEND(SP, ncells);
+     for (i = 0; i < ncells; i++) {
+         HV *rec = newHV();
+	 HV *prec = newHV();
+	 (void)hv_store(rec, "cell", 4, newSViv(start + i), 0);
+	 (void)hv_store(rec, "pages", 5, newRV_noinc((SV *)prec), 0);
+
+	 for (j = 0; j < npages; j++) {
+	     (void)hv_store_ent(prec,
+				newSViv(pages[j]),
+				virt_newSVull(counts[(i * npages) + j]),
+				0);
+	 }
+	 PUSHs(newRV_noinc((SV *)rec));
+     }
+     Safefree(counts);
+     Safefree(pages);
+
+
 HV *
 get_node_cpu_stats(con, cpuNum=VIR_NODE_CPU_STATS_ALL_CPUS, flags=0)
       virConnectPtr con;

@@ -1625,6 +1625,19 @@ Returns the current free memory on the host
 
 Returns the free memory on each NUMA cell between C<$start> and C<$end>.
 
+=item @pages = $con->get_node_free_pages(\@pagesizes, $start, $end);
+
+Returns information about the number of pages free on each NUMA cell
+between C<$start> and C<$end> inclusive. The C<@pagesizes> parameter
+should be an arrayref specifying which pages sizes information should
+be returned for. Information about supported page sizes is available
+in the capabilities XML. The returned array has an element for each
+NUMA cell requested. The elements are hash references with two keys,
+'cell' specifies the NUMA cell number and 'pages' specifies the
+free page information for that cell. The 'pages' value is another
+hash reference where the keys are the page sizes and the values
+are the free count for that size.
+
 =back
 
 =head1 CONSTANTS
