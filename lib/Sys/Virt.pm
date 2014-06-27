@@ -1893,6 +1893,22 @@ The total amount of memory
 
 =back
 
+=head2 IP address constants
+
+The following constants are used to interpret IP address types
+
+=over 4
+
+=item Sys::Virt::IP_ADDR_TYPE_IPV4
+
+An IPv4 address type
+
+=item Sys::Virt::IP_ADDR_TYPE_IPV6
+
+An IPv6 address type
+
+=back
+
 =head1 BUGS
 
 Hopefully none, but the XS code needs to be audited to ensure it

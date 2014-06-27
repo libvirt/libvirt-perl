@@ -8,6 +8,7 @@ Revision history for perl module Sys::Virt
  - Add virNodeGetFreePages method
  - Add VIR_CONNECT_COMPARE_CPU_FAIL_INCOMPATIBLE
    and VIR_ERR_CPU_INCOMPATIBLE constants
+ - Add virNetworkGetDHCPLeases and constants
 
 1.2.5 2014-06-02
 

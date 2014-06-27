@@ -143,6 +143,56 @@ start upon boot. Return false, otherwise
 Set the state of the autostart flag, which determines whether the
 virtual network will automatically start upon boot of the host OS.
 
+=item @leases = $net->get_dhcp_leases($mac=undef, $flags=0)
+
+Get a list of all active DHCP leases. If C<$mac> is undefined than
+leases for all VMs are returned, otherwise only leases for the
+matching MAC address are returned. The C<$flags> parameter is
+currently unused and defaults to zero.
+
+The elements in the returned array are hash references with
+the following fields
+
+=over 4
+
+=item C<iface>
+
+Network interface name
+
+=item C<expirytime>
+
+Seconds since the epoch until the lease expires
+
+=item C<type>
+
+One of the Sys::Virt IP address type constants
+
+=item C<mac>
+
+The MAC address of the lease
+
+=item C<iaid>
+
+The IAID of the client
+
+=item C<ipaddr>
+
+The IP address of the lease
+
+=item C<prefix>
+
+The IP address prefix
+
+=item C<hostname>
+
+The optional hostname associated with the lease
+
+=item C<clientid>
+
+The client ID or DUID
+
+=back
+
 =back
 
 =head1 CONSTANTS

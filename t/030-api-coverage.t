@@ -127,6 +127,8 @@ virTypedParamsGetLLong
 virTypedParamsGetString
 virTypedParamsGetUInt
 virTypedParamsGetULLong
+
+virNetworkDHCPLeaseFree
 );
 
 foreach my $func (sort { $a cmp $b } @functions) {

@@ -5131,6 +5131,44 @@ get_autostart(net)
 
 
 void
+get_dhcp_leases(net, macsv=&PL_sv_undef, flags=0)
+      virNetworkPtr net;
+      SV *macsv;
+      unsigned int flags;
+PREINIT:
+      virNetworkDHCPLeasePtr *leases = NULL;
+      int nleases;
+      const char *mac = NULL;
+      int i;
+  PPCODE:
+      if (SvOK(macsv))
+	  mac = SvPV_nolen(macsv);
+
+      if ((nleases = virNetworkGetDHCPLeases(net, mac, &leases, flags)) < 0)
+	  _croak_error();
+
+      EXTEND(SP, nleases);
+      for (i = 0 ; i < nleases ; i++) {
+	  HV *hv = newHV();
+
+	  (void)hv_store(hv, "iface", 5, newSVpv(leases[i]->iface, 0), 0);
+	  (void)hv_store(hv, "expirytime", 10, virt_newSVll(leases[i]->expirytime), 0);
+	  (void)hv_store(hv, "type", 4, newSViv(leases[i]->type), 0);
+	  (void)hv_store(hv, "mac", 3, newSVpv(leases[i]->mac, 0), 0);
+	  (void)hv_store(hv, "iaid", 4, newSVpv(leases[i]->iaid, 0), 0);
+	  (void)hv_store(hv, "ipaddr", 6, newSVpv(leases[i]->ipaddr, 0), 0);
+	  (void)hv_store(hv, "prefix", 6, newSViv(leases[i]->prefix), 0);
+	  (void)hv_store(hv, "hostname", 8, newSVpv(leases[i]->hostname, 0), 0);
+	  (void)hv_store(hv, "clientid", 8, newSVpv(leases[i]->clientid, 0), 0);
+
+	  virNetworkDHCPLeaseFree(leases[i]);
+
+	  PUSHs(newRV_noinc((SV*)hv));
+      }
+      free(leases);
+
+
+void
 destroy(net_rv)
       SV *net_rv;
  PREINIT:
@@ -6799,6 +6837,9 @@ BOOT:
       REGISTER_CONSTANT(VIR_CONNECT_BASELINE_CPU_EXPAND_FEATURES, BASELINE_CPU_EXPAND_FEATURES);
 
       REGISTER_CONSTANT(VIR_CONNECT_COMPARE_CPU_FAIL_INCOMPATIBLE, COMPARE_CPU_FAIL_INCOMPATIBLE);
+
+      REGISTER_CONSTANT(VIR_IP_ADDR_TYPE_IPV4, IP_ADDR_TYPE_IPV4);
+      REGISTER_CONSTANT(VIR_IP_ADDR_TYPE_IPV6, IP_ADDR_TYPE_IPV6);
 
       stash = gv_stashpv( "Sys::Virt::Event", TRUE );
 
