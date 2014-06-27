@@ -1615,7 +1615,17 @@ Returns an XML document describing the hypervisor capabilities
 Checks whether the CPU definition in C<$xml> is compatible with the
 current hypervisor connection. This can be used to determine whether
 it is safe to migrate a guest to this host. The returned result is
-one of the constants listed later
+one of the constants listed later The optional C<$flags> parameter
+can take one of the following constants
+
+=over 4
+
+=item Sys::Virt::COMPARE_CPU_FAIL_INCOMPATIBLE
+
+Raise a fatal error if the CPUs are not compatible, instead of
+just returning a special error code.
+
+=back
 
 =item $mem = $con->get_node_free_memory();
 

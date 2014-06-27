@@ -748,6 +748,10 @@ An error from a DBus service API
 
 The storage volume already exists
 
+=item Sys::Virt::Error::ERR_CPU_INCOMPATIBLE
+
+The CPUs are not compatible
+
 =back
 
 =head1 AUTHORS
