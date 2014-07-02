@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+1.2.7 2014-00-00
+
+ - XXX
+
 1.2.6 2014-07-02
 
  - Add VIR_DOMAIN_BLOCK_JOB_TYPE_ACTIVE_COMMIT and
