@@ -1997,6 +1997,41 @@ PREINIT:
   OUTPUT:
       RETVAL
 
+SV *
+get_domain_capabilities(con, emulatorsv, archsv, machinesv, virttypesv, flags=0)
+      virConnectPtr con;
+      SV *emulatorsv;
+      SV *archsv;
+      SV *machinesv;
+      SV *virttypesv;
+      unsigned int flags;
+PREINIT:
+      char *emulator = NULL;
+      char *arch = NULL;
+      char *machine = NULL;
+      char *virttype = NULL;
+      char *xml;
+   CODE:
+      if (SvOK(emulatorsv))
+	  emulator = SvPV_nolen(emulatorsv);
+      if (SvOK(archsv))
+	  arch = SvPV_nolen(archsv);
+      if (SvOK(machinesv))
+	  machine = SvPV_nolen(machinesv);
+      if (SvOK(virttypesv))
+	  virttype = SvPV_nolen(virttypesv);
+
+      if (!(xml = virConnectGetDomainCapabilities(con,
+						  emulator, arch,
+						  machine, virttype,
+						  flags)))
+          _croak_error();
+
+      RETVAL = newSVpv(xml, 0);
+      free(xml);
+  OUTPUT:
+      RETVAL
+
 
 SV *
 compare_cpu(con, xml, flags=0)

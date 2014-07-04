@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 1.2.7 2014-00-00
 
- - XXX
+ - Add virConnectGetDomainCapabilities API
 
 1.2.6 2014-07-02
 

@@ -19,3 +19,7 @@ my @info = $hv->get_node_free_pages([2048], 0, 0);
 
 use Data::Dumper;
 print Dumper(\@info);
+
+
+my $xml = $hv->get_domain_capabilities(undef, "x86_64", undef, "kvm");
+print $xml;

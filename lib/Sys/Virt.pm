@@ -1610,6 +1610,16 @@ specifying the 'domain of interpretation' for security labels.
 
 Returns an XML document describing the hypervisor capabilities
 
+=item my $xml = $con->get_capabilities($emulator, $arch, $machine, $virttype, flags=0);
+
+Returns an XML document describing the capabilities of the
+requested guest configuration. Either C<$emulator> or C<$arch>
+must be a valid string referring to an emulator binary or an
+architecture name respectively. The C<$machine> parameter is
+an optional name of a guest machine, and C<$virttype> is an
+optional name of the virtualization type. C<$flags> is unused
+and defaults to zero.
+
 =item my $result = $con->compare_cpu($xml, $flags=0);
 
 Checks whether the CPU definition in C<$xml> is compatible with the
