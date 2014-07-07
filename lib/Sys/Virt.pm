@@ -1610,7 +1610,7 @@ specifying the 'domain of interpretation' for security labels.
 
 Returns an XML document describing the hypervisor capabilities
 
-=item my $xml = $con->get_capabilities($emulator, $arch, $machine, $virttype, flags=0);
+=item my $xml = $con->get_domain_capabilities($emulator, $arch, $machine, $virttype, flags=0);
 
 Returns an XML document describing the capabilities of the
 requested guest configuration. Either C<$emulator> or C<$arch>
