@@ -2711,6 +2711,10 @@ Make destination file raw
 
 Start a copy job
 
+=item Sys::Virt::Domain::BLOCK_REBASE_RELATIVE
+
+Keep backing chain referenced using relative names
+
 =back
 
 =head2 DOMAIN BLOCK JOB ABORT CONSTANTS
@@ -2746,6 +2750,10 @@ NULL base means next backing file, not whole chain
 =item Sys::Virt::Domain::BLOCK_COMMIT_ACTIVE
 
 Allow two phase commit when top is active layer
+
+=item Sys::Virt::Domain::BLOCK_COMMIT_RELATIVE
+
+Keep backing chain referenced using relative names
 
 =back
 
