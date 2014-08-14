@@ -443,6 +443,10 @@ Include sheepdog storage pools
 
 Include gluster storage pools
 
+=item Sys::Virt::StoragePool::LIST_ZFS
+
+Include ZFS storage pools
+
 =back
 
 =head1 AUTHORS

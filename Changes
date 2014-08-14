@@ -5,6 +5,7 @@ Revision history for perl module Sys::Virt
  - Add virConnectGetDomainCapabilities API
  - Add VIR_DOMAIN_BLOCK_REBASE_RELATIVE and
    VIR_DOMAIN_BLOCK_COMMIT_RELATIVE constants
+ - Add VIR_CONNECT_LIST_STORAGE_POOLS_ZFS constant
 
 1.2.6 2014-07-02
 
