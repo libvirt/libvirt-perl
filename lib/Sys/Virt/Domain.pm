@@ -1160,6 +1160,16 @@ anoymous socket pair. The C<$flags> argument should be one of
 the constants listed at the end of this document, and defaults
 to 0.
 
+=item $fd = $dom->open_graphics_fd($idx, $flags)
+
+Open the graphics console for a guest, identified by C<$idx>,
+counting from 0. The C<$flags> argument should be one of the
+constants listed at the end of this document, and defaults
+to 0. The return value will be a file descriptor connected
+to the console which must be closed when no longer needed.
+This method is preferred over C<open_graphics> since it will
+work correctly under sVirt mandatory access control policies.
+
 =item my $mimetype = $dom->screenshot($st, $screen, $flags)
 
 Capture a screenshot of the virtual machine's monitor. The C<$screen>

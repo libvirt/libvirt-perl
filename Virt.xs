@@ -3359,6 +3359,18 @@ open_graphics(dom, idx, fd, flags=0)
           _croak_error();
 
 
+int
+open_graphics_fd(dom, idx, flags=0)
+      virDomainPtr dom;
+      unsigned int idx;
+      unsigned int flags;
+  CODE:
+      if ((RETVAL = virDomainOpenGraphicsFD(dom, idx, flags)) < 0)
+          _croak_error();
+OUTPUT:
+      RETVAL
+
+
 SV *
 screenshot(dom, st, screen, flags=0)
       virDomainPtr dom;
