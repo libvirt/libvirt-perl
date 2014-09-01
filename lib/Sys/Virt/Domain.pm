@@ -1416,6 +1416,29 @@ Switch the backing path associated with C<$path> to instead
 use C<$base>. The C<$bandwidth> parameter specifies the
 maximum I/O rate to allow in MB/s.
 
+=item $dom->block_copy($path, $destxml, $params, $flags=0)
+
+Copy contents of a disk image <$path> into the target volume
+described by C<$destxml> which follows the schema of the
+<disk> element in the domain XML. The C<$params> parameter
+is a hash of optional parameters to control the process
+
+=over 4
+
+=item Sys::Virt::Domain::BLOCK_COPY_BANDWIDTH
+
+The maximum bandwidth in bytes per second.
+
+=item Sys::Virt::Domain::BLOCK_COPY_GRANULARITY
+
+The granularity in bytes of the copy process
+
+=item Sys::Virt::Domain::BLOCK_COPY_BUF_SIZE
+
+The maximum amount of data in flight in bytes.
+
+=back
+
 =item $dom->block_commit($path, $base, $top, $bandwith, $flags=0)
 
 Commit changes there were made to the temporary top level file C<$top>.
@@ -2724,6 +2747,22 @@ Start a copy job
 =item Sys::Virt::Domain::BLOCK_REBASE_RELATIVE
 
 Keep backing chain referenced using relative names
+
+=back
+
+=head2 DOMAIN BLOCK COPY CONSTANTS
+
+The following constants are useful when copying block devices
+
+=over 4
+
+=item Sys::Virt::Domain::BLOCK_COPY_SHALLOW
+
+Limit copy to top of source backing chain
+
+=item Sys::Virt::Domain::BLOCK_COPY_REUSE_EXT
+
+Reuse existing external file for copy
 
 =back
 

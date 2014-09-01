@@ -3531,6 +3531,42 @@ block_rebase(dom, path, base, bandwidth, flags=0)
 
 
 void
+block_copy(dom, path, destxml, newparams, flags=0)
+      virDomainPtr dom;
+      const char *path;
+      const char *destxml;
+      HV *newparams;
+      unsigned long flags;
+  PREINIT:
+      virTypedParameter *params;
+      int nparams;
+  PPCODE:
+      nparams = 3;
+      Newx(params, nparams, virTypedParameter);
+
+      strncpy(params[0].field, VIR_DOMAIN_BLOCK_COPY_BANDWIDTH,
+              VIR_TYPED_PARAM_FIELD_LENGTH);
+      params[0].type = VIR_TYPED_PARAM_ULLONG;
+
+      strncpy(params[1].field, VIR_DOMAIN_BLOCK_COPY_GRANULARITY,
+              VIR_TYPED_PARAM_FIELD_LENGTH);
+      params[1].type = VIR_TYPED_PARAM_UINT;
+
+      strncpy(params[2].field, VIR_DOMAIN_BLOCK_COPY_BUF_SIZE,
+              VIR_TYPED_PARAM_FIELD_LENGTH);
+      params[2].type = VIR_TYPED_PARAM_UINT;
+
+      nparams = vir_typed_param_from_hv(newparams, params, nparams);
+
+      if (virDomainBlockCopy(dom, path, destxml, params, nparams, flags) < 0) {
+          Safefree(params);
+          _croak_error();
+      }
+
+      Safefree(params);
+
+
+void
 block_commit(dom, path, base, top, bandwidth, flags=0)
       virDomainPtr dom;
       const char *path;
@@ -7379,6 +7415,14 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_BLOCK_REBASE_COPY_RAW, BLOCK_REBASE_COPY_RAW);
       REGISTER_CONSTANT(VIR_DOMAIN_BLOCK_REBASE_COPY, BLOCK_REBASE_COPY);
       REGISTER_CONSTANT(VIR_DOMAIN_BLOCK_REBASE_RELATIVE, BLOCK_REBASE_RELATIVE);
+
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BLOCK_COPY_BANDWIDTH, BLOCK_COPY_BANDWIDTH);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BLOCK_COPY_GRANULARITY, BLOCK_COPY_GRANULARITY);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_BLOCK_COPY_BUF_SIZE, BLOCK_COPY_BUF_SIZE);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_BLOCK_COPY_REUSE_EXT, BLOCK_COPY_REUSE_EXT);
+      REGISTER_CONSTANT(VIR_DOMAIN_BLOCK_COPY_SHALLOW, BLOCK_COPY_SHALLOW);
+
 
       REGISTER_CONSTANT(VIR_CONNECT_LIST_DOMAINS_ACTIVE, LIST_ACTIVE);
       REGISTER_CONSTANT(VIR_CONNECT_LIST_DOMAINS_AUTOSTART, LIST_AUTOSTART);

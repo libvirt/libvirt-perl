@@ -7,6 +7,7 @@ Revision history for perl module Sys::Virt
    VIR_DOMAIN_BLOCK_COMMIT_RELATIVE constants
  - Add VIR_CONNECT_LIST_STORAGE_POOLS_ZFS constant
  - Add virDomainOpenGraphicsFD API
+ - Add virDomainBlockCopy and related constants
 
 1.2.6 2014-07-02
 
