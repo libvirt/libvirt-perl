@@ -3188,6 +3188,64 @@ The quota for the emulator in one schedular time period
 
 =back
 
+=head2 DOMAIN STATS FLAG CONSTANTS
+
+The following constants are used as flags when requesting
+bulk domain stats from C<Sys::Virt::get_all_domain_stats>.
+
+=over 4
+
+=item Sys::Virt::GET_ALL_STATS_ACTIVE
+
+Include stats for active domains
+
+=item Sys::Virt::GET_ALL_STATS_INACTIVE
+
+Include stats for inactive domains
+
+=item Sys::Virt::GET_ALL_STATS_OTHER
+
+Include stats for other domains
+
+=item Sys::Virt::GET_ALL_STATS_PAUSED
+
+Include stats for paused domains
+
+=item Sys::Virt::GET_ALL_STATS_PERSISTENT
+
+Include stats for persistent domains
+
+=item Sys::Virt::GET_ALL_STATS_RUNNING
+
+Include stats for running domains
+
+=item Sys::Virt::GET_ALL_STATS_SHUTOFF
+
+Include stats for shutoff domains
+
+=item Sys::Virt::GET_ALL_STATS_TRANSIENT
+
+Include stats for transient domains
+
+=item Sys::Virt::GET_ALL_STATS_ENFORCE_STATS
+
+Require that all requested stats fields are returned
+
+=back
+
+=head2 DOMAIN STATS FIELD CONSTANTS
+
+The following constants are used to control which fields
+are returned for stats queries.
+
+=over
+
+=item Sys::Virt::Domain::STATS_STATE
+
+General lifecycle state
+
+=back
+
 =head2 PROCESS SIGNALS
 
 The following constants provide the names of signals

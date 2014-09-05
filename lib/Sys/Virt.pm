@@ -1161,6 +1161,22 @@ C<$flags> parameter is optional, and if omitted defaults to zero. The
 returned scalar is an XML document describing the discovered storage
 pool sources.
 
+=item my @stats = $vmm->get_all_domain_stats($stats, \@doms=undef, $flags=0);
+
+Get an list of all statistics for domains known to the hypervisor.
+The C<$stats> parameter controls which data fields to return and
+should be a combination of the DOMAIN STATS FIELD CONSTANTS.
+
+The optional C<@doms> parameter is a list of Sys::Virt::Domain objects
+to return stats for. If this is undefined, then all domains will be
+returned. The C<$flags> method can be used to filter the list of
+returned domains.
+
+The return data for the method is a list, one element for each domain.
+The element will be a hash with two keys, C<dom> pointing to an instance
+of C<Sys::Virt::Domain> and C<data> pointing to another hash reference
+containing the actual statistics.
+
 =item $vmm->interface_change_begin($flags)
 
 Begin a transaction for changing the configuration of one or more

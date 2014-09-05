@@ -2628,6 +2628,66 @@ list_nwfilter_names(con, maxnames)
       Safefree(names);
 
 
+void get_all_domain_stats(con, stats, doms_sv=&PL_sv_undef, flags=0)
+      virConnectPtr con;
+      unsigned int stats;
+      SV *doms_sv;
+      unsigned int flags;
+ PREINIT:
+      AV *doms_av;
+      int ndoms;
+      int nstats;
+      int i;
+      virDomainPtr *doms = NULL;
+      virDomainStatsRecordPtr *statsrec = NULL;
+   PPCODE:
+
+      if (SvOK(doms_sv)) {
+	  doms_av = (AV*)SvRV(doms_sv);
+	  ndoms = av_len(doms_av) + 1;
+	  fprintf(stderr, "Len %d\n", ndoms);
+      } else {
+          ndoms = 0;
+      }
+
+      if (ndoms) {
+	  Newx(doms, ndoms + 1, virDomainPtr);
+
+	  for (i = 0 ; i < ndoms ; i++) {
+	      SV **dom = av_fetch(doms_av, i, 0);
+	      doms[i] = (virDomainPtr)SvIV((SV*)SvRV(*dom));
+	  }
+	  doms[ndoms] = NULL;
+
+	  if ((nstats = virDomainListGetStats(doms, stats, &statsrec, flags)) < 0) {
+	    Safefree(doms);
+	    _croak_error();
+	  }
+      } else {
+          doms = NULL;
+
+	  if ((nstats = virConnectGetAllDomainStats(con, stats, &statsrec, flags)) < 0) {
+	    Safefree(doms);
+	    _croak_error();
+	  }
+      }
+
+      EXTEND(SP, nstats);
+      for (i = 0 ; i < nstats ; i++) {
+	HV *rec = newHV();
+	SV *dom = sv_newmortal();
+	HV *data = vir_typed_param_to_hv(statsrec[i]->params,
+					 statsrec[i]->nparams);
+	sv_setref_pv(dom, "Sys::Virt::Domain", statsrec[i]->dom);
+	virDomainRef(statsrec[i]->dom);
+	hv_store(rec, "dom", 3, SvREFCNT_inc(dom), 0);
+	hv_store(rec, "data", 4, newRV((SV*)data), 0);
+	PUSHs(newRV_noinc((SV*)rec));
+      }
+      virDomainStatsRecordListFree(statsrec);
+      Safefree(doms);
+
+
 SV *
 domain_xml_from_native(con, configtype, configdata, flags=0)
       virConnectPtr con;
@@ -7080,6 +7140,17 @@ BOOT:
       REGISTER_CONSTANT(VIR_KEYCODE_SET_WIN32, KEYCODE_SET_WIN32);
       REGISTER_CONSTANT(VIR_KEYCODE_SET_RFB, KEYCODE_SET_RFB);
 
+      REGISTER_CONSTANT(VIR_DOMAIN_STATS_STATE, STATS_STATE);
+
+      REGISTER_CONSTANT(VIR_CONNECT_GET_ALL_DOMAINS_STATS_ACTIVE, GET_ALL_STATS_ACTIVE);
+      REGISTER_CONSTANT(VIR_CONNECT_GET_ALL_DOMAINS_STATS_INACTIVE, GET_ALL_STATS_INACTIVE);
+      REGISTER_CONSTANT(VIR_CONNECT_GET_ALL_DOMAINS_STATS_OTHER, GET_ALL_STATS_OTHER);
+      REGISTER_CONSTANT(VIR_CONNECT_GET_ALL_DOMAINS_STATS_PAUSED, GET_ALL_STATS_PAUSED);
+      REGISTER_CONSTANT(VIR_CONNECT_GET_ALL_DOMAINS_STATS_PERSISTENT, GET_ALL_STATS_PERSISTENT);
+      REGISTER_CONSTANT(VIR_CONNECT_GET_ALL_DOMAINS_STATS_RUNNING, GET_ALL_STATS_RUNNING);
+      REGISTER_CONSTANT(VIR_CONNECT_GET_ALL_DOMAINS_STATS_SHUTOFF, GET_ALL_STATS_SHUTOFF);
+      REGISTER_CONSTANT(VIR_CONNECT_GET_ALL_DOMAINS_STATS_TRANSIENT, GET_ALL_STATS_TRANSIENT);
+      REGISTER_CONSTANT(VIR_CONNECT_GET_ALL_DOMAINS_STATS_ENFORCE_STATS, GET_ALL_STATS_ENFORCE_STATS);
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_DEFINED, EVENT_DEFINED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_UNDEFINED, EVENT_UNDEFINED);
