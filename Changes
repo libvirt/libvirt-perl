@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-1.2.7 2014-00-00
+1.2.8 2014-09-05
 
  - Add virConnectGetDomainCapabilities API
  - Add VIR_DOMAIN_BLOCK_REBASE_RELATIVE and
