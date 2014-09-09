@@ -1391,7 +1391,16 @@ Aborts the currently executing job
 
 Returns a hash reference summarising the execution state of
 the block job. The C<$path> parameter should be the fully
-qualified path of the block device being changed.
+qualified path of the block device being changed. Valid
+C<$flags> include:
+
+=over 4
+
+=item Sys::Virt::Domain::BLOCK_JOB_INFO_BANDWIDTH_BYTES
+
+Treat bandwidth value as bytes instead of MiB.
+
+=back
 
 =item $dom->set_block_job_speed($path, $bandwidth, $flags=0)
 
@@ -2743,6 +2752,10 @@ Make destination file raw
 =item Sys::Virt::Domain::BLOCK_REBASE_COPY
 
 Start a copy job
+
+=item Sys::Virt::Domain::BLOCK_REBASE_COPY_DEV
+
+Treat destination as a block device instead of file
 
 =item Sys::Virt::Domain::BLOCK_REBASE_RELATIVE
 
