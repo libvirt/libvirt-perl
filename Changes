@@ -4,6 +4,7 @@ Revision history for perl module Sys::Virt
 
  - Add VIR_DOMAIN_BLOCK_JOB_INFO_BANDWIDTH_BYTES constant
  - Add VIR_DOMAIN_BLOCK_REBASE_COPY_DEV constant
+ - Add VIR_DOMAIN_JOB_STATS_COMPLETED constant
 
 1.2.8 2014-09-05
 

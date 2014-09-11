@@ -1281,7 +1281,7 @@ The expected amount of file remaining to be processed by the job, in bytes.
 
 =back
 
-=item my ($type, $stats) = $dom->get_job_stats()
+=item my ($type, $stats) = $dom->get_job_stats($flags=0)
 
 Returns an array summarising the execution state of the
 background job. The C<$type> value is one of the JOB TYPE
@@ -1295,6 +1295,17 @@ following constants.
 
 The type of job, one of the JOB TYPE constants listed later in
 this document.
+
+The C<$flags> parameter defaults to zero and can take one of
+the following constants.
+
+=over 4
+
+=item Sys::Virt::Domain::JOB_STATS_COMPLETED
+
+Return the stats of the most recently completed job.
+
+=back
 
 =item Sys::Virt::Domain::JOB_TIME_ELAPSED
 
