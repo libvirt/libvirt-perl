@@ -2013,6 +2013,11 @@ domain
 Also remove any snapshot metadata when undefining the virtual
 domain.
 
+=item Sys::Virt::Domain::UNDEFINE_NVRAM
+
+Also remove any NVRAM state file when undefining the virtual
+domain.
+
 =back
 
 =head2 JOB TYPES
