@@ -1417,7 +1417,17 @@ Treat bandwidth value as bytes instead of MiB.
 
 Change the maximum I/O bandwidth used by the block job that
 is currently executing for C<$path>. The C<$bandwidth> argument
-is specified in MB/s
+is specified in MB/s.  The C<$flags> parameter
+can take the bitwise union of the values:
+
+=over 4
+
+=item Sys::Virt::Domain::BLOCK_JOB_SPEED_BANDWIDTH_BYTES
+
+The C<$bandwidth> parameter value is measured in bytes/s
+instead of MB/s.
+
+=back
 
 =item $dom->abort_block_job($path, $flags=0)
 
@@ -1428,13 +1438,33 @@ associated with C<$path>
 
 Merge the backing files associated with C<$path> into the
 top level file. The C<$bandwidth> parameter specifies the
-maximum I/O rate to allow in MB/s.
+maximum I/O rate to allow in MB/s. The C<$flags> parameter
+can take the bitwise union of the values:
+
+=over 4
+
+=item Sys::Virt::Domain::BLOCK_PULL_BANDWIDTH_BYTES
+
+The C<$bandwidth> parameter value is measured in bytes/s
+instead of MB/s.
+
+=back
 
 =item $dom->block_rebase($path, $base, $bandwith, $flags=0)
 
 Switch the backing path associated with C<$path> to instead
 use C<$base>. The C<$bandwidth> parameter specifies the
-maximum I/O rate to allow in MB/s.
+maximum I/O rate to allow in MB/s. The C<$flags> parameter
+can take the bitwise union of the values:
+
+=over 4
+
+=item Sys::Virt::Domain::BLOCK_REBASE_BANDWIDTH_BYTES
+
+The C<$bandwidth> parameter value is measured in bytes/s
+instead of MB/s.
+
+=back
 
 =item $dom->block_copy($path, $destxml, $params, $flags=0)
 
@@ -1464,7 +1494,17 @@ The maximum amount of data in flight in bytes.
 Commit changes there were made to the temporary top level file C<$top>.
 Takes all the differences between C<$top> and C<$base> and merge them
 into C<$base>. The C<$bandwidth> parameter specifies the
-maximum I/O rate to allow in MB/s.
+maximum I/O rate to allow in MB/s.  The C<$flags> parameter
+can take the bitwise union of the values:
+
+=over 4
+
+=item Sys::Virt::Domain::BLOCK_COMMIT_BANDWIDTH_BYTES
+
+The C<$bandwidth> parameter value is measured in bytes
+instead of MB/s.
+
+=back
 
 =item $count = $dom->num_of_snapshots()
 
