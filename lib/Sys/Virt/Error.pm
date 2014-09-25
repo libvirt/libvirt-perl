@@ -374,6 +374,10 @@ The cryptographic helper APIs.
 
 The firewall helper APIs.
 
+=item Sys::Virt::Error::FROM_POLKIT
+
+The polkit authentication / authorization APIs
+
 =back
 
 =head2 ERROR CODE CONSTANTS
