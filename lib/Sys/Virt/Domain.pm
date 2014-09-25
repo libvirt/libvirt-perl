@@ -3309,9 +3309,29 @@ are returned for stats queries.
 
 =over
 
+=item Sys::Virt::Domain::STATS_BALLOON
+
+Balloon statistics
+
+=item Sys::Virt::Domain::STATS_BLOCK
+
+Block device info
+
+=item Sys::Virt::Domain::STATS_CPU_TOTAL
+
+CPU usage info
+
+=item Sys::Virt::Domain::STATS_INTERFACE
+
+Network interface info
+
 =item Sys::Virt::Domain::STATS_STATE
 
 General lifecycle state
+
+=item Sys::Virt::Domain::STATS_VCPU
+
+Virtual CPU info
 
 =back
 
