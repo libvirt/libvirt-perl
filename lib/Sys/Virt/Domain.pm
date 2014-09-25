@@ -1353,6 +1353,10 @@ The number of pages transferred without any compression
 
 The number of bytes transferred without any compression
 
+=item Sys::Virt::Domain::JOB_MEMORY_BPS
+
+The bytes per second transferred
+
 =item Sys::Virt::Domain::JOB_DISK_TOTAL
 
 The total amount of file expected to be processed by the job, in bytes.
@@ -1364,6 +1368,10 @@ The current amount of file processed by the job, in bytes.
 =item Sys::Virt::Domain::JOB_DISK_REMAINING
 
 The expected amount of file remaining to be processed by the job, in bytes.
+
+=item Sys::Virt::Domain::JOB_DISK_BPS
+
+The bytes per second transferred
 
 =item Sys::Virt::Domain::JOB_COMPRESSION_CACHE
 
@@ -1391,6 +1399,10 @@ non-compressed page.
 
 The number of milliseconds of downtime expected during
 migration switchover.
+
+=item Sys::Virt::Domain::JOB_SETUP_TIME
+
+The number of milliseconds of time doing setup of the job
 
 =back
 
