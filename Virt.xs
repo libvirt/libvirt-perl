@@ -1874,6 +1874,47 @@ PREINIT:
      Safefree(counts);
      Safefree(pages);
 
+void
+node_alloc_pages(con, pages, start, end, flags=0)
+      virConnectPtr con;
+      SV *pages;
+      int start;
+      int end;
+      unsigned int flags;
+PREINIT:
+      AV *pageslist;
+      unsigned int npages;
+      unsigned int *pagesizes;
+      unsigned long long *pagecounts;
+      unsigned int ncells;
+      unsigned int i;
+  PPCODE:
+      ncells = (end - start) + 1;
+      pageslist = (AV *)SvRV(pages);
+      npages = av_len(pageslist) + 1;
+
+      Newx(pagesizes, npages, unsigned int);
+      Newx(pagecounts, npages, unsigned long long);
+      for (i = 0; i < npages; i++) {
+          SV **pageinforv = av_fetch(pageslist, i, 0);
+	  AV *pageinfo = (AV*)SvRV(*pageinforv);
+          SV **pagesize = av_fetch(pageinfo, 0, 0);
+          SV **pagecount = av_fetch(pageinfo, 1, 0);
+
+          pagesizes[i] = SvIV(*pagesize);
+	  pagecounts[i] = virt_SvIVull(*pagecount);
+      }
+
+      if (virNodeAllocPages(con, npages, pagesizes, pagecounts,
+			    start, ncells, flags) < 0) {
+          Safefree(pagesizes);
+          Safefree(pagecounts);
+	  _croak_error();
+      }
+
+      Safefree(pagesizes);
+      Safefree(pagecounts);
+
 
 HV *
 get_node_cpu_stats(con, cpuNum=VIR_NODE_CPU_STATS_ALL_CPUS, flags=0)
@@ -7029,6 +7070,9 @@ BOOT:
 
       REGISTER_CONSTANT(VIR_IP_ADDR_TYPE_IPV4, IP_ADDR_TYPE_IPV4);
       REGISTER_CONSTANT(VIR_IP_ADDR_TYPE_IPV6, IP_ADDR_TYPE_IPV6);
+
+      REGISTER_CONSTANT(VIR_NODE_ALLOC_PAGES_ADD, NODE_ALLOC_PAGES_ADD);
+      REGISTER_CONSTANT(VIR_NODE_ALLOC_PAGES_SET, NODE_ALLOC_PAGES_SET);
 
       stash = gv_stashpv( "Sys::Virt::Event", TRUE );
 

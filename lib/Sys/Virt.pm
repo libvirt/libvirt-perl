@@ -1674,6 +1674,30 @@ free page information for that cell. The 'pages' value is another
 hash reference where the keys are the page sizes and the values
 are the free count for that size.
 
+=item $con->node_alloc_pages(\@pages, $start, $end, $flags=0)
+
+Allocate further huge pages for the reserved pool. The <\@pages>
+parameter is an array reference with one entry per page size to
+allocate for. Each entry is a further array reference where the
+first element is the page size and the second element is the
+page count. The same number of pages will be allocated on each
+NUMA node in the range C<$start> to C<$end> inclusive. The
+C<$flags> parameter accepts two contants
+
+=over 4
+
+=item Sys::Virt::NODE_ALLOC_PAGES_ADD
+
+The requested number of pages will be added to the existing huge
+page reservation.
+
+=item Sys::Virt::NODE_ALLOC_PAGES_SET
+
+The huge page reservation will be set to exactly the requested
+number
+
+=back
+
 =back
 
 =head1 CONSTANTS
