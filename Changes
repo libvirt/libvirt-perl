@@ -11,6 +11,7 @@ Revision history for perl module Sys::Virt
  - Add more VIR_DOMAIN_JOB_* constants
  - Add virConnectDomainEventTunable event callback & constants
  - Add virNodeAllocPages API & constants
+ - Add VIR_MIGRATE_RDMA_PIN_ALL constant
 
 1.2.8 2014-09-05
 

@@ -2046,6 +2046,10 @@ Abort if an I/O error occurrs on the disk
 Force convergance of the migration operation by
 throttling guest runtime
 
+=item Sys::Virt::Domain::MIGRATE_RDMA_PIN_ALL
+
+Pin memory for RDMA transfer
+
 =back
 
 =head2 UNDEFINE CONSTANTS
