@@ -158,6 +158,120 @@ _populate_constant_ull(HV *stash, const char *name, unsigned long long val)
 #define REGISTER_CONSTANT_STR(name, key) _populate_constant_str(stash, #key, name)
 #define REGISTER_CONSTANT_ULL(name, key) _populate_constant_ull(stash, #key, name)
 
+static HV *
+vir_typed_param_to_hv(virTypedParameter *params, int nparams)
+{
+    HV *ret = (HV *)sv_2mortal((SV*)newHV());
+    unsigned int i;
+    const char *field;
+    STRLEN val_length;
+
+    for (i = 0 ; i < nparams ; i++) {
+        SV *val = NULL;
+
+        switch (params[i].type) {
+        case VIR_TYPED_PARAM_INT:
+            val = newSViv(params[i].value.i);
+            break;
+
+        case VIR_TYPED_PARAM_UINT:
+            val = newSViv((int)params[i].value.ui);
+            break;
+
+        case VIR_TYPED_PARAM_LLONG:
+            val = virt_newSVll(params[i].value.l);
+            break;
+
+        case VIR_TYPED_PARAM_ULLONG:
+            val = virt_newSVull(params[i].value.ul);
+            break;
+
+        case VIR_TYPED_PARAM_DOUBLE:
+            val = newSVnv(params[i].value.d);
+            break;
+
+        case VIR_TYPED_PARAM_BOOLEAN:
+            val = newSViv(params[i].value.b);
+            break;
+
+        case VIR_TYPED_PARAM_STRING:
+            val_length = strlen(params[i].value.s);
+            val = newSVpv(params[i].value.s, val_length);
+            break;
+
+        }
+
+        field = params[i].field;
+        (void)hv_store(ret, field, strlen(params[i].field), val, 0);
+    }
+
+    return ret;
+}
+
+
+static int
+vir_typed_param_from_hv(HV *newparams, virTypedParameter *params, int nparams)
+{
+    unsigned int i;
+    char * ptr;
+    STRLEN len;
+
+    /* We only want to set parameters which we're actually changing
+     * so here we figure out which elements of 'params' we need to
+     * update, and overwrite the others
+     */
+    for (i = 0 ; i < nparams ;) {
+        if (!hv_exists(newparams, params[i].field, strlen(params[i].field))) {
+            if ((nparams-i) > 1)
+                memmove(params+i, params+i+1, sizeof(*params)*(nparams-(i+1)));
+            nparams--;
+            continue;
+        }
+
+        i++;
+    }
+
+    for (i = 0 ; i < nparams ; i++) {
+        SV **val;
+
+        val = hv_fetch (newparams, params[i].field, strlen(params[i].field), 0);
+
+        switch (params[i].type) {
+        case VIR_TYPED_PARAM_INT:
+            params[i].value.i = SvIV(*val);
+            break;
+
+        case VIR_TYPED_PARAM_UINT:
+            params[i].value.ui = SvIV(*val);
+            break;
+
+        case VIR_TYPED_PARAM_LLONG:
+            params[i].value.l = virt_SvIVll(*val);
+            break;
+
+        case VIR_TYPED_PARAM_ULLONG:
+            params[i].value.ul = virt_SvIVull(*val);
+            break;
+
+        case VIR_TYPED_PARAM_DOUBLE:
+            params[i].value.d = SvNV(*val);
+            break;
+
+        case VIR_TYPED_PARAM_BOOLEAN:
+            params[i].value.b = SvIV(*val);
+            break;
+
+        case VIR_TYPED_PARAM_STRING:
+            ptr = SvPV(*val, len);
+            params[i].value.s = (char *)ptr;
+            break;
+        }
+    }
+
+    return nparams;
+}
+
+
 static int
 _domain_event_lifecycle_callback(virConnectPtr con,
                                  virDomainPtr dom,
@@ -782,6 +896,49 @@ _domain_event_device_removed_callback(virConnectPtr con,
 
 
 static int
+_domain_event_tunable_callback(virConnectPtr con,
+			       virDomainPtr dom,
+			       virTypedParameterPtr params,
+			       size_t nparams,
+			       void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    HV *params_hv;
+    SV *domref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+
+    params_hv = vir_typed_param_to_hv(params, nparams);
+
+    XPUSHs(domref);
+    XPUSHs(newRV(( SV*)params_hv));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
+static int
 _network_event_lifecycle_callback(virConnectPtr con,
 				  virNetworkPtr net,
 				  int event,
@@ -1355,120 +1512,6 @@ _stream_recv_all_sink(virStreamPtr st,
     SvREFCNT_dec(datasv);
 
     return ret;
-}
-
-
-static HV *
-vir_typed_param_to_hv(virTypedParameter *params, int nparams)
-{
-    HV *ret = (HV *)sv_2mortal((SV*)newHV());
-    unsigned int i;
-    const char *field;
-    STRLEN val_length;
-
-    for (i = 0 ; i < nparams ; i++) {
-        SV *val = NULL;
-
-        switch (params[i].type) {
-        case VIR_TYPED_PARAM_INT:
-            val = newSViv(params[i].value.i);
-            break;
-
-        case VIR_TYPED_PARAM_UINT:
-            val = newSViv((int)params[i].value.ui);
-            break;
-
-        case VIR_TYPED_PARAM_LLONG:
-            val = virt_newSVll(params[i].value.l);
-            break;
-
-        case VIR_TYPED_PARAM_ULLONG:
-            val = virt_newSVull(params[i].value.ul);
-            break;
-
-        case VIR_TYPED_PARAM_DOUBLE:
-            val = newSVnv(params[i].value.d);
-            break;
-
-        case VIR_TYPED_PARAM_BOOLEAN:
-            val = newSViv(params[i].value.b);
-            break;
-
-        case VIR_TYPED_PARAM_STRING:
-            val_length = strlen(params[i].value.s);
-            val = newSVpv(params[i].value.s, val_length);
-            break;
-
-        }
-
-        field = params[i].field;
-        (void)hv_store(ret, field, strlen(params[i].field), val, 0);
-    }
-
-    return ret;
-}
-
-
-static int
-vir_typed_param_from_hv(HV *newparams, virTypedParameter *params, int nparams)
-{
-    unsigned int i;
-    char * ptr;
-    STRLEN len;
-
-    /* We only want to set parameters which we're actually changing
-     * so here we figure out which elements of 'params' we need to
-     * update, and overwrite the others
-     */
-    for (i = 0 ; i < nparams ;) {
-        if (!hv_exists(newparams, params[i].field, strlen(params[i].field))) {
-            if ((nparams-i) > 1)
-                memmove(params+i, params+i+1, sizeof(*params)*(nparams-(i+1)));
-            nparams--;
-            continue;
-        }
-
-        i++;
-    }
-
-    for (i = 0 ; i < nparams ; i++) {
-        SV **val;
-
-        val = hv_fetch (newparams, params[i].field, strlen(params[i].field), 0);
-
-        switch (params[i].type) {
-        case VIR_TYPED_PARAM_INT:
-            params[i].value.i = SvIV(*val);
-            break;
-
-        case VIR_TYPED_PARAM_UINT:
-            params[i].value.ui = SvIV(*val);
-            break;
-
-        case VIR_TYPED_PARAM_LLONG:
-            params[i].value.l = virt_SvIVll(*val);
-            break;
-
-        case VIR_TYPED_PARAM_ULLONG:
-            params[i].value.ul = virt_SvIVull(*val);
-            break;
-
-        case VIR_TYPED_PARAM_DOUBLE:
-            params[i].value.d = SvNV(*val);
-            break;
-
-        case VIR_TYPED_PARAM_BOOLEAN:
-            params[i].value.b = SvIV(*val);
-            break;
-
-        case VIR_TYPED_PARAM_STRING:
-            ptr = SvPV(*val, len);
-            params[i].value.s = (char *)ptr;
-            break;
-        }
-    }
-
-    return nparams;
 }
 
 
@@ -2821,6 +2864,9 @@ PREINIT:
       case VIR_DOMAIN_EVENT_ID_DEVICE_REMOVED:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_device_removed_callback);
           break;
+      case VIR_DOMAIN_EVENT_ID_TUNABLE:
+	  callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_tunable_callback);
+	  break;
       default:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_generic_callback);
           break;
@@ -7297,6 +7343,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_TRAY_CHANGE, EVENT_ID_TRAY_CHANGE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_BALLOON_CHANGE, EVENT_ID_BALLOON_CHANGE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_DEVICE_REMOVED, EVENT_ID_DEVICE_REMOVED);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_TUNABLE, EVENT_ID_TUNABLE);
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_NONE, EVENT_WATCHDOG_NONE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_PAUSE, EVENT_WATCHDOG_PAUSE);
@@ -7537,6 +7584,21 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_CORE_DUMP_FORMAT_KDUMP_ZLIB, CORE_DUMP_FORMAT_KDUMP_ZLIB);
 
       REGISTER_CONSTANT(VIR_DOMAIN_TIME_SYNC, TIME_SYNC);
+
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_CPU_CPU_SHARES, TUNABLE_CPU_CPU_SHARES);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_CPU_EMULATORPIN, TUNABLE_CPU_EMULATORPIN);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_CPU_EMULATOR_PERIOD, TUNABLE_CPU_EMULATOR_PERIOD);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_CPU_EMULATOR_QUOTA, TUNABLE_CPU_EMULATOR_QUOTA);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_CPU_VCPUPIN, TUNABLE_CPU_VCPUPIN);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_CPU_VCPU_PERIOD, TUNABLE_CPU_VCPU_PERIOD);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_CPU_VCPU_QUOTA, TUNABLE_CPU_VCPU_QUOTA);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_BLKDEV_DISK, TUNABLE_BLKDEV_DISK);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_BLKDEV_READ_BYTES_SEC, TUNABLE_BLKDEV_READ_BYTES_SEC);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_BLKDEV_READ_IOPS_SEC, TUNABLE_BLKDEV_READ_IOPS_SEC);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_BLKDEV_TOTAL_BYTES_SEC, TUNABLE_BLKDEV_TOTAL_BYTES_SEC);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_BLKDEV_TOTAL_IOPS_SEC, TUNABLE_BLKDEV_TOTAL_IOPS_SEC);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_BLKDEV_WRITE_BYTES_SEC, TUNABLE_BLKDEV_WRITE_BYTES_SEC);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_BLKDEV_WRITE_IOPS_SEC, TUNABLE_BLKDEV_WRITE_IOPS_SEC);
 
       stash = gv_stashpv( "Sys::Virt::DomainSnapshot", TRUE );
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_DELETE_CHILDREN, DELETE_CHILDREN);

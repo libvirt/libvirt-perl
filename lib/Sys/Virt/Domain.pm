@@ -2617,6 +2617,13 @@ Balloon target changes
 
 Asynchronous guest device removal
 
+=item Sys::Virt::Domain::EVENT_ID_TUNABLE
+
+Changes of any domain tuning parameters. The callback
+will be provided with a hash listing all changed parameters.
+The later DOMAIN TUNABLE constants can be useful when accessing
+the hash keys
+
 =back
 
 =head2 IO ERROR EVENT CONSTANTS
@@ -3614,6 +3621,71 @@ SIGRT31
 =item Sys::Virt::Domain::PROCESS_SIGNAL_RT32
 
 SIGRT32
+
+=back
+
+=head2 DOMAIN TUNABLE CONSTANTS
+
+The following constants are useful when accessing domain
+tuning parameters in APIs and events
+
+=over 4
+
+=item Sys::Virt::Domain::TUNABLE_CPU_CPU_SHARES
+
+Proportional CPU weight
+
+=item Sys::Virt::Domain::TUNABLE_CPU_EMULATORPIN
+
+Emulator thread CPU pinning mask
+
+=item Sys::Virt::Domain::TUNABLE_CPU_EMULATOR_PERIOD
+
+Emulator thread CPU period
+
+=item Sys::Virt::Domain::TUNABLE_CPU_EMULATOR_QUOTA
+
+Emulator thread CPU quota
+
+=item Sys::Virt::Domain::TUNABLE_CPU_VCPUPIN
+
+VCPU thread pinning mask
+
+=item Sys::Virt::Domain::TUNABLE_CPU_VCPU_PERIOD
+
+VCPU thread period
+
+=item Sys::Virt::Domain::TUNABLE_CPU_VCPU_QUOTA
+
+VCPU thread quota
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_DISK
+
+The name of guest disks
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_READ_BYTES_SEC
+
+Read throughput in bytes per sec
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_READ_IOPS_SEC
+
+Read throughput in I/O operations per sec
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_TOTAL_BYTES_SEC
+
+Total throughput in bytes per sec
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_TOTAL_IOPS_SEC
+
+Total throughput in I/O operations per sec
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_WRITE_BYTES_SEC
+
+Write throughput in bytes per sec
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_WRITE_IOPS_SEC
+
+Write throughput in I/O operations per sec
 
 =back
 

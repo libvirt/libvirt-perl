@@ -88,6 +88,7 @@ virConnectDomainEventPMWakeupCallback
 virConnectDomainEventTrayChangeCallback
 virConnectDomainEventBalloonChangeCallback
 virConnectDomainEventDeviceRemovedCallback
+virConnectDomainEventTunableCallback
 
 virConnectNetworkEventLifecycleCallback
 
