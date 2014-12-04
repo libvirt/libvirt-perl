@@ -3720,6 +3720,34 @@ Write throughput in bytes per sec
 
 Write throughput in I/O operations per sec
 
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_READ_BYTES_SEC_MAX
+
+Maximum read throughput in bytes per sec
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_READ_IOPS_SEC_MAX
+
+Maximum read throughput in I/O operations per sec
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_TOTAL_BYTES_SEC_MAX
+
+Maximum total throughput in bytes per sec
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_TOTAL_IOPS_SEC_MAX
+
+Maximum total throughput in I/O operations per sec
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_WRITE_BYTES_SEC_MAX
+
+Maximum write throughput in bytes per sec
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_WRITE_IOPS_SEC_MAX
+
+Maximum write throughput in I/O operations per sec
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_SIZE_IOPS_SEC
+
+The maximum I/O operations per second
+
 =back
 
 =head1 AUTHORS

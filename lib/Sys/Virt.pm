@@ -1858,6 +1858,10 @@ How many pages changing too fast to be placed in a tree.
 
 How many milliseconds the shared memory service should sleep before next scan.
 
+=item Sys::Virt::NODE_MEMORY_SHARED_MERGE_ACROSS_NODES
+
+Whether pages can be merged across NUMA nodes
+
 =back
 
 =head2 CLOSE REASON CONSTANTS
