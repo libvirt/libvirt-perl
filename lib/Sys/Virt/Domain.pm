@@ -473,11 +473,13 @@ the current state.
 
 =back
 
-=item my ($secs, $nsecs) = $dom->get_time($flags=0);
+=item my $time = $dom->get_time($flags=0);
 
 Get the current time of the guest, in seconds and nanoseconds.
 The C<$flags> parameter is currently unused and defaults to
-zero.
+zero. The return value is an array ref with two elements,
+the first contains the time in seconds, the second contains
+the remaining nanoseconds.
 
 =item $dom->set_time($secs, $nsecs, $flags=0);
 
