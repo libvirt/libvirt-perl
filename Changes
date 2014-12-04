@@ -6,6 +6,8 @@ Revision history for perl module Sys::Virt
  - Add missed VIR_NODE_MEMORY_SHARED_MERGE_ACROSS_NODES constant
  - Add new VIR_DOMAIN_TUNABLE_BLKDEV* constants
  - Add new VIR_DOMAIN_BLOCK_IOTUNE* constants
+ - Add support for VIR_CONNECT_DOMAIN_EVENT_ID_AGENT_LIFECYCLE
+   event callbacks & constants
 
 1.2.9 2014-10-02
 

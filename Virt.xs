@@ -939,6 +939,46 @@ _domain_event_tunable_callback(virConnectPtr con,
 
 
 static int
+_domain_event_agent_lifecycle_callback(virConnectPtr con,
+				       virDomainPtr dom,
+				       int state,
+				       int reason,
+				       void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *domref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+    XPUSHs(domref);
+    XPUSHs(sv_2mortal(newSViv(state)));
+    XPUSHs(sv_2mortal(newSViv(reason)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
+static int
 _network_event_lifecycle_callback(virConnectPtr con,
 				  virNetworkPtr net,
 				  int event,
@@ -2908,6 +2948,9 @@ PREINIT:
       case VIR_DOMAIN_EVENT_ID_TUNABLE:
 	  callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_tunable_callback);
 	  break;
+      case VIR_DOMAIN_EVENT_ID_AGENT_LIFECYCLE:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_agent_lifecycle_callback);
+          break;
       default:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_generic_callback);
           break;
@@ -7422,6 +7465,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_BALLOON_CHANGE, EVENT_ID_BALLOON_CHANGE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_DEVICE_REMOVED, EVENT_ID_DEVICE_REMOVED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_TUNABLE, EVENT_ID_TUNABLE);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_AGENT_LIFECYCLE, EVENT_ID_AGENT_LIFECYCLE);
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_NONE, EVENT_WATCHDOG_NONE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_PAUSE, EVENT_WATCHDOG_PAUSE);
@@ -7447,6 +7491,13 @@ BOOT:
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_TRAY_CHANGE_OPEN, EVENT_TRAY_CHANGE_OPEN);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_TRAY_CHANGE_CLOSE, EVENT_TRAY_CHANGE_CLOSE);
+
+      REGISTER_CONSTANT(VIR_CONNECT_DOMAIN_EVENT_AGENT_LIFECYCLE_STATE_CONNECTED, EVENT_AGENT_LIFECYCLE_STATE_CONNECTED);
+      REGISTER_CONSTANT(VIR_CONNECT_DOMAIN_EVENT_AGENT_LIFECYCLE_STATE_DISCONNECTED, EVENT_AGENT_LIFECYCLE_STATE_DISCONNECTED);
+
+      REGISTER_CONSTANT(VIR_CONNECT_DOMAIN_EVENT_AGENT_LIFECYCLE_REASON_CHANNEL, EVENT_AGENT_LIFECYCLE_REASON_CHANNEL);
+      REGISTER_CONSTANT(VIR_CONNECT_DOMAIN_EVENT_AGENT_LIFECYCLE_REASON_DOMAIN_STARTED, EVENT_AGENT_LIFECYCLE_REASON_DOMAIN_STARTED);
+      REGISTER_CONSTANT(VIR_CONNECT_DOMAIN_EVENT_AGENT_LIFECYCLE_REASON_UNKNOWN, EVENT_AGENT_LIFECYCLE_REASON_UNKNOWN);
 
       REGISTER_CONSTANT_STR(VIR_DOMAIN_MEMORY_HARD_LIMIT, MEMORY_HARD_LIMIT);
       REGISTER_CONSTANT_STR(VIR_DOMAIN_MEMORY_SOFT_LIMIT, MEMORY_SOFT_LIMIT);

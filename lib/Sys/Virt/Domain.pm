@@ -2685,6 +2685,42 @@ will be provided with a hash listing all changed parameters.
 The later DOMAIN TUNABLE constants can be useful when accessing
 the hash keys
 
+=item Sys::Virt::Domain::EVENT_ID_AGENT_LIFECYCLE
+
+Domain guest agent lifecycle events. The C<state> parameter
+to the callback will match one of the constants
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_AGENT_LIFECYCLE_STATE_CONNECTED
+
+The agent is now connected
+
+=item Sys::Virt::Domain::EVENT_AGENT_LIFECYCLE_STATE_DISCONNECTED
+
+The agent is now disconnected
+
+=back
+
+The second parameter, C<reason>, matches one of the following
+constants
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_AGENT_LIFECYCLE_REASON_UNKNOWN
+
+The reason is unknown
+
+=item Sys::Virt::Domain::EVENT_AGENT_LIFECYCLE_REASON_DOMAIN_STARTED
+
+The domain was initially booted
+
+=item Sys::Virt::Domain::EVENT_AGENT_LIFECYCLE_REASON_CHANNEL
+
+The channel on a running guest changed state
+
+=back
+
 =back
 
 =head2 IO ERROR EVENT CONSTANTS
