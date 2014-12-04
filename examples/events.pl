@@ -20,10 +20,20 @@ sub lifecycle_event {
     print "$dom $event $detail\n";
 }
 
+sub agent_lifecycle_event {
+    my $dom = shift;
+    my $state = shift;
+    my $reason = shift;
+
+    print "Agent $dom state=$state reason=$reason\n";
+}
 
 $c->domain_event_register_any(undef,
 			      Sys::Virt::Domain::EVENT_ID_LIFECYCLE,
 			      \&lifecycle_event);
+$c->domain_event_register_any(undef,
+			      Sys::Virt::Domain::EVENT_ID_AGENT_LIFECYCLE,
+			      \&agent_lifecycle_event);
 
 $c->register_close_callback(
     sub {

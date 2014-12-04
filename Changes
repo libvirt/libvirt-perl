@@ -9,6 +9,7 @@ Revision history for perl module Sys::Virt
  - Add support for VIR_CONNECT_DOMAIN_EVENT_ID_AGENT_LIFECYCLE
    event callbacks & constants
  - Fix docs for Sys::Virt::Domain::get_time method
+ - Demo agent lifecycle events in example program
 
 1.2.9 2014-10-02
 
