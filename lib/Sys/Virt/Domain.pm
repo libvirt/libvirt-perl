@@ -2233,6 +2233,34 @@ The I/O operations read per second.
 
 The I/O operations written per second.
 
+=item Sys::Virt::Domain::BLOCK_IOTUNE_TOTAL_BYTES_SEC_MAX
+
+The maximum total bytes processed per second.
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_READ_BYTES_SEC_MAX
+
+The maximum bytes read per second.
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_WRITE_BYTES_SEC_MAX
+
+The maximum bytes written per second.
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_TOTAL_IOPS_SEC_MAX
+
+The maximum total I/O operations processed per second.
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_READ_IOPS_SEC_MAX
+
+The maximum I/O operations read per second.
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_WRITE_IOPS_SEC_MAX
+
+The maximum I/O operations written per second.
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_SIZE_IOPS_SEC
+
+The maximum I/O operations per second
+
 =back
 
 =head2 SCHEDULER CONSTANTS
