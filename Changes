@@ -3,6 +3,7 @@ Revision history for perl module Sys::Virt
 1.2.10 2014-00-00
 
  - Add virDomainGetFSInfo API binding
+ - Add missed VIR_NODE_MEMORY_SHARED_MERGE_ACROSS_NODES constant
 
 1.2.9 2014-10-02
 
