@@ -1626,6 +1626,35 @@ array reference. If <@mountPoints> is an empty list, then all
 filesystems will be thawed. C<$flags> is currently
 unused and defaults to zero.
 
+=item @fslist = $dom->get_fs_info($flags=0);
+
+Obtain a list of all guest filesystems. The returned list will
+contain one element for each filesystem, whose value will be
+a hash reference with the following keys
+
+=over 4
+
+=item name
+
+The name of the guest device that is mounted
+
+=item fstype
+
+The filesystem type (eg 'ext4', 'fat', 'ntfs', etc)
+
+=item mountpoint
+
+The location in the filesystem tree of the mount
+
+=item devalias
+
+An array reference containing list of device aliases
+associated with the guest device. The device aliases
+correspond to disk target names in the guest XML
+configuration
+
+=back
+
 =item $dom->send_process_signal($pid, $signum, $flags=0);
 
 Send the process C<$pid> the signal C<$signum>. The

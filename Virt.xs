@@ -5116,6 +5116,38 @@ PPCODE:
 
       Safefree(mountPoints);
 
+void
+get_fs_info(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+  PREINIT:
+      virDomainFSInfoPtr *info;
+      int ninfo;
+      size_t i, j;
+   PPCODE:
+
+      if ((ninfo = virDomainGetFSInfo(dom, &info, flags)) < 0)
+	_croak_error();
+
+      EXTEND(SP, ninfo);
+      for (i = 0 ; i < ninfo ; i++) {
+	  HV *hv = newHV();
+	  AV *av = newAV();
+
+	  (void)hv_store(hv, "mountpoint", 10, newSVpv(info[i]->mountpoint, 0), 0);
+	  (void)hv_store(hv, "name", 4, newSVpv(info[i]->name, 0), 0);
+	  (void)hv_store(hv, "fstype", 6, newSVpv(info[i]->fstype, 0), 0);
+
+	  for (j = 0; j < info[i]->ndevAlias; j++)
+	      av_push(av, newSVpv(info[i]->devAlias[j], 0));
+
+	  (void)hv_store(hv, "devalias", 8, newRV_noinc((SV*)av), 0);
+
+	  virDomainFSInfoFree(info[i]);
+
+	  PUSHs(newRV_noinc((SV*)hv));
+      }
+      free(info);
 
 void
 send_process_signal(dom, pidsv, signum, flags=0)

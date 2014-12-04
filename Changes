@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+1.2.10 2014-00-00
+
+ - Add virDomainGetFSInfo API binding
+
 1.2.9 2014-10-02
 
  - Add VIR_DOMAIN_*_BANDWIDTH_BYTES constants
