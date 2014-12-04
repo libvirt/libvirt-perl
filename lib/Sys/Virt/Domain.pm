@@ -3287,39 +3287,39 @@ bulk domain stats from C<Sys::Virt::get_all_domain_stats>.
 
 =over 4
 
-=item Sys::Virt::GET_ALL_STATS_ACTIVE
+=item Sys::Virt::Domain::GET_ALL_STATS_ACTIVE
 
 Include stats for active domains
 
-=item Sys::Virt::GET_ALL_STATS_INACTIVE
+=item Sys::Virt::Domain::GET_ALL_STATS_INACTIVE
 
 Include stats for inactive domains
 
-=item Sys::Virt::GET_ALL_STATS_OTHER
+=item Sys::Virt::Domain::GET_ALL_STATS_OTHER
 
 Include stats for other domains
 
-=item Sys::Virt::GET_ALL_STATS_PAUSED
+=item Sys::Virt::Domain::GET_ALL_STATS_PAUSED
 
 Include stats for paused domains
 
-=item Sys::Virt::GET_ALL_STATS_PERSISTENT
+=item Sys::Virt::Domain::GET_ALL_STATS_PERSISTENT
 
 Include stats for persistent domains
 
-=item Sys::Virt::GET_ALL_STATS_RUNNING
+=item Sys::Virt::Domain::GET_ALL_STATS_RUNNING
 
 Include stats for running domains
 
-=item Sys::Virt::GET_ALL_STATS_SHUTOFF
+=item Sys::Virt::Domain::GET_ALL_STATS_SHUTOFF
 
 Include stats for shutoff domains
 
-=item Sys::Virt::GET_ALL_STATS_TRANSIENT
+=item Sys::Virt::Domain::GET_ALL_STATS_TRANSIENT
 
 Include stats for transient domains
 
-=item Sys::Virt::GET_ALL_STATS_ENFORCE_STATS
+=item Sys::Virt::Domain::GET_ALL_STATS_ENFORCE_STATS
 
 Require that all requested stats fields are returned
 
