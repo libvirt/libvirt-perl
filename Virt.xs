@@ -4342,7 +4342,7 @@ _migrate_to_uri(dom, desturi, newparams, flags=0)
      virTypedParameter *params;
      int nparams;
   PPCODE:
-     nparams = 5;
+     nparams = 6;
      Newx(params, nparams, virTypedParameter);
 
      strncpy(params[0].field, VIR_MIGRATE_PARAM_URI,
