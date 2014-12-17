@@ -3418,6 +3418,10 @@ Include stats for transient domains
 
 Require that all requested stats fields are returned
 
+=item Sys::Virt::Domain::GET_ALL_STATS_BACKING
+
+Get stats for image backing files too
+
 =back
 
 =head2 DOMAIN STATS FIELD CONSTANTS
