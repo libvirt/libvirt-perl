@@ -3142,12 +3142,18 @@ _create_with_files(con, xml, fdssv, flags=0)
 
 
 virDomainPtr
-_define_xml(con, xml)
+_define_xml(con, xml, flags=0)
       virConnectPtr con;
       const char *xml;
+      unsigned int flags;
     CODE:
-      if (!(RETVAL = virDomainDefineXML(con, xml)))
-          _croak_error();
+      if (flags) {
+	  if (!(RETVAL = virDomainDefineXMLFlags(con, xml, flags)))
+	      _croak_error();
+      } else {
+	  if (!(RETVAL = virDomainDefineXML(con, xml)))
+	      _croak_error();
+      }
   OUTPUT:
       RETVAL
 

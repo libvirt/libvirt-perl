@@ -62,7 +62,7 @@ sub _new {
 	}
     } elsif (exists $params{xml}) {
 	if ($params{nocreate}) {
-	    $self = Sys::Virt::Domain::_define_xml($con,  $params{xml});
+	    $self = Sys::Virt::Domain::_define_xml($con,  $params{xml}, $params{flags});
 	} else {
 	    if (exists $params{fds}) {
 		$self = Sys::Virt::Domain::_create_with_files($con,  $params{xml},
