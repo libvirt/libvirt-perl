@@ -756,6 +756,10 @@ The storage volume already exists
 
 The CPUs are not compatible
 
+=item Sys::Virt::Error::ERR_INVALID_SCHEMA
+
+The XML document does not comply with the XML schema
+
 =back
 
 =head1 AUTHORS

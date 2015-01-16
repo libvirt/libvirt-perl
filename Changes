@@ -4,6 +4,8 @@ Revision history for perl module Sys::Virt
 
  - Add VIR_CONNECT_GET_ALL_DOMAINS_STATS_BACKING constant
  - Add virDomainDefineXMLFlags API binding
+ - Add VIR_DOMAIN_DEFINE_VALIDATE, VIR_DOMAIN_START_VALIDATE
+   and VIR_ERR_INVALID_SCHEMA constants
 
 1.2.11 2014-12-15
 

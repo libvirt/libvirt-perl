@@ -1763,8 +1763,24 @@ Do not use OS I/O cache if starting a domain with a saved state image
 
 Boot the guest, even if there was a saved snapshot
 
+=item Sys::Virt::Domain::START_VALIDATE
+
+Validate the XML document against the XML schema
+
 =back
 
+=head2 DOMAIN DEFINE
+
+The following constants can be used to control the behaviour
+of domain define operations
+
+=over 4
+
+=item Sys::Virt::Domain::DEFINE_VALIDATE
+
+Validate the XML document against the XML schema
+
+=back
 
 =head2 KEYCODE SETS
 
