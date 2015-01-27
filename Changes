@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+1.2.13 2015-00-00
+
+ - Some notes
+
 1.2.12 2015-01-27
 
  - Add VIR_CONNECT_GET_ALL_DOMAINS_STATS_BACKING constant
