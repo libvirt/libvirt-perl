@@ -188,6 +188,10 @@ the C<create> method
 
 Preallocate header metadata when creating the volume.
 
+=item Sys::Virt::StorageVol::CREATE_REFLINK
+
+Perform lightweight reference copy
+
 =back
 
 =head2 DELETE MODES
