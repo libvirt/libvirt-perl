@@ -1216,6 +1216,23 @@ the physical CPUa, 8 cpus per character. To create a suitable
 bitstring, use the C<vec> function with a value of C<1> for the
 C<BITS> parameter.
 
+=item @iothreadinfo = $dom->get_iothread_info($flags=0)
+
+Obtain information about the state of all IOThreads in a running
+guest domain. The returned list will have one element for each IOThread,
+where each elements contains a hash reference. The keys in the hash
+are, C<number> the IOThread number and C<affinity> giving the allowed
+schedular placement. The value for C<affinity> is a
+string representing a bitmask against physical CPUs, 8 cpus per
+character. To extract the bits use the C<unpack> function with
+the C<b*> template.
+
+=item $dom->pin_iothread($iothread, $mask)
+
+Pin the IOThread given by index C<$iothread> to physical CPUs
+given by C<$mask>. The C<$mask> is a string representing a bitmask
+against physical CPUs, 8 cpus per character.
+
 =item my @stats = $dom->get_cpu_stats($startCpu, $numCpus, $flags=0)
 
 Requests the guests host physical CPU usage statistics, starting

@@ -5014,6 +5014,48 @@ get_emulator_pin_info(dom, flags=0)
       RETVAL
 
 
+void
+get_iothread_info(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+ PREINIT:
+      virDomainIOThreadInfoPtr *iothrinfo;
+      int niothreads;
+      int i;
+   PPCODE:
+      if ((niothreads = virDomainGetIOThreadsInfo(dom, &iothrinfo,
+                                                  flags)) < 0)
+          _croak_error();
+
+      EXTEND(SP, niothreads);
+      for (i = 0 ; i < niothreads ; i++) {
+          HV *rec = newHV();
+          (void)hv_store(rec, "number", 6,
+                         newSViv(iothrinfo[i]->iothread_id), 0);
+          (void)hv_store(rec, "affinity", 8,
+                         newSVpvn((char*)iothrinfo[i]->cpumap,
+                                  iothrinfo[i]->cpumaplen), 0);
+          PUSHs(newRV_noinc((SV *)rec));
+      }
+
+      Safefree(iothrinfo);
+
+
+void
+pin_iothread(dom, iothread_id, mask, flags=0)
+     virDomainPtr dom;
+     unsigned int iothread_id;
+     SV *mask;
+     unsigned int flags;
+PREINIT:
+     STRLEN masklen;
+     unsigned char *maps;
+ PPCODE:
+     maps = (unsigned char *)SvPV(mask, masklen);
+     if (virDomainPinVcpuFlags(dom, iothread_id, maps, masklen, flags) < 0)
+         _croak_error();
+
+
 int
 num_of_snapshots(dom, flags=0)
       virDomainPtr dom;
