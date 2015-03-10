@@ -21,10 +21,8 @@ foreach my $dom (sort { $a->get_id <=> $b->get_id } $con->list_all_domains) {
 	foreach (sort { $a cmp $b } keys %{$info}) {
 	    if ($_ eq "affinity") {
 		print "    ", $_, ": ";
-		my @mask = split //, $info->{$_};
-		for (my $p = 0 ; $p < $nodeinfo->{cpus} ; $p++) {
-		    print ((ord($mask[$p/8]) & (1 << ($p % 8))) ? 1 : 0);
-		}
+                my @mask = split(//, unpack("b$nodeinfo->{cpus}", $info->{$_}));
+                print join ("", @mask), "\n";
 		print "\n";
 	    } else {
 		print "    ", $_, ": ", $info->{$_}, "\n";

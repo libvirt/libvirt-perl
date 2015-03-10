@@ -5,6 +5,7 @@ Revision history for perl module Sys::Virt
  - Add VIR_CONNECT_BASELINE_CPU_MIGRATABLE constant
  - Add VIR_DOMAIN_CONTROL_ERROR_* constants
  - Add virDomainGetIOThreads and virDomainPinIOThread API bindings
+ - Update the vcpuinfo.pl example to use unpack
 
 1.2.13 2015-03-05
 
