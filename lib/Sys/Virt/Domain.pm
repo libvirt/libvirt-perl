@@ -1740,6 +1740,29 @@ The control channel is busy with a job
 
 =back
 
+If the status is C<Sys::Virt::Domain::CONTROL_ERROR>, then one
+of the following constants describes the reason
+
+=over 4
+
+=item Sys::Virt::Domain::CONTROL_ERROR_REASON_NONE
+
+There is no reason for the error available
+
+=item Sys::Virt::Domain::CONTROL_ERROR_REASON_UNKNOWN
+
+The reason for the error is unknown
+
+=item Sys::Virt::Domain::CONTROL_ERROR_REASON_INTERNAL
+
+There was an internal error in libvirt
+
+=item Sys::Virt::Domain::CONTROL_ERROR_REASON_MONITOR
+
+There was an error speaking to the monitor
+
+=back
+
 =head2 DOMAIN CREATION
 
 The following constants can be used to control the behaviour

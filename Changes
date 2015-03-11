@@ -2,12 +2,12 @@ Revision history for perl module Sys::Virt
 
 1.2.14 2015-00-00
 
- - XXX
+ - Add VIR_CONNECT_BASELINE_CPU_MIGRATABLE constant
+ - Add VIR_DOMAIN_CONTROL_ERROR_* constants
 
 1.2.13 2015-03-05
 
  - Add VIR_STORAGE_VOL_CREATE_REFLINK constant
- - Add VIR_CONNECT_BASELINE_CPU_MIGRATABLE constant
 
 1.2.12 2015-01-27
 
