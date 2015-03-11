@@ -1606,6 +1606,10 @@ parameter can take one of
 Expand the CPU definition to list all feature flags, even those
 implied by the model name.
 
+=item Sys::Virt::BASELINE_CPU_MIGRATABLE
+
+Only include features which can be live migrated.
+
 =back
 
 =item @names = $con->get_cpu_model_names($arch, $flags=0)
