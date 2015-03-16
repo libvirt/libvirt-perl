@@ -3874,6 +3874,10 @@ Maximum write throughput in I/O operations per sec
 
 The maximum I/O operations per second
 
+=item Sys::Virt::Domain::TUNABLE_IOTHREADSPIN
+
+The I/O threads pinning
+
 =back
 
 =head1 AUTHORS
