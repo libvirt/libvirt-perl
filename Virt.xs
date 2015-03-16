@@ -5038,7 +5038,10 @@ get_iothread_info(dom, flags=0)
           PUSHs(newRV_noinc((SV *)rec));
       }
 
-      Safefree(iothrinfo);
+      for (i = 0 ; i < niothreads ; i++) {
+	virDomainIOThreadsInfoFree(iothrinfo[i]);
+      }
+      free(iothrinfo);
 
 
 void
