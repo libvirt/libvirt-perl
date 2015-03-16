@@ -5055,7 +5055,7 @@ PREINIT:
      unsigned char *maps;
  PPCODE:
      maps = (unsigned char *)SvPV(mask, masklen);
-     if (virDomainPinVcpuFlags(dom, iothread_id, maps, masklen, flags) < 0)
+     if (virDomainPinIOThread(dom, iothread_id, maps, masklen, flags) < 0)
          _croak_error();
 
 
