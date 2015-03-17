@@ -1674,6 +1674,61 @@ configuration
 
 =back
 
+=item @nics = $dom->get_interface_addresses($src, $flags=0);
+
+Obtain a list of all guest network interfaces. The C<$src>
+parameter is one of the constants
+
+=over 4
+
+=item Sys::Virt::Domain::INTERFACE_ADDRESSES_SRC_LEASE
+
+Extract the DHCP server lease information
+
+=item Sys::Virt::Domain::INTERFACE_ADDRESSES_SRC_AGENT
+
+Query the guest OS via an agent
+
+=back
+
+The returned list will contain one element for each interface.
+The values in the list will be a hash reference with the
+following keys
+
+=over 4
+
+=item name
+
+The name of the guest interface that is mounted
+
+=item hwaddr
+
+The hardware address, aka MAC.
+
+=item addrs
+
+An array reference containing list of IP addresses
+associated with the guest NIC. Each element in the
+array is a further hash containing
+
+=over 4
+
+=item addr
+
+The IP address string
+
+=item prefix
+
+The IP address network prefix
+
+=item type
+
+The IP address type (IPv4 vs IPv6)
+
+=back
+
+=back
+
 =item $dom->send_process_signal($pid, $signum, $flags=0);
 
 Send the process C<$pid> the signal C<$signum>. The

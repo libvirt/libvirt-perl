@@ -7,6 +7,7 @@ Revision history for perl module Sys::Virt
  - Add virDomainGetIOThreads and virDomainPinIOThread API bindings
  - Update the vcpuinfo.pl example to use unpack
  - Add VIR_DOMAIN_TUNABLE_CPU_IOTHREADSPIN constant
+ - Add virDomainInterfaceAddress function & constants
 
 1.2.13 2015-03-05
 

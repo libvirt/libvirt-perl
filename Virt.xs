@@ -5244,6 +5244,43 @@ get_fs_info(dom, flags=0)
       free(info);
 
 void
+get_interface_addresses(dom, src, flags=0)
+        virDomainPtr dom;
+        unsigned int src;
+        unsigned int flags;
+    PREINIT:
+        virDomainInterfacePtr *info;
+        int ninfo;
+        size_t i, j;
+     PPCODE:
+        if ((ninfo = virDomainInterfaceAddresses(dom, &info, src, flags)) < 0)
+	    _croak_error();
+
+        EXTEND(SP, ninfo);
+        for (i = 0; i < ninfo; i++) {
+	    HV *hv = newHV();
+	    AV *av = newAV();
+
+	    (void)hv_store(hv, "name", 4, newSVpv(info[i]->name, 0), 0);
+	    (void)hv_store(hv, "hwaddr", 6, newSVpv(info[i]->hwaddr, 0), 0);
+
+	    for (j = 0; j < info[i]->naddrs; j++) {
+	      HV *subhv = newHV();
+
+	      (void)hv_store(subhv, "type", 4, newSViv(info[i]->addrs[j].type), 0);
+	      (void)hv_store(subhv, "addr", 4, newSVpv(info[i]->addrs[j].addr, 0), 0);
+	      (void)hv_store(subhv, "prefix", 6, newSViv(info[i]->addrs[j].prefix), 0);
+	      av_push(av, newRV_noinc((SV*)subhv));
+	    }
+	    (void)hv_store(hv, "addrs", 5, newRV_noinc((SV*)av), 0);
+
+	    virDomainInterfaceFree(info[i]);
+
+	    PUSHs(newRV_noinc((SV*)hv));
+	}
+        free(info);
+
+void
 send_process_signal(dom, pidsv, signum, flags=0)
       virDomainPtr dom;
       SV *pidsv;
@@ -7803,6 +7840,11 @@ BOOT:
       REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_BLKDEV_TOTAL_IOPS_SEC_MAX, TUNABLE_BLKDEV_TOTAL_IOPS_SEC_MAX);
       REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_BLKDEV_SIZE_IOPS_SEC, TUNABLE_BLKDEV_SIZE_IOPS_SEC);
       REGISTER_CONSTANT_STR(VIR_DOMAIN_TUNABLE_CPU_IOTHREADSPIN, TUNABLE_IOTHREADSPIN);
+
+
+      REGISTER_CONSTANT(VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_AGENT, INTERFACE_ADDRESSES_SRC_AGENT);
+      REGISTER_CONSTANT(VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_LEASE, INTERFACE_ADDRESSES_SRC_LEASE);
+
 
       stash = gv_stashpv( "Sys::Virt::DomainSnapshot", TRUE );
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_DELETE_CHILDREN, DELETE_CHILDREN);
