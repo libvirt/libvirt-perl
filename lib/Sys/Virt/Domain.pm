@@ -356,6 +356,10 @@ The guest is paused while a snapshot takes place
 
 The guest is paused due to a kernel panic
 
+=item Sys::Virt::Domain::STATE_PAUSED_STARTING_UP
+
+The guest is paused as it is being started up.
+
 =item Sys::Virt::Domain::STATE_RUNNING_BOOTED
 
 The guest is running after being booted
