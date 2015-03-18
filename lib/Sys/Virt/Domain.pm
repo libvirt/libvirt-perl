@@ -1703,7 +1703,7 @@ The name of the guest interface that is mounted
 
 =item hwaddr
 
-The hardware address, aka MAC.
+The hardware address, aka MAC, if available.
 
 =item addrs
 

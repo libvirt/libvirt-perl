@@ -5262,7 +5262,9 @@ get_interface_addresses(dom, src, flags=0)
 	    AV *av = newAV();
 
 	    (void)hv_store(hv, "name", 4, newSVpv(info[i]->name, 0), 0);
-	    (void)hv_store(hv, "hwaddr", 6, newSVpv(info[i]->hwaddr, 0), 0);
+	    if (info[i]->hwaddr) {
+	      (void)hv_store(hv, "hwaddr", 6, newSVpv(info[i]->hwaddr, 0), 0);
+	    }
 
 	    for (j = 0; j < info[i]->naddrs; j++) {
 	      HV *subhv = newHV();
