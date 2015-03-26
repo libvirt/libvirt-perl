@@ -5023,8 +5023,8 @@ get_iothread_info(dom, flags=0)
       int niothreads;
       int i;
    PPCODE:
-      if ((niothreads = virDomainGetIOThreadsInfo(dom, &iothrinfo,
-                                                  flags)) < 0)
+      if ((niothreads = virDomainGetIOThreadInfo(dom, &iothrinfo,
+                                                 flags)) < 0)
           _croak_error();
 
       EXTEND(SP, niothreads);
