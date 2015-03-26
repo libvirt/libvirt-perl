@@ -9,6 +9,7 @@ Revision history for perl module Sys::Virt
  - Add VIR_DOMAIN_TUNABLE_CPU_IOTHREADSPIN constant
  - Add virDomainInterfaceAddress function & constants
  - Add VIR_DOMAIN_PAUSED_STARTING_UP constant
+ - Adapt to rename of virDomainIOThreadsInfoFree to virDomainIOThreadInfoFree
 
 1.2.13 2015-03-05
 
