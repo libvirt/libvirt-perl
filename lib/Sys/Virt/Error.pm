@@ -378,6 +378,10 @@ The firewall helper APIs.
 
 The polkit authentication / authorization APIs
 
+=item Sys::Virt::Error::FROM_THREAD
+
+The thread helper utils
+
 =back
 
 =head2 ERROR CODE CONSTANTS
