@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+1.2.15 2015-00-00
+
+ - ...
+
 1.2.14 2015-04-09
 
  - Add VIR_CONNECT_BASELINE_CPU_MIGRATABLE constant

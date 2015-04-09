@@ -78,7 +78,7 @@ use Sys::Virt::NWFilter;
 use Sys::Virt::DomainSnapshot;
 use Sys::Virt::Stream;
 
-our $VERSION = '1.2.14';
+our $VERSION = '1.2.15';
 require XSLoader;
 XSLoader::load('Sys::Virt', $VERSION);
 
