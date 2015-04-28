@@ -2791,6 +2791,10 @@ Power management initiated wakeup
 
 Balloon target changes
 
+=item Sys::Virt::Domain::EVENT_ID_DEVICE_ADDED
+
+Asynchronous guest device addition
+
 =item Sys::Virt::Domain::EVENT_ID_DEVICE_REMOVED
 
 Asynchronous guest device removal

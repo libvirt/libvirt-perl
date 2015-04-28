@@ -858,6 +858,44 @@ _domain_event_balloonchange_callback(virConnectPtr con,
 
 
 static int
+_domain_event_device_added_callback(virConnectPtr con,
+                                    virDomainPtr dom,
+                                    const char *devAlias,
+                                    void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *domref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+    XPUSHs(domref);
+    XPUSHs(sv_2mortal(newSVpv(devAlias, 0)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
+static int
 _domain_event_device_removed_callback(virConnectPtr con,
                                       virDomainPtr dom,
                                       const char *devAlias,
@@ -2941,6 +2979,9 @@ PREINIT:
           break;
       case VIR_DOMAIN_EVENT_ID_BALLOON_CHANGE:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_balloonchange_callback);
+          break;
+      case VIR_DOMAIN_EVENT_ID_DEVICE_ADDED:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_device_added_callback);
           break;
       case VIR_DOMAIN_EVENT_ID_DEVICE_REMOVED:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_device_removed_callback);
@@ -7563,6 +7604,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_PMWAKEUP, EVENT_ID_PMWAKEUP);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_TRAY_CHANGE, EVENT_ID_TRAY_CHANGE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_BALLOON_CHANGE, EVENT_ID_BALLOON_CHANGE);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_DEVICE_ADDED, EVENT_ID_DEVICE_ADDED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_DEVICE_REMOVED, EVENT_ID_DEVICE_REMOVED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_TUNABLE, EVENT_ID_TUNABLE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_AGENT_LIFECYCLE, EVENT_ID_AGENT_LIFECYCLE);

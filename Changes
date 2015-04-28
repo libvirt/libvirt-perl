@@ -2,7 +2,8 @@ Revision history for perl module Sys::Virt
 
 1.2.15 2015-00-00
 
- - ...
+ - Add support for VIR_DOMAIN_EVENT_ID_DEVICE_ADDED
+   event callback & constants.
 
 1.2.14 2015-04-09
 
