@@ -1423,6 +1423,12 @@ non-compressed page.
 The number of milliseconds of downtime expected during
 migration switchover.
 
+=item Sys::Virt::Domain::JOB_DOWNTIME_NET
+
+Real measured downtime (ms) NOT including the time required to
+transfer control flow from the source host to the destination
+host.
+
 =item Sys::Virt::Domain::JOB_SETUP_TIME
 
 The number of milliseconds of time doing setup of the job
