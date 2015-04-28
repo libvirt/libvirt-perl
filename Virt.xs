@@ -2946,8 +2946,8 @@ PREINIT:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_device_removed_callback);
           break;
       case VIR_DOMAIN_EVENT_ID_TUNABLE:
-	  callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_tunable_callback);
-	  break;
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_tunable_callback);
+          break;
       case VIR_DOMAIN_EVENT_ID_AGENT_LIFECYCLE:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_agent_lifecycle_callback);
           break;
