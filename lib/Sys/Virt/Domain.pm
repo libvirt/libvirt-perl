@@ -1334,6 +1334,12 @@ Return the stats of the most recently completed job.
 
 The elapsed time in milliseconds
 
+=item Sys::Virt::Domain::JOB_TIME_ELAPSED_NET
+
+Time in miliseconds since the beginning of the migration job NOT
+including the time required to transfer control flow from the
+source host to the destination host.
+
 =item Sys::Virt::Domain::JOB_TIME_REMAINING
 
 The expected remaining time in milliseconds. Only set if the
