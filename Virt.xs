@@ -5100,6 +5100,26 @@ PREINIT:
          _croak_error();
 
 
+void
+add_iothread(dom, iothread_id, flags=0)
+     virDomainPtr dom;
+     unsigned int iothread_id;
+     unsigned int flags;
+ PPCODE:
+     if (virDomainAddIOThread(dom, iothread_id, flags) < 0)
+         _croak_error();
+
+
+void
+del_iothread(dom, iothread_id, flags=0)
+     virDomainPtr dom;
+     unsigned int iothread_id;
+     unsigned int flags;
+ PPCODE:
+     if (virDomainDelIOThread(dom, iothread_id, flags) < 0)
+         _croak_error();
+
+
 int
 num_of_snapshots(dom, flags=0)
       virDomainPtr dom;

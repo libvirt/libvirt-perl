@@ -6,6 +6,7 @@ Revision history for perl module Sys::Virt
    event callback & constants.
  - Add JOB_DOWNTIME_NET constant
  - Add JOB_TIME_ELAPSED_NET constant
+ - Add virDomainAddIOThread and virDomainDelIOThread API bindings
 
 1.2.14 2015-04-09
 

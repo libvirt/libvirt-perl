@@ -1237,6 +1237,18 @@ Pin the IOThread given by index C<$iothread> to physical CPUs
 given by C<$mask>. The C<$mask> is a string representing a bitmask
 against physical CPUs, 8 cpus per character.
 
+=item $dom->add_iothread($iothread, $flags=0)
+
+Add a new IOThread by the C<$iothread> value to the guest domain.
+The C<$flags> parameter accepts one or more the CONFIG OPTION constants
+documented later, and defaults to 0 if omitted.
+
+=item $dom->del_iothread($iothread, $flags=0)
+
+Delete an existing IOThread by the C<$iothread> value from the guest domain.
+The C<$flags> parameter accepts one or more the CONFIG OPTION constants
+documented later, and defaults to 0 if omitted.
+
 =item my @stats = $dom->get_cpu_stats($startCpu, $numCpus, $flags=0)
 
 Requests the guests host physical CPU usage statistics, starting
