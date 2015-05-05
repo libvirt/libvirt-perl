@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+1.2.16 2015-00-00
+
+ - XXX
+
 1.2.15 2015-05-05
 
  - Add support for VIR_DOMAIN_EVENT_ID_DEVICE_ADDED
