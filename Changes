@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 1.2.16 2015-00-00
 
- - XXX
+ - Add support for virDomainSetUserPassword
 
 1.2.15 2015-05-05
 

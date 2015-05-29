@@ -498,6 +498,22 @@ Re-sync domain time from domain's RTC.
 
 =back
 
+
+=item $dom->set_user_password($username, $password, $flags=0);
+
+Update the password for account C<$username> to be
+C<$password>. C<$password> is the clear-text password
+string unless the PASSWORD_ENCRYPTED flag is set.
+
+=over 4
+
+=item C<Sys::Virt::Domain::PASSWORD_ENCRYPTED>
+
+The C<$password> is encrypted with the password scheme required
+by the guest OS.
+
+=back
+
 =item my @errs = $dom->get_disk_errors($flags=0)
 
 Returns a list of all disk errors that have occurred on

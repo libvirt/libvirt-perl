@@ -3520,6 +3520,17 @@ set_time(dom, secssv, nsecs, flags=0)
       if (virDomainSetTime(dom, secs, nsecs, flags) < 0)
 	_croak_error();
 
+
+void
+set_user_password(dom, username, password, flags=0)
+      virDomainPtr dom;
+      const char *username;
+      const char *password;
+      unsigned int flags;
+  PPCODE:
+      if (virDomainSetUserPassword(dom, username, password, flags) < 0)
+	_croak_error();
+
 HV *
 get_control_info(dom, flags=0)
       virDomainPtr dom;
@@ -7912,6 +7923,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_AGENT, INTERFACE_ADDRESSES_SRC_AGENT);
       REGISTER_CONSTANT(VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_LEASE, INTERFACE_ADDRESSES_SRC_LEASE);
 
+
+      REGISTER_CONSTANT(VIR_DOMAIN_PASSWORD_ENCRYPTED, PASSWORD_ENCRYPTED);
 
       stash = gv_stashpv( "Sys::Virt::DomainSnapshot", TRUE );
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_DELETE_CHILDREN, DELETE_CHILDREN);
