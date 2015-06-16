@@ -382,6 +382,10 @@ The polkit authentication / authorization APIs
 
 The thread helper utils
 
+=item Sys::Virt::Error::FROM_ADMIN
+
+The administrative service
+
 =back
 
 =head2 ERROR CODE CONSTANTS
