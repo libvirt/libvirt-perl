@@ -2943,6 +2943,10 @@ The guest attempted to gracefully shutdown after the watchdog fired
 
 No action was taken, the watchdog was logged
 
+=item Sys::Virt::Domain::EVENT_WATCHDOG_INJECTNMI
+
+An NMI was injected into the guest after the watchdog fired
+
 =back
 
 =head2 GRAPHICS EVENT PHASE CONSTANTS

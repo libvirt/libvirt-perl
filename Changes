@@ -5,6 +5,7 @@ Revision history for perl module Sys::Virt
  - Add VIR_FROM_ADMIN constant
  - Add VIR_MIGRATE_PARAM_MIGRATE_DISKS constant
  - Fix docs typos in migrate_to_uri method
+ - Add VIR_DOMAIN_EVENT_WATCHDOG_INJECTNMI constant
 
 1.2.16 2015-06-01
 
