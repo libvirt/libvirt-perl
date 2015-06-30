@@ -1051,9 +1051,9 @@ sub migrate2 {
 }
 
 
-=item $ddom = $dom->migrate_to_uri(destcon, \%params, flags=0)
+=item $ddom = $dom->migrate_to_uri(desturi, \%params, flags=0)
 
-Migrate a domain to an alternative host. The C<destri> parameter
+Migrate a domain to an alternative host. The C<desturi> parameter
 should be a valid libvirt connection URI for the remote target host.
 The C<flags> parameter takes one or more of the C<Sys::Virt::Domain::MIGRATE_XXX>
 constants described later in this document. The C<%params> parameter is
