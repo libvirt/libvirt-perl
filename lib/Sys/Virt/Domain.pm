@@ -977,6 +977,13 @@ host, thus use of an explicit restricted listen address is recommended.
 
 =back
 
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_MIGRATE_DISKS>
+
+The list of disks to migrate when doing block storage migration.
+In constrast to other parameters whose values are plain strings,
+the parameter value should be an array reference, whose elements
+are in turn strings representing the disk target names.
+
 =item $ddom = $dom->migrate(destcon, flags=0, dname=undef, uri=undef, bandwidth=0)
 
 Migrate a domain to an alternative host. Use of positional parameters

@@ -118,6 +118,7 @@ virTypedParamsAddFromString
 virTypedParamsAddInt
 virTypedParamsAddLLong
 virTypedParamsAddString
+virTypedParamsAddStringList
 virTypedParamsAddUInt
 virTypedParamsAddULLong
 virTypedParamsClear
