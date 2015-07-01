@@ -286,7 +286,7 @@ vir_typed_param_add_string_list_from_hv(HV *newparams,
 
     SV **val = hv_fetch(newparams, key, strlen(key), 0);
     AV *av = (AV*)(SvRV(*val));
-    nstr = av_top_index(av) + 1;
+    nstr = av_len(av) + 1;
 
     Renew(localparams, *nparams + nstr, virTypedParameter);
 
