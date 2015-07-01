@@ -26,7 +26,7 @@ my $gccflags = "-W -Waddress -Wall -Warray-bounds -Wattributes \\
  -Wmissing-declarations -Wmissing-field-initializers \\
  -Wmissing-format-attribute -Wmissing-include-dirs \\
  -Wmissing-noreturn -Wmissing-parameter-type \\
- -Wmudflap -Wmultichar -Wnarrowing -Wnonnull \\
+ -Wmultichar -Wnarrowing -Wnonnull \\
  -Wnormalized=nfc -Wold-style-declaration -Wold-style-definition \\
  -Woverflow -Woverride-init -Wpacked-bitfield-compat -Wparentheses \\
  -Wpointer-arith -Wpointer-sign -Wpointer-to-int-cast -Wpragmas \\
