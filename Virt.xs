@@ -272,10 +272,11 @@ vir_typed_param_from_hv(HV *newparams, virTypedParameter *params, int nparams)
 }
 
 
-void vir_typed_param_add_string_list_from_hv(HV *newparams,
-					     virTypedParameter **params,
-					     int *nparams,
-					     const char *key)
+static void
+vir_typed_param_add_string_list_from_hv(HV *newparams,
+					virTypedParameter **params,
+					int *nparams,
+					const char *key)
 {
     if (!hv_exists(newparams, key, strlen(key))) {
         return;
@@ -291,8 +292,8 @@ void vir_typed_param_add_string_list_from_hv(HV *newparams,
 
     for (i = 0 ; i < nstr ; i++) {
       STRLEN len;
-      SV **val = av_fetch(av, i, 0);
-      char *ptr = SvPV(*val, len);
+      SV **subval = av_fetch(av, i, 0);
+      char *ptr = SvPV(*subval, len);
 
       strncpy(localparams[*nparams + i].field, key,
 	      VIR_TYPED_PARAM_FIELD_LENGTH);
