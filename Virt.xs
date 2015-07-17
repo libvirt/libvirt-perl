@@ -297,6 +297,7 @@ vir_typed_param_add_string_list_from_hv(HV *newparams,
 
       strncpy(localparams[*nparams + i].field, key,
 	      VIR_TYPED_PARAM_FIELD_LENGTH);
+      localparams[*nparams + i].field[VIR_TYPED_PARAM_FIELD_LENGTH - 1] = '\0';
 
       localparams[*nparams + i].type = VIR_TYPED_PARAM_STRING;
       localparams[*nparams + i].value.s = ptr;
