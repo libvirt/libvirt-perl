@@ -768,6 +768,10 @@ The CPUs are not compatible
 
 The XML document does not comply with the XML schema
 
+=item Sys::Virt::Error::ERR_MIGRATE_FINISH_OK
+
+Migration finished but expected to return NULL domain.
+
 =back
 
 =head1 AUTHORS
