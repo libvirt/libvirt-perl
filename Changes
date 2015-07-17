@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+1.2.18 2015-08-00
+
+ - XXX
+
 1.2.17 2015-07-17
 
  - Add VIR_FROM_ADMIN constant
