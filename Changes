@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-1.2.18 2015-08-00
+1.2.18 2015-08-03
 
  - Add VIR_ERR_MIGRATE_FINISH_OK constant
 
