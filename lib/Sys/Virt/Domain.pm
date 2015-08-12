@@ -2520,6 +2520,10 @@ The peak inbound bandwidth
 
 The burstable inbound bandwidth
 
+=item Sys::Virt::Domain::BANDWIDTH_IN_FLOOR
+
+The minimum inbound bandwidth
+
 =item Sys::Virt::Domain::BANDWIDTH_OUT_AVERAGE
 
 The average outbound bandwidth
