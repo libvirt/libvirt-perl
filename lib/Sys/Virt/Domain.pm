@@ -2596,6 +2596,10 @@ The defined configuration is newly added
 
 The defined configuration is an update to an existing configuration
 
+=item Sys::Virt::Domain::EVENT_DEFINED_RENAMED
+
+The defined configuration is a rename of an existing configuration
+
 =back
 
 =item Sys::Virt::Domain::EVENT_RESUMED
@@ -2745,6 +2749,10 @@ The persistent configuration has gone away
 
 The domain configuration has gone away due to it being
 removed by administrator.
+
+=item Sys::Virt::Domain::EVENT_UNDEFINED_RENAMED
+
+The undefined configuration is a rename of an existing configuration
 
 =back
 
