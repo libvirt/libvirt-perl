@@ -3,6 +3,7 @@ Revision history for perl module Sys::Virt
 1.2.19 2015-00-00
 
  - Add VIR_DOMAIN_BANDWIDTH_IN_FLOOR constant
+ - Add virDomainRename method
 
 1.2.18 2015-08-03
 

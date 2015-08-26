@@ -514,6 +514,12 @@ by the guest OS.
 
 =back
 
+=item $dom->rename($newname, $flags=0)
+
+Change the name of an inactive guest to be C<$newname>.
+The C<$flags> parameter is currently unused and defaults
+to zero.
+
 =item my @errs = $dom->get_disk_errors($flags=0)
 
 Returns a list of all disk errors that have occurred on

@@ -3567,6 +3567,15 @@ set_user_password(dom, username, password, flags=0)
       if (virDomainSetUserPassword(dom, username, password, flags) < 0)
 	_croak_error();
 
+void
+rename(dom, newname, flags=0)
+      virDomainPtr dom;
+      const char *newname;
+      unsigned int flags;
+  PPCODE:
+      if (virDomainRename(dom, newname, flags) < 0)
+	_croak_error();
+
 HV *
 get_control_info(dom, flags=0)
       virDomainPtr dom;
