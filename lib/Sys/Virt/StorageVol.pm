@@ -209,6 +209,10 @@ Do a plain delete without any attempt to scrub data.
 
 Zero out current allocated blocks when deleteing the volume
 
+=item Sys::Virt::StorageVol::DELETE_WITH_SNAPSHOTS
+
+Delete snapshots associated with the volume
+
 =back
 
 =head2 WIPE ALGORITHM CONSTANTS
