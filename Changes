@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-1.2.20 2015-00-00
+1.2.21 2015-11-11
 
  - Add VIR_STORAGE_VOL_DELETE_WITH_SNAPSHOTS constant
 
