@@ -386,6 +386,10 @@ The thread helper utils
 
 The administrative service
 
+=item Sys::Virt::Error::FROM_LOGGING
+
+The logging service
+
 =back
 
 =head2 ERROR CODE CONSTANTS
