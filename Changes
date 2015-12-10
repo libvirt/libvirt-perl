@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+1.3.1 2015-12-00
+
+ - XXX
+
 1.3.0 2015-12-10
 
  - Add VIR_FROM_LOGGING constant
