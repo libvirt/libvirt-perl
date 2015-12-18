@@ -355,6 +355,34 @@ Overwrite existing storage pool data
 
 =back
 
+=head2 CREATE MODES
+
+When creating a storage pool it can be built at the same time.
+The following values are therefore close to their BUILD
+counterparts.
+
+=over 4
+
+=item Sys::Virt::StoragePool::CREATE_NORMAL
+
+Just create the storage pool without building it.
+
+=item Sys::Virt::StoragePool::CREATE_WITH_BUILD
+
+When creating new storage pool also perform pool build without any flags.
+
+=item Sys::Virt::StoragePool::CREATE_WITH_BUILD_OVERWRITE
+
+Create the pool and perform pool build using the BUILD_OVERWRITE
+flag. This is mutually exclusive to CREATE_WITH_BUILD_NO_OVERWRITE.
+
+=item Sys::Virt::StoragePool::CREATE_WITH_BUILD_NO_OVERWRITE
+
+Create the pool and perform pool build using the BUILD_NO_OVERWRITE
+flag. This is mutually exclusive to CREATE_WITH_BUILD_OVERWRITE.
+
+=back
+
 =head2 XML DOCUMENTS
 
 The following constants are useful when requesting
