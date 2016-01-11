@@ -1427,6 +1427,14 @@ The number of bytes transferred without any compression
 
 The bytes per second transferred
 
+=item Sys::Virt::Domain::JOB_MEMORY_DIRTY_RATE
+
+The number of memory pages dirtied per second
+
+=item Sys::Virt::Domain::JOB_MEMORY_ITERATION
+
+The total number of iterations over guest memory
+
 =item Sys::Virt::Domain::JOB_DISK_TOTAL
 
 The total amount of file expected to be processed by the job, in bytes.
