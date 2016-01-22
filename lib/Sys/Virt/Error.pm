@@ -390,6 +390,10 @@ The administrative service
 
 The logging service
 
+=item Sys::Virt::Error::FROM_XENXL
+
+The Xen XL driver
+
 =back
 
 =head2 ERROR CODE CONSTANTS
