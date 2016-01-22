@@ -1053,6 +1053,44 @@ _domain_event_agent_lifecycle_callback(virConnectPtr con,
 
 
 static int
+_domain_event_migration_iteration_callback(virConnectPtr con,
+					   virDomainPtr dom,
+					   int iteration,
+					   void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *domref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+    XPUSHs(domref);
+    XPUSHs(sv_2mortal(newSViv(iteration)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
+static int
 _network_event_lifecycle_callback(virConnectPtr con,
 				  virNetworkPtr net,
 				  int event,
@@ -3027,6 +3065,9 @@ PREINIT:
           break;
       case VIR_DOMAIN_EVENT_ID_AGENT_LIFECYCLE:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_agent_lifecycle_callback);
+          break;
+      case VIR_DOMAIN_EVENT_ID_MIGRATION_ITERATION:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_migration_iteration_callback);
           break;
       default:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_generic_callback);
@@ -7696,6 +7737,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_DEVICE_REMOVED, EVENT_ID_DEVICE_REMOVED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_TUNABLE, EVENT_ID_TUNABLE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_AGENT_LIFECYCLE, EVENT_ID_AGENT_LIFECYCLE);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_MIGRATION_ITERATION, EVENT_ID_MIGRATION_ITERATION);
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_NONE, EVENT_WATCHDOG_NONE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_PAUSE, EVENT_WATCHDOG_PAUSE);
