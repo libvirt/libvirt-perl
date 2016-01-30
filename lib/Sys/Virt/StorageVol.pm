@@ -260,6 +260,10 @@ Cryptography" (1996)
 
 1-pass, all zeroes
 
+=item Sys::Virt::StorageVol::WIPE_ALG_TRIM
+
+1-pass, trim all data on the volume by using TRIM or DISCARD
+
 =back
 
 VOLUME RESIZE CONSTANTS
