@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-1.3.2 2016-02-00
+1.3.2 2016-03-01
 
  - Add VIR_STORAGE_VOL_WIPE_ALG_TRIM constant
  - Add VIR_FROM_XENXL constant
