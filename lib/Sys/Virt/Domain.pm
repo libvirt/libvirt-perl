@@ -2473,6 +2473,14 @@ The VCPU period tunable
 
 The VCPU quota tunable
 
+=item Sys::Virt::Domain::SCHEDULER_GLOBAL_PERIOD
+
+The VM global period tunable
+
+=item Sys::Virt::Domain::SCHEDULER_GLOBAL_QUOTA
+
+The VM global quota tunable
+
 =item Sys::Virt::Domain::SCHEDULER_WEIGHT
 
 The VM weight tunable
@@ -3963,6 +3971,14 @@ VCPU thread period
 =item Sys::Virt::Domain::TUNABLE_CPU_VCPU_QUOTA
 
 VCPU thread quota
+
+=item Sys::Virt::Domain::TUNABLE_CPU_GLOBAL_PERIOD
+
+VM global period
+
+=item Sys::Virt::Domain::TUNABLE_CPU_GLOBAL_QUOTA
+
+VM global quota
 
 =item Sys::Virt::Domain::TUNABLE_BLKDEV_DISK
 
