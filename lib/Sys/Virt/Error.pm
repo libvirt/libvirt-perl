@@ -780,6 +780,10 @@ The XML document does not comply with the XML schema
 
 Migration finished but expected to return NULL domain.
 
+=item Sys::Virt::Error::ERR_AUTH_UNAVAILABLE
+
+Authentication services were not available
+
 =back
 
 =head1 AUTHORS

@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 1.3.3 2016-00-00
 
- - XXX
+ - Add VIR_ERR_AUTH_UNAVAILABLE constant
 
 1.3.2 2016-03-01
 
