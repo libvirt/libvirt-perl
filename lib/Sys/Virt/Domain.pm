@@ -2929,6 +2929,13 @@ The channel on a running guest changed state
 
 =back
 
+=item Sys::Virt::Domain::EVENT_ID_JOB_COMPLETED
+
+Domain background job completion notification. The callback
+provides a hash containing the job stats. The keyus in the
+hash are the same as those used with the C<Sys::Virt::Domain::get_job_stats()>
+method.
+
 =back
 
 =head2 IO ERROR EVENT CONSTANTS
