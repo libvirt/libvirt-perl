@@ -784,6 +784,10 @@ Migration finished but expected to return NULL domain.
 
 Authentication services were not available
 
+=item Sys::Virt::Error::ERR_NO_SERVER
+
+Libvirt server was not found
+
 =back
 
 =head1 AUTHORS

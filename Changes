@@ -7,6 +7,7 @@ Revision history for perl module Sys::Virt
    VIR_DOMAIN_TUNABLE_CPU_GLOBAL_PERIOD & VIR_DOMAIN_TUNABLE_CPU_GLOBAL_QUOTA
    constants
  - Add VIR_DOMAIN_EVENT_ID_JOB_COMPLETED constant and callback
+ - Add VIR_ERR_NO_SERVER constant
 
 1.3.2 2016-03-01
 
