@@ -8,6 +8,7 @@ Revision history for perl module Sys::Virt
    constants
  - Add VIR_DOMAIN_EVENT_ID_JOB_COMPLETED constant and callback
  - Add VIR_ERR_NO_SERVER constant
+ - Add VIR_DOMAIN_EVENT_DEFINED_FROM_SNAPSHOT constant
 
 1.3.2 2016-03-01
 

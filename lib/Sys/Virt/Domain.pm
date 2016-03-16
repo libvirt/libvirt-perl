@@ -2616,6 +2616,10 @@ The defined configuration is an update to an existing configuration
 
 The defined configuration is a rename of an existing configuration
 
+=item Sys::Virt::Domain::EVENT_DEFINED_FROM_SNAPSHOT
+
+The defined configuration was restored from a snapshot
+
 =back
 
 =item Sys::Virt::Domain::EVENT_RESUMED
