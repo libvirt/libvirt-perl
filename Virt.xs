@@ -4479,7 +4479,7 @@ _migrate(dom, destcon, newparams, flags=0)
      virTypedParameter *params;
      int nparams;
     CODE:
-     nparams = 6;
+     nparams = 7;
      Newx(params, nparams, virTypedParameter);
 
      strncpy(params[0].field, VIR_MIGRATE_PARAM_URI,
@@ -4505,6 +4505,10 @@ _migrate(dom, destcon, newparams, flags=0)
      strncpy(params[5].field, VIR_MIGRATE_PARAM_LISTEN_ADDRESS,
              VIR_TYPED_PARAM_FIELD_LENGTH);
      params[5].type = VIR_TYPED_PARAM_STRING;
+
+     strncpy(params[6].field, VIR_MIGRATE_PARAM_DISKS_PORT,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[6].type = VIR_TYPED_PARAM_INT;
 
      nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
@@ -4534,7 +4538,7 @@ _migrate_to_uri(dom, desturi, newparams, flags=0)
      virTypedParameter *params;
      int nparams;
   PPCODE:
-     nparams = 6;
+     nparams = 7;
      Newx(params, nparams, virTypedParameter);
 
      strncpy(params[0].field, VIR_MIGRATE_PARAM_URI,
@@ -4560,6 +4564,10 @@ _migrate_to_uri(dom, desturi, newparams, flags=0)
      strncpy(params[5].field, VIR_MIGRATE_PARAM_LISTEN_ADDRESS,
              VIR_TYPED_PARAM_FIELD_LENGTH);
      params[5].type = VIR_TYPED_PARAM_STRING;
+
+     strncpy(params[6].field, VIR_MIGRATE_PARAM_DISKS_PORT,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[6].type = VIR_TYPED_PARAM_INT;
 
      nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
@@ -7586,6 +7594,7 @@ BOOT:
       REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_URI, MIGRATE_PARAM_URI);
       REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_LISTEN_ADDRESS, MIGRATE_PARAM_LISTEN_ADDRESS);
       REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_MIGRATE_DISKS, MIGRATE_PARAM_MIGRATE_DISKS);
+      REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_DISKS_PORT, MIGRATE_PARAM_DISK_PORT);
 
       REGISTER_CONSTANT(VIR_DOMAIN_XML_SECURE, XML_SECURE);
       REGISTER_CONSTANT(VIR_DOMAIN_XML_INACTIVE, XML_INACTIVE);

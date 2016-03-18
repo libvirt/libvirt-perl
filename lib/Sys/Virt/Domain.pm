@@ -981,6 +981,12 @@ or ::). This default may be a security risk if guests, or other
 untrusted users have the ability to connect to the virtualization
 host, thus use of an explicit restricted listen address is recommended.
 
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_DISK_PORT>
+
+Port that destination server should use for incoming disks migration. Type is
+VIR_TYPED_PARAM_INT. If set to 0 or omitted, libvirt will choose a suitable
+default. At the moment this is only supported by the QEMU driver.
+
 =back
 
 =item C<Sys::Virt::Domain::MIGRATE_PARAM_MIGRATE_DISKS>
