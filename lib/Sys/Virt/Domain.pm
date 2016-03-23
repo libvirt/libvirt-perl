@@ -360,6 +360,14 @@ The guest is paused due to a kernel panic
 
 The guest is paused as it is being started up.
 
+=item Sys::Virt::Domain::STATE_PAUSED_POSTCOPY
+
+The guest is paused as post-copy migration is taking place
+
+=item Sys::Virt::Domain::STATE_PAUSED_POSTCOPY_FAILED
+
+The guest is paused as post-copy migration failed
+
 =item Sys::Virt::Domain::STATE_RUNNING_BOOTED
 
 The guest is running after being booted
@@ -399,6 +407,10 @@ The guest is running after wakeup from power management suspend
 =item Sys::Virt::Domain::STATE_RUNNING_CRASHED
 
 The guest was restarted after crashing
+
+=item Sys::Virt::Domain::STATE_RUNNING_POSTCOPY
+
+The guest is running but post-copy is taking place
 
 =item Sys::Virt::Domain::STATE_BLOCKED_UNKNOWN
 
@@ -1139,7 +1151,7 @@ sub migrate_to_uri2 {
 }
 
 
-=item $dom->migrate_set_max_downtime($downtime, $flags)
+=item $dom->migrate_set_max_downtime($downtime, $flags=0)
 
 Set the maximum allowed downtime during migration of the guest. A
 longer downtime makes it more likely that migration will complete,
@@ -1147,29 +1159,35 @@ at the cost of longer time blackout for the guest OS at the switch
 over point. The C<downtime> parameter is measured in milliseconds.
 The C<$flags> parameter is currently unused and defaults to zero.
 
-=item $dom->migrate_set_max_speed($bandwidth, $flags)
+=item $dom->migrate_set_max_speed($bandwidth, $flags=0)
 
 Set the maximum allowed bandwidth during migration of the guest.
 The C<bandwidth> parameter is measured in MB/second.
 The C<$flags> parameter is currently unused and defaults to zero.
 
-=item $bandwidth = $dom->migrate_get_max_speed($flag)
+=item $bandwidth = $dom->migrate_get_max_speed($flags=0)
 
 Get the maximum allowed bandwidth during migration fo the guest.
 The returned <bandwidth> value is measured in MB/second.
 The C<$flags> parameter is currently unused and defaults to zero.
 
-=item $dom->migrate_set_compression_cache($cacheSize, $flags)
+=item $dom->migrate_set_compression_cache($cacheSize, $flags=0)
 
 Set the maximum allowed compression cache size during migration of
 the guest. The C<cacheSize> parameter is measured in bytes.
 The C<$flags> parameter is currently unused and defaults to zero.
 
-=item $cacheSize = $dom->migrate_get_compression_cache($flag)
+=item $cacheSize = $dom->migrate_get_compression_cache($flags=0)
 
 Get the maximum allowed compression cache size during migration of
 the guest. The returned <bandwidth> value is measured in bytes.
 The C<$flags> parameter is currently unused and defaults to zero.
+
+=item $dom->migrate_start_post_copy($flags=0)
+
+Switch the domain from pre-copy to post-copy mode. This requires
+that the original migrate command had the C<Sys::Virt::Domain::MIGRATE_POST_COPY>
+flag specified.
 
 =item $dom->inject_nmi($flags)
 
@@ -2263,6 +2281,10 @@ throttling guest runtime
 
 Pin memory for RDMA transfer
 
+=item Sys::Virt::Domain::MIGRATE_POSTCOPY
+
+Enable support for post-copy migration
+
 =back
 
 =head2 UNDEFINE CONSTANTS
@@ -2647,6 +2669,10 @@ The domain resumed because the admin unpaused it.
 
 The domain resumed because it was restored from a snapshot
 
+=item Sys::Virt::Domain::EVENT_RESUMED_POSTCOPY
+
+The domain resumed but post-copy is running in background
+
 =back
 
 =item Sys::Virt::Domain::EVENT_STARTED
@@ -2762,6 +2788,14 @@ The domain has been suspended due to restore from saved state
 =item Sys::Virt::Domain::EVENT_SUSPENDED_API_ERROR
 
 The domain has been suspended due to an API error
+
+=item Sys::Virt::Domain::EVENT_SUSPENDED_POSTCOPY
+
+The domain has been suspended for post-copy migration
+
+=item Sys::Virt::Domain::EVENT_SUSPENDED_POSTCOPY_FAILED
+
+The domain has been suspended due post-copy migration failing
 
 =back
 
