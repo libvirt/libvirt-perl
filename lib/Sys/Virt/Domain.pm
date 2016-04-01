@@ -812,6 +812,23 @@ of the NUMA PARAMETERS constants. The C<$flags>
 parameter accepts one or more the CONFIG OPTION constants
 documented later, and defaults to 0 if omitted.
 
+=item my $params = $dom->get_perf_events($flags=0)
+
+Return a hash reference containing the set of performance
+events that are available for the guest. The keys in the
+hash are one of the constants PERF EVENTS described later.
+The C<$flags> parameter accepts one or more the CONFIG
+OPTION constants documented later, and defaults to 0 if
+omitted.
+
+=item $dom->set_perf_events($params, $flags=0)
+
+Update the enabled state for performance events for the
+guest. The C<$params> should be a hash reference whose
+keys are one of the PERF EVENTS constants. The C<$flags>
+parameter accepts one or more the CONFIG OPTION constants
+documented later, and defaults to 0 if omitted.
+
 =item $dom->block_resize($disk, $newsize, $flags=0)
 
 Resize the disk C<$disk> to have new size C<$newsize> KB. If the disk
@@ -2588,6 +2605,19 @@ The burstable outbound bandwidth
 
 =back
 
+=head2 PERF EVENTS
+
+The following constants defined performance events
+which can be monitored for a guest
+
+=over 4
+
+=item Sys::Virt::Domain::PERF_PARAM_CMT
+
+The CMT event counter
+
+=back
+
 =head2 VCPU FLAGS
 
 The following constants are useful when getting/setting the
@@ -3715,6 +3745,10 @@ General lifecycle state
 =item Sys::Virt::Domain::STATS_VCPU
 
 Virtual CPU info
+
+=item Sys::Virt::Domain::STATS_PERF
+
+Performance event counter values
 
 =back
 

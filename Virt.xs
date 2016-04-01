@@ -4213,6 +4213,46 @@ set_blkio_parameters(dom, newparams, flags=0)
       Safefree(params);
 
 
+HV *
+get_perf_events(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+  PREINIT:
+      virTypedParameter *params = NULL;
+      int nparams = 0;
+    CODE:
+      if (virDomainGetPerfEvents(dom, &params, &nparams, flags) < 0) {
+          Safefree(params);
+          _croak_error();
+      }
+
+      RETVAL = vir_typed_param_to_hv(params, nparams);
+      Safefree(params);
+  OUTPUT:
+      RETVAL
+
+
+void
+set_perf_events(dom, newparams, flags=0)
+      virDomainPtr dom;
+      HV *newparams;
+      unsigned int flags;
+  PREINIT:
+      virTypedParameter *params = NULL;
+      int nparams = 0;
+    PPCODE:
+      if (virDomainGetPerfEvents(dom, &params, &nparams, flags) < 0) {
+          Safefree(params);
+          _croak_error();
+      }
+
+      nparams = vir_typed_param_from_hv(newparams, params, nparams);
+
+      if (virDomainSetPerfEvents(dom, params, nparams, flags) < 0)
+          _croak_error();
+      Safefree(params);
+
+
 unsigned long
 get_max_memory(dom)
       virDomainPtr dom;
@@ -7641,6 +7681,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_STATS_INTERFACE, STATS_INTERFACE);
       REGISTER_CONSTANT(VIR_DOMAIN_STATS_STATE, STATS_STATE);
       REGISTER_CONSTANT(VIR_DOMAIN_STATS_VCPU, STATS_VCPU);
+      REGISTER_CONSTANT(VIR_DOMAIN_STATS_PERF, STATS_PERF);
 
       REGISTER_CONSTANT(VIR_CONNECT_GET_ALL_DOMAINS_STATS_ACTIVE, GET_ALL_STATS_ACTIVE);
       REGISTER_CONSTANT(VIR_CONNECT_GET_ALL_DOMAINS_STATS_INACTIVE, GET_ALL_STATS_INACTIVE);
@@ -7905,6 +7946,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_NUMATUNE_MEM_PREFERRED, NUMATUNE_MEM_PREFERRED);
       REGISTER_CONSTANT(VIR_DOMAIN_NUMATUNE_MEM_INTERLEAVE, NUMATUNE_MEM_INTERLEAVE);
 
+      REGISTER_CONSTANT_STR(VIR_PERF_PARAM_CMT, PERF_PARAM_CMT);
 
       REGISTER_CONSTANT_STR(VIR_DOMAIN_BANDWIDTH_IN_AVERAGE, BANDWIDTH_IN_AVERAGE);
       REGISTER_CONSTANT_STR(VIR_DOMAIN_BANDWIDTH_IN_PEAK, BANDWIDTH_IN_PEAK);
@@ -8368,6 +8410,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_FROM_ADMIN, FROM_ADMIN);
       REGISTER_CONSTANT(VIR_FROM_LOGGING, FROM_LOGGING);
       REGISTER_CONSTANT(VIR_FROM_XENXL, FROM_XENXL);
+      REGISTER_CONSTANT(VIR_FROM_PERF, FROM_PERF);
 
 
       REGISTER_CONSTANT(VIR_ERR_OK, ERR_OK);

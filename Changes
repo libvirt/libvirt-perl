@@ -12,6 +12,7 @@ Revision history for perl module Sys::Virt
  - Add VIR_MIGRATE_PARAM_DISKS_PORT constant
  - Add virDomainMigrateStartPostCopy API support
  - Add constants related to post-copy migration
+ - Add APIS & constants for new perf event support
 
 1.3.2 2016-03-01
 

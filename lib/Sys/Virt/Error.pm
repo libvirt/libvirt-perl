@@ -394,6 +394,10 @@ The logging service
 
 The Xen XL driver
 
+=item Sys::Virt::Error::FROM_PERF
+
+The performance events subsystem
+
 =back
 
 =head2 ERROR CODE CONSTANTS
