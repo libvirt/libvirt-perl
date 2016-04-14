@@ -3010,11 +3010,11 @@ provides a hash containing the job stats. The keyus in the
 hash are the same as those used with the C<Sys::Virt::Domain::get_job_stats()>
 method.
 
-=back
-
 =item Sys::Virt::Domain::EVENT_ID_DEVICE_REMOVAL_FAILED
 
 Guest device removal has failed.
+
+=back
 
 =head2 IO ERROR EVENT CONSTANTS
 
