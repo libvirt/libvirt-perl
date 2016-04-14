@@ -3012,6 +3012,10 @@ method.
 
 =back
 
+=item Sys::Virt::Domain::EVENT_ID_DEVICE_REMOVAL_FAILED
+
+Guest device removal has failed.
+
 =head2 IO ERROR EVENT CONSTANTS
 
 These constants describe what action was taken due to the
