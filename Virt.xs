@@ -894,45 +894,7 @@ _domain_event_balloonchange_callback(virConnectPtr con,
 
 
 static int
-_domain_event_device_added_callback(virConnectPtr con,
-                                    virDomainPtr dom,
-                                    const char *devAlias,
-                                    void *opaque)
-{
-    AV *data = opaque;
-    SV **self;
-    SV **cb;
-    SV *domref;
-    dSP;
-
-    self = av_fetch(data, 0, 0);
-    cb = av_fetch(data, 1, 0);
-
-    SvREFCNT_inc(*self);
-
-    ENTER;
-    SAVETMPS;
-
-    PUSHMARK(SP);
-    XPUSHs(*self);
-    domref = sv_newmortal();
-    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
-    virDomainRef(dom);
-    XPUSHs(domref);
-    XPUSHs(sv_2mortal(newSVpv(devAlias, 0)));
-    PUTBACK;
-
-    call_sv(*cb, G_DISCARD);
-
-    FREETMPS;
-    LEAVE;
-
-    return 0;
-}
-
-
-static int
-_domain_event_device_removed_callback(virConnectPtr con,
+_domain_event_device_generic_callback(virConnectPtr con,
                                       virDomainPtr dom,
                                       const char *devAlias,
                                       void *opaque)
@@ -3098,10 +3060,10 @@ PREINIT:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_balloonchange_callback);
           break;
       case VIR_DOMAIN_EVENT_ID_DEVICE_ADDED:
-          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_device_added_callback);
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_device_generic_callback);
           break;
       case VIR_DOMAIN_EVENT_ID_DEVICE_REMOVED:
-          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_device_removed_callback);
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_device_generic_callback);
           break;
       case VIR_DOMAIN_EVENT_ID_TUNABLE:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_tunable_callback);
