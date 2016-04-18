@@ -4517,23 +4517,23 @@ _migrate(dom, destcon, newparams, flags=0)
 
      strncpy(params[7].field, VIR_MIGRATE_PARAM_COMPRESSION,
              VIR_TYPED_PARAM_FIELD_LENGTH);
-     params[6].type = VIR_TYPED_PARAM_STRING;
+     params[7].type = VIR_TYPED_PARAM_STRING;
 
      strncpy(params[8].field, VIR_MIGRATE_PARAM_COMPRESSION_MT_DTHREADS,
              VIR_TYPED_PARAM_FIELD_LENGTH);
-     params[6].type = VIR_TYPED_PARAM_INT;
+     params[8].type = VIR_TYPED_PARAM_INT;
 
      strncpy(params[9].field, VIR_MIGRATE_PARAM_COMPRESSION_MT_LEVEL,
              VIR_TYPED_PARAM_FIELD_LENGTH);
-     params[6].type = VIR_TYPED_PARAM_INT;
+     params[9].type = VIR_TYPED_PARAM_INT;
 
      strncpy(params[10].field, VIR_MIGRATE_PARAM_COMPRESSION_MT_THREADS,
              VIR_TYPED_PARAM_FIELD_LENGTH);
-     params[6].type = VIR_TYPED_PARAM_INT;
+     params[10].type = VIR_TYPED_PARAM_INT;
 
      strncpy(params[11].field, VIR_MIGRATE_PARAM_COMPRESSION_XBZRLE_CACHE,
              VIR_TYPED_PARAM_FIELD_LENGTH);
-     params[6].type = VIR_TYPED_PARAM_ULLONG;
+     params[11].type = VIR_TYPED_PARAM_ULLONG;
 
      nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
@@ -4596,23 +4596,23 @@ _migrate_to_uri(dom, desturi, newparams, flags=0)
 
      strncpy(params[7].field, VIR_MIGRATE_PARAM_COMPRESSION,
              VIR_TYPED_PARAM_FIELD_LENGTH);
-     params[6].type = VIR_TYPED_PARAM_STRING;
+     params[7].type = VIR_TYPED_PARAM_STRING;
 
      strncpy(params[8].field, VIR_MIGRATE_PARAM_COMPRESSION_MT_DTHREADS,
              VIR_TYPED_PARAM_FIELD_LENGTH);
-     params[6].type = VIR_TYPED_PARAM_INT;
+     params[8].type = VIR_TYPED_PARAM_INT;
 
      strncpy(params[9].field, VIR_MIGRATE_PARAM_COMPRESSION_MT_LEVEL,
              VIR_TYPED_PARAM_FIELD_LENGTH);
-     params[6].type = VIR_TYPED_PARAM_INT;
+     params[9].type = VIR_TYPED_PARAM_INT;
 
      strncpy(params[10].field, VIR_MIGRATE_PARAM_COMPRESSION_MT_THREADS,
              VIR_TYPED_PARAM_FIELD_LENGTH);
-     params[6].type = VIR_TYPED_PARAM_INT;
+     params[10].type = VIR_TYPED_PARAM_INT;
 
      strncpy(params[11].field, VIR_MIGRATE_PARAM_COMPRESSION_XBZRLE_CACHE,
              VIR_TYPED_PARAM_FIELD_LENGTH);
-     params[6].type = VIR_TYPED_PARAM_ULLONG;
+     params[11].type = VIR_TYPED_PARAM_ULLONG;
 
      nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
