@@ -175,6 +175,10 @@ The volume is a network source
 
 The volume is a network directory
 
+=item Sys::Virt::StorageVol::TYPE_PLOOP
+
+The volume is a ploop directory
+
 =back
 
 =head2 CREATE MODES
