@@ -1016,14 +1016,36 @@ Port that destination server should use for incoming disks migration. Type is
 VIR_TYPED_PARAM_INT. If set to 0 or omitted, libvirt will choose a suitable
 default. At the moment this is only supported by the QEMU driver.
 
-=back
-
 =item C<Sys::Virt::Domain::MIGRATE_PARAM_MIGRATE_DISKS>
 
 The list of disks to migrate when doing block storage migration.
 In constrast to other parameters whose values are plain strings,
 the parameter value should be an array reference, whose elements
 are in turn strings representing the disk target names.
+
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_COMPRESSION>
+
+The type of compression method use use, either C<xbzrle> or
+C<mt>.
+
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_COMPRESSION_MT_THREADS>
+
+The number of compression threads to use
+
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_COMPRESSION_MT_DTHREADS>
+
+The number of decompression threads
+
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_COMPRESSION_MT_LEVEL>
+
+The compression level from 0 (no compression) to 9 (maximum
+compression)
+
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_COMPRESSION_XBZRLE_CACHE>
+
+The size of the cache for xbzrle compression
+
+=back
 
 =item $ddom = $dom->migrate(destcon, flags=0, dname=undef, uri=undef, bandwidth=0)
 
