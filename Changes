@@ -7,6 +7,7 @@ Revision history for perl module Sys::Virt
  - Reuse VIR_DOMAIN_EVENT_ID_DEVICE callbacks
  - Add VIR_STORAGE_VOL_PLOOP constant
  - Add VIR_MIGRATE_PARAM_COMPRESSION* constants
+ - Add VIR_MIGRATE_PARAM_PERSIST_XML constant
 
 1.3.3 2016-04-07
 

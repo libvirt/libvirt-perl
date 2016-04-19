@@ -1045,6 +1045,10 @@ compression)
 
 The size of the cache for xbzrle compression
 
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_PERSIST_XML>
+
+The alternative persistent XML config to copy
+
 =back
 
 =item $ddom = $dom->migrate(destcon, flags=0, dname=undef, uri=undef, bandwidth=0)
