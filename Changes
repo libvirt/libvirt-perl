@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+1.3.4 2016-00-00
+
+ - XXX
+
 1.3.4 2016-05-05
 
  - Fix POD error in Domain.pm
