@@ -1,8 +1,8 @@
 Revision history for perl module Sys::Virt
 
-1.3.4 2016-00-00
+1.3.5 2016-00-00
 
- - XXX
+ - Add VIR_ERR_NO_CLIENT constant
 
 1.3.4 2016-05-05
 

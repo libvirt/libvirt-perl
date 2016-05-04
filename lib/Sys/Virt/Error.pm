@@ -792,6 +792,10 @@ Authentication services were not available
 
 Libvirt server was not found
 
+=item Sys::Virt::Error::ERR_NO_CLIENT
+
+Libvirt client was not found
+
 =back
 
 =head1 AUTHORS
