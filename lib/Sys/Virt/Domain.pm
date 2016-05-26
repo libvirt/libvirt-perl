@@ -2642,6 +2642,18 @@ which can be monitored for a guest
 
 The CMT event counter
 
+=item Sys::Virt::Domain::PERF_PARAM_MBML
+
+The MBML event counter which can be used to monitor the amount of
+data (bytes/s) sent through the memory controller on the socket.
+It corresponds to the "perf.mbml" field in the *Stats APIs.
+
+=item Sys::Virt::Domain::PERF_PARAM_MBMT
+
+The MBMT event counter which can be used to monitor total system
+bandwidth (bytes/s) from one level of cache to another. It
+corresponds to the "perf.mbmt" field in the *Stats APIs.
+
 =back
 
 =head2 VCPU FLAGS
