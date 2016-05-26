@@ -2640,7 +2640,9 @@ which can be monitored for a guest
 
 =item Sys::Virt::Domain::PERF_PARAM_CMT
 
-The CMT event counter
+The CMT event counter which can be used to measure the usage of
+cache (bytes) by applications running on the platform. It
+corresponds to the "perf.cmt" field in the *Stats APIs.
 
 =item Sys::Virt::Domain::PERF_PARAM_MBML
 
