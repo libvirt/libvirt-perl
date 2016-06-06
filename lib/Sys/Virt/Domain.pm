@@ -919,6 +919,10 @@ Memory not used by the system
 
 Total memory seen by guest
 
+=item C<rss>
+
+Resident set size. Size of memory resident in host RAM.
+
 =back
 
 =item $info = $dom->get_security_label()

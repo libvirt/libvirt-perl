@@ -4982,7 +4982,7 @@ memory_stats(dom, flags=0)
               break;
 
           case VIR_DOMAIN_MEMORY_STAT_RSS:
-              (void)hv_store (RETVAL, "rss", 14, virt_newSVll(stats[i].val), 0);
+              (void)hv_store (RETVAL, "rss", 3, virt_newSVll(stats[i].val), 0);
               break;
           }
       }
