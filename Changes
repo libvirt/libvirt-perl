@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-1.3.5 2016-00-00
+1.3.5 2016-06-06
 
  - Add VIR_ERR_NO_CLIENT constant
  - Add PERF_PARAM_MBML and PERF_PARAM_MBMT constants
