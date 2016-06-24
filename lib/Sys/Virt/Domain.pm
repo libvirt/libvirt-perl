@@ -1531,6 +1531,10 @@ The expected amount of file remaining to be processed by the job, in bytes.
 
 The bytes per second transferred
 
+=item Sys::Virt::Domain::JOB_AUTO_CONVERGE_THROTTLE
+
+The percentage by which vCPUs are currently throttled
+
 =item Sys::Virt::Domain::JOB_COMPRESSION_CACHE
 
 The size of the compression cache in bytes
