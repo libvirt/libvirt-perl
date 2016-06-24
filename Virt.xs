@@ -4484,7 +4484,7 @@ _migrate(dom, destcon, newparams, flags=0)
      virTypedParameter *params;
      int nparams;
     CODE:
-     nparams = 13;
+     nparams = 15;
      Newx(params, nparams, virTypedParameter);
 
      strncpy(params[0].field, VIR_MIGRATE_PARAM_URI,
@@ -4538,6 +4538,14 @@ _migrate(dom, destcon, newparams, flags=0)
      strncpy(params[12].field, VIR_MIGRATE_PARAM_PERSIST_XML,
              VIR_TYPED_PARAM_FIELD_LENGTH);
      params[12].type = VIR_TYPED_PARAM_STRING;
+
+     strncpy(params[13].field, VIR_MIGRATE_PARAM_AUTO_CONVERGE_INITIAL,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[13].type = VIR_TYPED_PARAM_INT;
+
+     strncpy(params[14].field, VIR_MIGRATE_PARAM_AUTO_CONVERGE_INCREMENT,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[14].type = VIR_TYPED_PARAM_INT;
 
      nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
@@ -4567,7 +4575,7 @@ _migrate_to_uri(dom, desturi, newparams, flags=0)
      virTypedParameter *params;
      int nparams;
   PPCODE:
-     nparams = 13;
+     nparams = 15;
      Newx(params, nparams, virTypedParameter);
 
      strncpy(params[0].field, VIR_MIGRATE_PARAM_URI,
@@ -4621,6 +4629,14 @@ _migrate_to_uri(dom, desturi, newparams, flags=0)
      strncpy(params[12].field, VIR_MIGRATE_PARAM_PERSIST_XML,
              VIR_TYPED_PARAM_FIELD_LENGTH);
      params[12].type = VIR_TYPED_PARAM_STRING;
+
+     strncpy(params[13].field, VIR_MIGRATE_PARAM_AUTO_CONVERGE_INITIAL,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[13].type = VIR_TYPED_PARAM_INT;
+
+     strncpy(params[14].field, VIR_MIGRATE_PARAM_AUTO_CONVERGE_INCREMENT,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[14].type = VIR_TYPED_PARAM_INT;
 
      nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
@@ -7667,6 +7683,8 @@ BOOT:
       REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_COMPRESSION_MT_LEVEL, MIGRATE_PARAM_COMPRESSION_MT_LEVEL);
       REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_COMPRESSION_XBZRLE_CACHE, MIGRATE_PARAM_COMPRESSION_XBZRLE_CACHE);
       REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_PERSIST_XML, MIGRATE_PARAM_PERSIST_XML);
+      REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_AUTO_CONVERGE_INITIAL, MIGRATE_PARAM_AUTO_CONVERGE_INITIAL);
+      REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_AUTO_CONVERGE_INCREMENT, MIGRATE_PARAM_AUTO_CONVERGE_INCREMENT);
 
       REGISTER_CONSTANT(VIR_DOMAIN_XML_SECURE, XML_SECURE);
       REGISTER_CONSTANT(VIR_DOMAIN_XML_INACTIVE, XML_INACTIVE);

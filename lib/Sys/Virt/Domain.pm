@@ -1053,6 +1053,15 @@ The size of the cache for xbzrle compression
 
 The alternative persistent XML config to copy
 
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_AUTO_CONVERGE_INITIAL>
+
+The initial percentage to throttle guest vCPUs
+
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_AUTO_CONVERGE_INCREMENT>
+
+The additional percentage step size to throttle guest vCPUs if
+progress is not made
+
 =back
 
 =item $ddom = $dom->migrate(destcon, flags=0, dname=undef, uri=undef, bandwidth=0)
