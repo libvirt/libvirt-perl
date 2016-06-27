@@ -1171,6 +1171,82 @@ _network_event_generic_callback(virConnectPtr con,
 }
 
 
+static int
+_storage_pool_event_generic_callback(virConnectPtr con,
+				     virStoragePoolPtr pool,
+				     void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *poolref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    poolref = sv_newmortal();
+    sv_setref_pv(poolref, "Sys::Virt::StoragePool", (void*)pool);
+    virStoragePoolRef(pool);
+    XPUSHs(poolref);
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
+static int
+_storage_pool_event_lifecycle_callback(virConnectPtr con,
+				       virStoragePoolPtr pool,
+				       int event,
+				       int detail,
+				       void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *poolref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    poolref = sv_newmortal();
+    sv_setref_pv(poolref, "Sys::Virt::StoragePool", (void*)pool);
+    virStoragePoolRef(pool);
+    XPUSHs(poolref);
+    XPUSHs(sv_2mortal(newSViv(event)));
+    XPUSHs(sv_2mortal(newSViv(detail)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
 static void
 _domain_event_free(void *opaque)
 {
@@ -1181,6 +1257,14 @@ _domain_event_free(void *opaque)
 
 static void
 _network_event_free(void *opaque)
+{
+  SV *sv = opaque;
+  SvREFCNT_dec(sv);
+}
+
+
+static void
+_storage_pool_event_free(void *opaque)
 {
   SV *sv = opaque;
   SvREFCNT_dec(sv);
@@ -3149,6 +3233,56 @@ network_event_deregister_any(con, callbackID)
       int callbackID;
  PPCODE:
       virConnectNetworkEventDeregisterAny(con, callbackID);
+
+
+int
+storage_pool_event_register_any(conref, poolref, eventID, cb)
+      SV* conref;
+      SV* poolref;
+      int eventID;
+      SV* cb;
+PREINIT:
+      AV *opaque;
+      virConnectPtr con;
+      virStoragePoolPtr net;
+      virConnectStoragePoolEventGenericCallback callback;
+    CODE:
+      con = (virConnectPtr)SvIV((SV*)SvRV(conref));
+      if (SvROK(poolref)) {
+          net = (virStoragePoolPtr)SvIV((SV*)SvRV(poolref));
+      } else {
+          net = NULL;
+      }
+
+      switch (eventID) {
+      case VIR_STORAGE_POOL_EVENT_ID_LIFECYCLE:
+          callback = VIR_STORAGE_POOL_EVENT_CALLBACK(_storage_pool_event_lifecycle_callback);
+          break;
+      case VIR_STORAGE_POOL_EVENT_ID_REFRESH:
+          callback = VIR_STORAGE_POOL_EVENT_CALLBACK(_storage_pool_event_generic_callback);
+          break;
+      default:
+          callback = VIR_STORAGE_POOL_EVENT_CALLBACK(_storage_pool_event_generic_callback);
+          break;
+      }
+
+      opaque = newAV();
+      SvREFCNT_inc(cb);
+      SvREFCNT_inc(conref);
+      av_push(opaque, conref);
+      av_push(opaque, cb);
+      if ((RETVAL = virConnectStoragePoolEventRegisterAny(con, net, eventID, callback, opaque, _storage_pool_event_free)) < 0)
+          _croak_error();
+OUTPUT:
+      RETVAL
+
+
+void
+storage_pool_event_deregister_any(con, callbackID)
+      virConnectPtr con;
+      int callbackID;
+ PPCODE:
+      virConnectStoragePoolEventDeregisterAny(con, callbackID);
 
 
 void
@@ -8260,6 +8394,15 @@ BOOT:
       REGISTER_CONSTANT(VIR_CONNECT_LIST_STORAGE_POOLS_SHEEPDOG, LIST_SHEEPDOG);
       REGISTER_CONSTANT(VIR_CONNECT_LIST_STORAGE_POOLS_GLUSTER, LIST_GLUSTER);
       REGISTER_CONSTANT(VIR_CONNECT_LIST_STORAGE_POOLS_ZFS, LIST_ZFS);
+
+      REGISTER_CONSTANT(VIR_STORAGE_POOL_EVENT_ID_LIFECYCLE, EVENT_ID_LIFECYCLE);
+      REGISTER_CONSTANT(VIR_STORAGE_POOL_EVENT_ID_REFRESH, EVENT_ID_REFRESH);
+
+      REGISTER_CONSTANT(VIR_STORAGE_POOL_EVENT_DEFINED, EVENT_DEFINED);
+      REGISTER_CONSTANT(VIR_STORAGE_POOL_EVENT_UNDEFINED, EVENT_UNDEFINED);
+      REGISTER_CONSTANT(VIR_STORAGE_POOL_EVENT_STARTED, EVENT_STARTED);
+      REGISTER_CONSTANT(VIR_STORAGE_POOL_EVENT_STOPPED, EVENT_STOPPED);
+
 
       stash = gv_stashpv( "Sys::Virt::Network", TRUE );
       REGISTER_CONSTANT(VIR_NETWORK_XML_INACTIVE, XML_INACTIVE);

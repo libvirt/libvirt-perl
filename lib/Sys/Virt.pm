@@ -1494,7 +1494,7 @@ constants described later in this document. The C<$callback> is
 a subroutine reference that will receive the events.
 
 All callbacks receive a C<Sys::Virt> connection as the first parameter
-and a C<Sys::Virt::Domain> object indiciating the domain on which the
+and a C<Sys::Virt::Domain> object indicating the domain on which the
 event occurred as the second parameter. Subsequent parameters vary
 according to the event type
 
@@ -1548,17 +1548,17 @@ unregistering the event.
 Unregister a callback, associated with the C<$callbackID> previously
 obtained from C<domain_event_register_any>.
 
-=item $callback = $conn->network_event_register_any($dom, $eventID, $callback)
+=item $callback = $conn->network_event_register_any($net, $eventID, $callback)
 
 Register a callback to received notifications of network events.
-The C<$dom> parameter can be C<undef> to request events on all
+The C<$net> parameter can be C<undef> to request events on all
 known networks, or a specific C<Sys::Virt::Network> object to
 filter events. The C<$eventID> parameter is one of the EVENT ID
 constants described later in this document. The C<$callback> is
 a subroutine reference that will receive the events.
 
 All callbacks receive a C<Sys::Virt> connection as the first parameter
-and a C<Sys::Virt::Network> object indiciating the network on which the
+and a C<Sys::Virt::Network> object indicating the network on which the
 event occurred as the second parameter. Subsequent parameters vary
 according to the event type
 
@@ -1579,6 +1579,42 @@ unregistering the event.
 
 Unregister a callback, associated with the C<$callbackID> previously
 obtained from C<network_event_register_any>.
+
+=item $callback = $conn->storage_pool_event_register_any($pool, $eventID, $callback)
+
+Register a callback to received notifications of storage pool events.
+The C<$pool> parameter can be C<undef> to request events on all
+known storage pools, or a specific C<Sys::Virt::StoragePool> object
+to filter events. The C<$eventID> parameter is one of the EVENT ID
+constants described later in this document. The C<$callback> is
+a subroutine reference that will receive the events.
+
+All callbacks receive a C<Sys::Virt> connection as the first parameter
+and a C<Sys::Virt::StoragePool> object indicating the storage pool on
+which the event occurred as the second parameter. Subsequent parameters
+vary according to the event type
+
+=over
+
+=item EVENT_ID_LIFECYCLE
+
+Extra C<event> and C<detail> parameters defining the lifecycle
+transition that occurred.
+
+=item EVENT_ID_REFRESH
+
+No extra parameters.
+
+=back
+
+The return value is a unique callback ID that must be used when
+unregistering the event.
+
+
+=item $conn->storage_pool_event_deregister_any($callbackID)
+
+Unregister a callback, associated with the C<$callbackID> previously
+obtained from C<storage_pool_event_register_any>.
 
 =item $conn->register_close_callback($coderef);
 

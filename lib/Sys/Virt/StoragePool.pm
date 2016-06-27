@@ -477,6 +477,47 @@ Include ZFS storage pools
 
 =back
 
+=head2 EVENT ID CONSTANTS
+
+=over 4
+
+=item Sys::Virt::StoragePool::EVENT_ID_LIFECYCLE
+
+Storage pool lifecycle events
+
+=item Sys::Virt::StoragePool::EVENT_ID_REFRESH
+
+Storage pool volume refresh events
+
+=back
+
+=head2 LIFECYCLE CHANGE EVENTS
+
+The following constants allow network lifecycle change events to be
+interpreted. The events contain both a state change, and a
+reason though the reason is currently unsed.
+
+=over 4
+
+=item Sys::Virt::StoragePool::EVENT_DEFINED
+
+Indicates that a persistent configuration has been defined for
+the network.
+
+=item Sys::Virt::StoragePool::EVENT_STARTED
+
+The network has started running
+
+=item Sys::Virt::StoragePool::EVENT_STOPPED
+
+The network has stopped running
+
+=item Sys::Virt::StoragePool::EVENT_UNDEFINED
+
+The persistent configuration has gone away
+
+=back
+
 =head1 AUTHORS
 
 Daniel P. Berrange <berrange@redhat.com>

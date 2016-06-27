@@ -97,6 +97,8 @@ virConnectDomainEventDeviceRemovalFailedCallback
 
 virConnectNetworkEventLifecycleCallback
 
+virConnectStoragePoolEventLifecycleCallback
+
 virEventAddHandleFunc
 virEventAddTimeoutFunc
 virEventRemoveHandleFunc
@@ -173,6 +175,7 @@ VIR_DOMAIN_BLKIO_FIELD_LENGTH
 VIR_DOMAIN_BLOCK_STATS_FIELD_LENGTH
 VIR_DOMAIN_EVENT_CALLBACK
 VIR_NETWORK_EVENT_CALLBACK
+VIR_STORAGE_POOL_EVENT_CALLBACK
 VIR_DOMAIN_MEMORY_FIELD_LENGTH
 VIR_DOMAIN_MEMORY_PARAM_UNLIMITED
 VIR_DOMAIN_SCHED_FIELD_LENGTH
