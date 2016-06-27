@@ -695,6 +695,40 @@ Get the number of virtual CPUs in the guest VM.
 The optional C<$flags> parameter can be used to control whether
 to query the setting of the live config or inactive config.
 
+=item $dom->set_guest_vcpus($cpumap, $state, [$flags=0])
+
+Set the online status of the guest OS CPUs. The C<$cpumap>
+parameter describes the set of CPUs to modify (eg "0-3,^1").
+C<$state> is either B<1> to set the CPUs online, or B<0>
+to set them offline. The C<$flags> parameter is currently
+unused and defaults to 0.
+
+=item $info $dom->get_guest_vcpus([$flags=0])
+
+Query information about the guest OS CPUs. The returned
+data is a hash reference with the following keys.
+
+=over 4
+
+=item B<vcpus>
+
+String containing bitmap representing CPU ids reported
+currently known to the guest.
+
+=item B<online>
+
+String containing bitmap representing CPU ids that are
+currently online in the guest.
+
+=item B<offlinable>
+
+String containing bitmap representing CPU ids that can
+be offlined in the guest.
+
+=back
+
+The C<$flags> parameter is currently unused and defaults to 0.
+
 =item $type = $dom->get_scheduler_type()
 
 Return the scheduler type for the guest domain

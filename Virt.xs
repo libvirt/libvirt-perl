@@ -4433,6 +4433,34 @@ OUTPUT:
 
 
 void
+set_guest_vcpus(dom, cpumap, state, flags=0)
+      virDomainPtr dom;
+      const char *cpumap;
+      int state;
+      unsigned int flags;
+  PPCODE:
+      if (virDomainSetGuestVcpus(dom, cpumap, state, flags) < 0)
+          _croak_error();
+
+
+HV *
+get_guest_vcpus(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+  PREINIT:
+      virTypedParameter *params;
+      unsigned int nparams;
+    CODE:
+      if (virDomainGetGuestVcpus(dom, &params, &nparams, flags) < 0) {
+          _croak_error();
+      }
+      RETVAL = vir_typed_param_to_hv(params, nparams);
+      virTypedParamsFree(params, nparams);
+  OUTPUT:
+      RETVAL
+
+
+void
 set_autostart(dom, autostart)
       virDomainPtr dom;
       int autostart;

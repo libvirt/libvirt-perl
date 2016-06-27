@@ -8,6 +8,7 @@ Revision history for perl module Sys::Virt
  - Add virConnectStoragePoolEventRegisterAny and
    virConnectStoragePoolEventDeregisterAny and associated
    constants
+ - Add virDomainGetGuestVcpus and virDomainSetGuestVcpus APIs
 
 1.3.5 2016-06-06
 
