@@ -4160,14 +4160,14 @@ get_memory_parameters(dom, flags=0)
       virDomainPtr dom;
       unsigned int flags;
   PREINIT:
-      virMemoryParameter *params;
+      virTypedParameterPtr params;
       int nparams;
     CODE:
       nparams = 0;
       if (virDomainGetMemoryParameters(dom, NULL, &nparams, flags) < 0)
           _croak_error();
 
-      Newx(params, nparams, virMemoryParameter);
+      Newx(params, nparams, virTypedParameter);
 
       if (virDomainGetMemoryParameters(dom, params, &nparams, flags) < 0) {
           Safefree(params);
@@ -4193,7 +4193,7 @@ set_memory_parameters(dom, newparams, flags=0)
       if (virDomainGetMemoryParameters(dom, NULL, &nparams, flags) < 0)
           _croak_error();
 
-      Newx(params, nparams, virMemoryParameter);
+      Newx(params, nparams, virTypedParameter);
 
       if (virDomainGetMemoryParameters(dom, params, &nparams, flags) < 0) {
           Safefree(params);
