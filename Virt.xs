@@ -159,7 +159,7 @@ _populate_constant_ull(HV *stash, const char *name, unsigned long long val)
 #define REGISTER_CONSTANT_ULL(name, key) _populate_constant_ull(stash, #key, name)
 
 static HV *
-vir_typed_param_to_hv(virTypedParameter *params, int nparams)
+vir_typed_param_to_hv(virTypedParameterPtr params, int nparams)
 {
     HV *ret = (HV *)sv_2mortal((SV*)newHV());
     unsigned int i;
@@ -210,7 +210,7 @@ vir_typed_param_to_hv(virTypedParameter *params, int nparams)
 
 
 static int
-vir_typed_param_from_hv(HV *newparams, virTypedParameter *params, int nparams)
+vir_typed_param_from_hv(HV *newparams, virTypedParameterPtr params, int nparams)
 {
     unsigned int i;
     char * ptr;
@@ -274,7 +274,7 @@ vir_typed_param_from_hv(HV *newparams, virTypedParameter *params, int nparams)
 
 static void
 vir_typed_param_add_string_list_from_hv(HV *newparams,
-					virTypedParameter **params,
+					virTypedParameterPtr *params,
 					int *nparams,
 					const char *key)
 {
@@ -282,7 +282,7 @@ vir_typed_param_add_string_list_from_hv(HV *newparams,
         return;
     }
     SSize_t nstr, i;
-    virTypedParameter *localparams = *params;
+    virTypedParameterPtr localparams = *params;
 
     SV **val = hv_fetch(newparams, key, strlen(key), 0);
     AV *av = (AV*)(SvRV(*val));
@@ -2236,7 +2236,7 @@ get_node_memory_parameters(conn, flags=0)
       virConnectPtr conn;
       unsigned int flags;
   PREINIT:
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       int nparams;
     CODE:
       nparams = 0;
@@ -2262,7 +2262,7 @@ set_node_memory_parameters(conn, newparams, flags=0)
       HV *newparams;
       unsigned int flags;
   PREINIT:
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       int nparams;
     PPCODE:
       nparams = 0;
@@ -3918,7 +3918,7 @@ get_job_stats(dom, flags=0)
       unsigned int flags;
   PREINIT:
       int type;
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       int nparams;
       HV *paramsHv;
       SV *typeSv;
@@ -4017,7 +4017,7 @@ block_copy(dom, path, destxml, newparams, flags=0)
       HV *newparams;
       unsigned long flags;
   PREINIT:
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       int nparams;
   PPCODE:
       nparams = 3;
@@ -4092,7 +4092,7 @@ get_scheduler_parameters(dom, flags=0)
       virDomainPtr dom;
       unsigned int flags;
   PREINIT:
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       int nparams;
       char *type;
     CODE:
@@ -4124,7 +4124,7 @@ set_scheduler_parameters(dom, newparams, flags=0)
       HV *newparams;
       unsigned int flags;
   PREINIT:
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       int nparams;
       char *type;
     PPCODE:
@@ -4186,7 +4186,7 @@ set_memory_parameters(dom, newparams, flags=0)
       HV *newparams;
       unsigned int flags;
   PREINIT:
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       int nparams;
     PPCODE:
       nparams = 0;
@@ -4212,7 +4212,7 @@ get_numa_parameters(dom, flags=0)
       virDomainPtr dom;
       unsigned int flags;
   PREINIT:
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       int nparams;
     CODE:
       nparams = 0;
@@ -4238,7 +4238,7 @@ set_numa_parameters(dom, newparams, flags=0)
       HV *newparams;
       unsigned int flags;
   PREINIT:
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       int nparams;
     PPCODE:
       nparams = 0;
@@ -4264,7 +4264,7 @@ get_blkio_parameters(dom, flags=0)
       virDomainPtr dom;
       unsigned int flags;
   PREINIT:
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       int nparams;
     CODE:
       nparams = 0;
@@ -4290,7 +4290,7 @@ set_blkio_parameters(dom, newparams, flags=0)
       HV *newparams;
       unsigned int flags;
   PREINIT:
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       int nparams;
     PPCODE:
       nparams = 0;
@@ -4317,7 +4317,7 @@ get_perf_events(dom, flags=0)
       virDomainPtr dom;
       unsigned int flags;
   PREINIT:
-      virTypedParameter *params = NULL;
+      virTypedParameterPtr params = NULL;
       int nparams = 0;
     CODE:
       if (virDomainGetPerfEvents(dom, &params, &nparams, flags) < 0) {
@@ -4337,7 +4337,7 @@ set_perf_events(dom, newparams, flags=0)
       HV *newparams;
       unsigned int flags;
   PREINIT:
-      virTypedParameter *params = NULL;
+      virTypedParameterPtr params = NULL;
       int nparams = 0;
     PPCODE:
       if (virDomainGetPerfEvents(dom, &params, &nparams, flags) < 0) {
@@ -4448,7 +4448,7 @@ get_guest_vcpus(dom, flags=0)
       virDomainPtr dom;
       unsigned int flags;
   PREINIT:
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       unsigned int nparams;
     CODE:
       if (virDomainGetGuestVcpus(dom, &params, &nparams, flags) < 0) {
@@ -4643,7 +4643,7 @@ _migrate(dom, destcon, newparams, flags=0)
      HV *newparams;
      unsigned long flags;
   PREINIT:
-     virTypedParameter *params;
+     virTypedParameterPtr params;
      int nparams;
     CODE:
      nparams = 15;
@@ -4734,7 +4734,7 @@ _migrate_to_uri(dom, desturi, newparams, flags=0)
      HV *newparams;
      unsigned long flags;
   PREINIT:
-     virTypedParameter *params;
+     virTypedParameterPtr params;
      int nparams;
   PPCODE:
      nparams = 15;
@@ -4937,7 +4937,7 @@ get_block_iotune(dom, disk, flags=0)
       const char *disk;
       unsigned int flags;
   PREINIT:
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       int nparams;
     CODE:
       nparams = 0;
@@ -4964,7 +4964,7 @@ set_block_iotune(dom, disk, newparams, flags=0)
       HV *newparams;
       unsigned int flags;
   PREINIT:
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       int nparams;
   PPCODE:
       nparams = 0;
@@ -4988,7 +4988,7 @@ get_interface_parameters(dom, intf, flags=0)
       const char *intf;
       unsigned int flags;
   PREINIT:
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       int nparams;
     CODE:
       nparams = 0;
@@ -5015,7 +5015,7 @@ set_interface_parameters(dom, intf, newparams, flags=0)
       HV *newparams;
       unsigned int flags;
   PREINIT:
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       int nparams;
   PPCODE:
       nparams = 0;
@@ -5040,7 +5040,7 @@ block_stats(dom, path, flags=0)
       unsigned int flags;
   PREINIT:
       virDomainBlockStatsStruct stats;
-      virTypedParameter *params;
+      virTypedParameterPtr params;
       int nparams;
       unsigned int i;
       const char *field;
