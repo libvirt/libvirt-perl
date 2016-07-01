@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-2.0.0 2016-00-00
+2.0.0 2016-07-01
 
  - Add VIR_MIGRATE_PARAM_AUTO_CONVERGE_INITIAL and
    VIR_MIGRATE_PARAM_AUTO_CONVERGE_INCREMENT constants
