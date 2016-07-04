@@ -149,6 +149,11 @@ The constant for secrets which are to be used for authenticating
 to iSCSI storage volumes. The usage ID for secrets will refer to
 the server name.
 
+=item Sys::Virt::Secret::USAGE_TYPE_PASSPHRASE
+
+The constant for general purpose secret to be used by various libvirt
+objects to provide a single passphrase.
+
 =back
 
 =head2 LIST FILTERING
