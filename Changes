@@ -2,7 +2,8 @@ Revision history for perl module Sys::Virt
 
 2.1.0 2016-00-00
 
- - XXX
+ - Add VIR_DOMAIN_MEMORY_STAT_USABLE and
+   VIR_DOMAIN_MEMORY_STAT_LAST_UPDATE constants
 
 2.0.0 2016-07-01
 

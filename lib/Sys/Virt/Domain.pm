@@ -3593,6 +3593,14 @@ Available memory
 
 Actual balloon limit
 
+=item Sys::Virt::Domain::MEMORY_STAT_USABLE
+
+Amount of usable memory
+
+=item Sys::Virt::Domain::MEMORY_STAT_LAST_UPDATE
+
+Time of last stats refresh from guest
+
 =back
 
 =head2 DOMAIN LIST CONSTANTS
