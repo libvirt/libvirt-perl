@@ -30,7 +30,7 @@ my $gccflags = "-W -Waddress -Wall -Warray-bounds -Wattributes \\
  -Wnormalized=nfc -Wold-style-declaration -Wold-style-definition \\
  -Woverflow -Woverride-init -Wpacked-bitfield-compat -Wparentheses \\
  -Wpointer-arith -Wpointer-sign -Wpointer-to-int-cast -Wpragmas \\
- -Wreturn-type -Wsequence-point -Wshadow -Wstrict-aliasing \\
+ -Wreturn-type -Wsequence-point -Wno-shadow -Wstrict-aliasing \\
  -Wstrict-prototypes -Wsuggest-attribute=const \\
  -Wsuggest-attribute=noreturn -Wsuggest-attribute=pure -Wswitch \\
  -Wsync-nand -Wtrampolines -Wtrigraphs -Wtype-limits -Wuninitialized \\
