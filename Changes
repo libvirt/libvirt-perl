@@ -4,6 +4,8 @@ Revision history for perl module Sys::Virt
 
  - Add VIR_DOMAIN_MEMORY_STAT_USABLE and
    VIR_DOMAIN_MEMORY_STAT_LAST_UPDATE constants
+ - Fix handling of VIR_DOMAIN_AFFECT_LIVE |
+   VIR_DOMAIN_AFFECT_CONFIG with setter methods
 
 2.0.0 2016-07-01
 

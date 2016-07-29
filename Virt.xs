@@ -2240,7 +2240,7 @@ get_node_memory_parameters(conn, flags=0)
       int nparams;
     CODE:
       nparams = 0;
-      if (virNodeGetMemoryParameters(conn, NULL, &nparams, flags) < 0)
+      if (virNodeGetMemoryParameters(conn, NULL, &nparams, 0) < 0)
           _croak_error();
 
       Newx(params, nparams, virTypedParameter);
@@ -2266,12 +2266,12 @@ set_node_memory_parameters(conn, newparams, flags=0)
       int nparams;
     PPCODE:
       nparams = 0;
-      if (virNodeGetMemoryParameters(conn, NULL, &nparams, flags) < 0)
+      if (virNodeGetMemoryParameters(conn, NULL, &nparams, 0) < 0)
           _croak_error();
 
       Newx(params, nparams, virTypedParameter);
 
-      if (virNodeGetMemoryParameters(conn, params, &nparams, flags) < 0) {
+      if (virNodeGetMemoryParameters(conn, params, &nparams, 0) < 0) {
           Safefree(params);
           _croak_error();
       }
@@ -4133,16 +4133,9 @@ set_scheduler_parameters(dom, newparams, flags=0)
 
       free(type);
       Newx(params, nparams, virTypedParameter);
-      if (flags) {
-          if (virDomainGetSchedulerParametersFlags(dom, params, &nparams, flags) < 0) {
-              Safefree(params);
-              _croak_error();
-          }
-      } else {
-          if (virDomainGetSchedulerParameters(dom, params, &nparams) < 0) {
-              Safefree(params);
-              _croak_error();
-          }
+      if (virDomainGetSchedulerParameters(dom, params, &nparams) < 0) {
+          Safefree(params);
+          _croak_error();
       }
       nparams = vir_typed_param_from_hv(newparams, params, nparams);
       if (flags) {
@@ -4164,7 +4157,7 @@ get_memory_parameters(dom, flags=0)
       int nparams;
     CODE:
       nparams = 0;
-      if (virDomainGetMemoryParameters(dom, NULL, &nparams, flags) < 0)
+      if (virDomainGetMemoryParameters(dom, NULL, &nparams, 0) < 0)
           _croak_error();
 
       Newx(params, nparams, virTypedParameter);
@@ -4190,12 +4183,12 @@ set_memory_parameters(dom, newparams, flags=0)
       int nparams;
     PPCODE:
       nparams = 0;
-      if (virDomainGetMemoryParameters(dom, NULL, &nparams, flags) < 0)
+      if (virDomainGetMemoryParameters(dom, NULL, &nparams, 0) < 0)
           _croak_error();
 
       Newx(params, nparams, virTypedParameter);
 
-      if (virDomainGetMemoryParameters(dom, params, &nparams, flags) < 0) {
+      if (virDomainGetMemoryParameters(dom, params, &nparams, 0) < 0) {
           Safefree(params);
           _croak_error();
       }
@@ -4216,7 +4209,7 @@ get_numa_parameters(dom, flags=0)
       int nparams;
     CODE:
       nparams = 0;
-      if (virDomainGetNumaParameters(dom, NULL, &nparams, flags) < 0)
+      if (virDomainGetNumaParameters(dom, NULL, &nparams, 0) < 0)
           _croak_error();
 
       Newx(params, nparams, virTypedParameter);
@@ -4242,12 +4235,12 @@ set_numa_parameters(dom, newparams, flags=0)
       int nparams;
     PPCODE:
       nparams = 0;
-      if (virDomainGetNumaParameters(dom, NULL, &nparams, flags) < 0)
+      if (virDomainGetNumaParameters(dom, NULL, &nparams, 0) < 0)
           _croak_error();
 
       Newx(params, nparams, virTypedParameter);
 
-      if (virDomainGetNumaParameters(dom, params, &nparams, flags) < 0) {
+      if (virDomainGetNumaParameters(dom, params, &nparams, 0) < 0) {
           Safefree(params);
           _croak_error();
       }
@@ -4268,7 +4261,7 @@ get_blkio_parameters(dom, flags=0)
       int nparams;
     CODE:
       nparams = 0;
-      if (virDomainGetBlkioParameters(dom, NULL, &nparams, flags) < 0)
+      if (virDomainGetBlkioParameters(dom, NULL, &nparams, 0) < 0)
           _croak_error();
 
       Newx(params, nparams, virBlkioParameter);
@@ -4294,12 +4287,12 @@ set_blkio_parameters(dom, newparams, flags=0)
       int nparams;
     PPCODE:
       nparams = 0;
-      if (virDomainGetBlkioParameters(dom, NULL, &nparams, flags) < 0)
+      if (virDomainGetBlkioParameters(dom, NULL, &nparams, 0) < 0)
           _croak_error();
 
       Newx(params, nparams, virBlkioParameter);
 
-      if (virDomainGetBlkioParameters(dom, params, &nparams, flags) < 0) {
+      if (virDomainGetBlkioParameters(dom, params, &nparams, 0) < 0) {
           Safefree(params);
           _croak_error();
       }
@@ -4340,7 +4333,7 @@ set_perf_events(dom, newparams, flags=0)
       virTypedParameterPtr params = NULL;
       int nparams = 0;
     PPCODE:
-      if (virDomainGetPerfEvents(dom, &params, &nparams, flags) < 0) {
+      if (virDomainGetPerfEvents(dom, &params, &nparams, 0) < 0) {
           Safefree(params);
           _croak_error();
       }
@@ -4942,7 +4935,7 @@ get_block_iotune(dom, disk, flags=0)
     CODE:
       nparams = 0;
       RETVAL = NULL;
-      if (virDomainGetBlockIoTune(dom, disk, NULL, &nparams, flags) < 0)
+      if (virDomainGetBlockIoTune(dom, disk, NULL, &nparams, 0) < 0)
           _croak_error();
 
       Newx(params, nparams, virTypedParameter);
@@ -4968,11 +4961,11 @@ set_block_iotune(dom, disk, newparams, flags=0)
       int nparams;
   PPCODE:
       nparams = 0;
-      if (virDomainGetBlockIoTune(dom, disk, NULL, &nparams, flags) < 0)
+      if (virDomainGetBlockIoTune(dom, disk, NULL, &nparams, 0) < 0)
           _croak_error();
       Newx(params, nparams, virTypedParameter);
 
-      if (virDomainGetBlockIoTune(dom, disk, params, &nparams, flags) < 0) {
+      if (virDomainGetBlockIoTune(dom, disk, params, &nparams, 0) < 0) {
           Safefree(params);
           _croak_error();
       }
@@ -4993,7 +4986,7 @@ get_interface_parameters(dom, intf, flags=0)
     CODE:
       nparams = 0;
       RETVAL = NULL;
-      if (virDomainGetInterfaceParameters(dom, intf, NULL, &nparams, flags) < 0)
+      if (virDomainGetInterfaceParameters(dom, intf, NULL, &nparams, 0) < 0)
           _croak_error();
 
       Newx(params, nparams, virTypedParameter);
@@ -5019,11 +5012,11 @@ set_interface_parameters(dom, intf, newparams, flags=0)
       int nparams;
   PPCODE:
       nparams = 0;
-      if (virDomainGetInterfaceParameters(dom, intf, NULL, &nparams, flags) < 0)
+      if (virDomainGetInterfaceParameters(dom, intf, NULL, &nparams, 0) < 0)
           _croak_error();
       Newx(params, nparams, virTypedParameter);
 
-      if (virDomainGetInterfaceParameters(dom, intf, params, &nparams, flags) < 0) {
+      if (virDomainGetInterfaceParameters(dom, intf, params, &nparams, 0) < 0) {
           Safefree(params);
           _croak_error();
       }
@@ -5047,7 +5040,7 @@ block_stats(dom, path, flags=0)
     CODE:
       nparams = 0;
       RETVAL = NULL;
-      if (virDomainBlockStatsFlags(dom, path, NULL, &nparams, flags) < 0) {
+      if (virDomainBlockStatsFlags(dom, path, NULL, &nparams, 0) < 0) {
           virErrorPtr err = virGetLastError();
           if (err && err->code == VIR_ERR_NO_SUPPORT && !flags) {
               if (virDomainBlockStats(dom, path, &stats, sizeof(stats)) < 0)
