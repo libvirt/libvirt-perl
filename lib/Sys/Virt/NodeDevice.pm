@@ -167,6 +167,34 @@ Include devices with the SCSI generic capability
 
 =back
 
+=head2 EVENT ID CONSTANTS
+
+=over 4
+
+=item Sys::Virt::NodeDevice::EVENT_ID_LIFECYCLE
+
+Node device lifecycle events
+
+=back
+
+=head2 LIFECYCLE CHANGE EVENTS
+
+The following constants allow node device lifecycle change events to be
+interpreted. The events contain both a state change, and a
+reason though the reason is currently unsed.
+
+=over 4
+
+=item Sys::Virt::StoragePool::EVENT_CREATED
+
+Indicates that a device was created
+
+=item Sys::Virt::StoragePool::EVENT_DELETED
+
+Indicates that a device has been deleted
+
+=back
+
 =cut
 
 

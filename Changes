@@ -2,7 +2,9 @@ Revision history for perl module Sys::Virt
 
 2.2.0 2016-00-00
 
- - XXX
+ - Add virConnectNodeDeviceEventRegisterAny and
+   virConnectNodeDeviceEventDeregisterAny and associated
+   constants
 
 2.1.0 2016-08-02
 

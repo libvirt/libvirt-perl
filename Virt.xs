@@ -1247,6 +1247,82 @@ _storage_pool_event_lifecycle_callback(virConnectPtr con,
 }
 
 
+static int
+_node_device_event_generic_callback(virConnectPtr con,
+				    virNodeDevicePtr dev,
+				    void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *devref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    devref = sv_newmortal();
+    sv_setref_pv(devref, "Sys::Virt::NodeDevice", (void*)dev);
+    virNodeDeviceRef(dev);
+    XPUSHs(devref);
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
+static int
+_node_device_event_lifecycle_callback(virConnectPtr con,
+				       virNodeDevicePtr dev,
+				       int event,
+				       int detail,
+				       void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *devref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    devref = sv_newmortal();
+    sv_setref_pv(devref, "Sys::Virt::NodeDevice", (void*)dev);
+    virNodeDeviceRef(dev);
+    XPUSHs(devref);
+    XPUSHs(sv_2mortal(newSViv(event)));
+    XPUSHs(sv_2mortal(newSViv(detail)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
 static void
 _domain_event_free(void *opaque)
 {
@@ -1265,6 +1341,14 @@ _network_event_free(void *opaque)
 
 static void
 _storage_pool_event_free(void *opaque)
+{
+  SV *sv = opaque;
+  SvREFCNT_dec(sv);
+}
+
+
+static void
+_node_device_event_free(void *opaque)
 {
   SV *sv = opaque;
   SvREFCNT_dec(sv);
@@ -3244,14 +3328,14 @@ storage_pool_event_register_any(conref, poolref, eventID, cb)
 PREINIT:
       AV *opaque;
       virConnectPtr con;
-      virStoragePoolPtr net;
+      virStoragePoolPtr pool;
       virConnectStoragePoolEventGenericCallback callback;
     CODE:
       con = (virConnectPtr)SvIV((SV*)SvRV(conref));
       if (SvROK(poolref)) {
-          net = (virStoragePoolPtr)SvIV((SV*)SvRV(poolref));
+          pool = (virStoragePoolPtr)SvIV((SV*)SvRV(poolref));
       } else {
-          net = NULL;
+          pool = NULL;
       }
 
       switch (eventID) {
@@ -3271,7 +3355,7 @@ PREINIT:
       SvREFCNT_inc(conref);
       av_push(opaque, conref);
       av_push(opaque, cb);
-      if ((RETVAL = virConnectStoragePoolEventRegisterAny(con, net, eventID, callback, opaque, _storage_pool_event_free)) < 0)
+      if ((RETVAL = virConnectStoragePoolEventRegisterAny(con, pool, eventID, callback, opaque, _storage_pool_event_free)) < 0)
           _croak_error();
 OUTPUT:
       RETVAL
@@ -3283,6 +3367,53 @@ storage_pool_event_deregister_any(con, callbackID)
       int callbackID;
  PPCODE:
       virConnectStoragePoolEventDeregisterAny(con, callbackID);
+
+
+int
+node_device_event_register_any(conref, devref, eventID, cb)
+      SV* conref;
+      SV* devref;
+      int eventID;
+      SV* cb;
+PREINIT:
+      AV *opaque;
+      virConnectPtr con;
+      virNodeDevicePtr dev;
+      virConnectNodeDeviceEventGenericCallback callback;
+    CODE:
+      con = (virConnectPtr)SvIV((SV*)SvRV(conref));
+      if (SvROK(devref)) {
+          dev = (virNodeDevicePtr)SvIV((SV*)SvRV(devref));
+      } else {
+          dev = NULL;
+      }
+
+      switch (eventID) {
+      case VIR_NODE_DEVICE_EVENT_ID_LIFECYCLE:
+          callback = VIR_NODE_DEVICE_EVENT_CALLBACK(_node_device_event_lifecycle_callback);
+          break;
+      default:
+          callback = VIR_NODE_DEVICE_EVENT_CALLBACK(_node_device_event_generic_callback);
+          break;
+      }
+
+      opaque = newAV();
+      SvREFCNT_inc(cb);
+      SvREFCNT_inc(conref);
+      av_push(opaque, conref);
+      av_push(opaque, cb);
+      if ((RETVAL = virConnectNodeDeviceEventRegisterAny(con, dev, eventID, callback, opaque, _node_device_event_free)) < 0)
+          _croak_error();
+OUTPUT:
+      RETVAL
+
+
+void
+node_device_event_deregister_any(con, callbackID)
+      virConnectPtr con;
+      int callbackID;
+ PPCODE:
+      virConnectNodeDeviceEventDeregisterAny(con, callbackID);
 
 
 void
@@ -8498,6 +8629,11 @@ BOOT:
       REGISTER_CONSTANT(VIR_CONNECT_LIST_NODE_DEVICES_CAP_FC_HOST, LIST_CAP_FC_HOST);
       REGISTER_CONSTANT(VIR_CONNECT_LIST_NODE_DEVICES_CAP_VPORTS, LIST_CAP_VPORTS);
       REGISTER_CONSTANT(VIR_CONNECT_LIST_NODE_DEVICES_CAP_SCSI_GENERIC, LIST_CAP_SCSI_GENERIC);
+
+      REGISTER_CONSTANT(VIR_NODE_DEVICE_EVENT_ID_LIFECYCLE, EVENT_ID_LIFECYCLE);
+
+      REGISTER_CONSTANT(VIR_NODE_DEVICE_EVENT_CREATED, EVENT_CREATED);
+      REGISTER_CONSTANT(VIR_NODE_DEVICE_EVENT_DELETED, EVENT_DELETED);
 
 
       stash = gv_stashpv( "Sys::Virt::StorageVol", TRUE );
