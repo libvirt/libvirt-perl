@@ -5,6 +5,7 @@ Revision history for perl module Sys::Virt
  - Add virConnectNodeDeviceEventRegisterAny and
    virConnectNodeDeviceEventDeregisterAny and associated
    constants
+ - Add new I/O thread tuning constants
 
 2.1.0 2016-08-02
 

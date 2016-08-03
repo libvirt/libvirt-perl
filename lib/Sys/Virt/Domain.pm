@@ -3767,6 +3767,14 @@ The duration of the time period for scheduling the emulator
 
 The quota for the emulator in one schedular time period
 
+=item Sys::Virt::SCHEDULER_IOTHREAD_PERIOD
+
+The duration of the time period for scheduling the iothread
+
+=item Sys::Virt::SCHEDULER_IOTHREAD_QUOTA
+
+The quota for the iothread in one schedular time period
+
 =back
 
 =head2 DOMAIN STATS FLAG CONSTANTS
@@ -4147,6 +4155,14 @@ Emulator thread CPU period
 =item Sys::Virt::Domain::TUNABLE_CPU_EMULATOR_QUOTA
 
 Emulator thread CPU quota
+
+=item Sys::Virt::Domain::TUNABLE_CPU_IOTHREAD_PERIOD
+
+Iothread thread CPU period
+
+=item Sys::Virt::Domain::TUNABLE_CPU_IOTHREAD_QUOTA
+
+Iothread thread CPU quota
 
 =item Sys::Virt::Domain::TUNABLE_CPU_VCPUPIN
 
