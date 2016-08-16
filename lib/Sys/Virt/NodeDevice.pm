@@ -175,6 +175,10 @@ Include devices with the SCSI generic capability
 
 Node device lifecycle events
 
+=item Sys::Virt::NodeDevice::EVENT_ID_UPDATE
+
+Node device config update events
+
 =back
 
 =head2 LIFECYCLE CHANGE EVENTS
