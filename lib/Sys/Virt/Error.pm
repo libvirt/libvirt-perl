@@ -796,6 +796,10 @@ Libvirt server was not found
 
 Libvirt client was not found
 
+=item Sys::Virt::Error::ERR_AGENT_UNSYNCED
+
+Libvirt guest agent replies with wrong id to guest-sync command
+
 =back
 
 =head1 AUTHORS
