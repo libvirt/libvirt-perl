@@ -149,6 +149,13 @@ The constant for secrets which are to be used for authenticating
 to iSCSI storage volumes. The usage ID for secrets will refer to
 the server name.
 
+=item Sys::Virt::Secret::USAGE_TYPE_TLS
+
+The constant for secrets which are to be used for authenticating
+for the TLS environment. The usage ID for the secret can be any
+name. The UUID for the secret will be used by the hypervisor to
+fetch the secret value.
+
 =back
 
 =head2 LIST FILTERING
