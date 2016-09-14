@@ -2403,6 +2403,11 @@ domain.
 Also remove any NVRAM state file when undefining the virtual
 domain.
 
+=item Sys::Virt::Domain::UNDEFINE_KEEP_NVRAM
+
+keep NVRAM state file when undefining the virtual
+domain.
+
 =back
 
 =head2 JOB TYPES

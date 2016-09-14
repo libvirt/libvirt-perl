@@ -6,6 +6,7 @@ Revision history for perl module Sys::Virt
    PERF_PARAM_CPU_CYCLES, PERF_PARAM_INSTRUCTIONS constants
  - Add USAGE_TYPE_TLS
  - Add ERR_AGENT_UNSYNCED
+ - Add VIR_DOMAIN_UNDEFINE_KEEP_NVRAM constant
 
 2.2.0 2016-09-05
 
