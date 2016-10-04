@@ -2566,6 +2566,31 @@ The maximum I/O operations written per second.
 
 The maximum I/O operations per second
 
+=item Sys::Virt::Domain::BLOCK_IOTUNE_TOTAL_BYTES_SEC_MAX_LENGTH
+
+The duration in seconds allowed for maximum total bytes processed per second.
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_READ_BYTES_SEC_MAX_LENGTH
+
+The duration in seconds allowed for maximum bytes read per second.
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_WRITE_BYTES_SEC_MAX_LENGTH
+
+The duration in seconds allowed for maximum bytes written per second.
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_TOTAL_IOPS_SEC_MAX_LENGTH
+
+The duration in seconds allowed for maximum total I/O operations processed
+per second.
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_READ_IOPS_SEC_MAX_LENGTH
+
+The duration in seconds allowed for maximum I/O operations read per second.
+
+=item Sys::Virt::Domain::BLOCK_IOTUNE_WRITE_IOPS_SEC_MAX_LENGTH
+
+The duration in seconds allowed for maximum I/O operations written per second.
+
 =back
 
 =head2 SCHEDULER CONSTANTS
@@ -4275,6 +4300,31 @@ Maximum write throughput in I/O operations per sec
 =item Sys::Virt::Domain::TUNABLE_BLKDEV_SIZE_IOPS_SEC
 
 The maximum I/O operations per second
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_TOTAL_BYTES_SEC_MAX_LENGTH
+
+The duration in seconds allowed for maximum total bytes processed per second.
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_READ_BYTES_SEC_MAX_LENGTH
+
+The duration in seconds allowed for maximum bytes read per second.
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_WRITE_BYTES_SEC_MAX_LENGTH
+
+The duration in seconds allowed for maximum bytes written per second.
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_TOTAL_IOPS_SEC_MAX_LENGTH
+
+The duration in seconds allowed for maximum total I/O operations processed
+per second.
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_READ_IOPS_SEC_MAX_LENGTH
+
+The duration in seconds allowed for maximum I/O operations read per second.
+
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_WRITE_IOPS_SEC_MAX_LENGTH
+
+The duration in seconds allowed for maximum I/O operations written per second.
 
 =item Sys::Virt::Domain::TUNABLE_IOTHREADSPIN
 

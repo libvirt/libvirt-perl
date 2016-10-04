@@ -3,6 +3,7 @@ Revision history for perl module Sys::Virt
 2.4.0 2016-00-00
 
  - Add VIR_DOMAIN_VCPU_HOTPLUGGABLE constant
+ - Add constants for the new block iotune parameters for length
 
 2.3.0 2016-10-06
 
