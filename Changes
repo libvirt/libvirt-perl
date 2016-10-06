@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+2.4.0 2016-00-00
+
+ - XXX
+
 2.3.0 2016-10-06
 
  - Add PERF_PARAM_CACHE_MISSES, PERF_PARAM_CACHE_REFERENCES,
