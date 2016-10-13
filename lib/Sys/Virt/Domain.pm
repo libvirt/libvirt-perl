@@ -2768,6 +2768,10 @@ Flag to request adjustment of the maximum vCPU value
 
 Flag to request the guest VCPU mask
 
+=item Sys::Virt::Domain::VCPU_HOTPLUGGABLE
+
+Flag to make vcpus added hot(un)pluggable
+
 =back
 
 =head2 STATE CHANGE EVENTS
