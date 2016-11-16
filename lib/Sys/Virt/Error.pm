@@ -398,6 +398,10 @@ The Xen XL driver
 
 The performance events subsystem
 
+=item Sys::Virt::Error::FROM_LIBSSH
+
+The libSSH socket client
+
 =back
 
 =head2 ERROR CODE CONSTANTS
@@ -799,6 +803,10 @@ Libvirt client was not found
 =item Sys::Virt::Error::ERR_AGENT_UNSYNCED
 
 Libvirt guest agent replies with wrong id to guest-sync command
+
+=item Sys::Virt::Error::ERR_LIBSSH
+
+The libSSH operation failed
 
 =back
 
