@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-2.5.0 2016-00-00
+2.5.0 2016-12-05
 
  - Add VIR_ERR_LIBSSH and VIR_FROM_LIBSSH constants
 
