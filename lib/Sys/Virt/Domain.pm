@@ -2566,6 +2566,11 @@ The maximum I/O operations written per second.
 
 The maximum I/O operations per second
 
+=item Sys::Virt::Domain::BLOCK_IOTUNE_GROUP_NAME
+
+A string representing a group name to allow sharing of I/O
+throttling quota between multiple drives
+
 =item Sys::Virt::Domain::BLOCK_IOTUNE_TOTAL_BYTES_SEC_MAX_LENGTH
 
 The duration in seconds allowed for maximum total bytes processed per second.

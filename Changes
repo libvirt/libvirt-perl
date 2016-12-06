@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 3.0.0 2017-00-00
 
- - XXX
+ - Add group_name for block iotune
 
 2.5.0 2016-12-05
 
