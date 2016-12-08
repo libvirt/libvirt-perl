@@ -4331,6 +4331,10 @@ The duration in seconds allowed for maximum I/O operations read per second.
 
 The duration in seconds allowed for maximum I/O operations written per second.
 
+=item Sys::Virt::Domain::TUNABLE_BLKDEV_GROUP_NAME
+
+The name of the blkdev group
+
 =item Sys::Virt::Domain::TUNABLE_IOTHREADSPIN
 
 The I/O threads pinning
