@@ -2758,16 +2758,23 @@ the *Stats APIs.
 
 =item Sys::Virt::Domain::PERF_PARAM_CPU_CYCLES
 
+The cpu_cycles perf event counter which can be used to measure
+how many cpu cycles one instruction needs.  It corresponds to the
+"perf.cpu_cycles" field in the *Stats APIs.
+
+=item Sys::Virt::Domain::PERF_PARAM_INSTRUCTIONS
+
 The instructions perf event counter which can be used to measure
 the count of instructions by applications running on the
 platform. It corresponds to the "perf.instructions" field in the
 *Stats APIs.
 
-=item Sys::Virt::Domain::PERF_PARAM_INSTRUCTIONS
+=item Sys::Virt::Domain::PERF_PARAM_BRANCH_INSTRUCTIONS
 
-The cpu_cycles perf event counter which can be used to measure
-how many cpu cycles one instruction needs.  It corresponds to the
-"perf.cpu_cycles" field in the *Stats APIs.
+The branch_instructions perf event counter which can be used to measure
+the count of instructions by applications running on the
+platform. It corresponds to the "perf.branch_instructions" field in the
+*Stats APIs.
 
 =back
 
