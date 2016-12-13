@@ -2776,6 +2776,13 @@ the count of instructions by applications running on the
 platform. It corresponds to the "perf.branch_instructions" field in the
 *Stats APIs.
 
+=item Sys::Virt::Domain::PERF_PARAM_BRANCH_MISSES
+
+The branch_misses perf event which can be used to measure the
+count of branch misses by applications running on the platform.
+It corresponds to the "perf.branch_misses" field in the *Stats
+APIs.
+
 =back
 
 =head2 VCPU FLAGS

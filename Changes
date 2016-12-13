@@ -4,6 +4,7 @@ Revision history for perl module Sys::Virt
 
  - Add group_name for block iotune
  - Add new branch instructions perf event
+ - Add PERF_PARAM_BRANCH_MISSES constant
 
 2.5.0 2016-12-05
 
