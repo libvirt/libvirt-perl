@@ -118,7 +118,7 @@ to erase data, and should be one of the WIPE ALGORITHM CONSTANTS
 listed later. The C<flags> parameter is currently unused and defaults
 to zero.
 
-=item my $info = $vol->get_info()
+=item my $info = $vol->get_info($flags = 0)
 
 Retrieve live information about the storage volume. The returned
 C<$info> hash reference contains three keys. C<type> indicates whether
@@ -127,7 +127,19 @@ logical size of the volume. C<allocation> provides the current
 physical usage of the volume. The allocation may be less than the
 capacity for sparse, or grow-on-demand volumes. The allocation
 may also be larger than the capacity, if there is a metadata overhead
-for the volume format.
+for the volume format. C<$flags> may take one of the values
+
+=over 4
+
+=item Sys::Virt::StorageVol::USE_ALLOCATION
+
+Return the current allocation in allocation
+
+=item Sys::Virt::StorageVol::GET_PHYSICAL
+
+Return the physical size in allocation
+
+=back
 
 =item $vol->download($st, $offset, $length);
 

@@ -1,6 +1,6 @@
 /* -*- c -*-
  *
- * Copyright (C) 2006-2014 Red Hat
+ * Copyright (C) 2006-2016 Red Hat
  * Copyright (C) 2006-2014 Daniel P. Berrange
  *
  * This program is free software; You can redistribute it and/or modify
@@ -6630,13 +6630,19 @@ wipe_pattern(vol, algorithm, flags=0)
 
 
 HV *
-get_info(vol)
+get_info(vol, flags=0)
       virStorageVolPtr vol;
+      unsigned int flags;
   PREINIT:
       virStorageVolInfo info;
     CODE:
-      if (virStorageVolGetInfo(vol, &info) < 0)
-          _croak_error();
+      if (flags != 0) {
+	  if (virStorageVolGetInfoFlags(vol, &info, flags) < 0)
+              _croak_error();
+      } else {
+          if (virStorageVolGetInfo(vol, &info) < 0)
+              _croak_error();
+      }
 
       RETVAL = (HV *)sv_2mortal((SV*)newHV());
       (void)hv_store (RETVAL, "type", 4, newSViv(info.type), 0);
@@ -8701,6 +8707,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_STORAGE_VOL_CREATE_PREALLOC_METADATA, CREATE_PREALLOC_METADATA);
       REGISTER_CONSTANT(VIR_STORAGE_VOL_CREATE_REFLINK, CREATE_REFLINK);
 
+      REGISTER_CONSTANT(VIR_STORAGE_VOL_USE_ALLOCATION, USE_ALLOCATION);
+      REGISTER_CONSTANT(VIR_STORAGE_VOL_GET_PHYSICAL, GET_PHYSICAL);
 
       stash = gv_stashpv( "Sys::Virt::Secret", TRUE );
       REGISTER_CONSTANT(VIR_SECRET_USAGE_TYPE_NONE, USAGE_TYPE_NONE);
