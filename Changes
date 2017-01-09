@@ -12,6 +12,7 @@ Revision history for perl module Sys::Virt
  - Add virStorageVolGetInfoFlags & associated constants
  - Add domain metdata change event
  - Add secret event APIs
+ - Add PERF_PARAM_CACHE_L1D constant
 
 2.5.0 2016-12-05
 
