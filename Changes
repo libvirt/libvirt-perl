@@ -10,6 +10,7 @@ Revision history for perl module Sys::Virt
  - Add PERF_PARAM_STALLED_CYCLES_BACKEND constant
  - Add PERF_PARAM_REF_CPU_CYCLES constant
  - Add virStorageVolGetInfoFlags & associated constants
+ - Add domain metdata change event
 
 2.5.0 2016-12-05
 

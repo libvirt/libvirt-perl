@@ -3211,6 +3211,10 @@ method.
 
 Guest device removal has failed.
 
+=item Sys::Virt::Domain::EVENT_ID_METADATA_CHANGE
+
+The domain metadata has changed
+
 =back
 
 =head2 IO ERROR EVENT CONSTANTS

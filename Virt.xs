@@ -1096,6 +1096,46 @@ _domain_event_job_completed_callback(virConnectPtr con,
 
 
 static int
+_domain_event_metadata_change_callback(virConnectPtr con,
+				       virDomainPtr dom,
+				       int type,
+				       const char *nsuri,
+				       void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *domref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    domref = sv_newmortal();
+    sv_setref_pv(domref, "Sys::Virt::Domain", (void*)dom);
+    virDomainRef(dom);
+    XPUSHs(domref);
+    XPUSHs(sv_2mortal(newSViv(type)));
+    XPUSHs(sv_2mortal(newSVpv(nsuri, 0)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
+static int
 _network_event_lifecycle_callback(virConnectPtr con,
 				  virNetworkPtr net,
 				  int event,
@@ -3247,6 +3287,9 @@ PREINIT:
           break;
       case VIR_DOMAIN_EVENT_ID_DEVICE_REMOVAL_FAILED:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_device_generic_callback);
+          break;
+      case VIR_DOMAIN_EVENT_ID_METADATA_CHANGE:
+          callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_metadata_change_callback);
           break;
       default:
           callback = VIR_DOMAIN_EVENT_CALLBACK(_domain_event_generic_callback);
@@ -8197,6 +8240,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_MIGRATION_ITERATION, EVENT_ID_MIGRATION_ITERATION);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_JOB_COMPLETED, EVENT_ID_JOB_COMPLETED);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_DEVICE_REMOVAL_FAILED, EVENT_ID_DEVICE_REMOVAL_FAILED);
+      REGISTER_CONSTANT(VIR_DOMAIN_EVENT_ID_METADATA_CHANGE, EVENT_ID_METADATA_CHANGE);
 
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_NONE, EVENT_WATCHDOG_NONE);
       REGISTER_CONSTANT(VIR_DOMAIN_EVENT_WATCHDOG_PAUSE, EVENT_WATCHDOG_PAUSE);
