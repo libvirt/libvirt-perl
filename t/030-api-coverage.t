@@ -102,6 +102,8 @@ virConnectStoragePoolEventLifecycleCallback
 
 virConnectNodeDeviceEventLifecycleCallback
 
+virConnectSecretEventLifecycleCallback
+
 virEventAddHandleFunc
 virEventAddTimeoutFunc
 virEventRemoveHandleFunc
@@ -180,6 +182,7 @@ VIR_DOMAIN_EVENT_CALLBACK
 VIR_NETWORK_EVENT_CALLBACK
 VIR_STORAGE_POOL_EVENT_CALLBACK
 VIR_NODE_DEVICE_EVENT_CALLBACK
+VIR_SECRET_EVENT_CALLBACK
 VIR_DOMAIN_MEMORY_FIELD_LENGTH
 VIR_DOMAIN_MEMORY_PARAM_UNLIMITED
 VIR_DOMAIN_SCHED_FIELD_LENGTH

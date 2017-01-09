@@ -1363,6 +1363,82 @@ _node_device_event_lifecycle_callback(virConnectPtr con,
 }
 
 
+static int
+_secret_event_lifecycle_callback(virConnectPtr con,
+				 virSecretPtr secret,
+				 int event,
+				 int detail,
+				 void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *secretref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    secretref = sv_newmortal();
+    sv_setref_pv(secretref, "Sys::Virt::Secret", (void*)secret);
+    virSecretRef(secret);
+    XPUSHs(secretref);
+    XPUSHs(sv_2mortal(newSViv(event)));
+    XPUSHs(sv_2mortal(newSViv(detail)));
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
+static int
+_secret_event_generic_callback(virConnectPtr con,
+				virSecretPtr secret,
+				void *opaque)
+{
+    AV *data = opaque;
+    SV **self;
+    SV **cb;
+    SV *secretref;
+    dSP;
+
+    self = av_fetch(data, 0, 0);
+    cb = av_fetch(data, 1, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    secretref = sv_newmortal();
+    sv_setref_pv(secretref, "Sys::Virt::Secret", (void*)secret);
+    virSecretRef(secret);
+    XPUSHs(secretref);
+    PUTBACK;
+
+    call_sv(*cb, G_DISCARD);
+
+    FREETMPS;
+    LEAVE;
+
+    return 0;
+}
+
+
 static void
 _domain_event_free(void *opaque)
 {
@@ -1389,6 +1465,14 @@ _storage_pool_event_free(void *opaque)
 
 static void
 _node_device_event_free(void *opaque)
+{
+  SV *sv = opaque;
+  SvREFCNT_dec(sv);
+}
+
+
+static void
+_secret_event_free(void *opaque)
 {
   SV *sv = opaque;
   SvREFCNT_dec(sv);
@@ -3460,6 +3544,56 @@ node_device_event_deregister_any(con, callbackID)
       int callbackID;
  PPCODE:
       virConnectNodeDeviceEventDeregisterAny(con, callbackID);
+
+
+int
+secret_event_register_any(conref, secretref, eventID, cb)
+      SV* conref;
+      SV* secretref;
+      int eventID;
+      SV* cb;
+PREINIT:
+      AV *opaque;
+      virConnectPtr con;
+      virSecretPtr secret;
+      virConnectSecretEventGenericCallback callback;
+    CODE:
+      con = (virConnectPtr)SvIV((SV*)SvRV(conref));
+      if (SvROK(secretref)) {
+          secret = (virSecretPtr)SvIV((SV*)SvRV(secretref));
+      } else {
+          secret = NULL;
+      }
+
+      switch (eventID) {
+      case VIR_SECRET_EVENT_ID_LIFECYCLE:
+          callback = VIR_SECRET_EVENT_CALLBACK(_secret_event_lifecycle_callback);
+          break;
+      case VIR_SECRET_EVENT_ID_VALUE_CHANGED:
+          callback = VIR_SECRET_EVENT_CALLBACK(_secret_event_generic_callback);
+          break;
+      default:
+          callback = VIR_SECRET_EVENT_CALLBACK(_secret_event_generic_callback);
+          break;
+      }
+
+      opaque = newAV();
+      SvREFCNT_inc(cb);
+      SvREFCNT_inc(conref);
+      av_push(opaque, conref);
+      av_push(opaque, cb);
+      if ((RETVAL = virConnectSecretEventRegisterAny(con, secret, eventID, callback, opaque, _secret_event_free)) < 0)
+          _croak_error();
+OUTPUT:
+      RETVAL
+
+
+void
+secret_event_deregister_any(con, callbackID)
+      virConnectPtr con;
+      int callbackID;
+ PPCODE:
+      virConnectSecretEventDeregisterAny(con, callbackID);
 
 
 void
@@ -8766,6 +8900,12 @@ BOOT:
       REGISTER_CONSTANT(VIR_CONNECT_LIST_SECRETS_NO_EPHEMERAL, LIST_NO_EPHEMERAL);
       REGISTER_CONSTANT(VIR_CONNECT_LIST_SECRETS_PRIVATE, LIST_PRIVATE);
       REGISTER_CONSTANT(VIR_CONNECT_LIST_SECRETS_NO_PRIVATE, LIST_NO_PRIVATE);
+
+      REGISTER_CONSTANT(VIR_SECRET_EVENT_ID_LIFECYCLE, EVENT_ID_LIFECYCLE);
+      REGISTER_CONSTANT(VIR_SECRET_EVENT_ID_VALUE_CHANGED, EVENT_ID_VALUE_CHANGED);
+
+      REGISTER_CONSTANT(VIR_SECRET_EVENT_DEFINED, EVENT_DEFINED);
+      REGISTER_CONSTANT(VIR_SECRET_EVENT_UNDEFINED, EVENT_UNDEFINED);
 
 
       stash = gv_stashpv( "Sys::Virt::Stream", TRUE );

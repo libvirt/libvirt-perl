@@ -1648,6 +1648,42 @@ unregistering the event.
 Unregister a callback, associated with the C<$callbackID> previously
 obtained from C<node_device_event_register_any>.
 
+=item $callback = $conn->secret_event_register_any($secret, $eventID, $callback)
+
+Register a callback to received notifications of secret events.
+The C<$secret> parameter can be C<undef> to request events on all
+known secrets, or a specific C<Sys::Virt::Secret> object to
+filter events. The C<$eventID> parameter is one of the EVENT ID
+constants described later in this document. The C<$callback> is
+a subroutine reference that will receive the events.
+
+All callbacks receive a C<Sys::Virt> connection as the first parameter
+and a C<Sys::Virt::Secret> object indicating the secret on which the
+event occurred as the second parameter. Subsequent parameters vary
+according to the event type
+
+=over
+
+=item EVENT_ID_LIFECYCLE
+
+Extra C<event> and C<detail> parameters defining the lifecycle
+transition that occurred.
+
+=item EVENT_ID_VALUE_CHANGED
+
+No extra parameters.
+
+=back
+
+The return value is a unique callback ID that must be used when
+unregistering the event.
+
+
+=item $conn->secret_event_deregister_any($callbackID)
+
+Unregister a callback, associated with the C<$callbackID> previously
+obtained from C<secret_event_register_any>.
+
 =item $conn->register_close_callback($coderef);
 
 Register a callback to be invoked when the connection is closed.

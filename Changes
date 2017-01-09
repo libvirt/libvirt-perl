@@ -11,6 +11,7 @@ Revision history for perl module Sys::Virt
  - Add PERF_PARAM_REF_CPU_CYCLES constant
  - Add virStorageVolGetInfoFlags & associated constants
  - Add domain metdata change event
+ - Add secret event APIs
 
 2.5.0 2016-12-05
 
