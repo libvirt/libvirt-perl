@@ -2809,12 +2809,6 @@ frequency scaling by applications running on the platform.
 It corresponds to the "perf.ref_cpu_cycles" field in the
 *Stats APIs.
 
-=item Sys::Virt::Domain::PERF_PARAM_CACHE_L1D
-The cache_l1d perf event counter which can be used to
-measure the count of total level 1 data cache by applications
-running on the platform.  It corresponds to the "perf.cache_l1d"
-field in the *Stats APIs.
-
 =back
 
 =head2 VCPU FLAGS
