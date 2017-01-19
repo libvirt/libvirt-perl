@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-3.0.0 2017-00-00
+3.0.0 2017-01-19
 
  - Add group_name for block iotune
  - Add new branch instructions perf event
