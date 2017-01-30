@@ -475,6 +475,10 @@ Include gluster storage pools
 
 Include ZFS storage pools
 
+=item Sys::Virt::StoragePool::LIST_VSTORAGE
+
+Include VStorage storage pools
+
 =back
 
 =head2 EVENT ID CONSTANTS
