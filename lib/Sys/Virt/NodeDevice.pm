@@ -165,6 +165,10 @@ Include devices with the NPIV vport capability
 
 Include devices with the SCSI generic capability
 
+=item Sys::Virt::NodeDevice::LIST_CAP_DRM
+
+Include devices with the DRM capability
+
 =back
 
 =head2 EVENT ID CONSTANTS

@@ -3,6 +3,7 @@ Revision history for perl module Sys::Virt
 3.1.0 2017-03-00
 
  - Add VIR_CONNECT_LIST_STORAGE_POOLS_VSTORAGE constant
+ - Add VIR_CONNECT_LIST_NODE_DEVICES_CAP_DRM constant
 
 3.0.0 2017-01-19
 
