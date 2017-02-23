@@ -4,6 +4,7 @@ Revision history for perl module Sys::Virt
 
  - Add VIR_CONNECT_LIST_STORAGE_POOLS_VSTORAGE constant
  - Add VIR_CONNECT_LIST_NODE_DEVICES_CAP_DRM constant
+ - Add virDomainSetVcpu API
 
 3.0.0 2017-01-19
 

@@ -689,6 +689,11 @@ Set the number of virtual CPUs in the guest VM to C<$count>.
 The optional C<$flags> parameter can be used to control whether
 the setting changes the live config or inactive config.
 
+=item $dom->set_vcpu($cpumap, $state, [$flags])
+
+Set the state of the CPUs in C<$cpumap> to C<$state>. The
+C<$flags> parameter defaults to zero if not present.
+
 =item $count = $dom->get_vcpus([$flags])
 
 Get the number of virtual CPUs in the guest VM.

@@ -4724,6 +4724,15 @@ set_vcpus(dom, num, flags=0)
               _croak_error();
       }
 
+void
+set_vcpu(dom, cpumap, state, flags=0)
+    virDomainPtr dom;
+    const char *cpumap;
+    int state;
+    unsigned int flags;
+PPCODE:
+    if (virDomainSetVcpu(dom, cpumap, state, flags) < 0)
+        _croak_error();
 
 int
 get_vcpus(dom, flags=0)
