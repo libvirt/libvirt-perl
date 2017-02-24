@@ -2,7 +2,15 @@ Revision history for perl module Sys::Virt
 
 3.2.0 2017-04-00
 
- - XXX
+ - Add PERF_PARAM_CPU_CLOCK constant
+ - Add PERF_PARAM_TASK_CLOCK constant
+ - Add PERF_PARAM_PAGE_FAULTS constant
+ - Add PERF_PARAM_CONTEXT_SWITCHES constant
+ - Add PERF_PARAM_CPU_MIGRATIONS constant
+ - Add PERF_PARAM_PAGE_FAULTS_MIN constant
+ - Add PERF_PARAM_PAGE_FAULTS_MAJ constant
+ - Add PERF_PARAM_ALIGNMENT_FAULTS constant
+ - Add PERF_PARAM_EMULATION_FAULTS constant
 
 3.1.0 2017-03-03
 
