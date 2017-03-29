@@ -1924,6 +1924,15 @@ C<$signum> value must be one of the constants listed
 later, not a POSIX or Linux signal value. C<$flags>
 is currently unused and defaults to zero.
 
+=item $dom->set_block_threshold($dev, $threshold, $flags=0);
+
+Set the threshold level for delivering the
+EVENT_ID_BLOCK_THRESHOLD if the device or backing chain element
+described by C<$dev> is written beyond the set C<$threshold>
+level. The threshold level is unset once the event fires. The
+event might not be delivered at all if libvirtd was not running
+at the moment when the threshold was reached.
+
 =back
 
 =head1 CONSTANTS

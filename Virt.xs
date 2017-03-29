@@ -6120,6 +6120,18 @@ send_process_signal(dom, pidsv, signum, flags=0)
       if (virDomainSendProcessSignal(dom, pid, signum, flags) < 0)
           _croak_error();
 
+void
+set_block_threshold(dom, dev, thresholdsv, flags=0)
+    virDomainPtr dom;
+    const char *dev;
+    SV *thresholdsv;
+    unsigned int flags;
+ PREINIT:
+    unsigned long long threshold;
+  PPCODE:
+    threshold = virt_SvIVull(thresholdsv);
+    if (virDomainSetBlockThreshold(dom, dev, threshold, flags) < 0)
+        _croak_error();
 
 void
 destroy(dom_rv, flags=0)
