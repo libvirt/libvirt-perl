@@ -2393,6 +2393,13 @@ Pin memory for RDMA transfer
 
 Enable support for post-copy migration
 
+=item Sys::Virt::Domain::MIGRATE_TLS
+
+Setting this flag will cause the migration to attempt to use the
+TLS environment configured by the hypervisor in order to perform
+the migration. If incorrectly configured on either source or
+destination, the migration will fail.
+
 =back
 
 =head2 UNDEFINE CONSTANTS

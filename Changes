@@ -13,6 +13,7 @@ Revision history for perl module Sys::Virt
  - Add PERF_PARAM_EMULATION_FAULTS constant
  - Add block threshold event
  - Add virDomainSetBlockThreshold API
+ - Add VIR_MIGRATE_TLS constant
 
 3.1.0 2017-03-03
 
