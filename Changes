@@ -11,6 +11,7 @@ Revision history for perl module Sys::Virt
  - Add PERF_PARAM_PAGE_FAULTS_MAJ constant
  - Add PERF_PARAM_ALIGNMENT_FAULTS constant
  - Add PERF_PARAM_EMULATION_FAULTS constant
+ - Add block threshold event
 
 3.1.0 2017-03-03
 

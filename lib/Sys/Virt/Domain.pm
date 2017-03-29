@@ -3274,6 +3274,12 @@ Guest device removal has failed.
 
 The domain metadata has changed
 
+=item Sys::Virt::Domain::EVENT_ID_BLOCK_THRESHOLD
+
+The event occurs when the hypervisor detects that the given
+storage element was written beyond the point specified by
+threshold. The event is useful for thin-provisioned storage.
+
 =back
 
 =head2 IO ERROR EVENT CONSTANTS
