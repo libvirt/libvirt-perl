@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-3.2.0 2017-04-00
+3.2.0 2017-04-03
 
  - Add PERF_PARAM_CPU_CLOCK constant
  - Add PERF_PARAM_TASK_CLOCK constant
