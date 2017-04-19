@@ -193,11 +193,11 @@ reason though the reason is currently unsed.
 
 =over 4
 
-=item Sys::Virt::StoragePool::EVENT_CREATED
+=item Sys::Virt::NodeDevice::EVENT_CREATED
 
 Indicates that a device was created
 
-=item Sys::Virt::StoragePool::EVENT_DELETED
+=item Sys::Virt::NodeDevice::EVENT_DELETED
 
 Indicates that a device has been deleted
 
