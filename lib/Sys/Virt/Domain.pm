@@ -1611,6 +1611,52 @@ host.
 
 The number of milliseconds of time doing setup of the job
 
+=item Sys::Virt::Domain::JOB_OPERATION
+
+The type of operation associated with the job
+
+=back
+
+The values for the Sys::Virt::Domain::JOB_OPERATION field are
+
+=over 4
+
+=item Sys::Virt::Domain::JOB_OPERATION_UNKNOWN
+
+No known job type
+
+=item Sys::Virt::Domain::JOB_OPERATION_START
+
+The guest is starting
+
+=item Sys::Virt::Domain::JOB_OPERATION_SAVE
+
+The guest is saving to disk
+
+=item Sys::Virt::Domain::JOB_OPERATION_RESTORE
+
+The guest is restoring from disk
+
+=item Sys::Virt::Domain::JOB_OPERATION_MIGRATION_IN
+
+The guest is migrating in from another host
+
+=item Sys::Virt::Domain::JOB_OPERATION_MIGRATION_OUT
+
+The guest is migrating out to another host
+
+=item Sys::Virt::Domain::JOB_OPERATION_SNAPSHOT
+
+The guest is saving a snapshot
+
+=item Sys::Virt::Domain::JOB_OPERATION_SNAPSHOT_REVERT
+
+The guest is reverting to a snapshot
+
+=item Sys::Virt::Domain::JOB_OPERATION_DUMP
+
+The guest is saving a crash dump
+
 =back
 
 =item $dom->abort_job()
