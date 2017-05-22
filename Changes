@@ -9,6 +9,8 @@ Revision history for perl module Sys::Virt
  - Introduce Stream::recv_hole() and Stream::send_hole()
  - Introduce Stream::sparse_recv_all()
  - Introduce Stream::sparse_send_all()
+ - Register VOL_DOWNLOAD_SPARSE_STREAM &
+   VOL_UPLOAD_SPARSE_STREAM constants
 
 3.3.0 2017-05-08
 
