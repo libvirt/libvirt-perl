@@ -1961,6 +1961,100 @@ _stream_send_all_source(virStreamPtr st,
 
 
 static int
+_stream_sparse_send_all_hole_handler(virStreamPtr st,
+                                     int *inData,
+                                     long long *length,
+                                     void *opaque)
+{
+    AV *av = opaque;
+    SV **self;
+    SV **hole_handler;
+    SV *inDataSV;
+    SV *lengthSV;
+    int count;
+    int ret;
+    dSP;
+
+    self = av_fetch(av, 0, 0);
+    hole_handler = av_fetch(av, 2, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    PUTBACK;
+
+    count = call_sv((SV*)*hole_handler, G_ARRAY);
+
+    SPAGAIN;
+
+    if (count == 2) {
+        /* @hole_handler returns (in_data, length), but on a stack.
+         * Therefore the order is reversed. */
+        lengthSV = POPs;
+        inDataSV = POPs;
+        *inData = virt_SvIVll(inDataSV);
+        *length = virt_SvIVll(lengthSV);
+        ret = 0;
+    } else {
+        ret = -1;
+    }
+
+    PUTBACK;
+    FREETMPS;
+    LEAVE;
+
+    return ret;
+}
+
+
+static int
+_stream_sparse_send_all_skip_handler(virStreamPtr st,
+                                     long long length,
+                                     void *opaque)
+{
+    AV *av = opaque;
+    SV **self;
+    SV **skip_handler;
+    int rv;
+    int ret;
+    dSP;
+
+    self = av_fetch(av, 0, 0);
+    skip_handler = av_fetch(av, 3, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    XPUSHs(sv_2mortal(virt_newSVll(length)));
+    PUTBACK;
+
+    rv = call_sv((SV*)*skip_handler, G_SCALAR);
+
+    SPAGAIN;
+
+    if (rv == 1) {
+        ret = POPi;
+    } else {
+        ret = -1;
+    }
+
+    PUTBACK;
+    FREETMPS;
+    LEAVE;
+
+    return ret;
+}
+
+
+static int
 _stream_recv_all_sink(virStreamPtr st,
                       const char *data,
                       size_t nbytes,
@@ -8041,6 +8135,36 @@ sparse_recv_all(stref, handler, hole_handler)
 
       SvREFCNT_dec(opaque);
 
+void
+sparse_send_all(stref, handler, hole_handler, skip_handler)
+      SV *stref;
+      SV *handler;
+      SV *hole_handler;
+      SV *skip_handler;
+ PREINIT:
+      AV *opaque;
+      virStreamPtr st;
+    CODE:
+      st = (virStreamPtr)SvIV((SV*)SvRV(stref));
+
+      opaque = newAV();
+      SvREFCNT_inc(stref);
+      SvREFCNT_inc(handler);
+      SvREFCNT_inc(hole_handler);
+      SvREFCNT_inc(skip_handler);
+      av_push(opaque, stref);
+      av_push(opaque, handler);
+      av_push(opaque, hole_handler);
+      av_push(opaque, skip_handler);
+
+      if (virStreamSparseSendAll(st,
+                                 _stream_send_all_source,
+                                 _stream_sparse_send_all_hole_handler,
+                                 _stream_sparse_send_all_skip_handler,
+                                 opaque) < 0)
+          _croak_error();
+
+      SvREFCNT_dec(opaque);
 
 void
 add_callback(stref, events, cb)

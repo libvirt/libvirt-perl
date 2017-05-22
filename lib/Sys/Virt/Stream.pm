@@ -144,6 +144,25 @@ bytes). The C<$hole_handler> is expected to return a non-negative
 number on success (usually 0) and a negative number (usually -1)
 otherwise.
 
+=item $st->sparse_send_all($handler, $hole_handler, $skip_handler)
+
+Send all data produced by C<$handler> to the stream.  The
+C<$handler> parameter must be a function which expects three
+arguments, the C<$st> stream object, a scalar which must be
+filled with data and a maximum data byte count desired.  The
+function should return the number of bytes filled, 0 on end of
+file, or -1 upon error. The second argument C<$hole_handler> is a
+function expecting just one argument C<$st> and returning an
+array of two elements (C<$in_data>, C<$section_len>) where
+C<$in_data> has zero or non-zero value if underlying file is in a
+hole or data section respectively. The C<$section_len> then is the
+number of remaining bytes in the current section in the
+underlying file. Finally, the third C<$skip_handler> is a function
+expecting two arguments C<$st> and C<$length> which moves cursor
+in the underlying file for C<$length> bytes. The C<$skip_handler>
+is expected to return a non-negative number on success (usually
+0) and a negative number (usually -1) otherwise.
+
 =item $st->add_callback($events, $coderef)
 
 Register a callback to be invoked whenever the stream has

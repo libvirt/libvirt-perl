@@ -8,6 +8,7 @@ Revision history for perl module Sys::Virt
    register RECV_STOP_AT_HOLE constant
  - Introduce Stream::recv_hole() and Stream::send_hole()
  - Introduce Stream::sparse_recv_all()
+ - Introduce Stream::sparse_send_all()
 
 3.3.0 2017-05-08
 

@@ -116,6 +116,8 @@ virStreamEventCallback
 virStreamSinkFunc
 virStreamSinkHoleFunc
 virStreamSourceFunc
+virStreamSourceHoleFunc
+virStreamSourceSkipFunc
 
 virConnectCloseFunc
 
