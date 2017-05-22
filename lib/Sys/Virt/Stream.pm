@@ -83,7 +83,7 @@ flags:
 
 If this flag is set, the C<recv> function will stop reading from
 stream if it has reached a hole. In that case, -3 is returned and
-C<recvHole> should be called to get the hole size.
+C<recv_hole> should be called to get the hole size.
 
 =back
 
@@ -92,6 +92,23 @@ C<recvHole> should be called to get the hole size.
 Send upto C<$nbytes> worth of data, copying from C<$data>.
 Returns the number of bytes sent, or -2 if I/O would block,
 or -1 on error.
+
+=item $rv = $st->recv_hole($flags=0)
+
+Determine the amount of the empty space (in bytes) to be created
+in a stream's target file when uploading or downloading sparsely
+populated files. This is the counterpart to C<send_hole>. The
+optional C<$flags> parameter is currently unused and defaults to
+zero if omitted.
+
+=item $st->send_hole($length, $flags=0)
+
+Rather than transmitting empty file space, this method directs
+the stream target to create C<$length> bytes of empty space.
+This method would be used when uploading or downloading sparsely
+populated files to avoid the needless copy of empty file space.
+The optional C<$flags> parameter is currently unused and defaults
+to zero if omitted.
 
 =item $st->recv_all($handler)
 

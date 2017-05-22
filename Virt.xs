@@ -7900,6 +7900,34 @@ recv(st, data, nbytes, flags=0)
       RETVAL
 
 
+SV *
+recv_hole(st, flags=0)
+      virStreamPtr st;
+      unsigned int flags;
+  PREINIT:
+      long long length;
+    CODE:
+      if (virStreamRecvHole(st, &length, flags) < 0)
+          _croak_error();
+
+      RETVAL = virt_newSVll(length);
+  OUTPUT:
+      RETVAL
+
+
+void
+send_hole(st, lengthSV, flags=0)
+      virStreamPtr st;
+      SV *lengthSV;
+      unsigned int flags;
+ PREINIT:
+      long long length;
+  PPCODE:
+      length = virt_SvIVll(lengthSV);
+      if (virStreamSendHole(st, length, flags) < 0)
+          _croak_error();
+
+
 void
 send_all(stref, handler)
       SV *stref;
