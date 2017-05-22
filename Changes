@@ -4,6 +4,8 @@ Revision history for perl module Sys::Virt
 
  - Add LIST_CAP_MDEV & LIST_CAP_MDEV_TYPES constants
  - Fix send_all() callback helper
+ - Introduce flags to Stream::recv() and
+   register RECV_STOP_AT_HOLE constant
 
 3.3.0 2017-05-08
 

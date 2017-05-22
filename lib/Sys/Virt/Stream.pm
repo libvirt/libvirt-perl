@@ -69,11 +69,23 @@ be called on any stream which has been activated
 Complete I/O on the stream. Either this function or C<abort> must
 be called on any stream which has been activated
 
-=item $rv = $st->recv($data, $nbytes)
+=item $rv = $st->recv($data, $nbytes, $flags=0)
 
-Receive upto C<$nbytes> worth of data, copying into C<$data>.
-Returns the number of bytes read, or -2 if I/O would block,
-or -1 on error.
+Receive up to C<$nbytes> worth of data, copying into C<$data>.
+Returns the number of bytes read, or -3 if hole is reached and
+C<$flags> contains RECV_STOP_AT_HOLE, or -2 if I/O would block,
+or -1 on error. The C<$flags> parameter accepts the following
+flags:
+
+=over 4
+
+=item Sys::Virt::Stream::RECV_STOP_AT_HOLE
+
+If this flag is set, the C<recv> function will stop reading from
+stream if it has reached a hole. In that case, -3 is returned and
+C<recvHole> should be called to get the hole size.
+
+=back
 
 =item $rv = $st->send($data, $nbytes)
 

@@ -7874,16 +7874,21 @@ send(st, data, nbytes)
 
 
 int
-recv(st, data, nbytes)
+recv(st, data, nbytes, flags=0)
       virStreamPtr st;
       SV *data;
       size_t nbytes;
+      unsigned int flags;
  PREINIT:
       char *rawdata;
     CODE:
       Newx(rawdata, nbytes, char);
-      if ((RETVAL = virStreamRecv(st, rawdata, nbytes)) < 0 &&
-          RETVAL != -2) {
+      if (flags)
+          RETVAL = virStreamRecvFlags(st, rawdata, nbytes, flags);
+      else
+          RETVAL = virStreamRecv(st, rawdata, nbytes);
+
+      if (RETVAL != -2 && RETVAL != -3) {
           Safefree(rawdata);
           _croak_error();
       }
@@ -9009,6 +9014,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_STREAM_EVENT_WRITABLE, EVENT_WRITABLE);
       REGISTER_CONSTANT(VIR_STREAM_EVENT_ERROR, EVENT_ERROR);
       REGISTER_CONSTANT(VIR_STREAM_EVENT_HANGUP, EVENT_HANGUP);
+
+      REGISTER_CONSTANT(VIR_STREAM_RECV_STOP_AT_HOLE, RECV_STOP_AT_HOLE);
 
 
 
