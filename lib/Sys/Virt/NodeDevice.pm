@@ -169,6 +169,14 @@ Include devices with the SCSI generic capability
 
 Include devices with the DRM capability
 
+=item Sys::Virt::NodeDevice::LIST_CAP_MDEV
+
+Include mediated devices
+
+=item Sys::Virt::NodeDevice::LIST_CAP_MDEV_TYPES
+
+Include devices capable of mediated devices
+
 =back
 
 =head2 EVENT ID CONSTANTS
