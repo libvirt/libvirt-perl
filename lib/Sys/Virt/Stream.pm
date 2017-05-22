@@ -130,6 +130,20 @@ data byte count desired. The function should return
 the number of bytes filled, 0 on end of file, or
 -1 upon error
 
+=item $st->sparse_recv_all($handler, $hole_handler)
+
+Receive all data available from the sparse stream, invoking
+C<$handler> to process the data. The C<$handler> parameter must
+be a function which expects three arguments, the C<$st> stream
+object, a scalar containing the data received and a data byte
+count. The function should return the number of bytes processed,
+or -1 upon error. The second argument C<$hole_handler> is a
+function which expects two arguments: the C<$st> stream and a
+scalar, number describing the size of the hole in the stream (in
+bytes). The C<$hole_handler> is expected to return a non-negative
+number on success (usually 0) and a negative number (usually -1)
+otherwise.
+
 =item $st->add_callback($events, $coderef)
 
 Register a callback to be invoked whenever the stream has

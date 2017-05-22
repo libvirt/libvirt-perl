@@ -2008,6 +2008,48 @@ _stream_recv_all_sink(virStreamPtr st,
 }
 
 
+static int
+_stream_sparse_recv_hole_handler(virStreamPtr st,
+                                 long long offset,
+                                 void *opaque)
+{
+    AV *av = opaque;
+    SV **self;
+    SV **hole_handler;
+    int rv;
+    int ret;
+    dSP;
+
+    self = av_fetch(av, 0, 0);
+    hole_handler = av_fetch(av, 2, 0);
+
+    SvREFCNT_inc(*self);
+
+    ENTER;
+    SAVETMPS;
+
+    PUSHMARK(SP);
+    XPUSHs(*self);
+    XPUSHs(sv_2mortal(virt_newSVll(offset)));
+    PUTBACK;
+
+    rv = call_sv((SV*)*hole_handler, G_SCALAR);
+
+    SPAGAIN;
+
+    if (rv == 1) {
+        ret = POPi;
+    } else {
+        ret = -1;
+    }
+
+    FREETMPS;
+    LEAVE;
+
+    return ret;
+}
+
+
 MODULE = Sys::Virt  PACKAGE = Sys::Virt
 
 PROTOTYPES: ENABLE
@@ -7967,6 +8009,34 @@ recv_all(stref, handler)
       av_push(opaque, handler);
 
       if (virStreamRecvAll(st, _stream_recv_all_sink, opaque) < 0)
+          _croak_error();
+
+      SvREFCNT_dec(opaque);
+
+
+void
+sparse_recv_all(stref, handler, hole_handler)
+      SV *stref;
+      SV *handler;
+      SV *hole_handler;
+ PREINIT:
+      AV *opaque;
+      virStreamPtr st;
+    CODE:
+      st = (virStreamPtr)SvIV((SV*)SvRV(stref));
+
+      opaque = newAV();
+      SvREFCNT_inc(stref);
+      SvREFCNT_inc(handler);
+      SvREFCNT_inc(hole_handler);
+      av_push(opaque, stref);
+      av_push(opaque, handler);
+      av_push(opaque, hole_handler);
+
+      if (virStreamSparseRecvAll(st,
+                                 _stream_recv_all_sink,
+                                 _stream_sparse_recv_hole_handler,
+                                 opaque) < 0)
           _croak_error();
 
       SvREFCNT_dec(opaque);

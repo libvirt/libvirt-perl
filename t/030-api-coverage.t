@@ -114,6 +114,7 @@ virEventUpdateTimeoutFunc
 
 virStreamEventCallback
 virStreamSinkFunc
+virStreamSinkHoleFunc
 virStreamSourceFunc
 
 virConnectCloseFunc
