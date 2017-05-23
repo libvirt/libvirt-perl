@@ -1948,7 +1948,7 @@ _stream_send_all_source(virStreamPtr st,
         const char *newdata = SvPV_nolen(datasv);
         if (ret > nbytes)
             ret = nbytes;
-        strncpy(data, newdata, nbytes);
+        memcpy(data, newdata, nbytes);
     }
 
     FREETMPS;
