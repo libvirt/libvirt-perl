@@ -13,6 +13,7 @@ Revision history for perl module Sys::Virt
    VOL_UPLOAD_SPARSE_STREAM constants
  - Add vol-sparse.pl example
  - Add new domain event constants
+ - Add new LIST_CAP_CCW_DEV constant
 
 3.3.0 2017-05-08
 

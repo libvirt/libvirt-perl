@@ -177,6 +177,10 @@ Include mediated devices
 
 Include devices capable of mediated devices
 
+=item Sys::Virt::NodeDevice::LIST_CAP_CCW_DEV
+
+Include CCW devices
+
 =back
 
 =head2 EVENT ID CONSTANTS
