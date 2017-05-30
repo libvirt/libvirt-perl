@@ -12,6 +12,7 @@ Revision history for perl module Sys::Virt
  - Register VOL_DOWNLOAD_SPARSE_STREAM &
    VOL_UPLOAD_SPARSE_STREAM constants
  - Add vol-sparse.pl example
+ - Add new domain event constants
 
 3.3.0 2017-05-08
 
