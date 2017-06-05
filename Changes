@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-3.4.0 2017-06-00
+3.4.0 2017-06-05
 
  - Add LIST_CAP_MDEV & LIST_CAP_MDEV_TYPES constants
  - Fix send_all() callback helper
