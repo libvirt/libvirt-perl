@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 3.7.0 2017-00-00
 
- - XXX
+ - Add VIR_FROM_RESCTRL constant
 
 3.5.0 2017-07-06
 
