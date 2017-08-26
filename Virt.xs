@@ -5325,6 +5325,21 @@ migrate_set_max_downtime(dom, downtime, flags=0)
          _croak_error();
 
 
+SV *
+migrate_get_max_downtime(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+  PREINIT:
+      unsigned long long downtime;
+    CODE:
+      if (virDomainMigrateGetMaxDowntime(dom, &downtime, flags) < 0)
+          _croak_error();
+
+      RETVAL = virt_newSVull(downtime);
+  OUTPUT:
+      RETVAL
+
+
 void
 migrate_set_max_speed(dom, bandwidth, flags=0)
      virDomainPtr dom;
