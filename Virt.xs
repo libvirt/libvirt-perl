@@ -4166,6 +4166,31 @@ managed_save_remove(dom, flags=0)
 
 
 void
+managed_save_define_xml(dom, xml, flags=0)
+      virDomainPtr dom;
+      const char *xml;
+      unsigned int flags;
+PPCODE:
+      if (virDomainManagedSaveDefineXML(dom, xml, flags) < 0)
+          _croak_error();
+
+SV *
+managed_save_get_xml_description(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+  PREINIT:
+      char *xml;
+    CODE:
+      if (!(xml = virDomainManagedSaveGetXMLDesc(dom, flags)))
+          _croak_error();
+
+      RETVAL = newSVpv(xml, 0);
+      free(xml);
+  OUTPUT:
+      RETVAL
+
+
+void
 core_dump(dom, to, flags=0)
       virDomainPtr dom;
       const char *to;

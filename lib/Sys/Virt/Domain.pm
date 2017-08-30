@@ -220,6 +220,16 @@ Remove the current managed save image, causing the guest to perform
 a full boot next time it is started. The C<$flags> parameter is
 unused and defaults to zero.
 
+=item $dom->managed_save_define_xml($xml, $flags=0)
+
+Update the XML of the managed save image to C<$xml>. The C<$flags>
+parameter is unused and defaults to zero.
+
+=item $xml = $dom->managed_save_get_xml_description($flags=0)
+
+Get the XML in the managed save image. The C<$flags>
+parameter is unused and defaults to zero.
+
 =item $dom->core_dump($filename[, $flags])
 
 Trigger a core dump of the guest virtual machine, saving its memory
