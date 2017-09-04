@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-3.7.0 2017-00-00
+3.7.0 2017-09-04
 
  - Add VIR_FROM_RESCTRL constant
  - Add migrate_get_max_downtime
