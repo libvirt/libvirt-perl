@@ -1566,6 +1566,10 @@ The bytes per second transferred
 
 The number of memory pages dirtied per second
 
+=item Sys::Virt::Domain::JOB_MEMORY_PAGE_SIZE
+
+The memory page size in bytes
+
 =item Sys::Virt::Domain::JOB_MEMORY_ITERATION
 
 The total number of iterations over guest memory
