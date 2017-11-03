@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-3.9.0 2017-11-00
+3.9.0 2017-11-03
 
  - Add VIR_DOMAIN_JOB_MEMORY_PAGE_SIZE constant
  - Add set_lifecycle_action
