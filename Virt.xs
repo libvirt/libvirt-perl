@@ -8074,7 +8074,7 @@ recv(st, data, nbytes, flags=0)
       else
           RETVAL = virStreamRecv(st, rawdata, nbytes);
 
-      if (RETVAL != -2 && RETVAL != -3) {
+      if ((RETVAL < 0) && (RETVAL != -2 || RETVAL != -3)) {
           Safefree(rawdata);
           _croak_error();
       }

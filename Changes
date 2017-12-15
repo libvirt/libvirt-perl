@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 4.0.0 2018-00-00
 
- - XXX
+ - Fix check of return value from virStreamRecv*
 
 3.9.1 2017-12-05
 
