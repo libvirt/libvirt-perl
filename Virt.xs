@@ -5611,9 +5611,9 @@ block_stats(dom, path, flags=0)
               field = NULL;
               /* For back compat with previous hash above */
               if (strcmp(params[i].field, "rd_operations") == 0)
-                  field = "rd_reqs";
+                  field = "rd_req";
               else if (strcmp(params[i].field, "wr_operations") == 0)
-                  field = "wr_reqs";
+                  field = "wr_req";
               else if (strcmp(params[i].field, "flush_operations") == 0)
                   field = "flush_reqs";
               if (field) {
