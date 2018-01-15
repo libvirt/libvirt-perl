@@ -472,7 +472,7 @@ Revision history for perl module Sys::Virt
 0.2.6 2011-02-16
 
  - Fix build with 0.8.7 libvirt by removing reference to
-   non-existant constant only introduced in libvirt > 0.8.7
+   non-existent constant only introduced in libvirt > 0.8.7
  - Fix test script when hostname is undefined
 
 0.2.5 2011-02-04
@@ -533,7 +533,7 @@ Revision history for perl module Sys::Virt
  - Added networking APIs
  - Added APIs for host capabilities
  - Added APIs for inactive domains
- - Switch licensse to GPLv2+ or Artistic for CPAN compatability
+ - Switch licensse to GPLv2+ or Artistic for CPAN compatibility
  - Fix return values for reboot/shutdown/undefine/create APIs
  - Expanded documentation coverage
 
