@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-4.0.0 2018-00-00
+4.0.0 2018-01-23
 
  - Fix check of return value from virStreamRecv*
  - Fix rd_req / wr_req hash keys for block stats
