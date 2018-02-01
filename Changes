@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 4.1.0 2018-00-00
 
- - XXX
+ - Add VIR_ERR_DEVICE_MISSING constants
 
 4.0.0 2018-01-23
 
