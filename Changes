@@ -4,6 +4,7 @@ Revision history for perl module Sys::Virt
 
  - Add VIR_ERR_DEVICE_MISSING constants
  - Remove use of Data::Dumper from example programs
+ - Remove accidental debug message in get_all_domain_stats
 
 4.0.0 2018-01-23
 

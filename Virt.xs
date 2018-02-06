@@ -3358,7 +3358,6 @@ void get_all_domain_stats(con, stats, doms_sv=&PL_sv_undef, flags=0)
       if (SvOK(doms_sv)) {
 	  doms_av = (AV*)SvRV(doms_sv);
 	  ndoms = av_len(doms_av) + 1;
-	  fprintf(stderr, "Len %d\n", ndoms);
       } else {
           ndoms = 0;
       }
