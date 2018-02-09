@@ -999,6 +999,21 @@ sub get_storage_pool_by_volume {
 }
 
 
+=item my $pool = $vmm->get_storage_pool_by_target_path($path)
+
+Return the storage pool with a target path of C<$path>. The returned object is
+an instance of the L<Sys::Virt::StoragePool> class.
+
+=cut
+
+sub get_storage_pool_by_target_path {
+    my $self = shift;
+    my $path = shift;
+
+    return Sys::Virt::StoragePool->_new(connection => $self, target_path => $path);
+}
+
+
 =item my $vol = $vmm->get_storage_volume_by_path($path)
 
 Return the storage volume with a location of C<$path>. The returned object is

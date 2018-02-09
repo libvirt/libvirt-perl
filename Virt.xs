@@ -6678,6 +6678,17 @@ _lookup_by_volume(vol)
       RETVAL
 
 
+virStoragePoolPtr
+_lookup_by_target_path(con, path)
+      virConnectPtr con;
+      const char *path;
+    CODE:
+      if (!(RETVAL = virStoragePoolLookupByTargetPath(con, path)))
+          _croak_error();
+  OUTPUT:
+      RETVAL
+
+
 SV *
 get_uuid(pool)
       virStoragePoolPtr pool;
