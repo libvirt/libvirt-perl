@@ -315,6 +315,38 @@ sub define_network {
     return Sys::Virt::Network->_new(connection => $self, xml => $xml, nocreate => 1);
 }
 
+=item my $dom = $vmm->define_nwfilter($xml);
+
+Defines a new network filter based on the XML description
+passed into the C<$xml> parameter. The returned object is an instance
+of the L<Sys::Virt::NWFilter> class. This method is not available with
+unprivileged connections to the VMM.
+
+=cut
+
+sub define_nwfilter {
+    my $self = shift;
+    my $xml = shift;
+
+    return Sys::Virt::NWFilter->_new(connection => $self, xml => $xml, nocreate => 1);
+}
+
+=item my $dom = $vmm->define_secret($xml);
+
+Defines a new secret based on the XML description
+passed into the C<$xml> parameter. The returned object is an instance
+of the L<Sys::Virt::Secret> class. This method is not available with
+unprivileged connections to the VMM.
+
+=cut
+
+sub define_secret {
+    my $self = shift;
+    my $xml = shift;
+
+    return Sys::Virt::Secret->_new(connection => $self, xml => $xml, nocreate => 1);
+}
+
 =item my $dom = $vmm->create_storage_pool($xml);
 
 Create a new storage pool based on the XML description passed into the C<$xml>
