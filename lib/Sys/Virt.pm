@@ -281,7 +281,7 @@ sub define_domain {
     return Sys::Virt::Domain->_new(connection => $self, xml => $xml, nocreate => 1, flags => $flags);
 }
 
-=item my $dom = $conn->create_network($xml);
+=item my $net = $conn->create_network($xml);
 
 Create a new network based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::Network>
@@ -297,7 +297,7 @@ sub create_network {
     return Sys::Virt::Network->_new(connection => $self, xml => $xml);
 }
 
-=item my $dom = $conn->define_network($xml);
+=item my $net = $conn->define_network($xml);
 
 Defines, but does not start, a new network based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
@@ -315,7 +315,7 @@ sub define_network {
     return Sys::Virt::Network->_new(connection => $self, xml => $xml, nocreate => 1);
 }
 
-=item my $dom = $conn->define_nwfilter($xml);
+=item my $nwfilter = $conn->define_nwfilter($xml);
 
 Defines a new network filter based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
@@ -331,7 +331,7 @@ sub define_nwfilter {
     return Sys::Virt::NWFilter->_new(connection => $self, xml => $xml, nocreate => 1);
 }
 
-=item my $dom = $conn->define_secret($xml);
+=item my $secret = $conn->define_secret($xml);
 
 Defines a new secret based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
@@ -347,7 +347,7 @@ sub define_secret {
     return Sys::Virt::Secret->_new(connection => $self, xml => $xml, nocreate => 1);
 }
 
-=item my $dom = $conn->create_storage_pool($xml);
+=item my $pool = $conn->create_storage_pool($xml);
 
 Create a new storage pool based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::StoragePool>
@@ -363,7 +363,7 @@ sub create_storage_pool {
     return Sys::Virt::StoragePool->_new(connection => $self, xml => $xml);
 }
 
-=item my $dom = $conn->define_storage_pool($xml);
+=item my $pool = $conn->define_storage_pool($xml);
 
 Defines, but does not start, a new storage pol based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
@@ -381,7 +381,7 @@ sub define_storage_pool {
     return Sys::Virt::StoragePool->_new(connection => $self, xml => $xml, nocreate => 1);
 }
 
-=item my $dom = $conn->create_interface($xml);
+=item my $pool = $conn->create_interface($xml);
 
 Create a new interface based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::Interface>
@@ -397,7 +397,7 @@ sub create_interface {
     return Sys::Virt::Interface->_new(connection => $self, xml => $xml);
 }
 
-=item my $dom = $conn->define_interface($xml);
+=item my $iface = $conn->define_interface($xml);
 
 Defines, but does not start, a new interface based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
@@ -415,7 +415,7 @@ sub define_interface {
     return Sys::Virt::Interface->_new(connection => $self, xml => $xml, nocreate => 1);
 }
 
-=item my $dom = $conn->create_node_device($xml);
+=item my $dev = $conn->create_node_device($xml);
 
 Create a new virtual node device based on the XML description passed into the
 C<$xml> parameter. The returned object is an instance of the L<Sys::Virt::NodeDevice>
@@ -495,7 +495,7 @@ sub list_defined_domains {
     return @domains;
 }
 
-=item my $nnames = $conn->num_of_defined_domains()
+=item my $ndoms = $conn->num_of_defined_domains()
 
 Return the number of running domains known to the hypervisor. This can be
 used as the C<maxnames> parameter to C<list_defined_domain_names>.
@@ -539,7 +539,7 @@ sub list_networks {
     return @networks;
 }
 
-=item my $nnames = $conn->num_of_networks()
+=item my $nnets = $conn->num_of_networks()
 
 Return the number of running networks known to the hypervisor. This can be
 used as the C<maxids> parameter to C<list_network_ids>.
@@ -576,7 +576,7 @@ sub list_defined_networks {
     return @networks;
 }
 
-=item my $nnamess = $conn->num_of_defined_networks()
+=item my $nnets = $conn->num_of_defined_networks()
 
 Return the number of running networks known to the host. This can be
 used as the C<maxnames> parameter to C<list_defined_network_names>.
@@ -620,7 +620,7 @@ sub list_storage_pools {
     return @pools;
 }
 
-=item my $nnames = $conn->num_of_storage_pools()
+=item my $npools = $conn->num_of_storage_pools()
 
 Return the number of running storage pools known to the hypervisor. This can be
 used as the C<maxids> parameter to C<list_storage_pool_names>.
@@ -657,7 +657,7 @@ sub list_defined_storage_pools {
     return @pools;
 }
 
-=item my $nnames = $conn->num_of_defined_storage_pools()
+=item my $npools = $conn->num_of_defined_storage_pools()
 
 Return the number of running networks known to the host. This can be
 used as the C<maxnames> parameter to C<list_defined_storage_pool_names>.
@@ -704,7 +704,7 @@ sub list_node_devices {
     return @devs;
 }
 
-=item my $nnames = $conn->num_of_node_devices($capability[, $flags])
+=item my $ndevs = $conn->num_of_node_devices($capability[, $flags])
 
 Return the number of host devices known to the hypervisor. This can be
 used as the C<maxids> parameter to C<list_node_device_names>.
@@ -713,7 +713,7 @@ only devices with a particular capability type, and should be left
 as C<undef> if the full list is required. The optional <flags>
 parameter is currently unused and defaults to 0 if omitted.
 
-=item my @netNames = $conn->list_node_device_names($capability, $maxnames[, $flags])
+=item my @devNames = $conn->list_node_device_names($capability, $maxnames[, $flags])
 
 Return a list of all host device names currently known to the hypervisor. The names can
 be used with the C<get_node_device_by_name> method.
@@ -756,7 +756,7 @@ sub list_interfaces {
     return @interfaces;
 }
 
-=item my $nnames = $conn->num_of_interfaces()
+=item my $nifaces = $conn->num_of_interfaces()
 
 Return the number of running interfaces known to the hypervisor. This can be
 used as the C<maxnames> parameter to C<list_interface_names>.
@@ -793,7 +793,7 @@ sub list_defined_interfaces {
     return @interfaces;
 }
 
-=item my $nnames = $conn->num_of_defined_interfaces()
+=item my $nifaces = $conn->num_of_defined_interfaces()
 
 Return the number of inactive interfaces known to the hypervisor. This can be
 used as the C<maxnames> parameter to C<list_defined_interface_names>.
@@ -854,7 +854,7 @@ in the returned list are instances of the L<Sys::Virt::Network> class.
 The C<$flags> parameter can be used to filter the list of returned
 secrets.
 
-=item my @nets = $conn->list_nwfilters()
+=item my @nwfilters = $conn->list_nwfilters()
 
 Return a list of all nwfilters currently known to the hypervisor. The elements
 in the returned list are instances of the L<Sys::Virt::NWFilter> class.
@@ -881,7 +881,7 @@ sub list_nwfilters {
     return @nwfilters;
 }
 
-=item my $nnames = $conn->num_of_nwfilters()
+=item my $nnwfilters = $conn->num_of_nwfilters()
 
 Return the number of running nwfilters known to the hypervisor. This can be
 used as the C<maxids> parameter to C<list_nwfilter_names>.
@@ -1171,7 +1171,7 @@ sub get_secret_by_usage {
 				   usageID => $id);
 }
 
-=item my $dom = $conn->get_nwfilter_by_name($name)
+=item my $nwfilter = $conn->get_nwfilter_by_name($name)
 
 Return the domain with a name of C<$name>. The returned object is
 an instance of the L<Sys::Virt::NWFilter> class.
@@ -1186,7 +1186,7 @@ sub get_nwfilter_by_name {
 }
 
 
-=item my $dom = $conn->get_nwfilter_by_uuid($uuid)
+=item my $nwfilter = $conn->get_nwfilter_by_uuid($uuid)
 
 Return the nwfilter with a globally unique id of C<$uuid>. The returned object is
 an instance of the L<Sys::Virt::NWFilter> class.
