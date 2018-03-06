@@ -25,9 +25,9 @@ Sys::Virt - Represent and manage a libvirt hypervisor connection
 
 =head1 SYNOPSIS
 
-  my $vmm = Sys::Virt->new(uri => $uri);
+  my $conn = Sys::Virt->new(uri => $uri);
 
-  my @domains = $vmm->list_domains();
+  my @domains = $conn->list_domains();
 
   foreach my $dom (@domains) {
     print "Domain ", $dom->get_id, " ", $dom->get_name, "\n";
@@ -47,7 +47,7 @@ will result in an instance of the L<Sys::Virt::Error> module being
 thrown. To catch these errors, simply wrap the method in an eval
 block:
 
-  eval { my $vmm = Sys::Virt->new(uri => $uri); };
+  eval { my $conn = Sys::Virt->new(uri => $uri); };
   if ($@) {
     print STDERR "Unable to open connection to $addr" . $@->message . "\n";
   }
@@ -82,7 +82,7 @@ our $VERSION = '4.2.0';
 require XSLoader;
 XSLoader::load('Sys::Virt', $VERSION);
 
-=item my $vmm = Sys::Virt->new(uri => $uri, readonly => $ro, flags => $flags);
+=item my $conn = Sys::Virt->new(uri => $uri, readonly => $ro, flags => $flags);
 
 Attach to the virtualization host identified by C<uri>. The
 C<uri> parameter may be omitted, in which case the default connection made
@@ -207,7 +207,7 @@ sub new {
 }
 
 
-=item my $st = $vmm->new_stream($flags)
+=item my $st = $conn->new_stream($flags)
 
 Create a new stream, with the given flags
 
@@ -221,7 +221,7 @@ sub new_stream {
 }
 
 
-=item my $dom = $vmm->create_domain($xml, $flags);
+=item my $dom = $conn->create_domain($xml, $flags);
 
 Create a new domain based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::Domain>
@@ -239,7 +239,7 @@ sub create_domain {
     return Sys::Virt::Domain->_new(connection => $self, xml => $xml, flags => $flags);
 }
 
-=item my $dom = $vmm->create_domain_with_files($xml, $fds, $flags);
+=item my $dom = $conn->create_domain_with_files($xml, $fds, $flags);
 
 Create a new domain based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::Domain>
@@ -262,7 +262,7 @@ sub create_domain_with_files {
 				   fds => $fds, flags => $flags);
 }
 
-=item my $dom = $vmm->define_domain($xml, $flags=0);
+=item my $dom = $conn->define_domain($xml, $flags=0);
 
 Defines, but does not start, a new domain based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
@@ -281,7 +281,7 @@ sub define_domain {
     return Sys::Virt::Domain->_new(connection => $self, xml => $xml, nocreate => 1, flags => $flags);
 }
 
-=item my $dom = $vmm->create_network($xml);
+=item my $dom = $conn->create_network($xml);
 
 Create a new network based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::Network>
@@ -297,7 +297,7 @@ sub create_network {
     return Sys::Virt::Network->_new(connection => $self, xml => $xml);
 }
 
-=item my $dom = $vmm->define_network($xml);
+=item my $dom = $conn->define_network($xml);
 
 Defines, but does not start, a new network based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
@@ -315,7 +315,7 @@ sub define_network {
     return Sys::Virt::Network->_new(connection => $self, xml => $xml, nocreate => 1);
 }
 
-=item my $dom = $vmm->define_nwfilter($xml);
+=item my $dom = $conn->define_nwfilter($xml);
 
 Defines a new network filter based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
@@ -331,7 +331,7 @@ sub define_nwfilter {
     return Sys::Virt::NWFilter->_new(connection => $self, xml => $xml, nocreate => 1);
 }
 
-=item my $dom = $vmm->define_secret($xml);
+=item my $dom = $conn->define_secret($xml);
 
 Defines a new secret based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
@@ -347,7 +347,7 @@ sub define_secret {
     return Sys::Virt::Secret->_new(connection => $self, xml => $xml, nocreate => 1);
 }
 
-=item my $dom = $vmm->create_storage_pool($xml);
+=item my $dom = $conn->create_storage_pool($xml);
 
 Create a new storage pool based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::StoragePool>
@@ -363,7 +363,7 @@ sub create_storage_pool {
     return Sys::Virt::StoragePool->_new(connection => $self, xml => $xml);
 }
 
-=item my $dom = $vmm->define_storage_pool($xml);
+=item my $dom = $conn->define_storage_pool($xml);
 
 Defines, but does not start, a new storage pol based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
@@ -381,7 +381,7 @@ sub define_storage_pool {
     return Sys::Virt::StoragePool->_new(connection => $self, xml => $xml, nocreate => 1);
 }
 
-=item my $dom = $vmm->create_interface($xml);
+=item my $dom = $conn->create_interface($xml);
 
 Create a new interface based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::Interface>
@@ -397,7 +397,7 @@ sub create_interface {
     return Sys::Virt::Interface->_new(connection => $self, xml => $xml);
 }
 
-=item my $dom = $vmm->define_interface($xml);
+=item my $dom = $conn->define_interface($xml);
 
 Defines, but does not start, a new interface based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
@@ -415,7 +415,7 @@ sub define_interface {
     return Sys::Virt::Interface->_new(connection => $self, xml => $xml, nocreate => 1);
 }
 
-=item my $dom = $vmm->create_node_device($xml);
+=item my $dom = $conn->create_node_device($xml);
 
 Create a new virtual node device based on the XML description passed into the
 C<$xml> parameter. The returned object is an instance of the L<Sys::Virt::NodeDevice>
@@ -432,7 +432,7 @@ sub create_node_device {
 }
 
 
-=item my @doms = $vmm->list_domains()
+=item my @doms = $conn->list_domains()
 
 Return a list of all running domains currently known to the VMM. The elements
 in the returned list are instances of the L<Sys::Virt::Domain> class. This
@@ -458,17 +458,17 @@ sub list_domains {
     return @domains;
 }
 
-=item my $nids = $vmm->num_of_domains()
+=item my $nids = $conn->num_of_domains()
 
 Return the number of running domains known to the VMM. This can be
 used as the C<maxids> parameter to C<list_domain_ids>.
 
-=item my @domIDs = $vmm->list_domain_ids($maxids)
+=item my @domIDs = $conn->list_domain_ids($maxids)
 
 Return a list of all domain IDs currently known to the VMM. The IDs can
 be used with the C<get_domain_by_id> method.
 
-=item my @doms = $vmm->list_defined_domains()
+=item my @doms = $conn->list_defined_domains()
 
 Return a list of all domains defined, but not currently running, on the
 VMM. The elements in the returned list are instances of the
@@ -495,24 +495,24 @@ sub list_defined_domains {
     return @domains;
 }
 
-=item my $nnames = $vmm->num_of_defined_domains()
+=item my $nnames = $conn->num_of_defined_domains()
 
 Return the number of running domains known to the VMM. This can be
 used as the C<maxnames> parameter to C<list_defined_domain_names>.
 
-=item my @names = $vmm->list_defined_domain_names($maxnames)
+=item my @names = $conn->list_defined_domain_names($maxnames)
 
 Return a list of names of all domains defined, but not currently running, on
 the VMM. The names can be used with the C<get_domain_by_name> method.
 
-=item my @doms = $vmm->list_all_domains($flags)
+=item my @doms = $conn->list_all_domains($flags)
 
 Return a list of all domains currently known to the VMM, whether
 running or shutoff. The elements in the returned list are instances
 of the L<Sys::Virt::Domain> class. The C<$flags> parameter can be
 used to filter the list of returned domains.
 
-=item my @nets = $vmm->list_networks()
+=item my @nets = $conn->list_networks()
 
 Return a list of all networks currently known to the VMM. The elements
 in the returned list are instances of the L<Sys::Virt::Network> class.
@@ -539,17 +539,17 @@ sub list_networks {
     return @networks;
 }
 
-=item my $nnames = $vmm->num_of_networks()
+=item my $nnames = $conn->num_of_networks()
 
 Return the number of running networks known to the VMM. This can be
 used as the C<maxids> parameter to C<list_network_ids>.
 
-=item my @netNames = $vmm->list_network_names($maxnames)
+=item my @netNames = $conn->list_network_names($maxnames)
 
 Return a list of all network names currently known to the VMM. The names can
 be used with the C<get_network_by_name> method.
 
-=item my @nets = $vmm->list_defined_networks()
+=item my @nets = $conn->list_defined_networks()
 
 Return a list of all networks defined, but not currently running, on the
 VMM. The elements in the returned list are instances of the
@@ -576,24 +576,24 @@ sub list_defined_networks {
     return @networks;
 }
 
-=item my $nnamess = $vmm->num_of_defined_networks()
+=item my $nnamess = $conn->num_of_defined_networks()
 
 Return the number of running networks known to the host. This can be
 used as the C<maxnames> parameter to C<list_defined_network_names>.
 
-=item my @names = $vmm->list_defined_network_names($maxnames)
+=item my @names = $conn->list_defined_network_names($maxnames)
 
 Return a list of names of all networks defined, but not currently running, on
 the host. The names can be used with the C<get_network_by_name> method.
 
-=item my @nets = $vmm->list_all_networks($flags)
+=item my @nets = $conn->list_all_networks($flags)
 
 Return a list of all networks currently known to the VMM, whether
 running or shutoff. The elements in the returned list are instances
 of the L<Sys::Virt::Network> class. The C<$flags> parameter can be
 used to filter the list of returned networks.
 
-=item my @pools = $vmm->list_storage_pools()
+=item my @pools = $conn->list_storage_pools()
 
 Return a list of all storage pools currently known to the host. The elements
 in the returned list are instances of the L<Sys::Virt::StoragePool> class.
@@ -620,17 +620,17 @@ sub list_storage_pools {
     return @pools;
 }
 
-=item my $nnames = $vmm->num_of_storage_pools()
+=item my $nnames = $conn->num_of_storage_pools()
 
 Return the number of running storage pools known to the VMM. This can be
 used as the C<maxids> parameter to C<list_storage_pool_names>.
 
-=item my @poolNames = $vmm->list_storage_pool_names($maxnames)
+=item my @poolNames = $conn->list_storage_pool_names($maxnames)
 
 Return a list of all storage pool names currently known to the VMM. The IDs can
 be used with the C<get_network_by_id> method.
 
-=item my @pools = $vmm->list_defined_storage_pools()
+=item my @pools = $conn->list_defined_storage_pools()
 
 Return a list of all storage pools defined, but not currently running, on the
 host. The elements in the returned list are instances of the
@@ -657,24 +657,24 @@ sub list_defined_storage_pools {
     return @pools;
 }
 
-=item my $nnames = $vmm->num_of_defined_storage_pools()
+=item my $nnames = $conn->num_of_defined_storage_pools()
 
 Return the number of running networks known to the host. This can be
 used as the C<maxnames> parameter to C<list_defined_storage_pool_names>.
 
-=item my @names = $vmm->list_defined_storage_pool_names($maxnames)
+=item my @names = $conn->list_defined_storage_pool_names($maxnames)
 
 Return a list of names of all storage pools defined, but not currently running, on
 the host. The names can be used with the C<get_storage_pool_by_name> method.
 
-=item my @pools = $vmm->list_all_storage_pools($flags)
+=item my @pools = $conn->list_all_storage_pools($flags)
 
 Return a list of all storage pools currently known to the VMM, whether
 running or shutoff. The elements in the returned list are instances
 of the L<Sys::Virt::StoragePool> class. The C<$flags> parameter can be
 used to filter the list of returned pools.
 
-=item my @devs = $vmm->list_node_devices($capability)
+=item my @devs = $conn->list_node_devices($capability)
 
 Return a list of all devices currently known to the host OS. The elements
 in the returned list are instances of the L<Sys::Virt::NodeDevice> class.
@@ -704,7 +704,7 @@ sub list_node_devices {
     return @devs;
 }
 
-=item my $nnames = $vmm->num_of_node_devices($capability[, $flags])
+=item my $nnames = $conn->num_of_node_devices($capability[, $flags])
 
 Return the number of host devices known to the VMM. This can be
 used as the C<maxids> parameter to C<list_node_device_names>.
@@ -713,7 +713,7 @@ only devices with a particular capability type, and should be left
 as C<undef> if the full list is required. The optional <flags>
 parameter is currently unused and defaults to 0 if omitted.
 
-=item my @netNames = $vmm->list_node_device_names($capability, $maxnames[, $flags])
+=item my @netNames = $conn->list_node_device_names($capability, $maxnames[, $flags])
 
 Return a list of all host device names currently known to the VMM. The names can
 be used with the C<get_node_device_by_name> method.
@@ -722,14 +722,14 @@ only devices with a particular capability type, and should be left
 as C<undef> if the full list is required. The optional <flags>
 parameter is currently unused and defaults to 0 if omitted.
 
-=item my @devs = $vmm->list_all_node_devices($flags)
+=item my @devs = $conn->list_all_node_devices($flags)
 
 Return a list of all node devices currently known to the VMM. The
 elements in the returned list are instances of the
 L<Sys::Virt::NodeDevice> class. The C<$flags> parameter can be
 used to filter the list of returned devices.
 
-=item my @ifaces = $vmm->list_interfaces()
+=item my @ifaces = $conn->list_interfaces()
 
 Return a list of all network interfaces currently known to the VMM. The elements
 in the returned list are instances of the L<Sys::Virt::Interface> class.
@@ -756,17 +756,17 @@ sub list_interfaces {
     return @interfaces;
 }
 
-=item my $nnames = $vmm->num_of_interfaces()
+=item my $nnames = $conn->num_of_interfaces()
 
 Return the number of running interfaces known to the VMM. This can be
 used as the C<maxnames> parameter to C<list_interface_names>.
 
-=item my @names = $vmm->list_interface_names($maxnames)
+=item my @names = $conn->list_interface_names($maxnames)
 
 Return a list of all interface names currently known to the VMM. The names can
 be used with the C<get_interface_by_name> method.
 
-=item my @ifaces = $vmm->list_defined_interfaces()
+=item my @ifaces = $conn->list_defined_interfaces()
 
 Return a list of all network interfaces currently known to the VMM. The elements
 in the returned list are instances of the L<Sys::Virt::Interface> class.
@@ -793,24 +793,24 @@ sub list_defined_interfaces {
     return @interfaces;
 }
 
-=item my $nnames = $vmm->num_of_defined_interfaces()
+=item my $nnames = $conn->num_of_defined_interfaces()
 
 Return the number of inactive interfaces known to the VMM. This can be
 used as the C<maxnames> parameter to C<list_defined_interface_names>.
 
-=item my @names = $vmm->list_defined_interface_names($maxnames)
+=item my @names = $conn->list_defined_interface_names($maxnames)
 
 Return a list of inactive interface names currently known to the VMM. The names can
 be used with the C<get_interface_by_name> method.
 
-=item my @ifaces = $vmm->list_all_interfaces($flags)
+=item my @ifaces = $conn->list_all_interfaces($flags)
 
 Return a list of all interfaces currently known to the VMM, whether
 running or shutoff. The elements in the returned list are instances
 of the L<Sys::Virt::Interface> class. The C<$flags> parameter can be
 used to filter the list of returned interfaces.
 
-=item my @ifaces = $vmm->list_secrets()
+=item my @ifaces = $conn->list_secrets()
 
 Return a list of all secrets currently known to the VMM. The elements
 in the returned list are instances of the L<Sys::Virt::Secret> class.
@@ -837,24 +837,24 @@ sub list_secrets {
     return @secrets;
 }
 
-=item my $nuuids = $vmm->num_of_secrets()
+=item my $nuuids = $conn->num_of_secrets()
 
 Return the number of secrets known to the VMM. This can be
 used as the C<maxuuids> parameter to C<list_secrets>.
 
-=item my @uuids = $vmm->list_secret_uuids($maxuuids)
+=item my @uuids = $conn->list_secret_uuids($maxuuids)
 
 Return a list of all secret uuids currently known to the VMM. The uuids can
 be used with the C<get_secret_by_uuid> method.
 
-=item my @secrets = $vmm->list_all_secrets($flags)
+=item my @secrets = $conn->list_all_secrets($flags)
 
 Return a list of all secrets currently known to the VMM. The elements
 in the returned list are instances of the L<Sys::Virt::Network> class.
 The C<$flags> parameter can be used to filter the list of returned
 secrets.
 
-=item my @nets = $vmm->list_nwfilters()
+=item my @nets = $conn->list_nwfilters()
 
 Return a list of all nwfilters currently known to the VMM. The elements
 in the returned list are instances of the L<Sys::Virt::NWFilter> class.
@@ -881,36 +881,36 @@ sub list_nwfilters {
     return @nwfilters;
 }
 
-=item my $nnames = $vmm->num_of_nwfilters()
+=item my $nnames = $conn->num_of_nwfilters()
 
 Return the number of running nwfilters known to the VMM. This can be
 used as the C<maxids> parameter to C<list_nwfilter_names>.
 
-=item my @filterNames = $vmm->list_nwfilter_names($maxnames)
+=item my @filterNames = $conn->list_nwfilter_names($maxnames)
 
 Return a list of all nwfilter names currently known to the VMM. The names can
 be used with the C<get_nwfilter_by_name> method.
 
-=item my @nwfilters = $vmm->list_all_nwfilters($flags)
+=item my @nwfilters = $conn->list_all_nwfilters($flags)
 
 Return a list of all nwfilters currently known to the VMM. The elements
 in the returned list are instances of the L<Sys::Virt::NWFilter> class.
 The C<$flags> parameter is currently unused and defaults to zero.
 
-=item $vmm->define_save_image_xml($file, $dxml, $flags=0)
+=item $conn->define_save_image_xml($file, $dxml, $flags=0)
 
 Update the XML associated with a virtual machine's save image. The C<$file>
 parameter is the fully qualified path to the save image XML, while C<$dxml>
 is the new XML document to write. The C<$flags> parameter is currently
 unused and defaults to zero.
 
-=item $xml = $vmm->get_save_image_xml_description($file, $flags=1)
+=item $xml = $conn->get_save_image_xml_description($file, $flags=1)
 
 Retrieve the current XML configuration associated with the virtual
 machine's save image identified by C<$file>. The C<$flags> parameter is currently
 unused and defaults to zero.
 
-=item my $dom = $vmm->get_domain_by_name($name)
+=item my $dom = $conn->get_domain_by_name($name)
 
 Return the domain with a name of C<$name>. The returned object is
 an instance of the L<Sys::Virt::Domain> class.
@@ -926,7 +926,7 @@ sub get_domain_by_name {
 
 
 
-=item my $dom = $vmm->get_domain_by_id($id)
+=item my $dom = $conn->get_domain_by_id($id)
 
 Return the domain with a local id of C<$id>. The returned object is
 an instance of the L<Sys::Virt::Domain> class.
@@ -942,7 +942,7 @@ sub get_domain_by_id {
 
 
 
-=item my $dom = $vmm->get_domain_by_uuid($uuid)
+=item my $dom = $conn->get_domain_by_uuid($uuid)
 
 Return the domain with a globally unique id of C<$uuid>. The returned object is
 an instance of the L<Sys::Virt::Domain> class.
@@ -956,7 +956,7 @@ sub get_domain_by_uuid {
     return Sys::Virt::Domain->_new(connection => $self, uuid => $uuid);
 }
 
-=item my $net = $vmm->get_network_by_name($name)
+=item my $net = $conn->get_network_by_name($name)
 
 Return the network with a name of C<$name>. The returned object is
 an instance of the L<Sys::Virt::Network> class.
@@ -971,7 +971,7 @@ sub get_network_by_name {
 }
 
 
-=item my $net = $vmm->get_network_by_uuid($uuid)
+=item my $net = $conn->get_network_by_uuid($uuid)
 
 Return the network with a globally unique id of C<$uuid>. The returned object is
 an instance of the L<Sys::Virt::Network> class.
@@ -985,7 +985,7 @@ sub get_network_by_uuid {
     return Sys::Virt::Network->_new(connection => $self, uuid => $uuid);
 }
 
-=item my $pool = $vmm->get_storage_pool_by_name($name)
+=item my $pool = $conn->get_storage_pool_by_name($name)
 
 Return the storage pool with a name of C<$name>. The returned object is
 an instance of the L<Sys::Virt::StoragePool> class.
@@ -1000,7 +1000,7 @@ sub get_storage_pool_by_name {
 }
 
 
-=item my $pool = $vmm->get_storage_pool_by_uuid($uuid)
+=item my $pool = $conn->get_storage_pool_by_uuid($uuid)
 
 Return the storage pool with a globally unique id of C<$uuid>. The returned object is
 an instance of the L<Sys::Virt::StoragePool> class.
@@ -1015,7 +1015,7 @@ sub get_storage_pool_by_uuid {
 }
 
 
-=item my $pool = $vmm->get_storage_pool_by_volume($vol)
+=item my $pool = $conn->get_storage_pool_by_volume($vol)
 
 Return the storage pool with a storage volume C<$vol>. The C<$vol> parameter
 must be an instance of the L<Sys::Virt::StorageVol> class. The returned object is
@@ -1031,7 +1031,7 @@ sub get_storage_pool_by_volume {
 }
 
 
-=item my $pool = $vmm->get_storage_pool_by_target_path($path)
+=item my $pool = $conn->get_storage_pool_by_target_path($path)
 
 Return the storage pool with a target path of C<$path>. The returned object is
 an instance of the L<Sys::Virt::StoragePool> class.
@@ -1046,7 +1046,7 @@ sub get_storage_pool_by_target_path {
 }
 
 
-=item my $vol = $vmm->get_storage_volume_by_path($path)
+=item my $vol = $conn->get_storage_volume_by_path($path)
 
 Return the storage volume with a location of C<$path>. The returned object is
 an instance of the L<Sys::Virt::StorageVol> class.
@@ -1061,7 +1061,7 @@ sub get_storage_volume_by_path {
 }
 
 
-=item my $vol = $vmm->get_storage_volume_by_key($key)
+=item my $vol = $conn->get_storage_volume_by_key($key)
 
 Return the storage volume with a globally unique id of C<$key>. The returned object is
 an instance of the L<Sys::Virt::StorageVol> class.
@@ -1075,7 +1075,7 @@ sub get_storage_volume_by_key {
     return Sys::Virt::StorageVol->_new(connection => $self, key => $key);
 }
 
-=item my $dev = $vmm->get_node_device_by_name($name)
+=item my $dev = $conn->get_node_device_by_name($name)
 
 Return the node device with a name of C<$name>. The returned object is
 an instance of the L<Sys::Virt::NodeDevice> class.
@@ -1090,7 +1090,7 @@ sub get_node_device_by_name {
 }
 
 
-=item my $dev = $vmm->get_node_device_scsihost_by_wwn($wwnn, $wwpn, $flags=0)
+=item my $dev = $conn->get_node_device_scsihost_by_wwn($wwnn, $wwpn, $flags=0)
 
 Return the node device which is a SCSI host identified by C<$wwnn> and C<$wwpn>.
 The C<$flags> parameter is unused and defaults to zero.  The returned object is
@@ -1109,7 +1109,7 @@ sub get_node_device_scsihost_by_wwn {
 }
 
 
-=item my $iface = $vmm->get_interface_by_name($name)
+=item my $iface = $conn->get_interface_by_name($name)
 
 Return the interface with a name of C<$name>. The returned object is
 an instance of the L<Sys::Virt::Interface> class.
@@ -1124,7 +1124,7 @@ sub get_interface_by_name {
 }
 
 
-=item my $iface = $vmm->get_interface_by_mac($mac)
+=item my $iface = $conn->get_interface_by_mac($mac)
 
 Return the interface with a MAC address of C<$mac>. The returned object is
 an instance of the L<Sys::Virt::Interface> class.
@@ -1139,7 +1139,7 @@ sub get_interface_by_mac {
 }
 
 
-=item my $sec = $vmm->get_secret_by_uuid($uuid)
+=item my $sec = $conn->get_secret_by_uuid($uuid)
 
 Return the secret with a globally unique id of C<$uuid>. The returned object is
 an instance of the L<Sys::Virt::Secret> class.
@@ -1153,7 +1153,7 @@ sub get_secret_by_uuid {
     return Sys::Virt::Secret->_new(connection => $self, uuid => $uuid);
 }
 
-=item my $sec = $vmm->get_secret_by_usage($usageType, $usageID)
+=item my $sec = $conn->get_secret_by_usage($usageType, $usageID)
 
 Return the secret with a usage type of C<$usageType>, identified
 by C<$usageID>. The returned object is an instance of the
@@ -1171,7 +1171,7 @@ sub get_secret_by_usage {
 				   usageID => $id);
 }
 
-=item my $dom = $vmm->get_nwfilter_by_name($name)
+=item my $dom = $conn->get_nwfilter_by_name($name)
 
 Return the domain with a name of C<$name>. The returned object is
 an instance of the L<Sys::Virt::NWFilter> class.
@@ -1186,7 +1186,7 @@ sub get_nwfilter_by_name {
 }
 
 
-=item my $dom = $vmm->get_nwfilter_by_uuid($uuid)
+=item my $dom = $conn->get_nwfilter_by_uuid($uuid)
 
 Return the nwfilter with a globally unique id of C<$uuid>. The returned object is
 an instance of the L<Sys::Virt::NWFilter> class.
@@ -1200,7 +1200,7 @@ sub get_nwfilter_by_uuid {
     return Sys::Virt::NWFilter->_new(connection => $self, uuid => $uuid);
 }
 
-=item my $xml = $vmm->find_storage_pool_sources($type, $srcspec[, $flags])
+=item my $xml = $conn->find_storage_pool_sources($type, $srcspec[, $flags])
 
 Probe for available storage pool sources for the pool of type C<$type>.
 The C<$srcspec> parameter can be C<undef>, or a parameter to refine the
@@ -1209,7 +1209,7 @@ C<$flags> parameter is optional, and if omitted defaults to zero. The
 returned scalar is an XML document describing the discovered storage
 pool sources.
 
-=item my @stats = $vmm->get_all_domain_stats($stats, \@doms=undef, $flags=0);
+=item my @stats = $conn->get_all_domain_stats($stats, \@doms=undef, $flags=0);
 
 Get a list of all statistics for domains known to the hypervisor.
 The C<$stats> parameter controls which data fields to return and
@@ -1225,67 +1225,67 @@ The element will be a hash with two keys, C<dom> pointing to an instance
 of C<Sys::Virt::Domain> and C<data> pointing to another hash reference
 containing the actual statistics.
 
-=item $vmm->interface_change_begin($flags)
+=item $conn->interface_change_begin($flags)
 
 Begin a transaction for changing the configuration of one or more
 network interfaces
 
-=item $vmm->interface_change_commit($flags)
+=item $conn->interface_change_commit($flags)
 
 Complete a transaction for changing the configuration of one or more
 network interfaces
 
-=item $vmm->interface_change_rollback($flags)
+=item $conn->interface_change_rollback($flags)
 
 Abort a transaction for changing the configuration of one or more
 network interfaces
 
-=item $vmm->restore_domain($savefile)
+=item $conn->restore_domain($savefile)
 
 Recreate a domain from the saved state file given in the C<$savefile> parameter.
 
-=item $vmm->get_max_vcpus($domtype)
+=item $conn->get_max_vcpus($domtype)
 
 Return the maximum number of vcpus that can be configured for a domain
 of type C<$domtype>
 
-=item my $hostname = $vmm->get_hostname()
+=item my $hostname = $conn->get_hostname()
 
 Return the name of the host with which this connection is associated.
 
-=item my $uri = $vmm->get_uri()
+=item my $uri = $conn->get_uri()
 
 Return the URI associated with the open connection. This may be different
 from the URI used when initially connecting to libvirt, when 'auto-probing'
 or drivers occurrs.
 
-=item my $xml = $vmm->get_sysinfo()
+=item my $xml = $conn->get_sysinfo()
 
 Return an XML documenting representing the host system information,
 typically obtained from SMBIOS tables.
 
-=item my $type = $vmm->get_type()
+=item my $type = $conn->get_type()
 
 Return the type of virtualization backend accessed by this VMM object. Currently
 the only supported type is C<Xen>.
 
-=item my $xml = $vmm->domain_xml_from_native($format, $config);
+=item my $xml = $conn->domain_xml_from_native($format, $config);
 
 Convert the native hypervisor configuration C<$config> which is in format
 <$format> into libvirrt domain XML. Valid values of C<$format> vary between
 hypervisor drivers.
 
-=item my $config = $vmm->domain_xml_to_native($format, $xml)
+=item my $config = $conn->domain_xml_to_native($format, $xml)
 
 Convert the libvirt domain XML configuration C<$xml> to a native hypervisor
 configuration in format C<$format>
 
-=item my $ver = $vmm->get_version()
+=item my $ver = $conn->get_version()
 
 Return the complete version number as a string encoded in the
 formula C<(major * 1000000) + (minor * 1000) + micro>.
 
-=item my $ver = $vmm->get_major_version
+=item my $ver = $conn->get_major_version
 
 Return the major version number of the libvirt library.
 
@@ -1298,7 +1298,7 @@ sub get_major_version {
 }
 
 
-=item my $ver = $vmm->get_minor_version
+=item my $ver = $conn->get_minor_version
 
 Return the minor version number of the libvirt library.
 
@@ -1311,7 +1311,7 @@ sub get_minor_version {
     return ($mver - ($mver % 1000)) / 1000;
 }
 
-=item my $ver = $vmm->get_micro_version
+=item my $ver = $conn->get_micro_version
 
 Return the micro version number of the libvirt library.
 
@@ -1331,7 +1331,7 @@ sub get_version {
     }
 }
 
-=item my $ver = $vmm->get_library_version
+=item my $ver = $conn->get_library_version
 
 Return the version number of the API associated with
 the active connection. This differs from C<get_version>
