@@ -119,8 +119,8 @@ Xen driver on C<somehost> using TCP / SASL security
 For further details consult C<http://libvirt.org/uri.html>
 
 If the optional C<readonly> parameter is supplied, then an unprivileged
-connection to the VMM will be attempted. If it is not supplied, then it
-defaults to making a fully privileged connection to the VMM. If the
+connection to the hypervisor will be attempted. If it is not supplied, then it
+defaults to making a fully privileged connection to the hypervisor. If the
 calling application is not running as root, it may be necessary to
 provide authentication callbacks.
 
@@ -226,7 +226,7 @@ sub new_stream {
 Create a new domain based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::Domain>
 class. This method is not available with unprivileged connections to
-the VMM. The C<$flags> parameter accepts one of the DOMAIN CREATION
+the hypervisor. The C<$flags> parameter accepts one of the DOMAIN CREATION
 constants documented in L<Sys::Virt::Domain>, and defaults to 0 if omitted.
 
 =cut
@@ -244,7 +244,7 @@ sub create_domain {
 Create a new domain based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::Domain>
 class. This method is not available with unprivileged connections to
-the VMM. The C<$fds> parameter is an array of UNIX file descriptors
+the hypervisor. The C<$fds> parameter is an array of UNIX file descriptors
 which will be passed to the init process of the container. This is
 only supported with container based virtualization. The C<$flags>
 parameter accepts one of the DOMAIN CREATION constants documented
@@ -267,7 +267,7 @@ sub create_domain_with_files {
 Defines, but does not start, a new domain based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
 of the L<Sys::Virt::Domain> class. This method is not available with
-unprivileged connections to the VMM. The defined domain can be later started
+unprivileged connections to the hypervisor. The defined domain can be later started
 by calling the C<create> method on the returned C<Sys::Virt::Domain>
 object.
 
@@ -286,7 +286,7 @@ sub define_domain {
 Create a new network based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::Network>
 class. This method is not available with unprivileged connections to
-the VMM.
+the hypervisor.
 
 =cut
 
@@ -302,7 +302,7 @@ sub create_network {
 Defines, but does not start, a new network based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
 of the L<Sys::Virt::Network> class. This method is not available with
-unprivileged connections to the VMM. The defined network can be later started
+unprivileged connections to the hypervisor. The defined network can be later started
 by calling the C<create> method on the returned C<Sys::Virt::Network>
 object.
 
@@ -320,7 +320,7 @@ sub define_network {
 Defines a new network filter based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
 of the L<Sys::Virt::NWFilter> class. This method is not available with
-unprivileged connections to the VMM.
+unprivileged connections to the hypervisor.
 
 =cut
 
@@ -336,7 +336,7 @@ sub define_nwfilter {
 Defines a new secret based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
 of the L<Sys::Virt::Secret> class. This method is not available with
-unprivileged connections to the VMM.
+unprivileged connections to the hypervisor.
 
 =cut
 
@@ -352,7 +352,7 @@ sub define_secret {
 Create a new storage pool based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::StoragePool>
 class. This method is not available with unprivileged connections to
-the VMM.
+the hypervisor.
 
 =cut
 
@@ -368,7 +368,7 @@ sub create_storage_pool {
 Defines, but does not start, a new storage pol based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
 of the L<Sys::Virt::StoragePool> class. This method is not available with
-unprivileged connections to the VMM. The defined pool can be later started
+unprivileged connections to the hypervisor. The defined pool can be later started
 by calling the C<create> method on the returned C<Sys::Virt::StoragePool>
 object.
 
@@ -386,7 +386,7 @@ sub define_storage_pool {
 Create a new interface based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::Interface>
 class. This method is not available with unprivileged connections to
-the VMM.
+the hypervisor.
 
 =cut
 
@@ -402,7 +402,7 @@ sub create_interface {
 Defines, but does not start, a new interface based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
 of the L<Sys::Virt::Interface> class. This method is not available with
-unprivileged connections to the VMM. The defined interface can be later started
+unprivileged connections to the hypervisor. The defined interface can be later started
 by calling the C<create> method on the returned C<Sys::Virt::Interface>
 object.
 
@@ -420,7 +420,7 @@ sub define_interface {
 Create a new virtual node device based on the XML description passed into the
 C<$xml> parameter. The returned object is an instance of the L<Sys::Virt::NodeDevice>
 class. This method is not available with unprivileged connections to
-the VMM.
+the hypervisor.
 
 =cut
 
@@ -434,7 +434,7 @@ sub create_node_device {
 
 =item my @doms = $conn->list_domains()
 
-Return a list of all running domains currently known to the VMM. The elements
+Return a list of all running domains currently known to the hypervisor. The elements
 in the returned list are instances of the L<Sys::Virt::Domain> class. This
 method requires O(n) RPC calls, so the C<list_all_domains> method is
 recommended as a more efficient alternative.
@@ -460,18 +460,18 @@ sub list_domains {
 
 =item my $nids = $conn->num_of_domains()
 
-Return the number of running domains known to the VMM. This can be
+Return the number of running domains known to the hypervisor. This can be
 used as the C<maxids> parameter to C<list_domain_ids>.
 
 =item my @domIDs = $conn->list_domain_ids($maxids)
 
-Return a list of all domain IDs currently known to the VMM. The IDs can
+Return a list of all domain IDs currently known to the hypervisor. The IDs can
 be used with the C<get_domain_by_id> method.
 
 =item my @doms = $conn->list_defined_domains()
 
 Return a list of all domains defined, but not currently running, on the
-VMM. The elements in the returned list are instances of the
+hypervisor. The elements in the returned list are instances of the
 L<Sys::Virt::Domain> class. This method requires O(n) RPC calls, so the
 C<list_all_domains> method is recommended as a more efficient alternative.
 
@@ -497,24 +497,24 @@ sub list_defined_domains {
 
 =item my $nnames = $conn->num_of_defined_domains()
 
-Return the number of running domains known to the VMM. This can be
+Return the number of running domains known to the hypervisor. This can be
 used as the C<maxnames> parameter to C<list_defined_domain_names>.
 
 =item my @names = $conn->list_defined_domain_names($maxnames)
 
 Return a list of names of all domains defined, but not currently running, on
-the VMM. The names can be used with the C<get_domain_by_name> method.
+the hypervisor. The names can be used with the C<get_domain_by_name> method.
 
 =item my @doms = $conn->list_all_domains($flags)
 
-Return a list of all domains currently known to the VMM, whether
+Return a list of all domains currently known to the hypervisor, whether
 running or shutoff. The elements in the returned list are instances
 of the L<Sys::Virt::Domain> class. The C<$flags> parameter can be
 used to filter the list of returned domains.
 
 =item my @nets = $conn->list_networks()
 
-Return a list of all networks currently known to the VMM. The elements
+Return a list of all networks currently known to the hypervisor. The elements
 in the returned list are instances of the L<Sys::Virt::Network> class.
 This method requires O(n) RPC calls, so the C<list_all_networks> method
 is recommended as a more efficient alternative.
@@ -541,18 +541,18 @@ sub list_networks {
 
 =item my $nnames = $conn->num_of_networks()
 
-Return the number of running networks known to the VMM. This can be
+Return the number of running networks known to the hypervisor. This can be
 used as the C<maxids> parameter to C<list_network_ids>.
 
 =item my @netNames = $conn->list_network_names($maxnames)
 
-Return a list of all network names currently known to the VMM. The names can
+Return a list of all network names currently known to the hypervisor. The names can
 be used with the C<get_network_by_name> method.
 
 =item my @nets = $conn->list_defined_networks()
 
 Return a list of all networks defined, but not currently running, on the
-VMM. The elements in the returned list are instances of the
+hypervisor. The elements in the returned list are instances of the
 L<Sys::Virt::Network> class. This method requires O(n) RPC calls, so the
 C<list_all_networks> method is recommended as a more efficient alternative.
 
@@ -588,7 +588,7 @@ the host. The names can be used with the C<get_network_by_name> method.
 
 =item my @nets = $conn->list_all_networks($flags)
 
-Return a list of all networks currently known to the VMM, whether
+Return a list of all networks currently known to the hypervisor, whether
 running or shutoff. The elements in the returned list are instances
 of the L<Sys::Virt::Network> class. The C<$flags> parameter can be
 used to filter the list of returned networks.
@@ -622,12 +622,12 @@ sub list_storage_pools {
 
 =item my $nnames = $conn->num_of_storage_pools()
 
-Return the number of running storage pools known to the VMM. This can be
+Return the number of running storage pools known to the hypervisor. This can be
 used as the C<maxids> parameter to C<list_storage_pool_names>.
 
 =item my @poolNames = $conn->list_storage_pool_names($maxnames)
 
-Return a list of all storage pool names currently known to the VMM. The IDs can
+Return a list of all storage pool names currently known to the hypervisor. The IDs can
 be used with the C<get_network_by_id> method.
 
 =item my @pools = $conn->list_defined_storage_pools()
@@ -669,7 +669,7 @@ the host. The names can be used with the C<get_storage_pool_by_name> method.
 
 =item my @pools = $conn->list_all_storage_pools($flags)
 
-Return a list of all storage pools currently known to the VMM, whether
+Return a list of all storage pools currently known to the hypervisor, whether
 running or shutoff. The elements in the returned list are instances
 of the L<Sys::Virt::StoragePool> class. The C<$flags> parameter can be
 used to filter the list of returned pools.
@@ -706,7 +706,7 @@ sub list_node_devices {
 
 =item my $nnames = $conn->num_of_node_devices($capability[, $flags])
 
-Return the number of host devices known to the VMM. This can be
+Return the number of host devices known to the hypervisor. This can be
 used as the C<maxids> parameter to C<list_node_device_names>.
 The C<capability> parameter allows the list to be restricted to
 only devices with a particular capability type, and should be left
@@ -715,7 +715,7 @@ parameter is currently unused and defaults to 0 if omitted.
 
 =item my @netNames = $conn->list_node_device_names($capability, $maxnames[, $flags])
 
-Return a list of all host device names currently known to the VMM. The names can
+Return a list of all host device names currently known to the hypervisor. The names can
 be used with the C<get_node_device_by_name> method.
 The C<capability> parameter allows the list to be restricted to
 only devices with a particular capability type, and should be left
@@ -724,14 +724,14 @@ parameter is currently unused and defaults to 0 if omitted.
 
 =item my @devs = $conn->list_all_node_devices($flags)
 
-Return a list of all node devices currently known to the VMM. The
+Return a list of all node devices currently known to the hypervisor. The
 elements in the returned list are instances of the
 L<Sys::Virt::NodeDevice> class. The C<$flags> parameter can be
 used to filter the list of returned devices.
 
 =item my @ifaces = $conn->list_interfaces()
 
-Return a list of all network interfaces currently known to the VMM. The elements
+Return a list of all network interfaces currently known to the hypervisor. The elements
 in the returned list are instances of the L<Sys::Virt::Interface> class.
 This method requires O(n) RPC calls, so the C<list_all_interfaces> method is
 recommended as a more efficient alternative.
@@ -758,17 +758,17 @@ sub list_interfaces {
 
 =item my $nnames = $conn->num_of_interfaces()
 
-Return the number of running interfaces known to the VMM. This can be
+Return the number of running interfaces known to the hypervisor. This can be
 used as the C<maxnames> parameter to C<list_interface_names>.
 
 =item my @names = $conn->list_interface_names($maxnames)
 
-Return a list of all interface names currently known to the VMM. The names can
+Return a list of all interface names currently known to the hypervisor. The names can
 be used with the C<get_interface_by_name> method.
 
 =item my @ifaces = $conn->list_defined_interfaces()
 
-Return a list of all network interfaces currently known to the VMM. The elements
+Return a list of all network interfaces currently known to the hypervisor. The elements
 in the returned list are instances of the L<Sys::Virt::Interface> class.
 This method requires O(n) RPC calls, so the C<list_all_interfaces> method is
 recommended as a more efficient alternative.
@@ -795,24 +795,24 @@ sub list_defined_interfaces {
 
 =item my $nnames = $conn->num_of_defined_interfaces()
 
-Return the number of inactive interfaces known to the VMM. This can be
+Return the number of inactive interfaces known to the hypervisor. This can be
 used as the C<maxnames> parameter to C<list_defined_interface_names>.
 
 =item my @names = $conn->list_defined_interface_names($maxnames)
 
-Return a list of inactive interface names currently known to the VMM. The names can
+Return a list of inactive interface names currently known to the hypervisor. The names can
 be used with the C<get_interface_by_name> method.
 
 =item my @ifaces = $conn->list_all_interfaces($flags)
 
-Return a list of all interfaces currently known to the VMM, whether
+Return a list of all interfaces currently known to the hypervisor, whether
 running or shutoff. The elements in the returned list are instances
 of the L<Sys::Virt::Interface> class. The C<$flags> parameter can be
 used to filter the list of returned interfaces.
 
 =item my @ifaces = $conn->list_secrets()
 
-Return a list of all secrets currently known to the VMM. The elements
+Return a list of all secrets currently known to the hypervisor. The elements
 in the returned list are instances of the L<Sys::Virt::Secret> class.
 This method requires O(n) RPC calls, so the C<list_all_secrets> method
 is recommended as a more efficient alternative.
@@ -839,24 +839,24 @@ sub list_secrets {
 
 =item my $nuuids = $conn->num_of_secrets()
 
-Return the number of secrets known to the VMM. This can be
+Return the number of secrets known to the hypervisor. This can be
 used as the C<maxuuids> parameter to C<list_secrets>.
 
 =item my @uuids = $conn->list_secret_uuids($maxuuids)
 
-Return a list of all secret uuids currently known to the VMM. The uuids can
+Return a list of all secret uuids currently known to the hypervisor. The uuids can
 be used with the C<get_secret_by_uuid> method.
 
 =item my @secrets = $conn->list_all_secrets($flags)
 
-Return a list of all secrets currently known to the VMM. The elements
+Return a list of all secrets currently known to the hypervisor. The elements
 in the returned list are instances of the L<Sys::Virt::Network> class.
 The C<$flags> parameter can be used to filter the list of returned
 secrets.
 
 =item my @nets = $conn->list_nwfilters()
 
-Return a list of all nwfilters currently known to the VMM. The elements
+Return a list of all nwfilters currently known to the hypervisor. The elements
 in the returned list are instances of the L<Sys::Virt::NWFilter> class.
 This method requires O(n) RPC calls, so the C<list_all_nwfilters> method
 is recommended as a more efficient alternative.
@@ -883,17 +883,17 @@ sub list_nwfilters {
 
 =item my $nnames = $conn->num_of_nwfilters()
 
-Return the number of running nwfilters known to the VMM. This can be
+Return the number of running nwfilters known to the hypervisor. This can be
 used as the C<maxids> parameter to C<list_nwfilter_names>.
 
 =item my @filterNames = $conn->list_nwfilter_names($maxnames)
 
-Return a list of all nwfilter names currently known to the VMM. The names can
+Return a list of all nwfilter names currently known to the hypervisor. The names can
 be used with the C<get_nwfilter_by_name> method.
 
 =item my @nwfilters = $conn->list_all_nwfilters($flags)
 
-Return a list of all nwfilters currently known to the VMM. The elements
+Return a list of all nwfilters currently known to the hypervisor. The elements
 in the returned list are instances of the L<Sys::Virt::NWFilter> class.
 The C<$flags> parameter is currently unused and defaults to zero.
 
@@ -1266,7 +1266,7 @@ typically obtained from SMBIOS tables.
 
 =item my $type = $conn->get_type()
 
-Return the type of virtualization backend accessed by this VMM object. Currently
+Return the type of virtualization backend accessed by this hypervisor object. Currently
 the only supported type is C<Xen>.
 
 =item my $xml = $conn->domain_xml_from_native($format, $config);
