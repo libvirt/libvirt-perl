@@ -1943,6 +1943,10 @@ Extract the DHCP server lease information
 
 Query the guest OS via an agent
 
+=item Sys::Virt::Domain::INTERFACE_ADDRESSES_SRC_ARP
+
+Extract from the local ARP tables
+
 =back
 
 The returned list will contain one element for each interface.
