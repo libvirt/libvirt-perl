@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+4.3.0 2018-00-00
+
+ - XXX
+
 4.2.0 2018-04-03
 
  - Add missing define_nwfilter and define_secret APIs in Sys::Virt
