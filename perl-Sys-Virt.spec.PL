@@ -24,7 +24,7 @@ __DATA__
 
 Name:           perl-Sys-Virt
 Version:        @VERSION@
-Release:        1%{?dist}%{?extra_release}
+Release:        1%{?dist}
 Summary:        Represent and manage a libvirt hypervisor connection
 License:        GPLv2+ or Artistic
 Group:          Development/Libraries
