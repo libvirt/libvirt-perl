@@ -1,21 +1,17 @@
 #!/bin/sh
-#
-# This script is used to Test::AutoBuild (http://www.autobuild.org)
-# to perform automated builds of the Sys-Virt module
 
 NAME=Sys-Virt
 
 set -e
 
 test -n "$1" && RESULTS=$1 || RESULTS=results.log
-: ${AUTOBUILD_INSTALL_ROOT=$HOME/builder}
 
 make -k realclean ||:
 rm -rf MANIFEST blib pm_to_blib
 
 export TEST_MAINTAINER=1
 
-perl Makefile.PL  PREFIX=$AUTOBUILD_INSTALL_ROOT
+perl Makefile.PL PREFIX=$HOME/builder
 
 rm -f MANIFEST
 
@@ -56,12 +52,8 @@ rm -f $NAME-*.tar.gz
 make dist
 
 if [ -f /usr/bin/rpmbuild ]; then
-  if [ -n "$AUTOBUILD_COUNTER" ]; then
-    EXTRA_RELEASE=".auto$AUTOBUILD_COUNTER"
-  else
-    NOW=`date +"%s"`
-    EXTRA_RELEASE=".$USER$NOW"
-  fi
+  NOW=`date +"%s"`
+  EXTRA_RELEASE=".$USER$NOW"
   rpmbuild --nodeps -ta --define "extra_release $EXTRA_RELEASE" --clean $NAME-*.tar.gz
 fi
 
