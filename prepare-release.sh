@@ -56,11 +56,3 @@ if [ -f /usr/bin/rpmbuild ]; then
   EXTRA_RELEASE=".$USER$NOW"
   rpmbuild --nodeps -ta --define "extra_release $EXTRA_RELEASE" --clean $NAME-*.tar.gz
 fi
-
-# Skip debian pkg for now
-exit 0
-
-if [ -f /usr/bin/fakeroot ]; then
-  fakeroot debian/rules clean
-  fakeroot debian/rules DESTDIR=$HOME/packages/debian binary
-fi
