@@ -5457,6 +5457,16 @@ detach_device(dom, xml, flags=0)
 
 
 void
+detach_device_alias(dom, alias, flags=0)
+      virDomainPtr dom;
+      const char *alias;
+      unsigned int flags;
+    PPCODE:
+      if (virDomainDetachDeviceAlias(dom, alias, flags) < 0)
+          _croak_error();
+
+
+void
 update_device(dom, xml, flags=0)
       virDomainPtr dom;
       const char *xml;
