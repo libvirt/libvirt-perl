@@ -2763,6 +2763,38 @@ PREINIT:
 
 
 SV *
+compare_hypervisor_cpu(con, emulatorsv, archsv, machinesv, virttypesv, xml, flags=0)
+      virConnectPtr con;
+      SV *emulatorsv;
+      SV *archsv;
+      SV *machinesv;
+      SV *virttypesv;
+      char *xml;
+      unsigned int flags;
+PREINIT:
+      char *emulator = NULL;
+      char *arch = NULL;
+      char *machine = NULL;
+      char *virttype = NULL;
+      int rc;
+   CODE:
+      if (SvOK(emulatorsv))
+	  emulator = SvPV_nolen(emulatorsv);
+      if (SvOK(archsv))
+	  arch = SvPV_nolen(archsv);
+      if (SvOK(machinesv))
+	  machine = SvPV_nolen(machinesv);
+      if (SvOK(virttypesv))
+	  virttype = SvPV_nolen(virttypesv);
+      if ((rc = virConnectCompareHypervisorCPU(con, emulator, arch, machine, virttype, xml, flags)) < 0)
+          _croak_error();
+
+      RETVAL = newSViv(rc);
+  OUTPUT:
+      RETVAL
+
+
+SV *
 baseline_cpu(con, xml, flags=0)
       virConnectPtr con;
       SV *xml;

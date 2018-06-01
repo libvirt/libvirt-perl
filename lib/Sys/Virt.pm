@@ -1820,6 +1820,18 @@ just returning a special error code.
 
 =back
 
+=item my $result = $con->compare_hypervisor_cpu($emulator, $arch, $machine, $virttype, $xml, $flags=0);
+
+Checks whether the CPU definition in C<$xml> is compatible with the
+current hypervisor connection. This can be used to determine whether
+it is safe to migrate a guest to this host. Either C<$emulator> or C<$arch>
+must be a valid string referring to an emulator binary or an
+architecture name respectively. The C<$machine> parameter is
+an optional name of a guest machine, and C<$virttype> is an
+optional name of the virtualization type. The returned result is
+one of the constants listed later The optional C<$flags> parameter
+can take the same values as the C<compare_cpu> method.
+
 =item $mem = $con->get_node_free_memory();
 
 Returns the current free memory on the host
