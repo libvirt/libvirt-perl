@@ -1763,6 +1763,17 @@ Only include features which can be live migrated.
 
 =back
 
+=item my $xml = $con->baseline_hypervisor_cpu($emulator, $arch, $machine, $virttype, \@xml, $flags=0)
+
+Given an array ref whose elements are XML documents describing host CPUs,
+compute the baseline CPU model that is operable across all hosts. The
+XML for the baseline CPU model is returned. Either C<$emulator> or C<$arch>
+must be a valid string referring to an emulator binary or an
+architecture name respectively. The C<$machine> parameter is
+an optional name of a guest machine, and C<$virttype> is an
+optional name of the virtualization type. The optional C<$flags>
+parameter accepts the same values as C<baseline_cpu>.
+
 =item @names = $con->get_cpu_model_names($arch, $flags=0)
 
 Get a list of valid CPU models names for the architecture

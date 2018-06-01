@@ -2793,6 +2793,54 @@ PREINIT:
   OUTPUT:
       RETVAL
 
+SV *
+baseline_hypervisor_cpu(con, emulatorsv, archsv, machinesv, virttypesv, xml, flags=0)
+      virConnectPtr con;
+      SV *emulatorsv;
+      SV *archsv;
+      SV *machinesv;
+      SV *virttypesv;
+      SV *xml;
+      unsigned int flags;
+PREINIT:
+      char *emulator = NULL;
+      char *arch = NULL;
+      char *machine = NULL;
+      char *virttype = NULL;
+      AV *xmllist;
+      const char **xmlstr;
+      int xmllen;
+      int i;
+      char *retxml;
+   CODE:
+      if (SvOK(emulatorsv))
+	  emulator = SvPV_nolen(emulatorsv);
+      if (SvOK(archsv))
+	  arch = SvPV_nolen(archsv);
+      if (SvOK(machinesv))
+	  machine = SvPV_nolen(machinesv);
+      if (SvOK(virttypesv))
+	  virttype = SvPV_nolen(virttypesv);
+      xmllist = (AV*)SvRV(xml);
+      xmllen = av_len(xmllist) + 1;
+      Newx(xmlstr, xmllen, const char *);
+      for (i = 0 ; i < xmllen ; i++) {
+          SV **doc = av_fetch(xmllist, i, 0);
+          xmlstr[i] = SvPV_nolen(*doc);
+      }
+
+      if (!(retxml = virConnectBaselineHypervisorCPU(con, emulator, arch, machine, virttype,
+						     xmlstr, xmllen, flags))) {
+          Safefree(xmlstr);
+          _croak_error();
+      }
+
+      Safefree(xmlstr);
+      RETVAL = newSVpv(retxml, 0);
+      free(retxml);
+  OUTPUT:
+      RETVAL
+
 void
 get_cpu_model_names(con, arch, flags=0)
       virConnectPtr con;
