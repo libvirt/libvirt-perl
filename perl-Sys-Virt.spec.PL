@@ -66,7 +66,6 @@ virtualization containers to be managed with a consistent API.
 ./Build test
 
 %files
-%defattr(-,root,root,-)
 %doc AUTHORS Changes LICENSE README examples/
 %{perl_vendorarch}/auto/*
 %{perl_vendorarch}/Sys*
