@@ -31,7 +31,6 @@ Version:        @VERSION@
 Release:        1%{?dist}
 Summary:        Represent and manage a libvirt hypervisor connection
 License:        GPLv2+ or Artistic
-Group:          Development/Libraries
 URL:            http://search.cpan.org/dist/Sys-Virt/
 Source0:        http://www.cpan.org/authors/id/D/DA/DANBERR/Sys-Virt-v%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
