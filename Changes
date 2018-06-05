@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+4.5.0 2018-00-00
+
+ - XXX
+
 4.4.0 2018-06-05
 
  - Switch to Module::Build
