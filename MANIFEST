@@ -66,3 +66,6 @@ t/500-storage-vols.t
 t/600-interfaces.t
 t/800-events.t
 typemap
+Makefile.PL
+META.yml
+META.json
