@@ -60,10 +60,6 @@ virtualization containers to be managed with a consistent API.
 %install
 ./Build install destdir=$RPM_BUILD_ROOT create_packlist=0
 
-#find $RPM_BUILD_ROOT -type f \( -name .packlist -o -name '*.bs' -empty \) |
-#	xargs rm -f
-#find $RPM_BUILD_ROOT -depth -type d -empty -exec rmdir {} \;
-
 %{_fixperms} $RPM_BUILD_ROOT/*
 
 %check
