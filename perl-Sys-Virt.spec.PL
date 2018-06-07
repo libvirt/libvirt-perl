@@ -40,9 +40,11 @@ BuildRequires:  findutils
 BuildRequires:  gcc
 BuildRequires:  libvirt-devel >= %{version}
 BuildRequires:  make
-BuildRequires:  perl-interpreter
 BuildRequires:  perl-devel
+%if 0%{?fedora} || 0%{?rhel} > 7
+BuildRequires:  perl-interpreter
 BuildRequires:  perl-generators
+%endif
 BuildRequires:  perl(ExtUtils::CBuilder)
 BuildRequires:  perl(Module::Build)
 BuildRequires:  sed
