@@ -3,6 +3,7 @@ Revision history for perl module Sys::Virt
 4.5.0 2018-00-00
 
  - Add new types and APIs for virNWFilterBinding
+ - Add VIR_CONNECT_GET_ALL_DOMAINS_STATS_NOWAIT
 
 4.4.0 2018-06-05
 

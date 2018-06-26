@@ -4112,6 +4112,10 @@ Require that all requested stats fields are returned
 
 Get stats for image backing files too
 
+=item Sys::Virt::Domain::GET_ALL_STATS_NOWAIT
+
+Skip stats if they can't be acquired without waiting
+
 =back
 
 =head2 DOMAIN STATS FIELD CONSTANTS
