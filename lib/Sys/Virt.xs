@@ -3047,6 +3047,27 @@ list_all_nwfilters(con, flags=0)
 
 
 void
+list_all_nwfilter_bindings(con, flags=0)
+      virConnectPtr con;
+      unsigned int flags;
+ PREINIT:
+      virNWFilterBindingPtr *bindings;
+      int i, nbinding;
+      SV *bindingrv;
+  PPCODE:
+      if ((nbinding = virConnectListAllNWFilterBindings(con, &bindings, flags)) < 0)
+          _croak_error();
+
+      EXTEND(SP, nbinding);
+      for (i = 0 ; i < nbinding ; i++) {
+          bindingrv = sv_newmortal();
+          sv_setref_pv(bindingrv, "Sys::Virt::NWFilterBinding", bindings[i]);
+          PUSHs(bindingrv);
+      }
+      free(bindings);
+
+
+void
 list_all_networks(con, flags=0)
       virConnectPtr con;
       unsigned int flags;
@@ -7804,6 +7825,88 @@ DESTROY(filter_rv)
       }
 
 
+MODULE = Sys::Virt::NWFilterBinding  PACKAGE = Sys::Virt::NWFilterBinding
+
+
+virNWFilterBindingPtr
+_create_xml(con, xml, flags=0)
+      virConnectPtr con;
+      const char *xml;
+      unsigned int flags;
+    CODE:
+      if (!(RETVAL = virNWFilterBindingCreateXML(con, xml, flags)))
+          _croak_error();
+  OUTPUT:
+      RETVAL
+
+
+virNWFilterBindingPtr
+_lookup_by_port_dev(con, name)
+      virConnectPtr con;
+      const char *name;
+    CODE:
+      if (!(RETVAL = virNWFilterBindingLookupByPortDev(con, name)))
+          _croak_error();
+  OUTPUT:
+      RETVAL
+
+
+const char *
+get_port_dev(binding)
+      virNWFilterBindingPtr binding;
+    CODE:
+      if (!(RETVAL = virNWFilterBindingGetPortDev(binding)))
+          _croak_error();
+  OUTPUT:
+      RETVAL
+
+
+const char *
+get_filter_name(binding)
+      virNWFilterBindingPtr binding;
+    CODE:
+      if (!(RETVAL = virNWFilterBindingGetFilterName(binding)))
+          _croak_error();
+  OUTPUT:
+      RETVAL
+
+
+SV *
+get_xml_description(binding, flags=0)
+      virNWFilterBindingPtr binding;
+      unsigned int flags;
+  PREINIT:
+      char *xml;
+    CODE:
+      if (!(xml = virNWFilterBindingGetXMLDesc(binding, flags)))
+          _croak_error();
+
+      RETVAL = newSVpv(xml, 0);
+      free(xml);
+  OUTPUT:
+      RETVAL
+
+
+void
+delete(binding)
+      virNWFilterBindingPtr binding;
+    PPCODE:
+      if (virNWFilterBindingDelete(binding) < 0)
+          _croak_error();
+
+void
+DESTROY(binding_rv)
+      SV *binding_rv;
+ PREINIT:
+      virNWFilterBindingPtr binding;
+  PPCODE:
+      binding = (virNWFilterBindingPtr)SvIV((SV*)SvRV(binding_rv));
+      if (binding) {
+          virNWFilterBindingFree(binding);
+          sv_setiv((SV*)SvRV(binding_rv), 0);
+      }
+
+
 MODULE = Sys::Virt::DomainSnapshot  PACKAGE = Sys::Virt::DomainSnapshot
 
 
@@ -9591,4 +9694,6 @@ BOOT:
       REGISTER_CONSTANT(VIR_ERR_AGENT_UNSYNCED, ERR_AGENT_UNSYNCED);
       REGISTER_CONSTANT(VIR_ERR_LIBSSH, ERR_LIBSSH);
       REGISTER_CONSTANT(VIR_ERR_DEVICE_MISSING, ERR_DEVICE_MISSING);
+      REGISTER_CONSTANT(VIR_ERR_INVALID_NWFILTER_BINDING, ERR_INVALID_NWFILTER_BINDING);
+      REGISTER_CONSTANT(VIR_ERR_NO_NWFILTER_BINDING, ERR_NO_NWFILTER_BINDING);
     }
