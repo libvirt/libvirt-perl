@@ -2398,6 +2398,23 @@ get_node_security_model(con)
    OUTPUT:
       RETVAL
 
+HV *
+get_node_sev_info(conn, flags=0)
+      virConnectPtr conn;
+      unsigned int flags;
+  PREINIT:
+      virTypedParameterPtr params;
+      int nparams;
+    CODE:
+      if (virNodeGetSEVInfo(conn, &params, &nparams, flags) < 0) {
+          _croak_error();
+      }
+
+      RETVAL = vir_typed_param_to_hv(params, nparams);
+      free(params);
+  OUTPUT:
+      RETVAL
+
 void
 get_node_cpu_map(con, flags=0)
       virConnectPtr con;
@@ -4962,6 +4979,23 @@ set_perf_events(dom, newparams, flags=0)
       if (virDomainSetPerfEvents(dom, params, nparams, flags) < 0)
           _croak_error();
       Safefree(params);
+
+
+HV *
+get_launch_security_info(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+  PREINIT:
+      virTypedParameterPtr params;
+      int nparams;
+    CODE:
+      if (virDomainGetLaunchSecurityInfo(dom, &params, &nparams, flags) < 0) {
+          _croak_error();
+      }
+      RETVAL = vir_typed_param_to_hv(params, nparams);
+      free(params);
+  OUTPUT:
+      RETVAL
 
 
 unsigned long
@@ -8564,6 +8598,12 @@ BOOT:
       REGISTER_CONSTANT(VIR_NODE_ALLOC_PAGES_ADD, NODE_ALLOC_PAGES_ADD);
       REGISTER_CONSTANT(VIR_NODE_ALLOC_PAGES_SET, NODE_ALLOC_PAGES_SET);
 
+
+      REGISTER_CONSTANT_STR(VIR_NODE_SEV_CBITPOS, SEV_CBITPOS);
+      REGISTER_CONSTANT_STR(VIR_NODE_SEV_CERT_CHAIN, SEV_CERT_CHAIN);
+      REGISTER_CONSTANT_STR(VIR_NODE_SEV_PDH, SEV_PDH);
+      REGISTER_CONSTANT_STR(VIR_NODE_SEV_REDUCED_PHYS_BITS, SEV_REDUCED_PHYS_BITS);
+
       stash = gv_stashpv( "Sys::Virt::Event", TRUE );
 
       REGISTER_CONSTANT(VIR_EVENT_HANDLE_READABLE, HANDLE_READABLE);
@@ -9285,6 +9325,9 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_LIFECYCLE_ACTION_PRESERVE, LIFECYCLE_ACTION_PRESERVE);
       REGISTER_CONSTANT(VIR_DOMAIN_LIFECYCLE_ACTION_COREDUMP_DESTROY, LIFECYCLE_ACTION_COREDUMP_DESTROY);
       REGISTER_CONSTANT(VIR_DOMAIN_LIFECYCLE_ACTION_COREDUMP_RESTART, LIFECYCLE_ACTION_COREDUMP_RESTART);
+
+
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_LAUNCH_SECURITY_SEV_MEASUREMENT, LAUNCH_SECURITY_SEV_MEASUREMENT);
 
       stash = gv_stashpv( "Sys::Virt::DomainSnapshot", TRUE );
       REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_DELETE_CHILDREN, DELETE_CHILDREN);

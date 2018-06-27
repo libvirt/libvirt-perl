@@ -1547,6 +1547,32 @@ of the MEMORY PARAMETERS constants. The C<$flags>
 parameter is currently unused, and defaults to 0 if omitted.
 
 
+=item $info = $conn->get_node_sev_info($flags=0)
+
+Get the AMD SEV information for the host. C<$flags> is
+currently unused and defaults to 0 if omitted. The returned
+hash contains the following keys:
+
+=over 4
+
+=item Sys::Virt::SEV_CBITPOS
+
+The CBit position
+
+=item Sys::Virt::SEV_CERT_CHAIN
+
+The certificate chain
+
+=item Sys::Virt::SEV_PDH
+
+Platform diffie-hellman key
+
+=item Sys::Virt::SEV_REDUCED_PHYS_BITS
+
+The number of physical address bits used by SEV
+
+=back
+
 =item $conn->node_suspend_for_duration($target, $duration, $flags=0)
 
 Suspend the the host, using mode C<$target> which is one of the NODE

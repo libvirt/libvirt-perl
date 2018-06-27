@@ -4,6 +4,7 @@ Revision history for perl module Sys::Virt
 
  - Add new types and APIs for virNWFilterBinding
  - Add VIR_CONNECT_GET_ALL_DOMAINS_STATS_NOWAIT
+ - Add new constants and APIs for AMD SEV
 
 4.4.0 2018-06-05
 
