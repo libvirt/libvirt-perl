@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+4.6.0 2018-00-00
+
+ - XXX
+
 4.5.0 2018-07-03
 
  - Add new types and APIs for virNWFilterBinding
