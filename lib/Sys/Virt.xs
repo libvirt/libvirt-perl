@@ -5850,6 +5850,10 @@ memory_stats(dom, flags=0)
           case VIR_DOMAIN_MEMORY_STAT_USABLE:
               (void)hv_store (RETVAL, "usable", 6, virt_newSVll(stats[i].val), 0);
               break;
+
+          case VIR_DOMAIN_MEMORY_STAT_DISK_CACHES:
+              (void)hv_store (RETVAL, "disk_caches", 11, virt_newSVll(stats[i].val), 0);
+              break;
           }
       }
       Safefree(stats);
@@ -9040,6 +9044,7 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_MEMORY_STAT_RSS, MEMORY_STAT_RSS);
       REGISTER_CONSTANT(VIR_DOMAIN_MEMORY_STAT_LAST_UPDATE, MEMORY_STAT_LAST_UPDATE);
       REGISTER_CONSTANT(VIR_DOMAIN_MEMORY_STAT_USABLE, MEMORY_STAT_USABLE);
+      REGISTER_CONSTANT(VIR_DOMAIN_MEMORY_STAT_DISK_CACHES, MEMORY_STAT_DISK_CACHES);
 
 
       REGISTER_CONSTANT_STR(VIR_DOMAIN_BLOCK_IOTUNE_TOTAL_BYTES_SEC, BLOCK_IOTUNE_TOTAL_BYTES_SEC);
