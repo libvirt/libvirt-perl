@@ -4,6 +4,7 @@ Revision history for perl module Sys::Virt
 
  - Add VIR_DOMAIN_MEMORY_STAT_DISK_CACHES
  - Add missing import of Sys::Virt::NWFilterBinding
+ - Include Sys::Virt::NWFilterBinding in dist
 
 4.5.0 2018-07-03
 
