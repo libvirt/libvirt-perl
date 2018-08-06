@@ -2403,8 +2403,8 @@ get_node_sev_info(conn, flags=0)
       virConnectPtr conn;
       unsigned int flags;
   PREINIT:
-      virTypedParameterPtr params;
-      int nparams;
+      virTypedParameterPtr params = NULL;
+      int nparams = 0;
     CODE:
       if (virNodeGetSEVInfo(conn, &params, &nparams, flags) < 0) {
           _croak_error();
@@ -4554,8 +4554,8 @@ get_job_stats(dom, flags=0)
       unsigned int flags;
   PREINIT:
       int type;
-      virTypedParameterPtr params;
-      int nparams;
+      virTypedParameterPtr params = NULL;
+      int nparams = 0;
       HV *paramsHv;
       SV *typeSv;
     PPCODE:
@@ -4986,8 +4986,8 @@ get_launch_security_info(dom, flags=0)
       virDomainPtr dom;
       unsigned int flags;
   PREINIT:
-      virTypedParameterPtr params;
-      int nparams;
+      virTypedParameterPtr params = NULL;
+      int nparams = 0;
     CODE:
       if (virDomainGetLaunchSecurityInfo(dom, &params, &nparams, flags) < 0) {
           _croak_error();
@@ -5103,8 +5103,8 @@ get_guest_vcpus(dom, flags=0)
       virDomainPtr dom;
       unsigned int flags;
   PREINIT:
-      virTypedParameterPtr params;
-      unsigned int nparams;
+      virTypedParameterPtr params = NULL;
+      unsigned int nparams = 0;
     CODE:
       if (virDomainGetGuestVcpus(dom, &params, &nparams, flags) < 0) {
           _croak_error();
