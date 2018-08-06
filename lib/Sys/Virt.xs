@@ -2683,8 +2683,10 @@ set_node_memory_parameters(conn, newparams, flags=0)
 
       nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
-      if (virNodeSetMemoryParameters(conn, params, nparams, flags) < 0)
+      if (virNodeSetMemoryParameters(conn, params, nparams, flags) < 0) {
+          Safefree(params);
           _croak_error();
+      }
       Safefree(params);
 
 
@@ -4566,7 +4568,7 @@ get_job_stats(dom, flags=0)
 
       typeSv = newSViv(type);
       paramsHv = vir_typed_param_to_hv(params, nparams);
-      Safefree(params);
+      free(params);
 
       EXTEND(SP, 2);
       PUSHs(newRV_noinc((SV*)typeSv));
@@ -4775,11 +4777,15 @@ set_scheduler_parameters(dom, newparams, flags=0)
       }
       nparams = vir_typed_param_from_hv(newparams, params, nparams);
       if (flags) {
-          if (virDomainSetSchedulerParametersFlags(dom, params, nparams, flags) < 0)
+          if (virDomainSetSchedulerParametersFlags(dom, params, nparams, flags) < 0) {
+              Safefree(params);
               _croak_error();
+          }
       } else {
-          if (virDomainSetSchedulerParameters(dom, params, nparams) < 0)
+          if (virDomainSetSchedulerParameters(dom, params, nparams) < 0) {
+              Safefree(params);
               _croak_error();
+          }
       }
       Safefree(params);
 
@@ -4831,8 +4837,10 @@ set_memory_parameters(dom, newparams, flags=0)
 
       nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
-      if (virDomainSetMemoryParameters(dom, params, nparams, flags) < 0)
+      if (virDomainSetMemoryParameters(dom, params, nparams, flags) < 0) {
+          Safefree(params);
           _croak_error();
+      }
       Safefree(params);
 
 
@@ -4883,8 +4891,10 @@ set_numa_parameters(dom, newparams, flags=0)
 
       nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
-      if (virDomainSetNumaParameters(dom, params, nparams, flags) < 0)
+      if (virDomainSetNumaParameters(dom, params, nparams, flags) < 0) {
+          Safefree(params);
           _croak_error();
+      }
       Safefree(params);
 
 
@@ -4936,8 +4946,10 @@ set_blkio_parameters(dom, newparams, flags=0)
       nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
       if (virDomainSetBlkioParameters(dom, params, nparams,
-                                      flags) < 0)
+                                      flags) < 0) {
+          Safefree(params);
           _croak_error();
+      }
       Safefree(params);
 
 
@@ -5658,8 +5670,11 @@ set_block_iotune(dom, disk, newparams, flags=0)
       }
 
       nparams = vir_typed_param_from_hv(newparams, params, nparams);
-      if (virDomainSetBlockIoTune(dom, disk, params, nparams, flags) < 0)
+      if (virDomainSetBlockIoTune(dom, disk, params, nparams, flags) < 0) {
+          Safefree(params);
           _croak_error();
+      }
+      Safefree(params);
 
 
 HV *
@@ -5709,8 +5724,11 @@ set_interface_parameters(dom, intf, newparams, flags=0)
       }
 
       nparams = vir_typed_param_from_hv(newparams, params, nparams);
-      if (virDomainSetInterfaceParameters(dom, intf, params, nparams, flags) < 0)
+      if (virDomainSetInterfaceParameters(dom, intf, params, nparams, flags) < 0) {
+          Safefree(params);
           _croak_error();
+      }
+      Safefree(params);
 
 
 HV *
