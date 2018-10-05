@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+4.9.0 2018-00-00
+
+ - XXX
+
 4.8.0 2018-10-05
 
  - Avoid clashing storage pool name in tests
