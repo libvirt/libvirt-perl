@@ -466,6 +466,10 @@ The guest is shutoff due to controlled shutdown
 
 It is not known why the domain has shutoff
 
+=item Sys::Virt::Domain::STATE_SHUTOFF_DAEMON
+
+The daemon stopped the guest due to a failure
+
 =item Sys::Virt::Domain::STATE_PMSUSPENDED_UNKNOWN
 
 It is not known why the domain was suspended to RAM
