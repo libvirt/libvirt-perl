@@ -3,6 +3,8 @@ Revision history for perl module Sys::Virt
 4.10.0 2018-00-00
 
  - Add VIR_DOMAIN_SHUTOFF_DAEMON constant
+ - Add VIR_DOMAIN_IOTHREAD_POLL_{MAX_NS|GROW|SHRINK} params and the
+   virDomainSetIOThreadParams binding
 
 4.8.0 2018-10-05
 
