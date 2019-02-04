@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 5.1.0 2019-00-00
 
- - XXX
+ - Add VIR_FROM_FIREWALLD constant
 
 5.0.0 2019-01-21
 
