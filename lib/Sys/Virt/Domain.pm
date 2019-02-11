@@ -1065,6 +1065,13 @@ set to 0 or omitted, libvirt will choose a suitable default. Some
 hypervisors do not support this feature and will return an error if
 this field is used and is not 0.
 
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_BANDWIDTH_POSTCOPY>
+
+The maximum bandwidth (in MiB/s) that will be used for migration
+during post-copy phase. If set to 0 or omitted, libvirt will choose
+a suitable default. Some hypervisors do not support this feature and
+return an error if this field is used and is not 0.
+
 =item C<Sys::Virt::Domain::MIGRATE_PARAM_LISTEN_ADDRESS>
 
 The address on which to listen for incoming migration connections.
