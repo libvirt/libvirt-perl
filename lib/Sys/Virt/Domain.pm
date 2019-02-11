@@ -1291,13 +1291,22 @@ defaults to zero.
 
 Set the maximum allowed bandwidth during migration of the guest.
 The C<bandwidth> parameter is measured in MB/second.
-The C<$flags> parameter is currently unused and defaults to zero.
+The C<$flags> parameter takes zero or more of the constants:
+
+=over 4
+
+=item $Sys::Virt::Domain::MIGRATE_MAX_SPEED_POSTCOPY
+
+Set the post-copy speed instead of the pre-copy speed.
+
+=back
 
 =item $bandwidth = $dom->migrate_get_max_speed($flags=0)
 
 Get the maximum allowed bandwidth during migration fo the guest.
 The returned <bandwidth> value is measured in MB/second.
-The C<$flags> parameter is currently unused and defaults to zero.
+The C<$flags> parameter is accepts the same constants as
+C<migrate_set_max_speed>.
 
 =item $dom->migrate_set_compression_cache($cacheSize, $flags=0)
 
