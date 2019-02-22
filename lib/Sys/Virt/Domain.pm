@@ -228,7 +228,16 @@ parameter is unused and defaults to zero.
 =item $xml = $dom->managed_save_get_xml_description($flags=0)
 
 Get the XML in the managed save image. The C<$flags>
-parameter is unused and defaults to zero.
+parameter accepts the following constants
+
+=over 4
+
+=item Sys::Virt::Domain::SAVE_IMAGE_XML_SECURE
+
+Include security sensitive information in the XML dump, such as
+passwords.
+
+=back
 
 =item $dom->core_dump($filename[, $flags])
 
