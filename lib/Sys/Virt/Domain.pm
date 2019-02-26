@@ -1448,7 +1448,7 @@ Delete an existing IOThread by the C<$iothread> value from the guest domain.
 The C<$flags> parameter accepts one or more the CONFIG OPTION constants
 documented later, and defaults to 0 if omitted.
 
-=item $dom->set_iothread($iothread, $params, $nparams, $flags=0)
+=item $dom->set_iothread($iothread, $params, $flags=0)
 
 Set parameters for the IOThread by the C<$iothread> value on the guest domain.
 The C<$params> parameter is a hash reference whose keys are the
