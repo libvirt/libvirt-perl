@@ -1869,6 +1869,12 @@ an optional name of a guest machine, and C<$virttype> is an
 optional name of the virtualization type. C<$flags> is unused
 and defaults to zero.
 
+=item my $xml = $con->get_storage_pool_capabilities($flags=0);
+
+Returns an XML document describing the storage pool driver
+capabilities (e.g. which storage pool types are supported and so
+on). C<$flags> is currently unused and defaults to zero.
+
 =item my $result = $con->compare_cpu($xml, $flags=0);
 
 Checks whether the CPU definition in C<$xml> is compatible with the
