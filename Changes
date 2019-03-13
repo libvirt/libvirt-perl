@@ -7,7 +7,6 @@ Revision history for perl module Sys::Virt
  - Add VIR_DOMAIN_MIGRATE_MAX_SPEED_POSTCOPY constant
  - Add VIR_DOMAIN_SAVE_IMAGE_XML_SECURE and
    VIR_DOMAIN_SNAPSHOT_XML_SECURE constants
- - Add virConnectGetStoragePoolCapabilities binding
 
 5.0.0 2019-01-21
 

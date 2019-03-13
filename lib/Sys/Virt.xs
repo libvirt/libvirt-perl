@@ -2775,22 +2775,6 @@ PREINIT:
 
 
 SV *
-get_storage_pool_capabilities(con, flags=0)
-      virConnectPtr con;
-      unsigned int flags;
-PREINIT:
-      char *xml;
-   CODE:
-      if (!(xml = virConnectGetStoragePoolCapabilities(con, flags)))
-          _croak_error();
-
-      RETVAL = newSVpv(xml, 0);
-      free(xml);
-  OUTPUT:
-      RETVAL
-
-
-SV *
 compare_cpu(con, xml, flags=0)
       virConnectPtr con;
       char *xml;
