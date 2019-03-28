@@ -410,6 +410,10 @@ The resource control subsystem
 
 The firewalld service
 
+=item Sys::Virt::Error::FROM_DOMAIN_CHECKPOINT
+
+The domain checkpoint
+
 =back
 
 =head2 ERROR CODE CONSTANTS
