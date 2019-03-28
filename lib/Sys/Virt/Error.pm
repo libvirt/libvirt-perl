@@ -828,6 +828,18 @@ Invalid nwfilter binding
 
 No nwfilter binding
 
+=item Sys::Virt::Error::ERR_INVALID_DOMAIN_CHECKPOINT
+
+Invalid domain checkpoint
+
+=item Sys::Virt::Error::ERR_NO_DOMAIN_BACKUP
+
+Domain checkpoint not found
+
+=item Sys::Virt::Error::ERR_NO_DOMAIN_CHECKPOINT
+
+Domain backup job id not found
+
 =back
 
 =head1 AUTHORS
