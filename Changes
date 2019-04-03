@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+5.3.0 2019-05-00
+
+ - XXX
+
 5.2.0 2019-04-03
 
  - Add VIR_DOMAIN_SNAPSHOT_LIST_TOPOLOGICAL constant
