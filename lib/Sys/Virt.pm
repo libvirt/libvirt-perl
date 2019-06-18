@@ -69,6 +69,7 @@ use warnings;
 use Sys::Virt::Error;
 use Sys::Virt::Domain;
 use Sys::Virt::Network;
+use Sys::Virt::NetworkPort;
 use Sys::Virt::StoragePool;
 use Sys::Virt::StorageVol;
 use Sys::Virt::NodeDevice;
