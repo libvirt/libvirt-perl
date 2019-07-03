@@ -80,7 +80,7 @@ use Sys::Virt::NWFilterBinding;
 use Sys::Virt::DomainSnapshot;
 use Sys::Virt::Stream;
 
-our $VERSION = '5.5.0';
+our $VERSION = '5.6.0';
 require XSLoader;
 XSLoader::load('Sys::Virt', $VERSION);
 
