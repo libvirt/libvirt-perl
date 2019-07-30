@@ -4,6 +4,7 @@ Revision history for perl module Sys::Virt
 
  - Add VIR_DOMAIN_SNAPSHOT_CREATE_VALIDATE constant
  - Add VIR_CONNECT_LIST_STORAGE_POOLS_ISCSI_DIRECT constant
+ - Add VIR_FROM_TPM constant
 
 5.5.0 2019-07-03
 
