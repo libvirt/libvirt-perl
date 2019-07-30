@@ -78,6 +78,7 @@ use Sys::Virt::Secret;
 use Sys::Virt::NWFilter;
 use Sys::Virt::NWFilterBinding;
 use Sys::Virt::DomainSnapshot;
+use Sys::Virt::DomainCheckpoint;
 use Sys::Virt::Stream;
 
 our $VERSION = '5.6.0';
