@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-5.7.0 2019-09-00
+5.7.0 2019-09-04
 
  - Add virDomainGetGuestInfo API and constants
  - Fix Sys::Virt::NetworkPort creation
