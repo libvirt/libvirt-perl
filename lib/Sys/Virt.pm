@@ -81,7 +81,7 @@ use Sys::Virt::DomainSnapshot;
 use Sys::Virt::DomainCheckpoint;
 use Sys::Virt::Stream;
 
-our $VERSION = '5.7.0';
+our $VERSION = '5.8.0';
 require XSLoader;
 XSLoader::load('Sys::Virt', $VERSION);
 
