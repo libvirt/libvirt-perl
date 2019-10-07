@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-5.8.0 2019-10-00
+5.8.0 2019-10-07
 
  - Add virConnectSetIdentity API and constants
 
