@@ -6659,6 +6659,15 @@ PPCODE:
           _croak_error();
 
 void
+set_agent_response_timeout(dom, timeout, flags=0)
+      virDomainPtr dom;
+      int timeout;
+      unsigned int flags;
+PPCODE:
+      if (virDomainAgentSetResponseTimeout(dom, timeout, flags) < 0)
+        _croak_error();
+
+void
 destroy(dom_rv, flags=0)
       SV *dom_rv;
       unsigned int flags;
@@ -9829,6 +9838,10 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_GUEST_INFO_TIMEZONE, GUEST_INFO_TIMEZONE);
       REGISTER_CONSTANT(VIR_DOMAIN_GUEST_INFO_HOSTNAME, GUEST_INFO_HOSTNAME);
       REGISTER_CONSTANT(VIR_DOMAIN_GUEST_INFO_FILESYSTEM, GUEST_INFO_FILESYSTEM);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_AGENT_RESPONSE_TIMEOUT_BLOCK, AGENT_RESPONSE_TIMEOUT_BLOCK);
+      REGISTER_CONSTANT(VIR_DOMAIN_AGENT_RESPONSE_TIMEOUT_NOWAIT, AGENT_RESPONSE_TIMEOUT_NOWAIT);
+      REGISTER_CONSTANT(VIR_DOMAIN_AGENT_RESPONSE_TIMEOUT_DEFAULT, AGENT_RESPONSE_TIMEOUT_DEFAULT);
 
 
       stash = gv_stashpv( "Sys::Virt::DomainSnapshot", TRUE );

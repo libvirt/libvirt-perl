@@ -3,6 +3,8 @@ Revision history for perl module Sys::Virt
 5.9.0 2019-11-00
 
  - Add VIR_FROM_BPF constant
+ - Add virDomainAgentSetResponseTimeout API and
+   associated constants
 
 5.8.0 2019-10-07
 

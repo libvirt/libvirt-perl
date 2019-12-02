@@ -2126,6 +2126,31 @@ Filesystem mount information
 
 C<$flags> is currently unused and defaults to zero.
 
+=item $dom->set_agent_response_timeout($timeout, $flags=0)
+
+Set the amount of time to wait for the agent to respond to a
+command. C<$timeout> is a positive integer representing the
+number of seconds to wait, or one of the constants:
+
+=over 4
+
+=item Sys::Virt::Domain::AGENT_RESPONSE_TIMEOUT_BLOCK
+
+Wait forever with no timeout
+
+=item Sys::Virt::Domain::AGENT_RESPONSE_TIMEOUT_NOWAIT
+
+Don't want at all, return immediately
+
+=item Sys::Virt::Domain::AGENT_RESPONSE_TIMEOUT_DEFAULT
+
+Use the hypervisor driver's default timeout
+
+=back
+
+The C<$flags> parameter is currently unused and defaults
+to zero.
+
 =back
 
 =head1 CONSTANTS
