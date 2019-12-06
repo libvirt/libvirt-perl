@@ -2,7 +2,8 @@ Revision history for perl module Sys::Virt
 
 6.0.0 2020-01-00
 
- - XXX
+ - Add VIR_DOMAIN_JOB_SUCCESS and VIR_DOMAIN_JOB_STATS_KEEP_COMPLETED
+   constants
 
 5.10.0 2019-12-03
 

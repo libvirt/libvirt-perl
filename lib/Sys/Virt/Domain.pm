@@ -1551,6 +1551,10 @@ the following constants.
 
 Return the stats of the most recently completed job.
 
+=item Sys::Virt::Domain::JOB_STATS_KEEP_COMPLETED
+
+Don't clear the completed stats after reading them.
+
 =back
 
 =item Sys::Virt::Domain::JOB_TIME_ELAPSED
@@ -1685,6 +1689,10 @@ The number of milliseconds of time doing setup of the job
 =item Sys::Virt::Domain::JOB_OPERATION
 
 The type of operation associated with the job
+
+=item Sys::Virt::Domain::JOB_SUCCESS
+
+Whether the job was successfully completed.
 
 =back
 
