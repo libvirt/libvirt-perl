@@ -1703,6 +1703,14 @@ The type of operation associated with the job
 
 Whether the job was successfully completed.
 
+=item Sys::Virt::Domain::JOB_DISK_TEMP_TOTAL
+
+Possible total temporary disk space for the job in bytes
+
+=item Sys::Virt::Domain::JOB_DISK_TEMP_USED
+
+Current total temporary disk space for the job in bytes
+
 =back
 
 The values for the Sys::Virt::Domain::JOB_OPERATION field are
@@ -1744,6 +1752,10 @@ The guest is reverting to a snapshot
 =item Sys::Virt::Domain::JOB_OPERATION_DUMP
 
 The guest is saving a crash dump
+
+=item Sys::Virt::Domain::JOB_OPERATION_BACKUP
+
+The guest is performing a block backup
 
 =back
 
@@ -3757,6 +3769,10 @@ The block commit job type
 =item Sys::Virt::Domain::BLOCK_JOB_TYPE_ACTIVE_COMMIT
 
 The block active commit job type
+
+=item Sys::Virt::Domain::BLOCK_JOB_TYPE_BACKUP
+
+The block backup job type
 
 =back
 

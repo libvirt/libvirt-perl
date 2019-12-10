@@ -13,6 +13,7 @@ Revision history for perl module Sys::Virt
  - Remove docs for has_metadata method which doesn't exit
  - Fix data type for VIR_CONNECT_IDENTITY_SASL_USER_NAME
    parameter
+ - Add new domain job constants related to backups
 
 5.10.0 2019-12-03
 
