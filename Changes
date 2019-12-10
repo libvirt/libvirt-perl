@@ -10,6 +10,7 @@ Revision history for perl module Sys::Virt
    constant when invoking migrate
  - Add VIR_MIGRATE_PARAM_TLS_DESTINATION constant
  - Add missing create_checkpoint method on Sys::Virt::Domain
+ - Remove docs for has_metadata method which doesn't exit
 
 5.10.0 2019-12-03
 
