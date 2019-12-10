@@ -8,6 +8,7 @@ Revision history for perl module Sys::Virt
    autoconvert increment parameter handling
  - Add handling for VIR_MIGRATE_PARAM_PARALLEL_CONNECTIONS
    constant when invoking migrate
+ - Add VIR_MIGRATE_PARAM_TLS_DESTINATION constant
 
 5.10.0 2019-12-03
 

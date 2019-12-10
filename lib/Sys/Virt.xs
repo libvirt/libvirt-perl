@@ -5413,7 +5413,7 @@ _migrate(dom, destcon, newparams, flags=0)
      virTypedParameterPtr params;
      int nparams;
     CODE:
-     nparams = 17;
+     nparams = 18;
      Newx(params, nparams, virTypedParameter);
 
      strncpy(params[0].field, VIR_MIGRATE_PARAM_URI,
@@ -5483,6 +5483,10 @@ _migrate(dom, destcon, newparams, flags=0)
      strncpy(params[16].field, VIR_MIGRATE_PARAM_PARALLEL_CONNECTIONS,
              VIR_TYPED_PARAM_FIELD_LENGTH);
      params[16].type = VIR_TYPED_PARAM_INT;
+
+     strncpy(params[17].field, VIR_MIGRATE_PARAM_TLS_DESTINATION,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[17].type = VIR_TYPED_PARAM_STRING;
 
      nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
@@ -5512,7 +5516,7 @@ _migrate_to_uri(dom, desturi, newparams, flags=0)
      virTypedParameterPtr params;
      int nparams;
   PPCODE:
-     nparams = 17;
+     nparams = 18;
      Newx(params, nparams, virTypedParameter);
 
      strncpy(params[0].field, VIR_MIGRATE_PARAM_URI,
@@ -5582,6 +5586,10 @@ _migrate_to_uri(dom, desturi, newparams, flags=0)
      strncpy(params[16].field, VIR_MIGRATE_PARAM_PARALLEL_CONNECTIONS,
              VIR_TYPED_PARAM_FIELD_LENGTH);
      params[16].type = VIR_TYPED_PARAM_INT;
+
+     strncpy(params[17].field, VIR_MIGRATE_PARAM_TLS_DESTINATION,
+             VIR_TYPED_PARAM_FIELD_LENGTH);
+     params[17].type = VIR_TYPED_PARAM_STRING;
 
      nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
@@ -9254,6 +9262,7 @@ BOOT:
       REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_AUTO_CONVERGE_INCREMENT, MIGRATE_PARAM_AUTO_CONVERGE_INCREMENT);
       REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_BANDWIDTH_POSTCOPY, MIGRATE_PARAM_BANDWIDTH_POSTCOPY);
       REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_PARALLEL_CONNECTIONS, MIGRATE_PARAM_PARALLEL_CONNECTIONS);
+      REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_TLS_DESTINATION, MIGRATE_PARAM_TLS_DESTINATION);
 
       REGISTER_CONSTANT(VIR_DOMAIN_MIGRATE_MAX_SPEED_POSTCOPY, MIGRATE_MAX_SPEED_POSTCOPY);
 

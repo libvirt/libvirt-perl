@@ -1141,6 +1141,15 @@ progress is not made
 
 The number of connections used during parallel migration.
 
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_TLS_DESTINATION>
+
+Override the destination host name used for TLS verification.
+Normally the TLS certificate from the destination host must match
+the host's name for TLS verification to succeed. When the
+certificate does not match the destination hostname and the
+expected cetificate's hostname is known, this parameter can be
+used to pass this expected hostname when starting the migration.
+
 =back
 
 =item $ddom = $dom->migrate(destcon, flags=0, dname=undef, uri=undef, bandwidth=0)
