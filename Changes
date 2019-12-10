@@ -6,6 +6,8 @@ Revision history for perl module Sys::Virt
    constants
  - Fix typo breaking migration postcopy bandwidth and
    autoconvert increment parameter handling
+ - Add handling for VIR_MIGRATE_PARAM_PARALLEL_CONNECTIONS
+   constant when invoking migrate
 
 5.10.0 2019-12-03
 
