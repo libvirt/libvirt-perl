@@ -4,6 +4,8 @@ Revision history for perl module Sys::Virt
 
  - Add VIR_DOMAIN_JOB_SUCCESS and VIR_DOMAIN_JOB_STATS_KEEP_COMPLETED
    constants
+ - Fix typo breaking migration postcopy bandwidth and
+   autoconvert increment parameter handling
 
 5.10.0 2019-12-03
 

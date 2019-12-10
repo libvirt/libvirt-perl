@@ -5571,7 +5571,7 @@ _migrate_to_uri(dom, desturi, newparams, flags=0)
              VIR_TYPED_PARAM_FIELD_LENGTH);
      params[14].type = VIR_TYPED_PARAM_INT;
 
-     strncpy(params[14].field, VIR_MIGRATE_PARAM_BANDWIDTH_POSTCOPY,
+     strncpy(params[15].field, VIR_MIGRATE_PARAM_BANDWIDTH_POSTCOPY,
              VIR_TYPED_PARAM_FIELD_LENGTH);
      params[15].type = VIR_TYPED_PARAM_ULLONG;
 
