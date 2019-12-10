@@ -2738,7 +2738,7 @@ set_identity(conn, newident, flags=0)
 
       strncpy(ident[6].field, VIR_CONNECT_IDENTITY_SASL_USER_NAME,
               VIR_TYPED_PARAM_FIELD_LENGTH);
-      ident[6].type = VIR_TYPED_PARAM_INT;
+      ident[6].type = VIR_TYPED_PARAM_STRING;
 
       strncpy(ident[7].field, VIR_CONNECT_IDENTITY_X509_DISTINGUISHED_NAME,
               VIR_TYPED_PARAM_FIELD_LENGTH);
