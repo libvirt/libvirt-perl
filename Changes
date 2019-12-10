@@ -9,6 +9,7 @@ Revision history for perl module Sys::Virt
  - Add handling for VIR_MIGRATE_PARAM_PARALLEL_CONNECTIONS
    constant when invoking migrate
  - Add VIR_MIGRATE_PARAM_TLS_DESTINATION constant
+ - Add missing create_checkpoint method on Sys::Virt::Domain
 
 5.10.0 2019-12-03
 

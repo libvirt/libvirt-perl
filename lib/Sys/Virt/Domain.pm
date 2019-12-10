@@ -1965,6 +1965,23 @@ sub get_checkpoint_by_name {
     return Sys::Virt::DomainCheckpoint->_new(domain => $self, name => $name);
 }
 
+=item $checkpoint = $dom->create_checkpoint($xml[, $flags])
+
+Create a new checkpoint from the C<$xml>. The C<$flags> parameter accepts
+the B<CHECKPOINT CREATION> constants listed in C<Sys::Virt::DomainCheckpoints>.
+
+=cut
+
+sub create_checkpoint {
+    my $self = shift;
+    my $xml = shift;
+    my $flags = shift;
+
+    my $checkpoint = Sys::Virt::DomainCheckpoint->_new(domain => $self, xml => $xml, flags => $flags);
+
+    return $checkpoint;
+}
+
 1;
 
 =item $dom->fs_trim($mountPoint, $minimum, $flags=0);
