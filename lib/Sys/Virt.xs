@@ -6684,6 +6684,38 @@ PPCODE:
         _croak_error();
 
 void
+backup_begin(dom, backupxmlsv, checkpointxmlsv, flags=0)
+      virDomainPtr dom;
+      SV *backupxmlsv;
+      SV *checkpointxmlsv;
+      unsigned int flags;
+PREINIT:
+      const char *backupxml = NULL;
+      const char *checkpointxml = NULL;
+    CODE:
+      if (SvOK(backupxmlsv))
+          backupxml = SvPV_nolen(backupxmlsv);
+      if (SvOK(checkpointxmlsv))
+          checkpointxml = SvPV_nolen(checkpointxmlsv);
+      if (virDomainBackupBegin(dom, backupxml, checkpointxml, flags) < 0)
+          _croak_error();
+
+SV *
+backup_get_xml_description(dom, flags=0)
+      virDomainPtr dom;
+      unsigned int flags;
+  PREINIT:
+      char *xml;
+    CODE:
+      if (!(xml = virDomainBackupGetXMLDesc(dom, flags)))
+	 _croak_error();
+
+      RETVAL = newSVpv(xml, 0);
+      free(xml);
+  OUTPUT:
+      RETVAL
+
+void
 destroy(dom_rv, flags=0)
       SV *dom_rv;
       unsigned int flags;
@@ -9865,6 +9897,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_AGENT_RESPONSE_TIMEOUT_BLOCK, AGENT_RESPONSE_TIMEOUT_BLOCK);
       REGISTER_CONSTANT(VIR_DOMAIN_AGENT_RESPONSE_TIMEOUT_NOWAIT, AGENT_RESPONSE_TIMEOUT_NOWAIT);
       REGISTER_CONSTANT(VIR_DOMAIN_AGENT_RESPONSE_TIMEOUT_DEFAULT, AGENT_RESPONSE_TIMEOUT_DEFAULT);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_BACKUP_BEGIN_REUSE_EXTERNAL, BACKUP_BEGIN_REUSE_EXTERNAL);
 
 
       stash = gv_stashpv( "Sys::Virt::DomainSnapshot", TRUE );

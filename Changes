@@ -14,6 +14,7 @@ Revision history for perl module Sys::Virt
  - Fix data type for VIR_CONNECT_IDENTITY_SASL_USER_NAME
    parameter
  - Add new domain job constants related to backups
+ - Add new domain backup APIs
 
 5.10.0 2019-12-03
 

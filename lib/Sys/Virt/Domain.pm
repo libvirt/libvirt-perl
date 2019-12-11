@@ -1996,6 +1996,29 @@ sub create_checkpoint {
 
 1;
 
+=item $dom->backup_begin($backupxml, $checkpointxml=undef, $flags=0);
+
+Start a point-in-time backup job for the specified disks of a
+running domain. The C<$backupxml> parameter describes the
+backup operation, including which disks to use. The optional
+C<$checkpointxml> parameter can be used to create a checkpoint
+covering to the same point in time as the backup. The optional
+C<$flags> parameter can be one of the following constants:
+
+=over 4
+
+=item Sys::Virt::Domain::BACKUP_BEGIN_REUSE_EXTERNAL
+
+Assume that the output/temporary files for the backup have been
+precreated by the caller with the correct size and format.
+
+=back
+
+=item $xml = $dom->backup_get_xml_description($flags=0);
+
+Get the XML description of the currently executing backup
+job. If there is no backup job then an error is raised.
+
 =item $dom->fs_trim($mountPoint, $minimum, $flags=0);
 
 Issue an FS_TRIM command to the device at C<$mountPoint>
