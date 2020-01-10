@@ -4426,6 +4426,10 @@ Performance event counter values
 
 IOThread performance statistics values
 
+=item Sys::Virt::Domain::STATS_MEMORY
+
+Memory bandwidth statistics values
+
 =back
 
 =head2 PROCESS SIGNALS
