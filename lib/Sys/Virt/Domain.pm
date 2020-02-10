@@ -3495,6 +3495,10 @@ The domain has crashed
 
 The domain has crashed due to a kernel panic
 
+=item Sys::Virt::Domain::EVENT_CRASHED_CRASHLOADED
+
+The domain has crashed and reloaded itself
+
 =back
 
 =back
