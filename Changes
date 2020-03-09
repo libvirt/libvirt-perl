@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-6.1.0 2020-03-00
+6.1.0 2020-03-09
 
  - Add VIR_ERR_NO_HOSTNAME constant
  - Add VIR_DOMAIN_GET_HOSTNAME_* constants
