@@ -93,7 +93,7 @@ my $b = Module::Build->new(
         resources => {
             license => "http://www.gnu.org/licenses/gpl.html",
             homepage =>  "http://libvirt.org/",
-            repository => "https://libvirt.org/git/?p=libvirt-perl.git;a=summary",
+            repository => "https://gitlab.com/libvirt/libvirt-perl",
             MailingList => "http://www.redhat.com/mailman/listinfo/libvir-list",
         },
     },
