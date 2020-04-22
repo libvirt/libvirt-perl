@@ -73,7 +73,7 @@ my $b = Module::Build->new(
     dist_author => 'Daniel Berrange <dan@berrange.com>',
     dist_abstract => 'libvirt Perl API',
     requires => {
-        'perl' => '5.8.0',
+        'perl' => '5.16.0',
     },
     extra_compiler_flags => $GCC_CFLAGS . $LIBVIRT_CFLAGS,
     extra_linker_flags => $LIBVIRT_LIBS,
