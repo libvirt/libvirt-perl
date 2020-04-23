@@ -3,6 +3,7 @@ stages:
   - prebuild
   - containers
   - builds
+  - docs
 
 .container_job_template: &container_job_definition
   image: docker:stable
@@ -172,3 +173,17 @@ ubuntu-2004-git-build:
   <<: *git_build_job_definition
   variables:
     NAME: ubuntu-2004
+
+apiref:
+  stage: docs
+  image: $CI_REGISTRY_IMAGE/ci-centos-8:latest
+  script:
+    - mkdir apiref
+    - perl -MPod::Simple::HTMLBatch -e Pod::Simple::HTMLBatch::go lib apiref
+  artifacts:
+    expose_as: 'API Reference'
+    name: 'apiref'
+    when: on_success
+    expire_in: 30 days
+    paths:
+      - apiref
