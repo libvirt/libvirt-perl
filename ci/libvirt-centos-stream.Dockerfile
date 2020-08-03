@@ -1,6 +1,10 @@
-FROM fedora:32
+FROM centos:8
 
-RUN dnf update -y && \
+RUN dnf install -y centos-release-stream && \
+    dnf install 'dnf-command(config-manager)' -y && \
+    dnf config-manager --set-enabled -y Stream-PowerTools && \
+    dnf install -y epel-release && \
+    dnf update -y && \
     dnf install -y \
         autoconf \
         automake \
@@ -9,7 +13,6 @@ RUN dnf update -y && \
         ca-certificates \
         ccache \
         chrony \
-        cppi \
         gcc \
         gdb \
         gettext \
@@ -27,7 +30,6 @@ RUN dnf update -y && \
         libxslt \
         lsof \
         make \
-        meson \
         net-tools \
         ninja-build \
         patch \
@@ -59,6 +61,9 @@ RUN dnf update -y && \
     mkdir -p /usr/libexec/ccache-wrappers && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/$(basename /usr/bin/gcc)
+
+RUN pip3 install \
+         meson==0.54.0
 
 ENV LANG "en_US.UTF-8"
 
