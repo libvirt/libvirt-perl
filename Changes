@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 6.8.0 2020-10-00
 
- - XXX
+ - Add VIR_DOMAIN_MIGRATE_PARAM_DISKS_URI constant
 
 6.3.0 2020-05-05
 
