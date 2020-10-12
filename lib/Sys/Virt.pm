@@ -1901,6 +1901,10 @@ can take one of the following constants
 Raise a fatal error if the CPUs are not compatible, instead of
 just returning a special error code.
 
+=item Sys::Virt::COMPARE_CPU_VALIDATE_XML
+
+Validate input XML document against the RNG schema.
+
 =back
 
 =item my $result = $con->compare_hypervisor_cpu($emulator, $arch, $machine, $virttype, $xml, $flags=0);
