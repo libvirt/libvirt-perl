@@ -3,6 +3,7 @@ Revision history for perl module Sys::Virt
 6.9.0 2020-11-00
 
  - Add VIR_CONNECT_COMPARE_CPU_VALIDATE_XML constant
+ - Add VIR_CONNECT_LIST_NODE_DEVICES_CAP_VDPA constant
 
 6.8.0 2020-10-05
 
