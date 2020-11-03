@@ -3664,6 +3664,11 @@ The event occurs when the hypervisor detects that the given
 storage element was written beyond the point specified by
 threshold. The event is useful for thin-provisioned storage.
 
+=item Sys::Virt::Domain::EVENT_ID_MEMORY_FAILURE
+
+The event occurs when the hypervisor detects hardware
+memory corruption.
+
 =back
 
 =head2 IO ERROR EVENT CONSTANTS
