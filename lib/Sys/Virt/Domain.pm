@@ -4930,6 +4930,59 @@ The coredump-restart lifecycle action
 
 =back
 
+=head2 MEMORY FAILURE ACTION CONSTANTS
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_MEMORY_FAILURE_ACTION_IGNORE
+
+The failure could be ignored
+
+=item Sys::Virt::Domain::EVENT_MEMORY_FAILURE_ACTION_INJECT
+
+An MCE was injected to the guest
+
+=item Sys::Virt::Domain::EVENT_MEMORY_FAILURE_ACTION_FATAL
+
+The failure is non-recoverable and the hypervisor was
+not able to handle it
+
+=item Sys::Virt::Domain::EVENT_MEMORY_FAILURE_ACTION_RESET
+
+The failure is non-recoverable and the guest was
+not able to handle it.
+
+=back
+
+=head2 MEMORY FAILURE RECIPIENT CONSTANTS
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_MEMORY_FAILURE_RECIPIENT_HYPERVISOR
+
+The memory failure was in hypervisor address space
+
+=item Sys::Virt::Domain::EVENT_MEMORY_FAILURE_RECIPIENT_GUEST
+
+The memory failure was in guest address space
+
+=back
+
+=head2 MEMORY FAILURE FLAG CONSTANTS
+
+=over 4
+
+=item Sys::Virt::Domain::MEMORY_FAILURE_ACTION_REQUIRED
+
+Whether the flag is action-required or action-optional
+
+=item Sys::Virt::Domain::MEMORY_FAILURE_RECURSIVE
+
+The failure occurred while the previous fault was being
+handled.
+
+=back
+
 =head1 AUTHORS
 
 Daniel P. Berrange <berrange@redhat.com>
