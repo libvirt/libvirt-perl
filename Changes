@@ -4,6 +4,7 @@ Revision history for perl module Sys::Virt
 
  - Add VIR_DOMAIN_CHECKPOINT_CREATE_REDEFINE_VALIDATE constant
  - Add VIR_ERR_CHECKPOINT_INCONSISTENT constant
+ - Add VIR_VCPU_INFO_CPU_* constants
 
 6.9.0 2020-11-09
 

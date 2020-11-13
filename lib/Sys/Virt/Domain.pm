@@ -2482,6 +2482,24 @@ The virtual CPU is waiting to be scheduled
 =back
 
 
+=head2 VCPU HOST PLACEMENT STATE
+
+The following constants are useful when interpreting the
+virtual CPU host placement
+
+=over 4
+
+=item Sys::Virt::Domain::VCPU_INFO_CPU_OFFLINE
+
+The virtual CPU is not online
+
+=item Sys::Virt::Domain::VCPU_INFO_CPU_UNAVAILABLE
+
+The virtual CPU placement is not available from this hypervisor
+
+=back
+
+
 =head2 OPEN GRAPHICS CONSTANTS
 
 The following constants are used when opening a connection
