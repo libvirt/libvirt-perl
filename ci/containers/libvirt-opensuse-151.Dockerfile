@@ -1,19 +1,13 @@
-FROM opensuse/leap:15.1
+FROM registry.opensuse.org/opensuse/leap:15.1
 
 RUN zypper update -y && \
     zypper install -y \
-           autoconf \
-           automake \
            bash \
            bash-completion \
            ca-certificates \
            ccache \
-           chrony \
-           cppi \
            gcc \
-           gdb \
            gettext \
-           gettext-devel \
            git \
            glib2-devel \
            glibc-devel \
@@ -21,13 +15,10 @@ RUN zypper update -y && \
            libgnutls-devel \
            libnl3-devel \
            libtirpc-devel \
-           libtool \
            libxml2 \
            libxml2-devel \
            libxslt \
-           lsof \
            make \
-           net-tools \
            ninja \
            patch \
            perl \
@@ -45,12 +36,7 @@ RUN zypper update -y && \
            python3-setuptools \
            python3-wheel \
            rpcgen \
-           rpm-build \
-           screen \
-           strace \
-           sudo \
-           vim \
-           xz && \
+           rpm-build && \
     zypper clean --all && \
     mkdir -p /usr/libexec/ccache-wrappers && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc && \
