@@ -6769,6 +6769,57 @@ backup_get_xml_description(dom, flags=0)
       RETVAL
 
 void
+authorized_ssh_keys_get(dom, user, flags = 0)
+      virDomainPtr dom;
+      const char *user;
+      unsigned int flags;
+  PREINIT:
+      int ret;
+      char **keys = NULL;
+      unsigned int i;
+  PPCODE:
+      if ((ret = virDomainAuthorizedSSHKeysGet(dom, user, &keys, flags)) < 0)
+          _croak_error();
+
+      EXTEND(SP, ret);
+      for (i = 0 ; i < ret ; i++) {
+          PUSHs(sv_2mortal(newSVpv(keys[i], 0)));
+          free(keys[i]);
+      }
+      free(keys);
+
+void
+authorized_ssh_keys_set(dom, user, keysSV, flags = 0)
+      virDomainPtr dom;
+      const char *user;
+      SV *keysSV;
+      unsigned int flags;
+  PREINIT:
+      AV *keysAV;
+      const char **keys;
+      unsigned int nkeys;
+      unsigned int i;
+  PPCODE:
+      keysAV = (AV*)SvRV(keysSV);
+      nkeys = av_len(keysAV) + 1;
+      if (nkeys) {
+          Newx(keys, nkeys, const char *);
+          for (i = 0 ; i < nkeys ; i++) {
+              SV **mountPoint = av_fetch(keysAV, i, 0);
+              keys[i] = SvPV_nolen(*mountPoint);
+          }
+      } else {
+	  keys = NULL;
+      }
+
+      if (virDomainAuthorizedSSHKeysSet(dom, user, keys, nkeys, flags) < 0) {
+          Safefree(keys);
+          _croak_error();
+      }
+
+      Safefree(keys);
+      
+void
 destroy(dom_rv, flags=0)
       SV *dom_rv;
       unsigned int flags;
@@ -9977,6 +10028,9 @@ BOOT:
 
       REGISTER_CONSTANT(VIR_DOMAIN_MEMORY_FAILURE_ACTION_REQUIRED, MEMORY_FAILURE_ACTION_REQUIRED);
       REGISTER_CONSTANT(VIR_DOMAIN_MEMORY_FAILURE_RECURSIVE, MEMORY_FAILURE_RECURSIVE);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_AUTHORIZED_SSH_KEYS_SET_APPEND, AUTHORIZED_SSH_KEYS_SET_APPEND);
+      REGISTER_CONSTANT(VIR_DOMAIN_AUTHORIZED_SSH_KEYS_SET_REMOVE, AUTHORIZED_SSH_KEYS_SET_REMOVE);
 
 
       stash = gv_stashpv( "Sys::Virt::DomainSnapshot", TRUE );

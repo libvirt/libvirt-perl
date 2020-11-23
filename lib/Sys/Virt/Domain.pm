@@ -2246,6 +2246,33 @@ Use the hypervisor driver's default timeout
 The C<$flags> parameter is currently unused and defaults
 to zero.
 
+=item my @keys = $dom->authorized_ssh_keys_get($user, $flags=0)
+
+Retrieve the list of authorized SSH keys for the user account C<$user>.
+The C<$flags> parameter is currently unused and defaults to zero.
+
+=item $dom->authorized_ssh_keys_set($user, \@keys, $flags=0)
+
+Update the list of authorized SSH keys for the user account C<$user>.
+The C<@keys> parameter should be an array reference containing the
+new keys, if any. The default behaviour is to set the authorized
+SSH keys to the exact set specified in C<@keys>. This can be modified
+via the C<$flags> parameter which takes the following constants
+
+=over 4
+
+=item Sys::Virt::Domain::AUTHORIZED_SSH_KEYS_SET_APPEND
+
+Append C<@keys> to the current set of keys, rather than replacing
+the existing keys.
+
+=item Sys::Virt::Domain::AUTHORIZED_SSH_KEYS_SET_REMOVE
+
+Remove C<@keys> from the current set of keys, rather than replacing
+the existing keys. It is not an error if the keys do not exist.
+
+=back
+
 =back
 
 =head1 CONSTANTS
