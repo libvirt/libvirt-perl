@@ -18,5 +18,5 @@ HOSTS=$($LCITOOL hosts | grep -v -E '(freebsd|macos)')
 
 for host in $HOSTS
 do
-    $LCITOOL dockerfile $host libvirt+minimal,libvirt-perl > $host.Dockerfile
+    $LCITOOL dockerfile $host libvirt+minimal,libvirt-perl > ci-$host.Dockerfile
 done
