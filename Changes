@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+7.0.0 2021-01-00
+
+ - XXX
+
 6.10.0 2020-12-01
 
  - Add VIR_DOMAIN_CHECKPOINT_CREATE_REDEFINE_VALIDATE constant
