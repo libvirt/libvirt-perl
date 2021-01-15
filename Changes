@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-7.0.0 2021-01-00
+7.0.0 2021-01-15
 
  - Add VIR_DOMAIN_GUEST_INFO_DISKS constant
 
