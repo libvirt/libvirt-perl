@@ -108,6 +108,11 @@ opensuse-151-container:
   variables:
     NAME: opensuse-151
 
+opensuse-152-container:
+  <<: *container_job_definition
+  variables:
+    NAME: opensuse-152
+
 ubuntu-1804-container:
   <<: *container_job_definition
   variables:
@@ -163,6 +168,11 @@ opensuse-151-git-build:
   <<: *git_build_job_definition
   variables:
     NAME: opensuse-151
+
+opensuse-152-git-build:
+  <<: *git_build_job_definition
+  variables:
+    NAME: opensuse-152
 
 ubuntu-1804-git-build:
   <<: *git_build_job_definition
