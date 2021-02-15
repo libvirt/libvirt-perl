@@ -6820,6 +6820,25 @@ authorized_ssh_keys_set(dom, user, keysSV, flags = 0)
       Safefree(keys);
       
 void
+get_messages(dom, flags = 0)
+      virDomainPtr dom;
+      unsigned int flags;
+  PREINIT:
+      int ret;
+      char **msgs = NULL;
+      unsigned int i;
+  PPCODE:
+      if ((ret = virDomainGetMessages(dom, &msgs, flags)) < 0)
+          _croak_error();
+
+      EXTEND(SP, ret);
+      for (i = 0 ; i < ret ; i++) {
+          PUSHs(sv_2mortal(newSVpv(msgs[i], 0)));
+          free(msgs[i]);
+      }
+      free(msgs);
+
+void
 destroy(dom_rv, flags=0)
       SV *dom_rv;
       unsigned int flags;
@@ -10032,6 +10051,9 @@ BOOT:
 
       REGISTER_CONSTANT(VIR_DOMAIN_AUTHORIZED_SSH_KEYS_SET_APPEND, AUTHORIZED_SSH_KEYS_SET_APPEND);
       REGISTER_CONSTANT(VIR_DOMAIN_AUTHORIZED_SSH_KEYS_SET_REMOVE, AUTHORIZED_SSH_KEYS_SET_REMOVE);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_MESSAGE_DEPRECATION, MESSAGE_DEPRECATION);
+      REGISTER_CONSTANT(VIR_DOMAIN_MESSAGE_TAINTING, MESSAGE_TAINTING);
 
 
       stash = gv_stashpv( "Sys::Virt::DomainSnapshot", TRUE );
