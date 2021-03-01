@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+7.2.0 2021-04-XX
+
+ - XXX
+
 7.1.0 2021-03-01
 
  - Add VIR_ERR_MULTIPLE_DOMAINS constant
