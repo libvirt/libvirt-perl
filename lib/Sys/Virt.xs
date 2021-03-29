@@ -6916,6 +6916,15 @@ get_messages(dom, flags = 0)
       free(msgs);
 
 void
+start_dirty_rate_calc(dom, secs, flags = 0)
+      virDomainPtr dom;
+      int secs;
+      unsigned int flags;
+  PPCODE:
+      if ((virDomainStartDirtyRateCalc(dom, secs, flags) < 0))
+          _croak_error();
+
+void
 destroy(dom_rv, flags=0)
       SV *dom_rv;
       unsigned int flags;

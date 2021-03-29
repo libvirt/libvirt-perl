@@ -2294,6 +2294,12 @@ Warnings about actions that have tainting the domain
 
 =back
 
+=item $dom->start_dirty_rate_calc($dom, $secs, $flags=0)
+
+Request calculation of the domain's memory dirty rate over
+the next C<$secs> seconds. C<$flags> is currently unused
+and defaults to zero.
+
 =back
 
 =head1 CONSTANTS
