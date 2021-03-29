@@ -4537,6 +4537,10 @@ IOThread performance statistics values
 
 Memory bandwidth statistics values
 
+=item Sys::Virt::Domain::STATS_DIRTYRATE
+
+Memory dirty rate statistics
+
 =back
 
 =head2 PROCESS SIGNALS
