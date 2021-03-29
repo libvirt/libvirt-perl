@@ -5055,6 +5055,24 @@ handled.
 
 =back
 
+=head2 MEMORY DIRTY RATE STATUS CONSTANTS
+
+=over 4
+
+=item Sys::Virt::Domain::DIRTYRATE_UNSTARTED
+
+The dirty rate is not being measured currently.
+
+=item Sys::Virt::Domain::DIRTYRATE_MEASURING
+
+The dity rate is in the process of being measured
+
+=item Sys::Virt::Domain::DIRTYRATE_MEASURED
+
+The dirty rate has been measured
+
+=back
+
 =head1 AUTHORS
 
 Daniel P. Berrange <berrange@redhat.com>

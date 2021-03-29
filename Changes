@@ -3,6 +3,7 @@ Revision history for perl module Sys::Virt
 7.2.0 2021-04-XX
 
  - Add virDomainStartDirtyRateCalc API
+ - Add VIR_DOMAIN_DIRTYRATE_* constants
 
 7.1.0 2021-03-01
 
