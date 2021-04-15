@@ -30,7 +30,6 @@ stages:
   export LD_LIBRARY_PATH="$LIBDIR"
   export PATH="$VROOT/bin:$PATH"
   export PKG_CONFIG_PATH="$LIBDIR/pkgconfig"
-  export TEST_MAINTAINER=1
 
 .git_build_job_template: &git_build_job_definition
   image: $CI_REGISTRY_IMAGE/ci-$NAME:latest
@@ -52,6 +51,7 @@ stages:
     - perl Build install
     - perl Build dist
     - if test -x /usr/bin/rpmbuild ; then rpmbuild --nodeps -ta Sys-Virt*.tar.gz ; fi
+    - mv "$SCRATCH_DIR" scratch
 
 # Check that all commits are signed-off for the DCO.
 # Skip on "libvirt" namespace, since we only need to run
@@ -136,6 +136,10 @@ centos-8-git-build:
     - centos-8-container
   variables:
     NAME: centos-8
+  artifacts:
+    expire_in: 2 days
+    paths:
+      - scratch
 
 centos-stream-git-build:
   <<: *git_build_job_definition
@@ -214,3 +218,20 @@ apiref:
     expire_in: 30 days
     paths:
       - apiref
+
+api-coverage:
+  image: $CI_REGISTRY_IMAGE/ci-centos-8:latest
+  stage: sanity_checks
+  needs:
+    - job: centos-8-git-build
+      artifacts: true
+  before_script:
+    - *git_build_vars
+  script:
+    - mv scratch "$SCRATCH_DIR"
+    - perl Build.PL
+    - TEST_MAINTAINER=1 perl Build test
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      allow_failure: true
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
