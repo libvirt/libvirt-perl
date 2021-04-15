@@ -2,13 +2,15 @@
 #
 #  $ lcitool dockerfile opensuse-152 libvirt+minimal,libvirt-perl
 #
-# https://gitlab.com/libvirt/libvirt-ci/-/commit/d527e0c012f476c293f3bc801b7da08bc85f98ef
+# https://gitlab.com/libvirt/libvirt-ci/-/commit/6552fd8885423cfc383a58255eca542937f7d4ea
+
 FROM registry.opensuse.org/opensuse/leap:15.2
 
 RUN zypper update -y && \
     zypper install -y \
            ca-certificates \
            ccache \
+           cpp \
            gcc \
            gettext-runtime \
            git \
@@ -42,10 +44,10 @@ RUN zypper update -y && \
     rpm -qa | sort > /packages.txt && \
     mkdir -p /usr/libexec/ccache-wrappers && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc && \
-    ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/$(basename /usr/bin/gcc)
+    ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/gcc
 
 RUN pip3 install \
-         meson==0.54.0
+         meson==0.56.0
 
 ENV LANG "en_US.UTF-8"
 ENV MAKE "/usr/bin/make"
