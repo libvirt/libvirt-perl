@@ -217,6 +217,14 @@ Include s390 AP matrix devices
 
 Include s390 AP queue devices
 
+=item Sys::Virt::NodeDevice::LIST_ACTIVE
+
+Include active devices
+
+=item Sys::Virt::NodeDevice::LIST_INACTIVE
+
+Include inactive devices
+
 =back
 
 =head2 EVENT ID CONSTANTS
@@ -248,6 +256,14 @@ Indicates that a device was created
 =item Sys::Virt::NodeDevice::EVENT_DELETED
 
 Indicates that a device has been deleted
+
+=item Sys::Virt::NodeDevice::EVENT_DEFINED
+
+Indicates that a device configuration has been created
+
+=item Sys::Virt::NodeDevice::EVENT_UNDEFINED
+
+Indicates that a device configuration has been deleted
 
 =back
 
