@@ -7929,6 +7929,18 @@ _create_xml(con, xml, flags=0)
 
 
 virNodeDevicePtr
+_define_xml(con, xml, flags=0)
+      virConnectPtr con;
+      const char *xml;
+      unsigned int flags;
+    CODE:
+      if (!(RETVAL = virNodeDeviceDefineXML(con, xml, flags)))
+          _croak_error();
+  OUTPUT:
+      RETVAL
+
+
+virNodeDevicePtr
 _lookup_by_name(con, name)
       virConnectPtr con;
       const char *name;
@@ -8025,6 +8037,24 @@ reset(dev)
       virNodeDevicePtr dev;
     PPCODE:
       if (virNodeDeviceReset(dev) < 0)
+          _croak_error();
+
+
+void
+create(dev, flags=0)
+      virNodeDevicePtr dev;
+      unsigned int flags;
+    PPCODE:
+      if (virNodeDeviceCreate(dev, flags) < 0)
+          _croak_error();
+
+
+void
+undefine(dev, flags=0)
+      virNodeDevicePtr dev;
+      unsigned int flags;
+    PPCODE:
+      if (virNodeDeviceUndefine(dev, flags) < 0)
           _croak_error();
 
 

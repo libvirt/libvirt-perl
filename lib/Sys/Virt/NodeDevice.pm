@@ -57,7 +57,11 @@ sub _new {
 							       $params{wwpn},
 							       $params{flags});
     } elsif (exists $params{xml}) {
-	$self = Sys::Virt::NodeDevice::_create_xml($con, $params{xml});
+	if ($params{nocreate}) {
+	    $self = Sys::Virt::NodeDevice::_define_xml($con, $params{xml}, $params{flags});
+	} else {
+	    $self = Sys::Virt::NodeDevice::_create_xml($con, $params{xml}, $params{flags});
+	}
     } else {
 	die "name parameter is required";
     }
@@ -94,6 +98,18 @@ Unbind the node device from the host OS device driver
 
 Reset the node device. The device must be unbound from the host
 OS drivers for this to work
+
+=item $dev->create($flags=0)
+
+Start a node device whose configuration was previously defined using the
+C<define_node_device> method in L<Sys::Virt>. The C<$flags> parameter is
+currently unused and defaults to zero.
+
+=item $dev->undefine($flags=0)
+
+Delete a node device whose configuration was previously defined using the
+C<define_node_device> method in L<Sys::Virt>. The C<$flags> parameter is
+currently unused and defaults to zero.
 
 =item $dev->destroy()
 
