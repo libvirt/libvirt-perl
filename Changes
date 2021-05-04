@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+7.4.0 2021-05-xx
+
+ - XXX
+
 7.3.0 2021-04-04
 
  - Add virNodeDeviceCreate, virNodeDeviceDefineXML and
