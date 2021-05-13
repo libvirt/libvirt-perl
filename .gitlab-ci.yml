@@ -5,7 +5,7 @@ stages:
   - docs
   - sanity_checks
 
-.container_job_template: &container_job_definition
+.container_job_template:
   image: docker:stable
   stage: containers
   services:
@@ -31,7 +31,7 @@ stages:
   export PATH="$VROOT/bin:$PATH"
   export PKG_CONFIG_PATH="$LIBDIR/pkgconfig"
 
-.git_build_job_template: &git_build_job_definition
+.git_build_job_template:
   image: $CI_REGISTRY_IMAGE/ci-$NAME:latest
   stage: builds
   before_script:
@@ -68,70 +68,70 @@ check-dco:
       - $CI_PROJECT_NAMESPACE == 'libvirt'
 
 centos-7-container:
-  <<: *container_job_definition
+  extends: .container_job_template
   variables:
     NAME: centos-7
 
 centos-8-container:
-  <<: *container_job_definition
+  extends: .container_job_template
   variables:
     NAME: centos-8
 
 centos-stream-container:
-  <<: *container_job_definition
+  extends: .container_job_template
   variables:
     NAME: centos-stream
 
 debian-10-container:
-  <<: *container_job_definition
+  extends: .container_job_template
   variables:
     NAME: debian-10
 
 debian-sid-container:
-  <<: *container_job_definition
+  extends: .container_job_template
   variables:
     NAME: debian-sid
 
 fedora-32-container:
-  <<: *container_job_definition
+  extends: .container_job_template
   variables:
     NAME: fedora-32
 
 fedora-33-container:
-  <<: *container_job_definition
+  extends: .container_job_template
   variables:
     NAME: fedora-33
 
 fedora-rawhide-container:
-  <<: *container_job_definition
+  extends: .container_job_template
   variables:
     NAME: fedora-rawhide
 
 opensuse-152-container:
-  <<: *container_job_definition
+  extends: .container_job_template
   variables:
     NAME: opensuse-152
 
 ubuntu-1804-container:
-  <<: *container_job_definition
+  extends: .container_job_template
   variables:
     NAME: ubuntu-1804
 
 ubuntu-2004-container:
-  <<: *container_job_definition
+  extends: .container_job_template
   variables:
     NAME: ubuntu-2004
 
 
 centos-7-git-build:
-  <<: *git_build_job_definition
+  extends: .git_build_job_template
   needs:
     - centos-7-container
   variables:
     NAME: centos-7
 
 centos-8-git-build:
-  <<: *git_build_job_definition
+  extends: .git_build_job_template
   needs:
     - centos-8-container
   variables:
@@ -142,63 +142,63 @@ centos-8-git-build:
       - scratch
 
 centos-stream-git-build:
-  <<: *git_build_job_definition
+  extends: .git_build_job_template
   needs:
     - centos-stream-container
   variables:
     NAME: centos-stream
 
 debian-10-git-build:
-  <<: *git_build_job_definition
+  extends: .git_build_job_template
   needs:
     - debian-10-container
   variables:
     NAME: debian-10
 
 debian-sid-git-build:
-  <<: *git_build_job_definition
+  extends: .git_build_job_template
   needs:
     - debian-sid-container
   variables:
     NAME: debian-sid
 
 fedora-32-git-build:
-  <<: *git_build_job_definition
+  extends: .git_build_job_template
   needs:
     - fedora-32-container
   variables:
     NAME: fedora-32
 
 fedora-33-git-build:
-  <<: *git_build_job_definition
+  extends: .git_build_job_template
   needs:
     - fedora-33-container
   variables:
     NAME: fedora-33
 
 fedora-rawhide-git-build:
-  <<: *git_build_job_definition
+  extends: .git_build_job_template
   needs:
     - fedora-rawhide-container
   variables:
     NAME: fedora-rawhide
 
 opensuse-152-git-build:
-  <<: *git_build_job_definition
+  extends: .git_build_job_template
   needs:
     - opensuse-152-container
   variables:
     NAME: opensuse-152
 
 ubuntu-1804-git-build:
-  <<: *git_build_job_definition
+  extends: .git_build_job_template
   needs:
     - ubuntu-1804-container
   variables:
     NAME: ubuntu-1804
 
 ubuntu-2004-git-build:
-  <<: *git_build_job_definition
+  extends: .git_build_job_template
   needs:
     - ubuntu-2004-container
   variables:
