@@ -107,6 +107,11 @@ opensuse-leap-152-container:
   variables:
     NAME: opensuse-leap-152
 
+opensuse-tumbleweed-container:
+  extends: .container_job_template
+  variables:
+    NAME: opensuse-tumbleweed
+
 ubuntu-1804-container:
   extends: .container_job_template
   variables:
@@ -177,6 +182,13 @@ opensuse-leap-152-git-build:
     - opensuse-leap-152-container
   variables:
     NAME: opensuse-leap-152
+
+opensuse-tumbleweed-git-build:
+  extends: .git_build_job_template
+  needs:
+    - opensuse-tumbleweed-container
+  variables:
+    NAME: opensuse-tumbleweed
 
 ubuntu-1804-git-build:
   extends: .git_build_job_template
