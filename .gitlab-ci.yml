@@ -87,11 +87,6 @@ debian-sid-container:
   variables:
     NAME: debian-sid
 
-fedora-32-container:
-  extends: .container_job_template
-  variables:
-    NAME: fedora-32
-
 fedora-33-container:
   extends: .container_job_template
   variables:
@@ -149,13 +144,6 @@ debian-sid-git-build:
     - debian-sid-container
   variables:
     NAME: debian-sid
-
-fedora-32-git-build:
-  extends: .git_build_job_template
-  needs:
-    - fedora-32-container
-  variables:
-    NAME: fedora-32
 
 fedora-33-git-build:
   extends: .git_build_job_template
