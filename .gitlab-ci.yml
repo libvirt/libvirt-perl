@@ -72,10 +72,10 @@ centos-8-container:
   variables:
     NAME: centos-8
 
-centos-stream-container:
+centos-stream-8-container:
   extends: .container_job_template
   variables:
-    NAME: centos-stream
+    NAME: centos-stream-8
 
 debian-10-container:
   extends: .container_job_template
@@ -124,12 +124,12 @@ centos-8-git-build:
     paths:
       - scratch
 
-centos-stream-git-build:
+centos-stream-8-git-build:
   extends: .git_build_job_template
   needs:
-    - centos-stream-container
+    - centos-stream-8-container
   variables:
-    NAME: centos-stream
+    NAME: centos-stream-8
 
 debian-10-git-build:
   extends: .git_build_job_template
