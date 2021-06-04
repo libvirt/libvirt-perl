@@ -2,7 +2,7 @@
 #
 #  $ lcitool dockerfile ubuntu-1804 libvirt+minimal,libvirt-perl
 #
-# https://gitlab.com/libvirt/libvirt-ci/-/commit/6552fd8885423cfc383a58255eca542937f7d4ea
+# https://gitlab.com/libvirt/libvirt-ci/-/commit/96eec529480444db063e409827cf8ebd0ad5c012
 
 FROM docker.io/library/ubuntu:18.04
 
@@ -17,6 +17,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
             gcc \
             gettext \
             git \
+            libarchive-tar-perl \
             libc-dev-bin \
             libc6-dev \
             libcpan-changes-perl \
@@ -35,7 +36,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
             locales \
             make \
             ninja-build \
-            perl \
+            perl-base \
             pkgconf \
             python3 \
             python3-docutils \

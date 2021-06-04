@@ -1,14 +1,12 @@
 # THIS FILE WAS AUTO-GENERATED
 #
-#  $ lcitool dockerfile centos-stream libvirt+minimal,libvirt-perl
+#  $ lcitool dockerfile centos-stream-8 libvirt+minimal,libvirt-perl
 #
-# https://gitlab.com/libvirt/libvirt-ci/-/commit/6552fd8885423cfc383a58255eca542937f7d4ea
+# https://gitlab.com/libvirt/libvirt-ci/-/commit/96eec529480444db063e409827cf8ebd0ad5c012
 
-FROM docker.io/library/centos:8
+FROM quay.io/centos/centos:stream8
 
-RUN dnf install -y centos-release-stream && \
-    dnf install -y centos-stream-release && \
-    dnf update -y && \
+RUN dnf update -y && \
     dnf install 'dnf-command(config-manager)' -y && \
     dnf config-manager --set-enabled -y powertools && \
     dnf install -y centos-release-advanced-virtualization && \

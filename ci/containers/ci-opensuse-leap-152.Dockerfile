@@ -1,8 +1,8 @@
 # THIS FILE WAS AUTO-GENERATED
 #
-#  $ lcitool dockerfile opensuse-152 libvirt+minimal,libvirt-perl
+#  $ lcitool dockerfile opensuse-leap-152 libvirt+minimal,libvirt-perl
 #
-# https://gitlab.com/libvirt/libvirt-ci/-/commit/6552fd8885423cfc383a58255eca542937f7d4ea
+# https://gitlab.com/libvirt/libvirt-ci/-/commit/96eec529480444db063e409827cf8ebd0ad5c012
 
 FROM registry.opensuse.org/opensuse/leap:15.2
 
@@ -25,13 +25,14 @@ RUN zypper update -y && \
            libxslt \
            make \
            ninja \
-           perl \
            perl-Archive-Tar \
            perl-CPAN-Changes \
            perl-Module-Build \
            perl-Test-Pod \
            perl-Test-Pod-Coverage \
+           perl-Time-HiRes \
            perl-XML-XPath \
+           perl-base \
            pkgconfig \
            python3-base \
            python3-docutils \

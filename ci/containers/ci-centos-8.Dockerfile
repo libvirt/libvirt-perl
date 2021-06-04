@@ -2,7 +2,7 @@
 #
 #  $ lcitool dockerfile centos-8 libvirt+minimal,libvirt-perl
 #
-# https://gitlab.com/libvirt/libvirt-ci/-/commit/6552fd8885423cfc383a58255eca542937f7d4ea
+# https://gitlab.com/libvirt/libvirt-ci/-/commit/96eec529480444db063e409827cf8ebd0ad5c012
 
 FROM docker.io/library/centos:8
 
