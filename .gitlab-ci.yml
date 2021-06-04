@@ -97,10 +97,10 @@ fedora-rawhide-container:
   variables:
     NAME: fedora-rawhide
 
-opensuse-152-container:
+opensuse-leap-152-container:
   extends: .container_job_template
   variables:
-    NAME: opensuse-152
+    NAME: opensuse-leap-152
 
 ubuntu-1804-container:
   extends: .container_job_template
@@ -159,12 +159,12 @@ fedora-rawhide-git-build:
   variables:
     NAME: fedora-rawhide
 
-opensuse-152-git-build:
+opensuse-leap-152-git-build:
   extends: .git_build_job_template
   needs:
-    - opensuse-152-container
+    - opensuse-leap-152-container
   variables:
-    NAME: opensuse-152
+    NAME: opensuse-leap-152
 
 ubuntu-1804-git-build:
   extends: .git_build_job_template
