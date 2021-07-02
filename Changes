@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+7.6.0 2021-08-00
+
+ - XXX
+
 7.5.0 2021-07-02
 
  - Add VIR_FROM_CH
