@@ -429,7 +429,7 @@ sub create_nwfilter_binding {
 
 
 
-=item my $iface = $conn->define_interface($xml);
+=item my $iface = $conn->define_interface($xml, $flags=0);
 
 Defines, but does not start, a new interface based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
@@ -443,8 +443,9 @@ object.
 sub define_interface {
     my $self = shift;
     my $xml = shift;
+    my $flags = shift || 0;
 
-    return Sys::Virt::Interface->_new(connection => $self, xml => $xml, nocreate => 1);
+    return Sys::Virt::Interface->_new(connection => $self, xml => $xml, nocreate => 1, flags => $flags);
 }
 
 =item my $dev = $conn->create_node_device($xml, $flags=0);
