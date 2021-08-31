@@ -6969,12 +6969,18 @@ _create_xml(con, xml)
 
 
 virNetworkPtr
-_define_xml(con, xml)
+_define_xml(con, xml, flags=0)
       virConnectPtr con;
       const char *xml;
+      unsigned int flags;
     CODE:
-      if (!(RETVAL = virNetworkDefineXML(con, xml)))
-          _croak_error();
+      if (flags) {
+          if (!(RETVAL = virNetworkDefineXMLFlags(con, xml, flags)))
+              _croak_error();
+      } else {
+	  if (!(RETVAL = virNetworkDefineXML(con, xml)))
+              _croak_error();
+      }
   OUTPUT:
       RETVAL
 
@@ -10292,6 +10298,8 @@ BOOT:
 
       stash = gv_stashpv( "Sys::Virt::Network", TRUE );
       REGISTER_CONSTANT(VIR_NETWORK_XML_INACTIVE, XML_INACTIVE);
+
+      REGISTER_CONSTANT(VIR_NETWORK_DEFINE_VALIDATE, DEFINE_VALIDATE);
 
       REGISTER_CONSTANT(VIR_NETWORK_UPDATE_COMMAND_NONE, UPDATE_COMMAND_NONE);
       REGISTER_CONSTANT(VIR_NETWORK_UPDATE_COMMAND_MODIFY, UPDATE_COMMAND_MODIFY);

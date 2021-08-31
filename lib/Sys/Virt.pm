@@ -309,7 +309,7 @@ sub create_network {
     return Sys::Virt::Network->_new(connection => $self, xml => $xml);
 }
 
-=item my $net = $conn->define_network($xml);
+=item my $net = $conn->define_network($xml, $flags = 0);
 
 Defines, but does not start, a new network based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
@@ -323,8 +323,9 @@ object.
 sub define_network {
     my $self = shift;
     my $xml = shift;
+    my $flags = shift || 0;
 
-    return Sys::Virt::Network->_new(connection => $self, xml => $xml, nocreate => 1);
+    return Sys::Virt::Network->_new(connection => $self, xml => $xml, nocreate => 1, flags => $flags);
 }
 
 =item my $nwfilter = $conn->define_nwfilter($xml);
