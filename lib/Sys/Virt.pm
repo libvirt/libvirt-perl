@@ -345,7 +345,7 @@ sub define_nwfilter {
     return Sys::Virt::NWFilter->_new(connection => $self, xml => $xml, nocreate => 1, flags => $flags);
 }
 
-=item my $secret = $conn->define_secret($xml);
+=item my $secret = $conn->define_secret($xml, $flags=0);
 
 Defines a new secret based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
@@ -357,8 +357,9 @@ unprivileged connections to the hypervisor.
 sub define_secret {
     my $self = shift;
     my $xml = shift;
+    my $flags = shift || 0;
 
-    return Sys::Virt::Secret->_new(connection => $self, xml => $xml, nocreate => 1);
+    return Sys::Virt::Secret->_new(connection => $self, xml => $xml, nocreate => 1, flags => $flags);
 }
 
 =item my $pool = $conn->create_storage_pool($xml);
