@@ -378,7 +378,7 @@ sub create_storage_pool {
     return Sys::Virt::StoragePool->_new(connection => $self, xml => $xml);
 }
 
-=item my $pool = $conn->define_storage_pool($xml);
+=item my $pool = $conn->define_storage_pool($xml, $flags=0);
 
 Defines, but does not start, a new storage pol based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
@@ -392,8 +392,9 @@ object.
 sub define_storage_pool {
     my $self = shift;
     my $xml = shift;
+    my $flags = shift || 0;
 
-    return Sys::Virt::StoragePool->_new(connection => $self, xml => $xml, nocreate => 1);
+    return Sys::Virt::StoragePool->_new(connection => $self, xml => $xml, nocreate => 1, flags => $flags);
 }
 
 =item my $pool = $conn->create_interface($xml);

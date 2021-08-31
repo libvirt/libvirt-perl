@@ -7402,11 +7402,12 @@ _create_xml(con, xml)
 
 
 virStoragePoolPtr
-_define_xml(con, xml)
+_define_xml(con, xml, flags=0)
       virConnectPtr con;
       const char *xml;
+      unsigned int flags;
     CODE:
-      if (!(RETVAL = virStoragePoolDefineXML(con, xml, 0)))
+      if (!(RETVAL = virStoragePoolDefineXML(con, xml, flags)))
           _croak_error();
   OUTPUT:
       RETVAL
@@ -10251,6 +10252,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_STORAGE_POOL_RUNNING, STATE_RUNNING);
       REGISTER_CONSTANT(VIR_STORAGE_POOL_DEGRADED, STATE_DEGRADED);
       REGISTER_CONSTANT(VIR_STORAGE_POOL_INACCESSIBLE, STATE_INACCESSIBLE);
+
+      REGISTER_CONSTANT(VIR_STORAGE_POOL_DEFINE_VALIDATE, DEFINE_VALIDATE);
 
       REGISTER_CONSTANT(VIR_STORAGE_POOL_BUILD_NEW, BUILD_NEW);
       REGISTER_CONSTANT(VIR_STORAGE_POOL_BUILD_REPAIR, BUILD_REPAIR);
