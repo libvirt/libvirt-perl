@@ -8404,12 +8404,18 @@ MODULE = Sys::Virt::NWFilter  PACKAGE = Sys::Virt::NWFilter
 
 
 virNWFilterPtr
-_define_xml(con, xml)
+_define_xml(con, xml, flags=0)
       virConnectPtr con;
       const char *xml;
+      unsigned int flags;
     CODE:
-      if (!(RETVAL = virNWFilterDefineXML(con, xml)))
-          _croak_error();
+      if (flags) {
+          if (!(RETVAL = virNWFilterDefineXMLFlags(con, xml, flags)))
+              _croak_error();
+      } else {
+          if (!(RETVAL = virNWFilterDefineXML(con, xml)))
+              _croak_error();
+      }
   OUTPUT:
       RETVAL
 
@@ -10450,6 +10456,10 @@ BOOT:
 
       REGISTER_CONSTANT(VIR_SECRET_EVENT_DEFINED, EVENT_DEFINED);
       REGISTER_CONSTANT(VIR_SECRET_EVENT_UNDEFINED, EVENT_UNDEFINED);
+
+
+      stash = gv_stashpv( "Sys::Virt::NWFilter", TRUE );
+      REGISTER_CONSTANT(VIR_NWFILTER_DEFINE_VALIDATE, DEFINE_VALIDATE);
 
 
       stash = gv_stashpv( "Sys::Virt::Stream", TRUE );

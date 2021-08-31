@@ -328,7 +328,7 @@ sub define_network {
     return Sys::Virt::Network->_new(connection => $self, xml => $xml, nocreate => 1, flags => $flags);
 }
 
-=item my $nwfilter = $conn->define_nwfilter($xml);
+=item my $nwfilter = $conn->define_nwfilter($xml, $flags=0);
 
 Defines a new network filter based on the XML description
 passed into the C<$xml> parameter. The returned object is an instance
@@ -340,8 +340,9 @@ unprivileged connections to the hypervisor.
 sub define_nwfilter {
     my $self = shift;
     my $xml = shift;
+    my $flags = shift || 0;
 
-    return Sys::Virt::NWFilter->_new(connection => $self, xml => $xml, nocreate => 1);
+    return Sys::Virt::NWFilter->_new(connection => $self, xml => $xml, nocreate => 1, flags => $flags);
 }
 
 =item my $secret = $conn->define_secret($xml);
