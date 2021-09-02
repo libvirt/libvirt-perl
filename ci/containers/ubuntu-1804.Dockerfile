@@ -1,8 +1,8 @@
 # THIS FILE WAS AUTO-GENERATED
 #
-#  $ lcitool dockerfile ubuntu-1804 libvirt+minimal,libvirt-perl
+#  $ lcitool manifest ci/manifest.yml
 #
-# https://gitlab.com/libvirt/libvirt-ci/-/commit/96eec529480444db063e409827cf8ebd0ad5c012
+# https://gitlab.com/libvirt/libvirt-ci
 
 FROM docker.io/library/ubuntu:18.04
 

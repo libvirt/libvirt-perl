@@ -1,10 +1,10 @@
 # THIS FILE WAS AUTO-GENERATED
 #
-#  $ lcitool dockerfile debian-sid libvirt+minimal,libvirt-perl
+#  $ lcitool manifest ci/manifest.yml
 #
-# https://gitlab.com/libvirt/libvirt-ci/-/commit/96eec529480444db063e409827cf8ebd0ad5c012
+# https://gitlab.com/libvirt/libvirt-ci
 
-FROM docker.io/library/debian:sid-slim
+FROM docker.io/library/ubuntu:20.04
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
@@ -35,12 +35,14 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
             libxml2-utils \
             locales \
             make \
-            meson \
             ninja-build \
             perl-base \
             pkgconf \
             python3 \
             python3-docutils \
+            python3-pip \
+            python3-setuptools \
+            python3-wheel \
             xsltproc && \
     eatmydata apt-get autoremove -y && \
     eatmydata apt-get autoclean -y && \
@@ -50,6 +52,9 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     mkdir -p /usr/libexec/ccache-wrappers && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/gcc
+
+RUN pip3 install \
+         meson==0.56.0
 
 ENV LANG "en_US.UTF-8"
 ENV MAKE "/usr/bin/make"

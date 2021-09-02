@@ -1,17 +1,23 @@
 # THIS FILE WAS AUTO-GENERATED
 #
-#  $ lcitool dockerfile centos-stream-8 libvirt+minimal,libvirt-perl
+#  $ lcitool manifest ci/manifest.yml
 #
-# https://gitlab.com/libvirt/libvirt-ci/-/commit/96eec529480444db063e409827cf8ebd0ad5c012
+# https://gitlab.com/libvirt/libvirt-ci
 
-FROM quay.io/centos/centos:stream8
+FROM registry.fedoraproject.org/fedora:34
 
-RUN dnf update -y && \
-    dnf install 'dnf-command(config-manager)' -y && \
-    dnf config-manager --set-enabled -y powertools && \
-    dnf install -y centos-release-advanced-virtualization && \
-    dnf install -y epel-release && \
-    dnf install -y \
+RUN dnf install -y nosync && \
+    echo -e '#!/bin/sh\n\
+if test -d /usr/lib64\n\
+then\n\
+    export LD_PRELOAD=/usr/lib64/nosync/nosync.so\n\
+else\n\
+    export LD_PRELOAD=/usr/lib/nosync/nosync.so\n\
+fi\n\
+exec "$@"' > /usr/bin/nosync && \
+    chmod +x /usr/bin/nosync && \
+    nosync dnf update -y && \
+    nosync dnf install -y \
         ca-certificates \
         ccache \
         cpp \
@@ -28,33 +34,29 @@ RUN dnf update -y && \
         libxml2-devel \
         libxslt \
         make \
+        meson \
         ninja-build \
-        perl \
         perl-Archive-Tar \
         perl-CPAN-Changes \
         perl-Module-Build \
+        perl-Sys-Hostname \
         perl-Test-Pod \
         perl-Test-Pod-Coverage \
         perl-Time-HiRes \
         perl-XML-XPath \
+        perl-base \
         perl-generators \
         pkgconfig \
         python3 \
         python3-docutils \
-        python3-pip \
-        python3-setuptools \
-        python3-wheel \
         rpcgen \
         rpm-build && \
-    dnf autoremove -y && \
-    dnf clean all -y && \
+    nosync dnf autoremove -y && \
+    nosync dnf clean all -y && \
     rpm -qa | sort > /packages.txt && \
     mkdir -p /usr/libexec/ccache-wrappers && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/gcc
-
-RUN pip3 install \
-         meson==0.56.0
 
 ENV LANG "en_US.UTF-8"
 ENV MAKE "/usr/bin/make"
