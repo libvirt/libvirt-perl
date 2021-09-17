@@ -293,7 +293,7 @@ sub define_domain {
     return Sys::Virt::Domain->_new(connection => $self, xml => $xml, nocreate => 1, flags => $flags);
 }
 
-=item my $net = $conn->create_network($xml);
+=item my $net = $conn->create_network($xml, $flags=0);
 
 Create a new network based on the XML description passed into the C<$xml>
 parameter. The returned object is an instance of the L<Sys::Virt::Network>
@@ -305,8 +305,9 @@ the hypervisor.
 sub create_network {
     my $self = shift;
     my $xml = shift;
+    my $flags = shift;
 
-    return Sys::Virt::Network->_new(connection => $self, xml => $xml);
+    return Sys::Virt::Network->_new(connection => $self, xml => $xml, flags => $flags);
 }
 
 =item my $net = $conn->define_network($xml, $flags = 0);

@@ -6958,12 +6958,18 @@ MODULE = Sys::Virt::Network  PACKAGE = Sys::Virt::Network
 
 
 virNetworkPtr
-_create_xml(con, xml)
+_create_xml(con, xml, flags=0)
       virConnectPtr con;
       const char *xml;
+      unsigned int flags;
     CODE:
-      if (!(RETVAL = virNetworkCreateXML(con, xml)))
-          _croak_error();
+      if (flags) {
+          if (!(RETVAL = virNetworkCreateXMLFlags(con, xml, flags)))
+              _croak_error();
+      } else {
+          if (!(RETVAL = virNetworkCreateXML(con, xml)))
+              _croak_error();
+      }
   OUTPUT:
       RETVAL
 
@@ -10309,6 +10315,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_NETWORK_XML_INACTIVE, XML_INACTIVE);
 
       REGISTER_CONSTANT(VIR_NETWORK_DEFINE_VALIDATE, DEFINE_VALIDATE);
+
+      REGISTER_CONSTANT(VIR_NETWORK_CREATE_VALIDATE, CREATE_VALIDATE);
 
       REGISTER_CONSTANT(VIR_NETWORK_UPDATE_COMMAND_NONE, UPDATE_COMMAND_NONE);
       REGISTER_CONSTANT(VIR_NETWORK_UPDATE_COMMAND_MODIFY, UPDATE_COMMAND_MODIFY);
