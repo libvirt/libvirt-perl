@@ -8096,6 +8096,48 @@ list_capabilities(dev)
 
 
 void
+set_autostart(nodedev, autostart)
+      virNodeDevicePtr nodedev;
+      int autostart;
+  PPCODE:
+      if (virNodeDeviceSetAutostart(nodedev, autostart) < 0)
+          _croak_error();
+
+
+int
+get_autostart(nodedev)
+      virNodeDevicePtr nodedev;
+ PREINIT:
+      int autostart;
+    CODE:
+      if (virNodeDeviceGetAutostart(nodedev, &autostart) < 0)
+          _croak_error();
+      RETVAL = autostart;
+  OUTPUT:
+      RETVAL
+
+
+int
+is_active(nodedev)
+      virNodeDevicePtr nodedev;
+    CODE:
+      if ((RETVAL = virNodeDeviceIsActive(nodedev)) < 0)
+          _croak_error();
+  OUTPUT:
+      RETVAL
+
+
+int
+is_persistent(nodedev)
+      virNodeDevicePtr nodedev;
+    CODE:
+      if ((RETVAL = virNodeDeviceIsPersistent(nodedev)) < 0)
+          _croak_error();
+  OUTPUT:
+      RETVAL
+
+
+void
 destroy(dev_rv)
       SV *dev_rv;
  PREINIT:
