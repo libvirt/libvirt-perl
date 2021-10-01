@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-7.8.0 2021-10-00
+7.8.0 2021-10-01
 
  - Add VIR_NWFILTER_BINDING_CREATE_VALIDATE constant
  - Add support for virNetworkCreateXMLFlags and
