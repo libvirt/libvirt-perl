@@ -32,7 +32,11 @@ stages:
     - perl Build test
     - perl Build install
     - perl Build dist
-    - if test -x /usr/bin/rpmbuild ; then rpmbuild --nodeps -ta Sys-Virt*.tar.gz ; fi
+    - if test -x /usr/bin/rpmbuild ;
+      then
+        rpmbuild --clean --nodeps --define "_topdir $PWD/rpmbuild" -ta Sys-Virt*.tar.gz ;
+        mv rpmbuild/RPMS/x86_64/ libvirt-perl-rpms ;
+      fi
     - mv "$SCRATCH_DIR" scratch
 
 include: '/ci/gitlab.yml'

@@ -16,20 +16,42 @@ targets:
           paths:
             - scratch
 
-  centos-stream-8: x86_64
+  centos-stream-8:
+    jobs:
+      - arch: x86_64
+        artifacts:
+          expire_in: 1 hour
+          paths:
+            - libvirt-perl-rpms
 
   centos-stream-9:
     jobs:
       - arch: x86_64
         allow-failure: true
+        artifacts:
+          expire_in: 1 hour
+          paths:
+            - libvirt-perl-rpms
 
   debian-10: x86_64
 
   debian-sid: x86_64
 
-  fedora-34: x86_64
+  fedora-34:
+    jobs:
+      - arch: x86_64
+        artifacts:
+          expire_in: 1 hour
+          paths:
+            - libvirt-perl-rpms
 
-  fedora-35: x86_64
+  fedora-35:
+    jobs:
+      - arch: x86_64
+        artifacts:
+          expire_in: 1 hour
+          paths:
+            - libvirt-perl-rpms
 
   fedora-rawhide:
     jobs:

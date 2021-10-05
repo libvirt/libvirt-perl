@@ -155,6 +155,10 @@ x86_64-centos-stream-8:
   allow_failure: false
   variables:
     NAME: centos-stream-8
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - libvirt-perl-rpms
 
 
 x86_64-centos-stream-9:
@@ -164,6 +168,10 @@ x86_64-centos-stream-9:
   allow_failure: true
   variables:
     NAME: centos-stream-9
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - libvirt-perl-rpms
 
 
 x86_64-debian-10:
@@ -191,7 +199,10 @@ x86_64-fedora-34:
   allow_failure: false
   variables:
     NAME: fedora-34
-
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - libvirt-perl-rpms
 
 x86_64-fedora-35:
   extends: .native_build_job
@@ -200,7 +211,10 @@ x86_64-fedora-35:
   allow_failure: false
   variables:
     NAME: fedora-35
-
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - libvirt-perl-rpms
 
 x86_64-fedora-rawhide:
   extends: .native_build_job
