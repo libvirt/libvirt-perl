@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 7.9.0 2021-11-??
 
- - XXX
+ - Add callback for memory device size change domain event
 
 7.8.0 2021-10-01
 
