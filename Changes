@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-7.9.0 2021-11-??
+7.9.0 2021-11-02
 
  - Add callback for memory device size change domain event
  - Add VIR_CONNECT_LIST_NODE_DEVICES_CAP_VPD constant
