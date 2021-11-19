@@ -305,7 +305,7 @@ the hypervisor.
 sub create_network {
     my $self = shift;
     my $xml = shift;
-    my $flags = shift;
+    my $flags = shift || 0;
 
     return Sys::Virt::Network->_new(connection => $self, xml => $xml, flags => $flags);
 }
