@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-7.10.0 2021-12-??
+7.10.0 2021-12-01
 
  - Add VIR_DOMAIN_GUEST_INFO_INTERFACES constant
  - Fix uninitialized flags in create_network()
