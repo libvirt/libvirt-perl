@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+8.0.0 2022-01-??
+
+ - XXX
+
 7.10.0 2021-12-01
 
  - Add VIR_DOMAIN_GUEST_INFO_INTERFACES constant
