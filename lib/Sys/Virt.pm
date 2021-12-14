@@ -1612,6 +1612,14 @@ Platform diffie-hellman key
 
 The number of physical address bits used by SEV
 
+=item Sys::Virt::SEV_MAX_GUESTS
+
+Maximum number of SEV guests that can be launched
+
+=item Sys::Virt::SEV_MAX_ES_GUESTS
+
+Maximum number of SEV-ES guests that can be launched
+
 =back
 
 =item $conn->node_suspend_for_duration($target, $duration, $flags=0)

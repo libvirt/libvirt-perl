@@ -4,6 +4,8 @@ Revision history for perl module Sys::Virt
 
  - Add VIR_DOMAIN_BLOCK_COPY_SYNCHRONOUS_WRITES and
    VIR_MIGRATE_NON_SHARED_SYNCHRONOUS_WRITES constants
+ - Add VIR_NODE_SEV_MAX_GUESTS and
+   VIR_NODE_SEV_MAX_ES_GUESTS constants
 
 7.10.0 2021-12-01
 
