@@ -2191,6 +2191,22 @@ contain the following keys
 
 The AMD SEV launch measurement
 
+=item Sys::Virt::Domain::LAUNCH_SECURITY_SEV_API_MAJOR
+
+The host SEV API major version
+
+=item Sys::Virt::Domain::LAUNCH_SECURITY_SEV_API_MINOR
+
+The host SEV API minor version
+
+=item Sys::Virt::Domain::LAUNCH_SECURITY_SEV_BUILD_ID
+
+The host SEV firmware build ID
+
+=item Sys::Virt::Domain::LAUNCH_SECURITY_SEV_POLICY
+
+The guest SEV policy
+
 =back
 
 =item $info = $dom->get_guest_info($types, $flags=0)
