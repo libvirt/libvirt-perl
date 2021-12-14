@@ -2803,6 +2803,13 @@ Send memory pages to the destination host through several network
 connections. See C<Sys::Virt::Domain::MIGRATE_PARAM_PARALLEL_*>
 parameters for configuring the parallel migration.
 
+=item Sys::Virt::Domain::MIGRATE_NON_SHARED_SYNCHRONOUS_WRITES
+
+Force the guest writes which happen when copying disk images for
+non-shared storage migration to be synchronously written to the
+destination. This ensures the storage migration converges for VMs
+doing heavy I/O on fast local storage and slow mirror.
+
 =back
 
 =head2 UNDEFINE CONSTANTS
@@ -3998,6 +4005,11 @@ Reuse existing external file for copy
 =item Sys::Virt::Domain::BLOCK_COPY_TRANSIENT_JOB
 
 Don't force usage of recoverable job for the copy operation
+
+=item Sys::Virt::Domain::BLOCK_COPY_SYNCHRONOUS_WRITES
+
+Force the copy job to synchronously propagate guest writes into
+the destination image, so that the copy is guaranteed to converge
 
 =back
 
