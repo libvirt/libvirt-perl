@@ -85,6 +85,13 @@ x86_64-fedora-34-container:
     NAME: fedora-34
 
 
+x86_64-fedora-35-container:
+  extends: .container_job
+  allow_failure: false
+  variables:
+    NAME: fedora-35
+
+
 x86_64-fedora-rawhide-container:
   extends: .container_job
   allow_failure: false
@@ -168,6 +175,15 @@ x86_64-fedora-34:
   allow_failure: false
   variables:
     NAME: fedora-34
+
+
+x86_64-fedora-35:
+  extends: .native_build_job
+  needs:
+    - x86_64-fedora-35-container
+  allow_failure: false
+  variables:
+    NAME: fedora-35
 
 
 x86_64-fedora-rawhide:

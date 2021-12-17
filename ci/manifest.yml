@@ -24,6 +24,8 @@ targets:
 
   fedora-34: x86_64
 
+  fedora-35: x86_64
+
   fedora-rawhide: x86_64
 
   opensuse-leap-152: x86_64
