@@ -2209,6 +2209,29 @@ The guest SEV policy
 
 =back
 
+=item $dom->set_launch_security_state(\%params, $flags=0)
+
+Set information about the domain launch security state. C<$flags>
+is currently unused and defaults to zero. The provided hash may
+contain the following keys
+
+=over 4
+
+=item Sys::Virt::Domain::LAUNCH_SECURITY_SEV_SECRET
+
+The SEV secret string to inject
+
+=item Sys::Virt::Domain::LAUNCH_SECURITY_SEV_SECRET_HEADER
+
+The SEV secret header string to inject
+
+=item Sys::Virt::Domain::LAUNCH_SECURITY_SEV_SECRET_SET_ADDRESS
+
+The address at which to inject the SEV secret. If omitted
+it can be automatically determined from the firmware
+
+=back
+
 =item $info = $dom->get_guest_info($types, $flags=0)
 
 Get information about the domain guest configuration. The C<$types>

@@ -5259,6 +5259,39 @@ get_launch_security_info(dom, flags=0)
       RETVAL
 
 
+void
+set_launch_security_state(dom, newparams, flags=0)
+      virDomainPtr dom;
+      HV *newparams;
+      unsigned int flags;
+  PREINIT:
+      virTypedParameterPtr params;
+      int nparams;
+    PPCODE:
+      nparams = 3;
+      Newx(params, nparams, virTypedParameter);
+
+      strncpy(params[0].field, VIR_DOMAIN_LAUNCH_SECURITY_SEV_SECRET,
+              VIR_TYPED_PARAM_FIELD_LENGTH);
+      params[0].type = VIR_TYPED_PARAM_STRING;
+
+      strncpy(params[1].field, VIR_DOMAIN_LAUNCH_SECURITY_SEV_SECRET_HEADER,
+              VIR_TYPED_PARAM_FIELD_LENGTH);
+      params[1].type = VIR_TYPED_PARAM_STRING;
+
+      strncpy(params[2].field, VIR_DOMAIN_LAUNCH_SECURITY_SEV_SECRET_SET_ADDRESS,
+              VIR_TYPED_PARAM_FIELD_LENGTH);
+      params[2].type = VIR_TYPED_PARAM_ULLONG;
+
+      nparams = vir_typed_param_from_hv(newparams, params, nparams);
+
+      if (virDomainSetLaunchSecurityState(dom, params, nparams, flags) < 0) {
+          vir_typed_param_safe_free(params, nparams);
+          _croak_error();
+      }
+      vir_typed_param_safe_free(params, nparams);
+
+
 HV *
 get_guest_info(dom, types=0, flags=0)
       virDomainPtr dom;
@@ -10253,6 +10286,10 @@ BOOT:
       REGISTER_CONSTANT_STR(VIR_DOMAIN_LAUNCH_SECURITY_SEV_API_MINOR, LAUNCH_SECURITY_SEV_API_MINOR);
       REGISTER_CONSTANT_STR(VIR_DOMAIN_LAUNCH_SECURITY_SEV_BUILD_ID, LAUNCH_SECURITY_SEV_BUILD_ID);
       REGISTER_CONSTANT_STR(VIR_DOMAIN_LAUNCH_SECURITY_SEV_POLICY, LAUNCH_SECURITY_SEV_POLICY);
+
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_LAUNCH_SECURITY_SEV_SECRET, LAUNCH_SECURITY_SEV_SECRET);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_LAUNCH_SECURITY_SEV_SECRET_HEADER, LAUNCH_SECURITY_SEV_SECRET_HEADER);
+      REGISTER_CONSTANT_STR(VIR_DOMAIN_LAUNCH_SECURITY_SEV_SECRET_SET_ADDRESS, LAUNCH_SECURITY_SEV_SECRET_SET_ADDRESS);
 
       REGISTER_CONSTANT(VIR_DOMAIN_GUEST_INFO_USERS, GUEST_INFO_USERS);
       REGISTER_CONSTANT(VIR_DOMAIN_GUEST_INFO_OS, GUEST_INFO_OS);

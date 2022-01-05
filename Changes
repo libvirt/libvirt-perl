@@ -10,6 +10,8 @@ Revision history for perl module Sys::Virt
    VIR_DOMAIN_LAUNCH_SECURITY_SEV_API_MINOR,
    VIR_DOMAIN_LAUNCH_SECURITY_SEV_BUILD_ID and
    VIR_DOMAIN_LAUNCH_SECURITY_SEV_POLICY constants
+ - Add virDomainSetLaunchSecurityState and related
+   constants
 
 7.10.0 2021-12-01
 
