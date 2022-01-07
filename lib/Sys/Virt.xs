@@ -5237,8 +5237,10 @@ set_perf_events(dom, newparams, flags=0)
 
       nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
-      if (virDomainSetPerfEvents(dom, params, nparams, flags) < 0)
+      if (virDomainSetPerfEvents(dom, params, nparams, flags) < 0) {
+          vir_typed_param_safe_free(params, nparams);
           _croak_error();
+      }
       vir_typed_param_safe_free(params, nparams);
 
 
@@ -7443,8 +7445,10 @@ set_parameters(port, newparams, flags=0)
 
       nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
-      if (virNetworkPortSetParameters(port, params, nparams, flags) < 0)
+      if (virNetworkPortSetParameters(port, params, nparams, flags) < 0) {
+          vir_typed_param_safe_free(params, nparams);
           _croak_error();
+      }
       vir_typed_param_safe_free(params, nparams);
 
 
