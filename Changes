@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+8.1.0 2022-03-??
+
+ - XXX
+
 8.0.0 2022-01-14
 
  - Add VIR_DOMAIN_BLOCK_COPY_SYNCHRONOUS_WRITES and
