@@ -50,11 +50,11 @@ check-dco:
 
 # Native container jobs
 
-x86_64-centos-8-container:
+x86_64-almalinux-8-container:
   extends: .container_job
   allow_failure: false
   variables:
-    NAME: centos-8
+    NAME: almalinux-8
 
 
 x86_64-centos-stream-8-container:
@@ -129,13 +129,13 @@ x86_64-ubuntu-2004-container:
 
 # Native build jobs
 
-x86_64-centos-8:
+x86_64-almalinux-8:
   extends: .native_build_job
   needs:
-    - x86_64-centos-8-container
+    - x86_64-almalinux-8-container
   allow_failure: false
   variables:
-    NAME: centos-8
+    NAME: almalinux-8
   artifacts:
     expire_in: 2 days
     paths:

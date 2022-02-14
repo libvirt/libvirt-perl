@@ -40,7 +40,7 @@ include: '/ci/gitlab.yml'
 apiref:
   stage: docs
   needs: []
-  image: $CI_REGISTRY_IMAGE/ci-centos-8:latest
+  image: $CI_REGISTRY_IMAGE/ci-almalinux-8:latest
   script:
     - mkdir apiref
     - perl -MPod::Simple::HTMLBatch -e Pod::Simple::HTMLBatch::go lib apiref
@@ -53,10 +53,10 @@ apiref:
       - apiref
 
 api-coverage:
-  image: $CI_REGISTRY_IMAGE/ci-centos-8:latest
+  image: $CI_REGISTRY_IMAGE/ci-almalinux-8:latest
   stage: sanity_checks
   needs:
-    - job: x86_64-centos-8
+    - job: x86_64-almalinux-8
       artifacts: true
   before_script:
     - *git_build_vars

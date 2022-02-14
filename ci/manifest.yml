@@ -8,7 +8,7 @@ gitlab:
 
 targets:
 
-  centos-8:
+  almalinux-8:
     jobs:
       - arch: x86_64
         artifacts:
