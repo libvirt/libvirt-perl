@@ -17,7 +17,7 @@ else\n\
 fi\n\
 exec "$@"' > /usr/bin/nosync && \
     chmod +x /usr/bin/nosync && \
-    nosync dnf update -y && \
+    nosync dnf distro-sync -y && \
     nosync dnf install -y \
         ca-certificates \
         ccache \
@@ -39,6 +39,7 @@ exec "$@"' > /usr/bin/nosync && \
         ninja-build \
         perl-Archive-Tar \
         perl-CPAN-Changes \
+        perl-ExtUtils-CBuilder \
         perl-Module-Build \
         perl-Sys-Hostname \
         perl-Test-Pod \

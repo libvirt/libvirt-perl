@@ -33,6 +33,7 @@ RUN dnf update -y && \
         perl \
         perl-Archive-Tar \
         perl-CPAN-Changes \
+        perl-ExtUtils-CBuilder \
         perl-Module-Build \
         perl-Test-Pod \
         perl-Test-Pod-Coverage \

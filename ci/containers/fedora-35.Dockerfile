@@ -38,6 +38,7 @@ exec "$@"' > /usr/bin/nosync && \
         ninja-build \
         perl-Archive-Tar \
         perl-CPAN-Changes \
+        perl-ExtUtils-CBuilder \
         perl-Module-Build \
         perl-Sys-Hostname \
         perl-Test-Pod \

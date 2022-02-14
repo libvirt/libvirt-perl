@@ -28,10 +28,12 @@ RUN dnf update -y && \
         libxml2-devel \
         libxslt \
         make \
+        meson \
         ninja-build \
         perl \
         perl-Archive-Tar \
         perl-CPAN-Changes \
+        perl-ExtUtils-CBuilder \
         perl-Module-Build \
         perl-Test-Pod \
         perl-Test-Pod-Coverage \
@@ -41,9 +43,6 @@ RUN dnf update -y && \
         pkgconfig \
         python3 \
         python3-docutils \
-        python3-pip \
-        python3-setuptools \
-        python3-wheel \
         rpcgen \
         rpm-build && \
     dnf autoremove -y && \
@@ -52,9 +51,6 @@ RUN dnf update -y && \
     mkdir -p /usr/libexec/ccache-wrappers && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/gcc
-
-RUN pip3 install \
-         meson==0.56.0
 
 ENV LANG "en_US.UTF-8"
 ENV MAKE "/usr/bin/make"

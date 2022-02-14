@@ -21,6 +21,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
             libc-dev-bin \
             libc6-dev \
             libcpan-changes-perl \
+            libextutils-cbuilder-perl \
             libglib2.0-dev \
             libgnutls28-dev \
             libmodule-build-perl \

@@ -6,7 +6,7 @@
 
 FROM registry.opensuse.org/opensuse/tumbleweed:latest
 
-RUN zypper update -y && \
+RUN zypper dist-upgrade -y && \
     zypper install -y \
            ca-certificates \
            ccache \
@@ -28,6 +28,7 @@ RUN zypper update -y && \
            ninja \
            perl-Archive-Tar \
            perl-CPAN-Changes \
+           perl-ExtUtils-CBuilder \
            perl-Module-Build \
            perl-Test-Pod \
            perl-Test-Pod-Coverage \
