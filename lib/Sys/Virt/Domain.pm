@@ -2473,6 +2473,10 @@ Boot the guest, even if there was a saved snapshot
 
 Validate the XML document against the XML schema
 
+=item Sys::Virt::Domain::START_RESET_NVRAM
+
+Reset the firmware NVRAM state from its original template
+
 =back
 
 =head2 DOMAIN DEFINE
@@ -4112,6 +4116,10 @@ starting upon restore.
 
 Mark the saved state as running to allow the guest CPUs
 to start upon restore.
+
+=item Sys::Virt::Domain::SAVE_RESET_NVRAM
+
+Reset the firmware NVRAM state from its original template
 
 =back
 

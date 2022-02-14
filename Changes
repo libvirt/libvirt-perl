@@ -2,7 +2,8 @@ Revision history for perl module Sys::Virt
 
 8.1.0 2022-03-??
 
- - XXX
+ - Add VIR_DOMAIN_SAVE_RESET_NVRAM, VIR_DOMAIN_SNAPSHOT_REVERT_RESET_NVRAM
+   and VIR_DOMAIN_START_RESET_NVRAM constants
 
 8.0.0 2022-01-14
 
