@@ -30,7 +30,10 @@ targets:
 
   opensuse-leap-152: x86_64
 
-  opensuse-tumbleweed: x86_64
+  opensuse-tumbleweed:
+    jobs:
+      - arch: x86_64
+        allow-failure: true
 
   ubuntu-1804: x86_64
 
