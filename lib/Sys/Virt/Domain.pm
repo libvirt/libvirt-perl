@@ -2344,8 +2344,24 @@ Warnings about actions that have tainting the domain
 =item $dom->start_dirty_rate_calc($dom, $secs, $flags=0)
 
 Request calculation of the domain's memory dirty rate over
-the next C<$secs> seconds. C<$flags> is currently unused
-and defaults to zero.
+the next C<$secs> seconds. C<$flags> accepts one or more
+of
+
+=over 4
+
+=item Sys::Virt::Domain::DIRTYRATE_MODE_PAGE_SAMPLING
+
+Page sampling mode
+
+=item Sys::Virt::Domain::DIRTYRATE_MODE_DIRTY_BITMAP
+
+Dirty bitmap mode
+
+=item Sys::Virt::Domain::DIRTYRATE_MODE_DIRTY_RING
+
+Dirty ring mode
+
+=back
 
 =back
 
