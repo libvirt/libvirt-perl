@@ -1620,6 +1620,10 @@ Maximum number of SEV guests that can be launched
 
 Maximum number of SEV-ES guests that can be launched
 
+=item Sys::Virt::SEV_CPU0_ID
+
+The SEV firmware ID for CPU 0
+
 =back
 
 =item $conn->node_suspend_for_duration($target, $duration, $flags=0)
