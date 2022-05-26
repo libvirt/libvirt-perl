@@ -37,14 +37,6 @@ targets:
 
   debian-sid: x86_64
 
-  fedora-34:
-    jobs:
-      - arch: x86_64
-        artifacts:
-          expire_in: 1 hour
-          paths:
-            - libvirt-perl-rpms
-
   fedora-35:
     jobs:
       - arch: x86_64
