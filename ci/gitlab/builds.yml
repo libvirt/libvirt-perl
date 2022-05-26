@@ -74,7 +74,7 @@ x86_64-debian-sid:
   needs:
     - job: x86_64-debian-sid-container
       optional: true
-  allow_failure: false
+  allow_failure: true
   variables:
     NAME: debian-sid
 
