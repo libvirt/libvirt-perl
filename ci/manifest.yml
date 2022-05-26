@@ -45,6 +45,14 @@ targets:
           paths:
             - libvirt-perl-rpms
 
+  fedora-36:
+    jobs:
+      - arch: x86_64
+        artifacts:
+          expire_in: 1 hour
+          paths:
+            - libvirt-perl-rpms
+
   fedora-rawhide:
     jobs:
       - arch: x86_64
