@@ -56,3 +56,5 @@ targets:
         allow-failure: true
 
   ubuntu-2004: x86_64
+
+  ubuntu-2204: x86_64
