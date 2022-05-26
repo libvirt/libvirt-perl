@@ -35,6 +35,8 @@ targets:
 
   debian-10: x86_64
 
+  debian-11: x86_64
+
   debian-sid: x86_64
 
   fedora-35:
