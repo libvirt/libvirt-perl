@@ -1320,12 +1320,13 @@ network interfaces
 Abort a transaction for changing the configuration of one or more
 network interfaces
 
-=item $conn->restore_domain($savefile, $dxml=undef, $flags=0)
+=item $conn->restore_domain($savefile, $dxml=undef, $params=undef, $flags=0)
 
-Recreate a domain from the saved state file given in the C<$savefile> parameter.
-The optional C<$dxml> parameter can be used to alter portions of the domain XML.
-The C<$flags> parameter accepts one of the SAVE / RESTORE FLAG CONSTANTS
-described for the domain object and defaults to zero.
+Recreate a domain from the saved state file given in the C<$savefile>
+parameter. The optional C<$dxml> parameter can be used to alter portions of the
+domain XML. The C<$params> parameter is a hash reference whose keys is a subset
+of the SAVE / RESTORE PARAMETER CONSTANTS. The C<$flags> parameter accepts one
+of the SAVE / RESTORE FLAG CONSTANTS described later and defaults to zero.
 
 =item $conn->get_max_vcpus($domtype)
 
