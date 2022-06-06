@@ -207,12 +207,15 @@ C<$duration> specifies when the guest should automatically
 wakeup. The C<$flags> parameter is optional and defaults to
 zero.
 
-=item $dom->save($filename)
+=item $dom->save($filename, $dxml=undef, $flags=0)
 
 Take a snapshot of the domain's state and save the information to
 the file named in the C<$filename> parameter. The domain can later
 be restored from this file with the C<restore_domain> method on
-the L<Sys::Virt> object.
+the L<Sys::Virt> object. The optional C<$dxml> parameter can be used to alter
+portions of the domain XML that will be used when performing restore.
+The C<$flags> parameter accepts one of the SAVE / RESTORE FLAG CONSTANTS
+described later and defaults to zero.
 
 =item $dom->managed_save($flags=0)
 
