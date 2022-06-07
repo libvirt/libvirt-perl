@@ -4112,7 +4112,7 @@ Keep backing chain referenced using relative names
 
 =back
 
-=head2 DOMAIN SAVE / RESTORE CONSTANTS
+=head2 DOMAIN SAVE / RESTORE FLAG CONSTANTS
 
 The following constants can be used when saving or restoring
 virtual machines
