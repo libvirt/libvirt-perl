@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+8.5.0 2022-07-??
+
+ - XXX
+
 8.4.0 2022-06-09
 
  - Add VIR_NODE_SEV_CPU0_ID constant
