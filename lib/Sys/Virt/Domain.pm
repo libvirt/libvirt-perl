@@ -452,6 +452,10 @@ The guest was restarted after crashing
 
 The guest is running but post-copy is taking place
 
+=item Sys::Virt::Domain::STATE_RUNNING_POSTCOPY_FAILED
+
+The guest is running, but migration failed in post-copy
+
 =item Sys::Virt::Domain::STATE_BLOCKED_UNKNOWN
 
 The guest is blocked for an unknown reason
@@ -2882,6 +2886,10 @@ non-shared storage migration to be synchronously written to the
 destination. This ensures the storage migration converges for VMs
 doing heavy I/O on fast local storage and slow mirror.
 
+=item Sys::Virt::Domain::MIGRATE_POSTCOPY_RESUME
+
+Resume migration which failed in post-copy phase.
+
 =back
 
 =head2 UNDEFINE CONSTANTS
@@ -3509,6 +3517,10 @@ The domain resumed because it was restored from a snapshot
 =item Sys::Virt::Domain::EVENT_RESUMED_POSTCOPY
 
 The domain resumed but post-copy is running in background
+
+=item Sys::Virt::Domain::EVENT_RESUMED_POSTCOPY_FAILED
+
+The domain is running, but migration failed in post-copy.
 
 =back
 
