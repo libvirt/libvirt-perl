@@ -3404,6 +3404,21 @@ This provides a value for the dynamic polling adjustment algorithm to
 use to shrink its polling interval when the polling interval exceeds
 the poll_max_ns value.
 
+=item Sys::Virt::Domain::IOTHREAD_PARAM_THREAD_POOL_MIN
+
+Sets the lower bound for thread pool size. A value of -1 disables this bound
+leaving hypervisor use its default value, though this value is not accepted
+for running domains. Due to internal implementation it's recommended to set
+lower and upper bounds separately.
+
+=item Sys::Virt::Domain::IOTHREAD_PARAM_THREAD_POOL_MAX
+
+Sets the upper bound for thread pool size. A value of -1 disables this bound
+leaving hypervisor use its default value, though this value is not accepted
+for running domains. Since the upper band has to be equal to or greater than
+lower bound value of 0 is not accepted. Due to internal implementation it's
+recommended to set lower and upper bounds separately.
+
 =back
 
 =head2 VCPU FLAGS
