@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 8.5.0 2022-07-??
 
- - XXX
+ - Fix parameter detection for save/restore_domain
 
 8.4.0 2022-06-09
 
