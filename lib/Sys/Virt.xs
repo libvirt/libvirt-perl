@@ -4935,11 +4935,17 @@ get_job_stats(dom, flags=0)
 
 
 void
-abort_job(dom)
+abort_job(dom, flags=0)
       virDomainPtr dom;
+      unsigned int flags;
     PPCODE:
-      if (virDomainAbortJob(dom) < 0)
-          _croak_error();
+      if (flags) {
+          if (virDomainAbortJobFlags(dom, flags) < 0)
+              _croak_error();
+      } else {
+          if (virDomainAbortJob(dom) < 0)
+              _croak_error();
+      }
 
 
 void
@@ -10384,6 +10390,8 @@ BOOT:
       REGISTER_CONSTANT(VIR_DOMAIN_JOB_OPERATION_SNAPSHOT_REVERT, JOB_OPERATION_SNAPSHOT_REVERT);
       REGISTER_CONSTANT(VIR_DOMAIN_JOB_OPERATION_DUMP, JOB_OPERATION_DUMP);
       REGISTER_CONSTANT(VIR_DOMAIN_JOB_OPERATION_BACKUP, JOB_OPERATION_BACKUP);
+
+      REGISTER_CONSTANT(VIR_DOMAIN_ABORT_JOB_POSTCOPY, DOMAIN_ABORT_JOB_POSTCOPY);
 
       REGISTER_CONSTANT(VIR_DOMAIN_LIFECYCLE_POWEROFF, LIFECYCLE_POWEROFF);
       REGISTER_CONSTANT(VIR_DOMAIN_LIFECYCLE_REBOOT, LIFECYCLE_REBOOT);

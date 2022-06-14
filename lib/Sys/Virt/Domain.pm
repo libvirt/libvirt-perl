@@ -1793,9 +1793,18 @@ The guest is performing a block backup
 
 =back
 
-=item $dom->abort_job()
+=item $dom->abort_job($flags=0)
 
-Aborts the currently executing job
+Aborts the currently executing job. Valid C<$flags> incude:
+
+=over 4
+
+=item Sys::Virt::Domain::DOMAIN_ABORT_JOB_POSTCOPY
+
+Interrupt post-copy migration. It can later be resumed using
+migrate APIs with C<MIGRATE_POSTCOPY_RESUME> flag.
+
+=back
 
 =item my $info = $dom->get_block_job_info($path, $flags=0)
 
