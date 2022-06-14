@@ -2390,7 +2390,7 @@ restore_domain(con, fromsv=&PL_sv_undef, dxmlsv=&PL_sv_undef, params_sv=&PL_sv_u
       virTypedParameterPtr params;
       int nparams;
   PPCODE:
-      if (!from && !SvOK(params_sv))
+      if (!SvOK(fromsv) && !SvOK(params_sv))
           croak("Either $from or $params parameter must be supplied");
 
       if (SvOK(dxmlsv))
@@ -4553,7 +4553,7 @@ PREINIT:
       virTypedParameterPtr params;
       int nparams;
   PPCODE:
-      if (!to && !SvOK(params_sv))
+      if (!SvOK(tosv) && !SvOK(params_sv))
           croak("Either $to or $params parameter must be supplied");
 
       if (SvOK(dxmlsv))
