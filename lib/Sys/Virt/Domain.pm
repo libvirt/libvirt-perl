@@ -2890,6 +2890,12 @@ doing heavy I/O on fast local storage and slow mirror.
 
 Resume migration which failed in post-copy phase.
 
+=item Sys::Virt::Domain::MIGRATE_ZEROCOPY
+
+Attempt to avoid copying data. This is a request, not a guarantee
+and may apply to either one or both directions of data transfer
+at discretion of the hypervisor implementation.
+
 =back
 
 =head2 UNDEFINE CONSTANTS
