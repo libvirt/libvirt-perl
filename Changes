@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-8.5.0 2022-07-??
+8.5.0 2022-07-01
 
  - Fix parameter detection for save/restore_domain
  - Add support for virDomainAbortJobFlags and associated
