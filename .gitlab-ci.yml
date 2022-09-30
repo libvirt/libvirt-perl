@@ -15,10 +15,8 @@ stages:
   export PKG_CONFIG_PATH="$LIBDIR/pkgconfig"
 
 .native_build_job:
-  extends: .gitlab_native_build_job
-  before_script:
-    - *git_build_vars
   script:
+    - *git_build_vars
     - pushd "$PWD"
     - mkdir -p "$SCRATCH_DIR"
     - cd "$SCRATCH_DIR"
@@ -39,12 +37,20 @@ stages:
       fi
     - mv "$SCRATCH_DIR" scratch
 
+.native_build_job_prebuilt_env:
+  extends:
+    - .native_build_job
+    - .gitlab_native_build_job_prebuilt_env
+
+.native_build_job_local_env:
+  extends:
+    - .native_build_job
+    - .gitlab_native_build_job_local_env
+
 include: '/ci/gitlab.yml'
 
-apiref:
+.api_reference_job:
   stage: docs
-  needs: []
-  image: $CI_REGISTRY_IMAGE/ci-almalinux-8:latest
   script:
     - mkdir apiref
     - perl -MPod::Simple::HTMLBatch -e Pod::Simple::HTMLBatch::go lib apiref
@@ -56,19 +62,47 @@ apiref:
     paths:
       - apiref
 
-api-coverage:
-  image: $CI_REGISTRY_IMAGE/ci-almalinux-8:latest
-  stage: sanity_checks
+api_reference_prebuilt_env:
+  extends:
+    - .gitlab_native_build_job_prebuilt_env
+    - .api_reference_job
   needs:
-    - job: x86_64-almalinux-8
-      artifacts: true
-  before_script:
-    - *git_build_vars
+    - job: x86_64-almalinux-8-container
+      optional: true
+  variables:
+    NAME: almalinux-8
+
+api_reference_local_env:
+  extends:
+    - .gitlab_native_build_job_local_env
+    - .api_reference_job
+  variables:
+    IMAGE: docker.io/library/almalinux:8
+    NAME: almalinux-8
+
+.api_coverage_job:
+  stage: sanity_checks
   script:
+    - *git_build_vars
     - mv scratch "$SCRATCH_DIR"
     - perl Build.PL
     - TEST_MAINTAINER=1 perl Build test
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "push"'
-      allow_failure: true
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+  allow_failure: true
+
+api_coverage_prebuilt_env:
+  extends:
+    - .gitlab_native_build_job_prebuilt_env
+    - .api_coverage_job
+  needs:
+    - job: x86_64-almalinux-8-container
+      optional: true
+  variables:
+    NAME: almalinux-8
+
+api_coverage_local_env:
+  extends:
+    - .gitlab_native_build_job_local_env
+    - .api_coverage_job
+  variables:
+    IMAGE: docker.io/library/almalinux:8
+    NAME: almalinux-8
