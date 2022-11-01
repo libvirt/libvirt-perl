@@ -300,6 +300,16 @@ Validate the XML document against schema
 
 =back
 
+=head2 NODE DEVICE DEFINE
+
+=over 4
+
+=item Sys::Virt::NodeDevice::DEFINE_XML_VALIDATE
+
+Validate the XML document against schema
+
+=back
+
 =cut
 
 

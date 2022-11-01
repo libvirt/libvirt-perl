@@ -483,12 +483,13 @@ sub create_node_device {
 =item my $dev = $conn->define_node_device($xml, $flags=0);
 
 Defines, but does not start, a new node dev based on the XML description
-passed into the C<$xml> parameter. The C<$flags> parameter is
-currently unused and defaults to zero. The returned object is an instance
+passed into the C<$xml> parameter. The returned object is an instance
 of the L<Sys::Virt::NodeDevice> class. This method is not available with
 unprivileged connections to the hypervisor. The defined node device can
 be later started by calling the C<create> method on the returned
-C<Sys::Virt::NodeDevice> object.
+C<Sys::Virt::NodeDevice> object. The C<$flags> parameter accepts one of the
+NODE DEVICE DEFINE constants documented in L<Sys::Virt::NodeDevice>, and
+defaults to 0 if omitted.
 
 =cut
 

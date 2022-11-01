@@ -3,7 +3,8 @@ Revision history for perl module Sys::Virt
 8.10.0 2022-12-xx
 
  - Add VIR_STORAGE_VOL_CREATE_VALIDATE constant
- - Add VIR_NODE_DEVICE_CREATE_XML_VALIDATE constant
+ - Add VIR_NODE_DEVICE_CREATE_XML_VALIDATE and
+   VIR_NODE_DEVICE_DEFINE_XML_VALIDATE constants
 
 8.9.0 2022-11-xx
 
