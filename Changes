@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+8.10.0 2022-12-xx
+
+ - Add VIR_STORAGE_VOL_CREATE_VALIDATE constant
+
 8.9.0 2022-11-xx
 
  - Add VIR_DOMAIN_UNDEFINE_TPM and VIR_DOMAIN_UNDEFINE_KEEP_TPM constants
