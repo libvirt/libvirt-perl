@@ -4707,6 +4707,11 @@ Memory bandwidth statistics values
 
 Memory dirty rate statistics
 
+=item Sys::Virt::Domain::STATS_VM
+
+Hypervisor-specific stats fields for given VM
+
+
 =back
 
 =head2 PROCESS SIGNALS
