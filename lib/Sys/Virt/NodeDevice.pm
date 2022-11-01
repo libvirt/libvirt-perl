@@ -290,6 +290,16 @@ Indicates that a device configuration has been deleted
 
 =back
 
+=head2 NODE DEVICE CREATION
+
+=over 4
+
+=item Sys::Virt::NodeDevice::CREATE_XML_VALIDATE
+
+Validate the XML document against schema
+
+=back
+
 =cut
 
 
