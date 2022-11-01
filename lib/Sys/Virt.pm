@@ -464,10 +464,11 @@ sub define_interface {
 =item my $dev = $conn->create_node_device($xml, $flags=0);
 
 Create a new virtual node device based on the XML description passed into the
-C<$xml> parameter. The C<$flags> parameter is currently unused and defaults to
-zero. The returned object is an instance of the L<Sys::Virt::NodeDevice>
-class. This method is not available with unprivileged connections to
-the hypervisor.
+C<$xml> parameter. The returned object is an instance of the
+L<Sys::Virt::NodeDevice> class. This method is not available with unprivileged
+connections to the hypervisor. The C<$flags> parameter accepts one of the NODE
+DEVICE CREATION constants documented in L<Sys::Virt::NodeDevice>, and defaults
+to 0 if omitted.
 
 =cut
 
