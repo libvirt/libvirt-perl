@@ -346,6 +346,22 @@ sub define_nwfilter {
     return Sys::Virt::NWFilter->_new(connection => $self, xml => $xml, nocreate => 1, flags => $flags);
 }
 
+=item my $binding = $conn->create_nwfilter_binding($xml, $flags=0);
+
+Create a new network filter binding based on the XML description passed into the C<$xml>
+parameter. The returned object is an instance of the L<Sys::Virt::NWFilterBinding>
+class.
+
+=cut
+
+sub create_nwfilter_binding {
+    my $self = shift;
+    my $xml = shift;
+    my $flags = shift || 0;
+
+    return Sys::Virt::NWFilterBinding->_new(connection => $self, xml => $xml, flags => $flags);
+}
+
 =item my $secret = $conn->define_secret($xml, $flags=0);
 
 Defines a new secret based on the XML description
@@ -413,25 +429,6 @@ sub create_interface {
 
     return Sys::Virt::Interface->_new(connection => $self, xml => $xml);
 }
-
-
-=item my $binding = $conn->create_nwfilter_binding($xml, $flags=0);
-
-Create a new network filter binding based on the XML description passed into the C<$xml>
-parameter. The returned object is an instance of the L<Sys::Virt::NWFilterBinding>
-class.
-
-=cut
-
-sub create_nwfilter_binding {
-    my $self = shift;
-    my $xml = shift;
-    my $flags = shift || 0;
-
-    return Sys::Virt::NWFilterBinding->_new(connection => $self, xml => $xml, flags => $flags);
-}
-
-
 
 =item my $iface = $conn->define_interface($xml, $flags=0);
 
