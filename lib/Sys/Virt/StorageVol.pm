@@ -230,10 +230,6 @@ Preallocate header metadata when creating the volume.
 
 Perform lightweight reference copy
 
-=item Sys::Virt::StorageVol::CREATE_VALIDATE
-
-Validate the XML document against schema
-
 =back
 
 =head2 DELETE MODES
