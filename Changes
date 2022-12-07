@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+9.0.0 2023-01-xx
+
+ - XXX
+
 8.10.0 2022-12-07
 
  - Add VIR_STORAGE_VOL_CREATE_VALIDATE constant
