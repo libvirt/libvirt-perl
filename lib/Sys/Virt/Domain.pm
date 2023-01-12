@@ -1795,6 +1795,10 @@ The guest is saving a crash dump
 
 The guest is performing a block backup
 
+=item Sys::Virt::Domain::JOB_OPERATION_SNAPSHOT_DELETE
+
+The guest is deleting a snapshot
+
 =back
 
 =item $dom->abort_job($flags=0)

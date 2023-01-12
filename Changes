@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 9.0.0 2023-01-xx
 
- - XXX
+ - Add VIR_DOMAIN_JOB_OPERATION_SNAPSHOT_DELETE constant
 
 8.10.0 2022-12-07
 
