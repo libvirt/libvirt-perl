@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+9.3.0 2023-05-xx
+
+ - xx
+
 9.2.0 2023-04-17
 
  - Add VIR_DOMAIN_PAUSED_API_ERROR constant
