@@ -4,7 +4,7 @@
 #
 # https://gitlab.com/libvirt/libvirt-ci
 
-FROM registry.opensuse.org/opensuse/leap:15.3
+FROM registry.opensuse.org/opensuse/leap:15.4
 
 RUN zypper update -y && \
     zypper install -y \
@@ -24,6 +24,7 @@ RUN zypper update -y && \
            libxml2-devel \
            libxslt \
            make \
+           meson \
            ninja \
            perl-Archive-Tar \
            perl-CPAN-Changes \
@@ -37,9 +38,6 @@ RUN zypper update -y && \
            pkgconfig \
            python3-base \
            python3-docutils \
-           python3-pip \
-           python3-setuptools \
-           python3-wheel \
            rpcgen \
            rpm-build && \
     zypper clean --all && \
@@ -47,8 +45,6 @@ RUN zypper update -y && \
     mkdir -p /usr/libexec/ccache-wrappers && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc && \
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/gcc
-
-RUN /usr/bin/pip3 install meson==0.56.0
 
 ENV CCACHE_WRAPPERSDIR "/usr/libexec/ccache-wrappers"
 ENV LANG "en_US.UTF-8"
