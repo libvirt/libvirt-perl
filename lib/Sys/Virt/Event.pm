@@ -165,13 +165,13 @@ to use the events C<$events>.
 
 Remove the event mask for the file descriptor watch C<$watch>.
 
-=item my $watch = Sys::Virt::Event::add_timeout($frequency, $coderef)
+=item my $timer = Sys::Virt::Event::add_timeout($frequency, $coderef)
 
 Adds a timeout to trigger with C<$frequency> milliseconds interval.
 The C<$coderef> parameter is a subroutine to invoke when an event
 is triggered. The subroutine will be passed one parameter, the
-timer identifier. This method returns the watch identifier which
-can be used to update or remove the watch
+timer identifier. This method returns the timer identifier which
+can be used to update or remove the timer
 
 =item Sys::Virt::Event::update_timeout($timer, $frequency)
 
