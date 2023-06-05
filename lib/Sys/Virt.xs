@@ -9208,6 +9208,9 @@ remove_timeout(timer)
         _croak_error();
 
 
+MODULE = Sys::Virt::EventImpl  PACKAGE = Sys::Virt::EventImpl
+
+
 void
 _run_handle_callback_helper(watch, fd, event, cbref, opaqueref)
     int watch;
