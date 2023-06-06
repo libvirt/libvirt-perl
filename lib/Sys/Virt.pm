@@ -1664,7 +1664,7 @@ released in garbage collection.
 Unregister a callback, allowing the connection object to be garbage
 collected.
 
-=item $callback = $conn->domain_event_register_any($dom, $eventID, $callback)
+=item $callbackID = $conn->domain_event_register_any($dom, $eventID, $callback)
 
 Register a callback to received notifications of domain events.
 The C<$dom> parameter can be C<undef> to request events on all
@@ -1728,7 +1728,7 @@ unregistering the event.
 Unregister a callback, associated with the C<$callbackID> previously
 obtained from C<domain_event_register_any>.
 
-=item $callback = $conn->network_event_register_any($net, $eventID, $callback)
+=item $callbackID = $conn->network_event_register_any($net, $eventID, $callback)
 
 Register a callback to received notifications of network events.
 The C<$net> parameter can be C<undef> to request events on all
@@ -1760,7 +1760,7 @@ unregistering the event.
 Unregister a callback, associated with the C<$callbackID> previously
 obtained from C<network_event_register_any>.
 
-=item $callback = $conn->storage_pool_event_register_any($pool, $eventID, $callback)
+=item $callbackID = $conn->storage_pool_event_register_any($pool, $eventID, $callback)
 
 Register a callback to received notifications of storage pool events.
 The C<$pool> parameter can be C<undef> to request events on all
@@ -1796,7 +1796,7 @@ unregistering the event.
 Unregister a callback, associated with the C<$callbackID> previously
 obtained from C<storage_pool_event_register_any>.
 
-=item $callback = $conn->node_device_event_register_any($dev, $eventID, $callback)
+=item $callbackID = $conn->node_device_event_register_any($dev, $eventID, $callback)
 
 Register a callback to received notifications of node device events.
 The C<$dev> parameter can be C<undef> to request events on all
@@ -1828,7 +1828,7 @@ unregistering the event.
 Unregister a callback, associated with the C<$callbackID> previously
 obtained from C<node_device_event_register_any>.
 
-=item $callback = $conn->secret_event_register_any($secret, $eventID, $callback)
+=item $callbackID = $conn->secret_event_register_any($secret, $eventID, $callback)
 
 Register a callback to received notifications of secret events.
 The C<$secret> parameter can be C<undef> to request events on all
