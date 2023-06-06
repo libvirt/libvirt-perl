@@ -21,7 +21,7 @@
 
 =head1 NAME
 
-Sys::Virt::Error - error object for libvirt APIs
+Sys::Virt::Error - Error object for libvirt APIs
 
 =head1 DESCRIPTION
 
