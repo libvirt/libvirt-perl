@@ -40,6 +40,17 @@ virtual machine management APIs. This allows machines running
 within arbitrary virtualization containers to be managed with
 a consistent API.
 
+=head1 CALLBACK HANDLING
+
+Each callback registration routine returns a C<$callbackID> (except for
+C<domain_event_register>). This return value must be retained and used
+for callback deregistration.
+
+B<IMPORTANT:> All callbacks must be deregistered (including the one
+registered using C<domain_event_register>); failing to do so prevents
+the C<Sys::Virt> object from being garbage collected and the connection to
+C<libvirtd> from being closed.
+
 =head1 ERROR HANDLING
 
 Any operations in the Sys::Virt API which have failure scenarios
