@@ -78,6 +78,10 @@ sub register {
           $impl->isa("Sys::Virt::EventImpl"))) {
         die "event implementation must be a subclass of Sys::Virt::EventImpl";
     }
+    if (ref($impl) &&
+        $impl->isa("Sys::Virt::Event")) {
+        warn "DECPRECATION WARNING: event implementation is a subclass of Sys::Virt::Event";
+    }
 
     $eventimpl = $impl;
 
