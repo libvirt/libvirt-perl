@@ -67,7 +67,8 @@ t/300-networks.t
 t/400-storage-pools.t
 t/500-storage-vols.t
 t/600-interfaces.t
-t/800-events.t
+t/800-eventimpl.t
+t/801-events-backward-compat.t
 typemap
 Makefile.PL
 META.yml
