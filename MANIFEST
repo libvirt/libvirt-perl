@@ -40,6 +40,7 @@ lib/Sys/Virt/DomainSnapshot.pm
 lib/Sys/Virt/DomainCheckpoint.pm
 lib/Sys/Virt/Error.pm
 lib/Sys/Virt/Event.pm
+lib/Sys/Virt/EventImpl.pm
 lib/Sys/Virt/Interface.pm
 lib/Sys/Virt/Network.pm
 lib/Sys/Virt/NetworkPort.pm
