@@ -1363,7 +1363,7 @@ Return the name of the host with which this connection is associated.
 
 Return the URI associated with the open connection. This may be different
 from the URI used when initially connecting to libvirt, when 'auto-probing'
-or drivers occurrs.
+or drivers occurs.
 
 =item my $xml = $conn->get_sysinfo()
 
@@ -1527,7 +1527,7 @@ method.
 
 Returns an array containing information about the CPUs available
 on the host. The first element, C<totcpus>, specifies the total
-number of CPUs available to the host regardles of their online
+number of CPUs available to the host regardless of their online
 stat. The second element, C<onlinemap>, provides a bitmap detailing
 which CPUs are currently online. The third element, C<totonline>,
 specifies the total number of online CPUs. The values in the bitmap
@@ -2015,7 +2015,7 @@ allocate for. Each entry is a further array reference where the
 first element is the page size and the second element is the
 page count. The same number of pages will be allocated on each
 NUMA node in the range C<$start> to C<$end> inclusive. The
-C<$flags> parameter accepts two contants
+C<$flags> parameter accepts two constants
 
 =over 4
 

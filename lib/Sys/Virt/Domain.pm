@@ -1374,7 +1374,7 @@ Set the post-copy speed instead of the pre-copy speed.
 
 =item $bandwidth = $dom->migrate_get_max_speed($flags=0)
 
-Get the maximum allowed bandwidth during migration fo the guest.
+Get the maximum allowed bandwidth during migration of the guest.
 The returned <bandwidth> value is measured in MB/second.
 The C<$flags> parameter is accepts the same constants as
 C<migrate_set_max_speed>.

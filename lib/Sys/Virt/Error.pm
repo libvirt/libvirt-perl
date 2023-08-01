@@ -437,7 +437,7 @@ handled separately from generic error handling.
 
 =item Sys::Virt::Error::ERR_AUTH_FAILED
 
-Authentication falure when connecting to a driver
+Authentication failure when connecting to a driver
 
 =item Sys::Virt::Error::ERR_CALL_FAILED
 
