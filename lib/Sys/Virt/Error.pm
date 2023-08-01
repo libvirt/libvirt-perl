@@ -54,7 +54,7 @@ sub stringify {
     return "libvirt error code: " . $self->{code} . ", message: " . $self->{message} . ($self->{message} =~ /\n$/ ? "" : "\n");
 }
 
-=item my $code = $err->level
+=item my $level = $err->level
 
 Return the raw error level represented by this error. One of the
 ERROR LEVEL CONSTANTS
