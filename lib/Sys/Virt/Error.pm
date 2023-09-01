@@ -880,6 +880,10 @@ The checkpoint is inconsistent
 
 More than one matching domain found
 
+=item Sys::Virt::Error::ERR_NO_NETWORK_METADATA
+
+The requested metadata does not exist
+
 =back
 
 =head1 AUTHORS
