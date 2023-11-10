@@ -63,7 +63,11 @@ targets:
       - arch: x86_64
         allow-failure: true
 
-  opensuse-leap-15: x86_64
+  opensuse-leap-15:
+    jobs:
+      - arch: x86_64
+        variables:
+          CFLAGS: -Wno-missing-include-dirs
 
   opensuse-tumbleweed:
     jobs:
