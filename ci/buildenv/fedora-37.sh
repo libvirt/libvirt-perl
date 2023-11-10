@@ -39,7 +39,6 @@ function install_buildenv() {
         pkgconfig \
         python3 \
         python3-docutils \
-        rpcgen \
         rpm-build
     rpm -qa | sort > /packages.txt
     mkdir -p /usr/libexec/ccache-wrappers

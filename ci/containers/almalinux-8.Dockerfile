@@ -43,7 +43,6 @@ RUN dnf update -y && \
         pkgconfig \
         python3 \
         python3-docutils \
-        rpcgen \
         rpm-build && \
     dnf autoremove -y && \
     dnf clean all -y && \

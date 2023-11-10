@@ -16,7 +16,6 @@ function install_buildenv() {
             gettext \
             git \
             libarchive-tar-perl \
-            libc-dev-bin \
             libc6-dev \
             libcpan-changes-perl \
             libextutils-cbuilder-perl \

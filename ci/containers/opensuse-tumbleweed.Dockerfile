@@ -38,7 +38,6 @@ RUN zypper dist-upgrade -y && \
            pkgconfig \
            python3-base \
            python3-docutils \
-           rpcgen \
            rpm-build && \
     zypper clean --all && \
     rpm -qa | sort > /packages.txt && \

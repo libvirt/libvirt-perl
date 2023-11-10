@@ -85,24 +85,6 @@ x86_64-centos-stream-9-local-env:
       - libvirt-perl-rpms
 
 
-x86_64-debian-10-prebuilt-env:
-  extends: .native_build_job_prebuilt_env
-  needs:
-    - job: x86_64-debian-10-container
-      optional: true
-  allow_failure: false
-  variables:
-    NAME: debian-10
-
-x86_64-debian-10-local-env:
-  extends: .native_build_job_local_env
-  needs: []
-  allow_failure: false
-  variables:
-    IMAGE: docker.io/library/debian:10-slim
-    NAME: debian-10
-
-
 x86_64-debian-11-prebuilt-env:
   extends: .native_build_job_prebuilt_env
   needs:
@@ -119,6 +101,24 @@ x86_64-debian-11-local-env:
   variables:
     IMAGE: docker.io/library/debian:11-slim
     NAME: debian-11
+
+
+x86_64-debian-12-prebuilt-env:
+  extends: .native_build_job_prebuilt_env
+  needs:
+    - job: x86_64-debian-12-container
+      optional: true
+  allow_failure: false
+  variables:
+    NAME: debian-12
+
+x86_64-debian-12-local-env:
+  extends: .native_build_job_local_env
+  needs: []
+  allow_failure: false
+  variables:
+    IMAGE: docker.io/library/debian:12-slim
+    NAME: debian-12
 
 
 x86_64-debian-sid-prebuilt-env:
@@ -223,7 +223,7 @@ x86_64-opensuse-leap-15-local-env:
   needs: []
   allow_failure: false
   variables:
-    IMAGE: registry.opensuse.org/opensuse/leap:15.4
+    IMAGE: registry.opensuse.org/opensuse/leap:15.5
     NAME: opensuse-leap-15
 
 
