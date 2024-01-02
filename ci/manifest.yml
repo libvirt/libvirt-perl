@@ -42,7 +42,7 @@ targets:
       - arch: x86_64
         allow-failure: true
 
-  fedora-37:
+  fedora-38:
     jobs:
       - arch: x86_64
         artifacts:
@@ -50,7 +50,7 @@ targets:
           paths:
             - libvirt-perl-rpms
 
-  fedora-38:
+  fedora-39:
     jobs:
       - arch: x86_64
         artifacts:
