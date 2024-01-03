@@ -942,6 +942,10 @@ flags may be used
 
 Treat C<$newsize> as if it were in bytes, rather than KB.
 
+=item Sys::Virt::Domain::BLOCK_RESIZE_CAPACITY
+
+Resize to full the capacity of the source
+
 =back
 
 =item $dom->interface_stats($path)
