@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+10.1.0 2024-03-xx
+
+ - XXX
+
 10.0.0 2024-01-17
 
  - Add VIR_DOMAIN_BLOCK_RESIZE_CAPACITY constant
