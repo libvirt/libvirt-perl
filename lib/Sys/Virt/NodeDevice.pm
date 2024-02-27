@@ -139,6 +139,13 @@ with it.
 
 Return a list of all capabilities in the device.
 
+=item $dev->update($xml, $flags=0)
+
+Update the definition of an existing node device with C<$xml>. The
+C<$flags> parameter can be use to control which config is affected
+(see XML UPDATE FLAGS) and defaults to zero (affect current state of
+the node device).
+
 =back
 
 =head1 CONSTANTS
@@ -307,6 +314,24 @@ Validate the XML document against schema
 =item Sys::Virt::NodeDevice::DEFINE_XML_VALIDATE
 
 Validate the XML document against schema
+
+=back
+
+=head2 NODE DEVICE UPDATE
+
+=over 4
+
+=item Sys::Virt::NodeDevice::UPDATE_AFFECT_CURRENT
+
+Affect live if node device is active, config if it's not active
+
+=item Sys::Virt::NodeDevice::UPDATE_AFFECT_LIVE
+
+Affect live state of node device only
+
+=item Sys::Virt::NodeDevice::UPDATE_AFFECT_CONFIG
+
+Affect persistent config only
 
 =back
 

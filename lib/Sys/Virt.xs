@@ -8422,6 +8422,14 @@ DESTROY(dev_rv)
         sv_setiv((SV*)SvRV(dev_rv), 0);
     }
 
+void
+update(nodedev, xml, flags=0)
+    virNodeDevicePtr nodedev;
+    const char *xml;
+    unsigned int flags;
+ PPCODE:
+    if (virNodeDeviceUpdate(nodedev, xml, flags) < 0)
+        _croak_error();
 
 MODULE = Sys::Virt::Interface  PACKAGE = Sys::Virt::Interface
 
@@ -10772,6 +10780,10 @@ BOOT:
     REGISTER_CONSTANT(VIR_NODE_DEVICE_CREATE_XML_VALIDATE, CREATE_XML_VALIDATE);
 
     REGISTER_CONSTANT(VIR_NODE_DEVICE_DEFINE_XML_VALIDATE, DEFINE_XML_VALIDATE);
+
+    REGISTER_CONSTANT(VIR_NODE_DEVICE_UPDATE_AFFECT_CURRENT, UPDATE_AFFECT_CURRENT);
+    REGISTER_CONSTANT(VIR_NODE_DEVICE_UPDATE_AFFECT_LIVE, UPDATE_AFFECT_LIVE);
+    REGISTER_CONSTANT(VIR_NODE_DEVICE_UPDATE_AFFECT_CONFIG, UPDATE_AFFECT_CONFIG);
 
 
     stash = gv_stashpv( "Sys::Virt::StorageVol", TRUE );
