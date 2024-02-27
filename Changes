@@ -5,6 +5,7 @@ Revision history for perl module Sys::Virt
  - Add virNodeDeviceUpdate and associated constants
  - Add VIR_CONNECT_LIST_NODE_DEVICES_PERSISTENT and
    VIR_CONNECT_LIST_NODE_DEVICES_TRANSIENT constants
+ - Add VIR_NODE_DEVICE_XML_INACTIVE constant
 
 10.0.0 2024-01-17
 

@@ -81,10 +81,12 @@ Returns a string with a locally unique name of the device
 Returns a string with a locally unique name of the parent
 of the device, or undef if there is no parent
 
-=item my $xml = $dev->get_xml_description()
+=item my $xml = $dev->get_xml_description($flags=0)
 
-Returns an XML document containing a complete description of
-the storage dev's configuration
+Returns an XML document containing a complete description of the node
+device's configuration. The optional $flags parameter controls
+generation of the XML document, defaulting to 0 if omitted. It can be
+one or more of the XML DUMP constants listed later in this document.
 
 =item $dev->reattach()
 
@@ -340,6 +342,19 @@ Affect live state of node device only
 =item Sys::Virt::NodeDevice::UPDATE_AFFECT_CONFIG
 
 Affect persistent config only
+
+=back
+
+=head2 XML DUMP OPTIONS
+
+The following constants are used to control the information
+included in the XML configuration dump
+
+=over 4
+
+=item Sys::Virt::NodeDevice::XML_INACTIVE
+
+Report the persistent inactive configuration for the node device.
 
 =back
 
