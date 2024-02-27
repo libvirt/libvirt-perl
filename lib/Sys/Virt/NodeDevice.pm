@@ -255,6 +255,14 @@ Include active devices
 
 Include inactive devices
 
+=item Sys::Virt::NodeDevice::LIST_PERSISTENT
+
+Include persistent devices
+
+=item Sys::Virt::NodeDevice::LIST_TRANSIENT
+
+Include transient devices
+
 =back
 
 =head2 EVENT ID CONSTANTS
