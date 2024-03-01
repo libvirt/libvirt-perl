@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+10.2.0 2024-04-xx
+
+ - XXX
+
 10.1.0 2024-03-01
 
  - Add virNodeDeviceUpdate and associated constants
