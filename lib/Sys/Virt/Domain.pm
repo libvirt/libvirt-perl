@@ -2422,6 +2422,27 @@ Label the FD to permit the guest to write to it.
 
 =back
 
+=item $dom->graphics_reload($type, $flags=0)
+
+Request a reload of graphics backend state. The C<$type>
+parameter specifies what type of graphics backend to reload
+if there are multiple present. It takes one of the constants:
+
+=over 4
+
+=item Sys::Virt::Domain::GRAPHICS_RELOAD_TYPE_ANY
+
+Reload state for any graphics backend type
+
+=item Sys::Virt::Domain::GRAPHICS_RELOAD_TYPE_VNC
+
+Reload state for only VNC graphics backends
+
+=back
+
+The C<$flags> parameter is currently unused and defaults
+to zero.
+
 =back
 
 =head1 CONSTANTS

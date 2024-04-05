@@ -7142,6 +7142,17 @@ fd_associate(dom, name, fdssv, flags=0)
 
     Safefree(fds);
 
+
+void
+graphics_reload(dom, type, flags=0)
+    virDomainPtr dom;
+    unsigned int type;
+    unsigned int flags;
+  PPCODE:
+    if (virDomainGraphicsReload(dom, type, flags) < 0)
+        _croak_error();
+
+
 void
 destroy(dom_rv, flags=0)
     SV *dom_rv;
@@ -10555,6 +10566,9 @@ BOOT:
     REGISTER_CONSTANT(VIR_DOMAIN_FD_ASSOCIATE_SECLABEL_RESTORE, FD_ASSOCIATE_SECLABEL_RESTORE);
     REGISTER_CONSTANT(VIR_DOMAIN_FD_ASSOCIATE_SECLABEL_WRITABLE, FD_ASSOCIATE_SECLABEL_WRITABLE);
 
+    REGISTER_CONSTANT(VIR_DOMAIN_GRAPHICS_RELOAD_TYPE_ANY, GRAPHICS_RELOAD_TYPE_ANY);
+    REGISTER_CONSTANT(VIR_DOMAIN_GRAPHICS_RELOAD_TYPE_VNC, GRAPHICS_RELOAD_TYPE_VNC);
+    
     stash = gv_stashpv( "Sys::Virt::DomainSnapshot", TRUE );
     REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_DELETE_CHILDREN, DELETE_CHILDREN);
     REGISTER_CONSTANT(VIR_DOMAIN_SNAPSHOT_DELETE_METADATA_ONLY, DELETE_METADATA_ONLY);

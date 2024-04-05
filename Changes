@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 10.2.0 2024-04-xx
 
- - XXX
+ - Add virDomainGraphicsReload API and associated constants
 
 10.1.0 2024-03-01
 
