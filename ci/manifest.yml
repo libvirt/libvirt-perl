@@ -16,14 +16,6 @@ targets:
           paths:
             - scratch
 
-  centos-stream-8:
-    jobs:
-      - arch: x86_64
-        artifacts:
-          expire_in: 1 hour
-          paths:
-            - libvirt-perl-rpms
-
   centos-stream-9:
     jobs:
       - arch: x86_64
@@ -42,7 +34,7 @@ targets:
       - arch: x86_64
         allow-failure: true
 
-  fedora-38:
+  fedora-39:
     jobs:
       - arch: x86_64
         artifacts:
@@ -50,7 +42,7 @@ targets:
           paths:
             - libvirt-perl-rpms
 
-  fedora-39:
+  fedora-40:
     jobs:
       - arch: x86_64
         artifacts:
@@ -74,6 +66,6 @@ targets:
       - arch: x86_64
         allow-failure: true
 
-  ubuntu-2004: x86_64
-
   ubuntu-2204: x86_64
+
+  ubuntu-2404: x86_64
