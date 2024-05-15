@@ -46,11 +46,11 @@ api_reference_job:
   extends:
     - .gitlab_native_build_job
   needs:
-    - job: x86_64-almalinux-8-container
+    - job: x86_64-almalinux-9-container
       optional: true
   variables:
-    TARGET_BASE_IMAGE: docker.io/library/almalinux:8
-    NAME: almalinux-8
+    TARGET_BASE_IMAGE: docker.io/library/almalinux:9
+    NAME: almalinux-9
   script:
     - mkdir apiref
     - perl -MPod::Simple::HTMLBatch -e Pod::Simple::HTMLBatch::go lib apiref
@@ -67,7 +67,7 @@ api_coverage_job:
   extends:
     - .gitlab_native_build_job
   needs:
-    - job: x86_64-almalinux-8
+    - job: x86_64-almalinux-9
       artifacts: true
   script:
     - *git_build_vars
@@ -75,6 +75,6 @@ api_coverage_job:
     - perl Build.PL
     - TEST_MAINTAINER=1 perl Build test
   variables:
-    TARGET_BASE_IMAGE: docker.io/library/almalinux:8
-    NAME: almalinux-8
+    TARGET_BASE_IMAGE: docker.io/library/almalinux:9
+    NAME: almalinux-9
   allow_failure: true
