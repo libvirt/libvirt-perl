@@ -2248,6 +2248,10 @@ The host SEV firmware build ID
 
 The guest SEV policy
 
+=item Sys::Virt::Domain::LAUNCH_SECURITY_SEV_SNP_POLICY
+
+The guest SEV-SNP policy
+
 =back
 
 =item $dom->set_launch_security_state(\%params, $flags=0)
