@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+10.6.0 2024-08-XX
+
+ - XXX
+
 10.5.0 2024-07-10
 
  - Add VIR_DOMAIN_LAUNCH_SECURITY_SEV_SNP_POLICY constant.
