@@ -1769,6 +1769,10 @@ Current total temporary disk space for the job in bytes
 
 The error message from a failed job
 
+=item Sys::Virt::Domain::JOB_VFIO_DATA_TRANSFERRED
+
+Total data transferred for VFIO devices
+
 =back
 
 The values for the Sys::Virt::Domain::JOB_OPERATION field are

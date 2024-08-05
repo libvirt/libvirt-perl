@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 10.6.0 2024-08-XX
 
- - XXX
+ - Add VIR_DOMAIN_JOB_VFIO_DATA_TRANSFERRED constant
 
 10.5.0 2024-07-10
 
