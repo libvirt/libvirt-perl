@@ -25,5 +25,6 @@ my @disks = @ARGV;
 $dom->migrate_to_uri(
     $desturi, {
 	Sys::Virt::Domain::MIGRATE_PARAM_MIGRATE_DISKS => \@disks,
+	Sys::Virt::Domain::MIGRATE_PARAM_DISKS_DETECT_ZEROES => \@disks,
     },
     Sys::Virt::Domain::MIGRATE_PEER2PEER);

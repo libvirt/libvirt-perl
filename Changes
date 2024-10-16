@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 10.9.0 2024-11-xx
 
- - XXX
+ - Add VIR_MIGRATE_PARAM_MIGRATE_DISKS_DETECT_ZEROES constant
 
 10.6.0 2024-08-05
 

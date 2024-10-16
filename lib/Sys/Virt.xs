@@ -415,6 +415,8 @@ migrate_parse_params(virTypedParameterPtr *paramsRet,
 
     vir_typed_param_add_string_list_from_hv(newparams, &params, &nparams,
                                             VIR_MIGRATE_PARAM_MIGRATE_DISKS);
+    vir_typed_param_add_string_list_from_hv(newparams, &params, &nparams,
+                                            VIR_MIGRATE_PARAM_MIGRATE_DISKS_DETECT_ZEROES);
 
     *paramsRet = params;
     *nparamsRet = nparams;
@@ -9895,6 +9897,7 @@ BOOT:
     REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_DISKS_URI, MIGRATE_PARAM_DISKS_URI);
     REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_COMPRESSION_ZLIB_LEVEL, MIGRATE_PARAM_ZLIB_LEVEL);
     REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_COMPRESSION_ZSTD_LEVEL, MIGRATE_PARAM_ZSTD_LEVEL);
+    REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_MIGRATE_DISKS_DETECT_ZEROES, MIGRATE_PARAM_DISKS_DETECT_ZEROES);
 
     REGISTER_CONSTANT(VIR_DOMAIN_MIGRATE_MAX_SPEED_POSTCOPY, MIGRATE_MAX_SPEED_POSTCOPY);
 

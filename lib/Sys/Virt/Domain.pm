@@ -1203,6 +1203,17 @@ compression, 1 is maximum speed and 9 is maximum compression.
 The level of compression for zstd. Accepted values are in range 0-20. 0 is no
 compression, 1 is maximum speed and 20 is maximum compression.
 
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_DISKS_DETECT_ZEROES>
+
+Enable zero detection on list of disks to avoid transferring zero
+blocks. Users must ensure that any pre-created storage source on
+the destination will be cleared and thus read all-zeroes before
+using this feature, otherwise the destination image may become
+corrupted.
+In contrast to other parameters whose values are plain strings,
+the parameter value should be an array reference, whose elements
+are in turn strings representing the disk target names.
+
 =back
 
 =item $ddom = $dom->migrate(destcon, flags=0, dname=undef, uri=undef, bandwidth=0)
