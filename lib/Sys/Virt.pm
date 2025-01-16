@@ -1944,8 +1944,16 @@ requested guest configuration. Either C<$emulator> or C<$arch>
 must be a valid string referring to an emulator binary or an
 architecture name respectively. The C<$machine> parameter is
 an optional name of a guest machine, and C<$virttype> is an
-optional name of the virtualization type. C<$flags> is unused
-and defaults to zero.
+optional name of the virtualization type. C<$flags> defaults
+to zero, and accepts one or more of the following constants:
+
+=over 4
+
+=item $Sys::Virt::DOMAIN_CAPABILITIES_DISABLE_DEPRECATED_FEATURES
+
+Disable deprecated features when reporting CPU model information.
+
+=back
 
 =item my $xml = $con->get_storage_pool_capabilities($flags=0);
 

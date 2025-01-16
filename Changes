@@ -2,7 +2,8 @@ Revision history for perl module Sys::Virt
 
 11.0.0 2025-01-00
 
- - XXX
+ - Add VIR_CONNECT_GET_DOMAIN_CAPABILITIES_DISABLE_DEPRECATED_FEATURES
+   constant
 
 10.9.0 2024-11-01
 
