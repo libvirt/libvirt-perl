@@ -2017,7 +2017,7 @@ are the free count for that size.
 
 =item $con->node_alloc_pages(\@pages, $start, $end, $flags=0)
 
-Allocate further huge pages for the reserved dev. The <\@pages>
+Allocate further huge pages for the reserved dev. The C<\@pages>
 parameter is an array reference with one entry per page size to
 allocate for. Each entry is a further array reference where the
 first element is the page size and the second element is the
