@@ -18,7 +18,6 @@ function install_buildenv() {
             libarchive-tar-perl \
             libc6-dev \
             libcpan-changes-perl \
-            libextutils-cbuilder-perl \
             libglib2.0-dev \
             libgnutls28-dev \
             libmodule-build-perl \
@@ -35,6 +34,7 @@ function install_buildenv() {
             make \
             meson \
             ninja-build \
+            perl \
             perl-base \
             pkgconf \
             python3 \

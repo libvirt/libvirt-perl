@@ -70,21 +70,6 @@ x86_64-debian-sid:
     TARGET_BASE_IMAGE: docker.io/library/debian:sid-slim
 
 
-x86_64-fedora-39:
-  extends: .native_build_job
-  needs:
-    - job: x86_64-fedora-39-container
-      optional: true
-  allow_failure: false
-  variables:
-    NAME: fedora-39
-    TARGET_BASE_IMAGE: registry.fedoraproject.org/fedora:39
-  artifacts:
-    expire_in: 1 hour
-    paths:
-      - libvirt-perl-rpms
-
-
 x86_64-fedora-40:
   extends: .native_build_job
   needs:
@@ -94,6 +79,21 @@ x86_64-fedora-40:
   variables:
     NAME: fedora-40
     TARGET_BASE_IMAGE: registry.fedoraproject.org/fedora:40
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - libvirt-perl-rpms
+
+
+x86_64-fedora-41:
+  extends: .native_build_job
+  needs:
+    - job: x86_64-fedora-41-container
+      optional: true
+  allow_failure: false
+  variables:
+    NAME: fedora-41
+    TARGET_BASE_IMAGE: registry.fedoraproject.org/fedora:41
   artifacts:
     expire_in: 1 hour
     paths:
@@ -120,7 +120,7 @@ x86_64-opensuse-leap-15:
   variables:
     CFLAGS: -Wno-missing-include-dirs
     NAME: opensuse-leap-15
-    TARGET_BASE_IMAGE: registry.opensuse.org/opensuse/leap:15.5
+    TARGET_BASE_IMAGE: registry.opensuse.org/opensuse/leap:15.6
 
 
 x86_64-opensuse-tumbleweed:

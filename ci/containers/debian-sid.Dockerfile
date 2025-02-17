@@ -20,7 +20,6 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
                       libarchive-tar-perl \
                       libc6-dev \
                       libcpan-changes-perl \
-                      libextutils-cbuilder-perl \
                       libglib2.0-dev \
                       libgnutls28-dev \
                       libmodule-build-perl \
@@ -37,6 +36,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
                       make \
                       meson \
                       ninja-build \
+                      perl \
                       perl-base \
                       pkgconf \
                       python3 \

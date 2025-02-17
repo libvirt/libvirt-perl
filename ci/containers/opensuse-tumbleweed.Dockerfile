@@ -26,13 +26,11 @@ RUN zypper dist-upgrade -y && \
            make \
            meson \
            ninja \
-           perl-Archive-Tar \
+           perl \
            perl-CPAN-Changes \
-           perl-ExtUtils-CBuilder \
            perl-Module-Build \
            perl-Test-Pod \
            perl-Test-Pod-Coverage \
-           perl-Time-HiRes \
            perl-XML-XPath \
            perl-base \
            pkgconfig \
