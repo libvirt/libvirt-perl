@@ -2556,7 +2556,7 @@ restore_domain(con, fromsv=&PL_sv_undef, dxmlsv=&PL_sv_undef, params_sv=&PL_sv_u
     }
 
     if (params_hv) {
-        nparams = 2;
+        nparams = 3;
 
         /* If parameters were supplied using the old way, we'll convert them
          * to the new style libvirt API, i.e.
@@ -2584,6 +2584,10 @@ restore_domain(con, fromsv=&PL_sv_undef, dxmlsv=&PL_sv_undef, params_sv=&PL_sv_u
         strncpy(params[1].field, VIR_DOMAIN_SAVE_PARAM_DXML,
                 VIR_TYPED_PARAM_FIELD_LENGTH);
         params[1].type = VIR_TYPED_PARAM_STRING;
+
+        strncpy(params[2].field, VIR_DOMAIN_SAVE_PARAM_IMAGE_FORMAT,
+                VIR_TYPED_PARAM_FIELD_LENGTH);
+        params[2].type = VIR_TYPED_PARAM_STRING;
 
         nparams = vir_typed_param_from_hv(params_hv, params, nparams);
 
@@ -4721,7 +4725,7 @@ save(dom, tosv=&PL_sv_undef, dxmlsv=&PL_sv_undef, params_sv=&PL_sv_undef, flags=
     }
 
     if (params_hv) {
-        nparams = 2;
+        nparams = 3;
 
         /* If parameters were supplied using the old way, we'll convert them
          * to the new style libvirt API, i.e.
@@ -4749,6 +4753,10 @@ save(dom, tosv=&PL_sv_undef, dxmlsv=&PL_sv_undef, params_sv=&PL_sv_undef, flags=
         strncpy(params[1].field, VIR_DOMAIN_SAVE_PARAM_DXML,
                 VIR_TYPED_PARAM_FIELD_LENGTH);
         params[1].type = VIR_TYPED_PARAM_STRING;
+
+        strncpy(params[2].field, VIR_DOMAIN_SAVE_PARAM_IMAGE_FORMAT,
+                VIR_TYPED_PARAM_FIELD_LENGTH);
+        params[2].type = VIR_TYPED_PARAM_STRING;
 
         nparams = vir_typed_param_from_hv(params_hv, params, nparams);
 
@@ -10575,6 +10583,7 @@ BOOT:
     REGISTER_CONSTANT(VIR_DOMAIN_DIRTYRATE_MODE_DIRTY_RING, DIRTYRATE_MODE_DIRTY_RING);
     REGISTER_CONSTANT_STR(VIR_DOMAIN_SAVE_PARAM_FILE, SAVE_PARAM_FILE);
     REGISTER_CONSTANT_STR(VIR_DOMAIN_SAVE_PARAM_DXML, SAVE_PARAM_DXML);
+    REGISTER_CONSTANT_STR(VIR_DOMAIN_SAVE_PARAM_IMAGE_FORMAT, SAVE_PARAM_IMAGE_FORMAT);
 
     REGISTER_CONSTANT(VIR_DOMAIN_FD_ASSOCIATE_SECLABEL_RESTORE, FD_ASSOCIATE_SECLABEL_RESTORE);
     REGISTER_CONSTANT(VIR_DOMAIN_FD_ASSOCIATE_SECLABEL_WRITABLE, FD_ASSOCIATE_SECLABEL_WRITABLE);

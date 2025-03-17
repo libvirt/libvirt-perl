@@ -4311,6 +4311,10 @@ Specify the save state file to save to or restore from.
 Used to adjust guest xml on restore, e.g. to alter a device while domain is
 stopped.
 
+=item Sys::Virt::Domain::SAVE_PARAM_IMAGE_FORMAT
+
+Specify the save state image format.
+
 =back
 
 =head2 DOMAIN CORE DUMP CONSTANTS
