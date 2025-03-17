@@ -29,7 +29,7 @@ my $GCC_CFLAGS = "";
 if ($ENV{TEST_MAINTAINER}) {
     $GCC_CFLAGS = qq(
  -W -Waddress -Wall -Warray-bounds -Wattributes
- -Wbad-function-cast -Wbuiltin-macro-redefined -Wcast-align
+ -Wbuiltin-macro-redefined -Wcast-align
  -Wchar-subscripts -Wclobbered -Wcomment -Wcomments
  -Wcoverage-mismatch -Wcpp -Wdeprecated-declarations
  -Wdisabled-optimization -Wdiv-by-zero -Wdouble-promotion
