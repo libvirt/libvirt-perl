@@ -249,6 +249,14 @@ Include s390 AP queue devices
 
 Include PCI devices with VPD
 
+=item Sys::Virt::NodeDevice::LIST_CAP_CCWGROUP_DEV
+
+Include s390 CCW group devices
+
+=item Sys::Virt::NodeDevice::LIST_CAP_CCWGROUP_MEMBER
+
+Include s390 CCW group members
+
 =item Sys::Virt::NodeDevice::LIST_ACTIVE
 
 Include active devices
