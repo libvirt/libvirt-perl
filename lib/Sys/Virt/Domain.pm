@@ -1214,6 +1214,12 @@ In contrast to other parameters whose values are plain strings,
 the parameter value should be an array reference, whose elements
 are in turn strings representing the disk target names.
 
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_BANDWIDTH_AVAIL_SWITCHOVER>
+
+The maximum bandwidth (in MiB/s) that will be used for migration
+during the switchover phase. If set to 0 or omitted, QEMU will
+estimate a suitable default.
+
 =back
 
 =item $ddom = $dom->migrate(destcon, flags=0, dname=undef, uri=undef, bandwidth=0)

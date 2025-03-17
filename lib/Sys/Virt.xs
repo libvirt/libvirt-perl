@@ -324,7 +324,7 @@ migrate_parse_params(virTypedParameterPtr *paramsRet,
     virTypedParameterPtr params;
     int nparams;
 
-    nparams = 21;
+    nparams = 22;
     Newx(params, nparams, virTypedParameter);
 
     strncpy(params[0].field, VIR_MIGRATE_PARAM_URI,
@@ -410,6 +410,10 @@ migrate_parse_params(virTypedParameterPtr *paramsRet,
     strncpy(params[20].field, VIR_MIGRATE_PARAM_COMPRESSION_ZSTD_LEVEL,
             VIR_TYPED_PARAM_FIELD_LENGTH);
     params[20].type = VIR_TYPED_PARAM_INT;
+
+    strncpy(params[21].field, VIR_MIGRATE_PARAM_BANDWIDTH_AVAIL_SWITCHOVER,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[21].type = VIR_TYPED_PARAM_ULLONG;
 
     nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
@@ -9900,6 +9904,7 @@ BOOT:
     REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_COMPRESSION_ZLIB_LEVEL, MIGRATE_PARAM_ZLIB_LEVEL);
     REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_COMPRESSION_ZSTD_LEVEL, MIGRATE_PARAM_ZSTD_LEVEL);
     REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_MIGRATE_DISKS_DETECT_ZEROES, MIGRATE_PARAM_DISKS_DETECT_ZEROES);
+    REGISTER_CONSTANT_STR(VIR_MIGRATE_PARAM_BANDWIDTH_AVAIL_SWITCHOVER, MIGRATE_PARAM_BANDWIDTH_AVAIL_SWITCHOVER);
 
     REGISTER_CONSTANT(VIR_DOMAIN_MIGRATE_MAX_SPEED_POSTCOPY, MIGRATE_MAX_SPEED_POSTCOPY);
 
