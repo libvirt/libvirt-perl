@@ -3,6 +3,7 @@ Revision history for perl module Sys::Virt
 11.1.0 2025-03-00
 
  - Add VIR_MIGRATE_PARAM_BANDWIDTH_AVAIL_SWITCHOVER constant
+ - Add VIR_DOMAIN_MESSAGE_IOERRORS constant
 
 11.0.0 2025-01-16
 

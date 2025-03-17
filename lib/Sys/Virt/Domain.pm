@@ -2405,6 +2405,10 @@ Warnings about use of deprecated features
 
 Warnings about actions that have tainting the domain
 
+=item Sys::Virt::Domain::MESSAGE_IOERRORS
+
+Warnings about I/O errors that have occurred on the domain
+
 =back
 
 =item $dom->start_dirty_rate_calc($dom, $secs, $flags=0)
