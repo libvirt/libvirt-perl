@@ -3,6 +3,7 @@ Revision history for perl module Sys::Virt
 11.2.0 2025-04-00
 
  - Add VIR_DOMAIN_SAVE_PARAM_IMAGE_FORMAT constant
+ - Add all VIR_DOMAIN_GUEST_INFO_* constants
 
 11.1.0 2025-03-17
 

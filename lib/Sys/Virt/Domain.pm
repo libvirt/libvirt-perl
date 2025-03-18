@@ -2308,31 +2308,325 @@ should be the bitwise or of the following constants:
 
 =item Sys::Virt::Domain::GUEST_INFO_USERS
 
-Active user information
+Active user information.
+
+The following keys will be used for the returned parameters
+
+=over 4
+
+=item Sys::Virt::Domain::GUEST_INFO_USER_COUNT
+
+The number of active users on this domain as an unsigned int.
+
+=item Sys::Virt::Domain::GUEST_INFO_USER_PREFIX
+
+The parameter name prefix to access each user entry. Concatenate the
+prefix, the entry number formatted as an unsigned integer and one of the
+user suffix parameters to form a complete parameter name.
+
+=item Sys::Virt::Domain::GUEST_INFO_USER_SUFFIX_NAME
+
+Username of the user as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_USER_SUFFIX_DOMAIN
+
+Domain of the user as a string (may only be present on certain guest
+types).
+
+=item Sys::Virt::Domain::GUEST_INFO_USER_SUFFIX_LOGIN_TIME
+
+The login time of a user in milliseconds since the epoch as unsigned long
+long.
+
+=back
 
 =item Sys::Virt::Domain::GUEST_INFO_OS
 
-Misc operating system information
+Misc operating system information.
+
+The following keys will be used for the returned parameters
+
+=over 4
+
+=item Sys::Virt::Domain::GUEST_INFO_OS_ID
+
+A string identifying the operating system.
+
+=item Sys::Virt::Domain::GUEST_INFO_OS_NAME
+
+The name of the operating system, suitable for presentation to a user, as
+a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_OS_PRETTY_NAME
+
+A pretty name for the operating system, suitable for presentation to a
+user, as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_OS_VERSION
+
+The version of the operating system suitable for presentation to a user,
+as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_OS_VERSION_ID
+
+The version id of the operating system suitable for processing by scripts,
+as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_OS_KERNEL_RELEASE
+
+The release of the operating system kernel, as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_OS_KERNEL_VERSION
+
+The version of the operating system kernel, as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_OS_MACHINE
+
+The machine hardware name as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_OS_VARIANT
+
+A specific variant or edition of the operating system suitable for
+presentation to a user, as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_OS_VARIANT_ID
+
+The id for a specific variant or edition of the operating system, as a
+string.
+
+=back
 
 =item Sys::Virt::Domain::GUEST_INFO_TIMEZONE
 
-The guest timezone
+The guest timezone.
+
+The following keys will be used for the returned parameters
+
+=over 4
+
+=item Sys::Virt::Domain::GUEST_INFO_TIMEZONE_NAME
+
+The name of the timezone as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_TIMEZONE_OFFSET
+
+The offset to UTC in seconds as an int.
+
+=back
 
 =item Sys::Virt::Domain::GUEST_INFO_HOSTNAME
 
-The guest hostname
+The guest hostname.
+
+The following keys will be used for the returned parameters
+
+=over 4
+
+=item Sys::Virt::Domain::GUEST_INFO_HOSTNAME_HOSTNAME
+
+The hostname of the domain as a string.
+
+=back
 
 =item Sys::Virt::Domain::GUEST_INFO_FILESYSTEM
 
-Filesystem mount information
+Filesystem mount information.
+
+The following keys will be used for the returned parameters
+
+=over 4
+
+=item Sys::Virt::Domain::GUEST_INFO_FS_COUNT
+
+The number of filesystems defined on this domain as an unsigned int.
+
+=item Sys::Virt::Domain::GUEST_INFO_FS_PREFIX
+
+The parameter name prefix to access each filesystem entry. Concatenate the
+prefix, the entry number formatted as an unsigned integer and one of the
+filesystem suffix parameters to form a complete parameter name.
+
+=item Sys::Virt::Domain::GUEST_INFO_FS_SUFFIX_MOUNTPOINT
+
+The path to the mount point for the filesystem as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_FS_SUFFIX_NAME
+
+Device name in the guest (e.g. "sda1") as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_FS_SUFFIX_FSTYPE
+
+The type of filesystem as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_FS_SUFFIX_TOTAL_BYTES
+
+The total size of the filesystem as an unsigned long long.
+
+=item Sys::Virt::Domain::GUEST_INFO_FS_SUFFIX_USED_BYTES
+
+The number of bytes used in the filesystem as an unsigned long long.
+
+=item Sys::Virt::Domain::GUEST_INFO_FS_SUFFIX_DISK_COUNT
+
+The number of disks targeted by this filesystem as an int.
+
+=item Sys::Virt::Domain::GUEST_INFO_FS_SUFFIX_DISK_PREFIX
+
+The parameter name prefix to access each disk entry. Concatenate the
+filesystem prefix, the filesystem entry number formatted as an unsigned
+integer, the disk prefix, the disk entry number formatted as an unsigned
+integer and one of the disk suffix parameters to form a complete parameter
+name.
+
+=item Sys::Virt::Domain::GUEST_INFO_FS_SUFFIX_DISK_SUFFIX_ALIAS
+
+The device alias of the disk (e.g. sda) as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_FS_SUFFIX_DISK_SUFFIX_SERIAL
+
+The serial number of the disk as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_FS_SUFFIX_DISK_SUFFIX_DEVICE
+
+The device node of the disk as a string.
+
+=back
 
 =item Sys::Virt::Domain::GUEST_INFO_DISKS
 
-Block device information
+Block device information.
+
+The following keys will be used for the returned parameters
+
+=over 4
+
+=item Sys::Virt::Domain::GUEST_INFO_DISK_COUNT
+
+The number of disks defined on this domain as an unsigned int.
+
+=item Sys::Virt::Domain::GUEST_INFO_DISK_PREFIX
+
+The parameter name prefix to access each disk entry. Concatenate the
+prefix, the entry number formatted as an unsigned integer and one of the
+disk suffix parameters to form a complete parameter name.
+
+=item Sys::Virt::Domain::GUEST_INFO_DISK_SUFFIX_NAME
+
+Device node (Linux) or device UNC (Windows) as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_DISK_SUFFIX_PARTITION
+
+Whether this is a partition (true) or disk (false) as a boolean.
+
+=item Sys::Virt::Domain::GUEST_INFO_DISK_SUFFIX_DEPENDENCY_COUNT
+
+e.g. for LVs of the LVM this will hold the list of PVs, for LUKS encrypted
+volume this will contain the disk where the volume is placed. (Linux).
+
+=item Sys::Virt::Domain::GUEST_INFO_DISK_SUFFIX_DEPENDENCY_PREFIX
+
+The parameter name prefix to access each dependency entry. Concatenate the
+disk prefix, the disk entry number formatted as an unsigned integer, the
+dependency prefix, the dependency entry number formatted as an unsigned
+integer and one of the dependency suffix parameters to form a complete
+parameter name.
+
+=item Sys::Virt::Domain::GUEST_INFO_DISK_SUFFIX_DEPENDENCY_SUFFIX_NAME
+
+A dependency name as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_DISK_SUFFIX_SERIAL
+
+Optional disk serial number as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_DISK_SUFFIX_ALIAS
+
+The device alias of the disk (e.g. sda) as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_DISK_SUFFIX_GUEST_ALIAS
+
+Optional alias assigned to the disk, on Linux this is a name assigned by
+device mapper, as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_DISK_SUFFIX_GUEST_BUS
+
+Disk bus as reported by the guest OS.
+
+=back
 
 =item Sys::Virt::Domain::GUEST_INFO_INTERFACES
 
-Network interfaces information
+Network interfaces information.
+
+The following keys will be used for the returned parameters
+
+=over 4
+
+=item Sys::Virt::Domain::GUEST_INFO_IF_COUNT
+
+The number of interfaces defined on this domain as an unsigned int.
+
+=item Sys::Virt::Domain::GUEST_INFO_IF_PREFIX
+
+The parameter name prefix to access each interface entry. Concatenate the
+prefix, the entry number formatted as an unsigned integer and one of the
+interface suffix parameters to form a complete parameter name.
+
+=item Sys::Virt::Domain::GUEST_INFO_IF_SUFFIX_NAME
+
+Name in the guest (e.g. ``eth0``) for the interface as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_IF_SUFFIX_HWADDR
+
+Hardware address in the guest of the interface as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_IF_SUFFIX_ADDR_COUNT
+
+The number of IP addresses of interface as an unsigned int.
+
+=item Sys::Virt::Domain::GUEST_INFO_IF_SUFFIX_ADDR_PREFIX
+
+The parameter name prefix to access each address entry. Concatenate the
+interface prefix, the interface entry number formatted as an unsigned
+integer, the address prefix, the address entry number formatted as an
+unsigned integer and one of the address suffix parameters to form a
+complete parameter name.
+
+=item Sys::Virt::Domain::GUEST_INFO_IF_SUFFIX_ADDR_SUFFIX_TYPE
+
+The IP address type (e.g. ipv4) as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_IF_SUFFIX_ADDR_SUFFIX_ADDR
+
+The IP address as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_IF_SUFFIX_ADDR_SUFFIX_PREFIX
+
+The prefix of IP address as an unsigned int.
+
+=back
+
+=item Sys::Virt::Domain::GUEST_INFO_LOAD
+
+System load information.
+
+The following keys will be used for the returned parameters
+
+=over 4
+
+=item Sys::Virt::Domain::GUEST_INFO_LOAD_1M
+
+The guest load averaged over 1 minute as a double
+
+=item Sys::Virt::Domain::GUEST_INFO_LOAD_5M
+
+The guest load averaged over 5 minutes as a double
+
+=item Sys::Virt::Domain::GUEST_INFO_LOAD_15M
+
+The guest load averaged over 15 minutes as a double
+
+=back
 
 =back
 
