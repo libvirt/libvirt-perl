@@ -5728,6 +5728,28 @@ get_autostart(dom)
     RETVAL
 
 
+void
+set_autostart_once(dom, autostart)
+    virDomainPtr dom;
+    int autostart;
+ PPCODE:
+    if (virDomainSetAutostartOnce(dom, autostart) < 0)
+        _croak_error();
+
+
+int
+get_autostart_once(dom)
+    virDomainPtr dom;
+ PREINIT:
+    int autostart;
+ CODE:
+    if (virDomainGetAutostartOnce(dom, &autostart) < 0)
+        _croak_error();
+    RETVAL = autostart;
+ OUTPUT:
+    RETVAL
+
+
 char *
 get_scheduler_type(dom)
     virDomainPtr dom;

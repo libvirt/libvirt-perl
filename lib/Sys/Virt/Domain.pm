@@ -742,6 +742,17 @@ start upon boot. Return false, otherwise
 Set the state of the autostart flag, which determines whether the
 guest will automatically start upon boot of the host OS
 
+=item $flag = $dom->get_autostart_once();
+
+Provides a boolean value indicating whether the domain is
+configured to be automatically started the next time the host
+machine boots only.
+
+=item $dom->set_autostart_once($flag)
+
+Configure the domain to be automatically started the next time
+the host machine boots only.
+
 =item $dom->set_vcpus($count, [$flags])
 
 Set the number of virtual CPUs in the guest VM to C<$count>.
