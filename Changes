@@ -7,6 +7,7 @@ Revision history for perl module Sys::Virt
  - Add all VIR_DOMAIN_STATS_* constants
  - Add virDomainGetAutostartOnce and virDomainSetAutostartOnce
  - Add virDomainDelThrottleGroup and virDomainSetThrottleGroup
+ - Add VIR_DOMAIN_SAVE_PARAM_PARALLEL_CHANNELS constant
 
 11.1.0 2025-03-17
 

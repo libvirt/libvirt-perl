@@ -4633,6 +4633,11 @@ stopped.
 
 Specify the save state image format.
 
+=item Sys::Virt::Domain::SAVE_PARAM_PARALLEL_CHANNELS
+
+Specify the number of IO channels to use during parallel save or
+restore.
+
 =back
 
 =head2 DOMAIN CORE DUMP CONSTANTS
