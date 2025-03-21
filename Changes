@@ -6,6 +6,7 @@ Revision history for perl module Sys::Virt
  - Add all VIR_DOMAIN_GUEST_INFO_* constants
  - Add all VIR_DOMAIN_STATS_* constants
  - Add virDomainGetAutostartOnce and virDomainSetAutostartOnce
+ - Add virDomainDelThrottleGroup and virDomainSetThrottleGroup
 
 11.1.0 2025-03-17
 

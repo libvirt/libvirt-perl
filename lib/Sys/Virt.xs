@@ -7190,6 +7190,99 @@ graphics_reload(dom, type, flags=0)
 
 
 void
+del_throttle_group(dom, group, flags=0)
+    virDomainPtr dom;
+    const char *group;
+    unsigned int flags
+  PPCODE:
+    if (virDomainDelThrottleGroup(dom, group, flags) < 0)
+        _croak_error();
+
+
+void
+set_throttle_group(dom, group, newparams, flags=0)
+    virDomainPtr dom;
+    const char *group;
+    HV *newparams;
+    unsigned int flags;
+ PREINIT:
+    virTypedParameterPtr params;
+    int nparams;
+ PPCODE:
+    nparams = 20;
+    Newx(params, nparams, virTypedParameter);
+
+    strncpy(params[0].field, VIR_DOMAIN_BLOCK_IOTUNE_TOTAL_BYTES_SEC,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[0].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[1].field, VIR_DOMAIN_BLOCK_IOTUNE_READ_BYTES_SEC,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[1].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[2].field, VIR_DOMAIN_BLOCK_IOTUNE_WRITE_BYTES_SEC,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[2].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[3].field, VIR_DOMAIN_BLOCK_IOTUNE_TOTAL_IOPS_SEC,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[3].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[4].field, VIR_DOMAIN_BLOCK_IOTUNE_READ_IOPS_SEC,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[4].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[5].field, VIR_DOMAIN_BLOCK_IOTUNE_WRITE_IOPS_SEC,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[5].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[6].field, VIR_DOMAIN_BLOCK_IOTUNE_TOTAL_BYTES_SEC_MAX,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[6].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[7].field, VIR_DOMAIN_BLOCK_IOTUNE_READ_BYTES_SEC_MAX,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[7].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[8].field, VIR_DOMAIN_BLOCK_IOTUNE_WRITE_BYTES_SEC_MAX,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[8].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[9].field, VIR_DOMAIN_BLOCK_IOTUNE_TOTAL_IOPS_SEC_MAX,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[9].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[10].field, VIR_DOMAIN_BLOCK_IOTUNE_READ_IOPS_SEC_MAX,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[10].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[11].field, VIR_DOMAIN_BLOCK_IOTUNE_WRITE_IOPS_SEC_MAX,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[11].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[12].field, VIR_DOMAIN_BLOCK_IOTUNE_SIZE_IOPS_SEC,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[12].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[13].field, VIR_DOMAIN_BLOCK_IOTUNE_GROUP_NAME,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[13].type = VIR_TYPED_PARAM_STRING;
+    strncpy(params[14].field, VIR_DOMAIN_BLOCK_IOTUNE_TOTAL_BYTES_SEC_MAX_LENGTH,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[14].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[15].field, VIR_DOMAIN_BLOCK_IOTUNE_READ_BYTES_SEC_MAX_LENGTH,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[15].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[16].field, VIR_DOMAIN_BLOCK_IOTUNE_WRITE_BYTES_SEC_MAX_LENGTH,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[16].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[17].field, VIR_DOMAIN_BLOCK_IOTUNE_TOTAL_IOPS_SEC_MAX_LENGTH,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[17].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[18].field, VIR_DOMAIN_BLOCK_IOTUNE_READ_IOPS_SEC_MAX_LENGTH,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[18].type = VIR_TYPED_PARAM_ULLONG;
+    strncpy(params[19].field, VIR_DOMAIN_BLOCK_IOTUNE_WRITE_IOPS_SEC_MAX_LENGTH,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[19].type = VIR_TYPED_PARAM_ULLONG;
+
+    nparams = vir_typed_param_from_hv(newparams, params, nparams);
+
+    if (virDomainSetThrottleGroup(dom, group, params, nparams, flags) < 0) {
+        vir_typed_param_safe_free(params, nparams);
+        _croak_error();
+    }
+    vir_typed_param_safe_free(params, nparams);
+
+
+void
 destroy(dom_rv, flags=0)
     SV *dom_rv;
     unsigned int flags;

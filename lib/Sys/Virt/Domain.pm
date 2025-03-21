@@ -2777,7 +2777,20 @@ Reload state for only VNC graphics backends
 The C<$flags> parameter is currently unused and defaults
 to zero.
 
+=item $dom->del_throttle_group($group, $flags=0)
+
+Delete an throttlegroup from the domain. The C<$group> to be
+deleted must not have a throttlefilter associated with it and can
+be any of the current valid group.
+
+=item $dom->set_throttle_group($group, $params, $flags=0)
+
+Add throttlegroup or change all of the throttlegroup options
+within specific domain. The C<$params> should be a hash reference
+whose keys are one of the BLKIO TUNING PARAMETERS constants.
+
 =back
+
 
 =head1 CONSTANTS
 
