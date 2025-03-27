@@ -30,12 +30,25 @@ sub agent_lifecycle_event {
     printf "Agent %s %s state=%d reason=%d\n", $conn->get_uri, $dom->get_name, $state, $reason;
 }
 
+sub nic_mac_change_event {
+    my $conn = shift;
+    my $dom = shift;
+    my $alias = shift;
+    my $oldMAC = shift;
+    my $newMAC = shift;
+
+    printf "NIC MAC change: conn %s dom %s alias %s old %s new %s\n", $conn->get_uri, $dom->get_name, $alias, $oldMAC, $newMAC;
+}
+
 $c->domain_event_register_any(undef,
 			      Sys::Virt::Domain::EVENT_ID_LIFECYCLE,
 			      \&lifecycle_event);
 $c->domain_event_register_any(undef,
 			      Sys::Virt::Domain::EVENT_ID_AGENT_LIFECYCLE,
 			      \&agent_lifecycle_event);
+$c->domain_event_register_any(undef,
+                              Sys::Virt::Domain::EVENT_ID_NIC_MAC_CHANGE,
+                              \&nic_mac_change_event);
 
 $c->register_close_callback(
     sub {
