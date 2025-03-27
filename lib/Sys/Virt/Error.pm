@@ -884,6 +884,14 @@ More than one matching domain found
 
 The requested metadata does not exist
 
+=item Sys::Virt::Error::ERR_AGENT_COMMAND_TIMEOUT
+
+Guest agent didn't respond to a non-sync command within timeout
+
+=item Sys::Virt::Error::ERR_AGENT_COMMAND_FAILED
+
+Guest agent responded with failure to a command
+
 =back
 
 =head1 AUTHORS
