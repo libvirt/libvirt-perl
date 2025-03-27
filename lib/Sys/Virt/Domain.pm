@@ -4302,6 +4302,11 @@ memory corruption.
 The event occurs when the guest accepts a request to change
 the memory device size.
 
+=item Sys::Virt::Domain::EVENT_ID_NIC_MAC_CHANGE
+
+The event occurs when the guest changes MAC address on one of its virtual
+network interfaces.
+
 =back
 
 =head2 IO ERROR EVENT CONSTANTS
