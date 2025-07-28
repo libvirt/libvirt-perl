@@ -1905,6 +1905,11 @@ implied by the model name.
 
 Only include features which can be live migrated.
 
+=item Sys::Virt::BASELINE_CPU_IGNORE_HOST
+
+When multiple CPU definitions are available, do not make the result
+dependent on the current host CPU.
+
 =back
 
 =item my $xml = $con->baseline_hypervisor_cpu($emulator, $arch, $machine, $virttype, \@xml, $flags=0)

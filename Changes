@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 11.6.0 2025-08-00
 
- - XXX
+ - Add VIR_CONNECT_BASELINE_CPU_IGNORE_HOST constant
 
 11.2.0 2025-05-02
 
