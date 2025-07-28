@@ -25,8 +25,6 @@ targets:
           paths:
             - libvirt-perl-rpms
 
-  debian-11: x86_64
-
   debian-12: x86_64
 
   debian-sid:
@@ -34,7 +32,7 @@ targets:
       - arch: x86_64
         allow-failure: true
 
-  fedora-40:
+  fedora-41:
     jobs:
       - arch: x86_64
         artifacts:
@@ -42,7 +40,7 @@ targets:
           paths:
             - libvirt-perl-rpms
 
-  fedora-41:
+  fedora-42:
     jobs:
       - arch: x86_64
         artifacts:
