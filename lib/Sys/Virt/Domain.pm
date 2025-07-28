@@ -3987,6 +3987,10 @@ The domain was restored from a snapshot
 
 The domain was woken up from suspend
 
+=item Sys::Virt::Domain::EVENT_STARTED_RECREATED
+
+The secure domain started after being recreated for a reboot
+
 =back
 
 =item Sys::Virt::Domain::EVENT_STOPPED
@@ -4024,6 +4028,10 @@ The domain stopped due to graceful shutdown of the guest.
 =item Sys::Virt::Domain::EVENT_STOPPED_FROM_SNAPSHOT
 
 The domain was stopped due to a snapshot
+
+=item Sys::Virt::Domain::EVENT_STOPPED_RECREATED
+
+The secure domain stopped to be recreated for a reboot
 
 =back
 
