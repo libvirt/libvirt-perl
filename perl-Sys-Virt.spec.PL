@@ -88,7 +88,7 @@ virtualization containers to be managed with a consistent API.
 ./Build test
 
 %files
-%license LICENSE
+%license LICENSE LICENSE.GPL LICENSE.Artistic
 %doc AUTHORS Changes README examples/
 %{perl_vendorarch}/auto/*
 %{perl_vendorarch}/Sys*

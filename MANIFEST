@@ -52,6 +52,8 @@ lib/Sys/Virt/StoragePool.pm
 lib/Sys/Virt/StorageVol.pm
 lib/Sys/Virt/Stream.pm
 LICENSE
+LICENSE.Artistic
+LICENSE.GPL
 MANIFEST
 perl-Sys-Virt.spec
 perl-Sys-Virt.spec.PL
