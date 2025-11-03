@@ -3021,6 +3021,8 @@ get_node_cpu_stats(con, cpuNum=VIR_NODE_CPU_STATS_ALL_CPUS, flags=0)
             (void)hv_store (RETVAL, "intr", 4, virt_newSVull(params[i].value), 0);
         } else if (strcmp(params[i].field, VIR_NODE_CPU_STATS_UTILIZATION) == 0) {
             (void)hv_store (RETVAL, "utilization", 11, virt_newSVull(params[i].value), 0);
+        } else if (strcmp(params[i].field, VIR_NODE_CPU_STATS_GUEST) == 0) {
+            (void)hv_store (RETVAL, "guest", 5, virt_newSVull(params[i].value), 0);
         }
     }
     Safefree(params);
@@ -9866,6 +9868,7 @@ BOOT:
     REGISTER_CONSTANT_STR(VIR_NODE_CPU_STATS_USER, NODE_CPU_STATS_USER);
     REGISTER_CONSTANT_STR(VIR_NODE_CPU_STATS_INTR, NODE_CPU_STATS_INTR);
     REGISTER_CONSTANT_STR(VIR_NODE_CPU_STATS_UTILIZATION, NODE_CPU_STATS_UTILIZATION);
+    REGISTER_CONSTANT_STR(VIR_NODE_CPU_STATS_GUEST, NODE_CPU_STATS_GUEST);
 
     REGISTER_CONSTANT(VIR_NODE_MEMORY_STATS_ALL_CELLS, NODE_MEMORY_STATS_ALL_CELLS);
     REGISTER_CONSTANT_STR(VIR_NODE_MEMORY_STATS_BUFFERS, NODE_MEMORY_STATS_BUFFERS);

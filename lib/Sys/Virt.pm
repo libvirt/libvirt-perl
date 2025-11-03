@@ -2311,6 +2311,10 @@ Time spent processing interrupts
 
 Percentage utilization of the CPU.
 
+=item Sys::Virt::NODE_CPU_STATS_GUEST
+
+Time spent running guest virtual CPUs
+
 =back
 
 =head2 MEMORY STAS CONSTANTS

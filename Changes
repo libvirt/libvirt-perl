@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 11.8.0 2025-11-00
 
- - XXX
+ - Add VIR_NODE_CPU_STATS_GUEST constant
 
 11.6.0 2025-08-04
 
