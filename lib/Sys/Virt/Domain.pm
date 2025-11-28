@@ -5282,6 +5282,152 @@ long long.
 Current threshold for delivering the VIR_DOMAIN_EVENT_ID_BLOCK_THRESHOLD
 event in bytes as unsigned long long. See virDomainSetBlockThreshold.
 
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LIMITS_DISCARD_ALIGNMENT
+
+Alignment for discard requests in bytes, as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LIMITS_DISCARD_MAX
+
+Alignment for discard requests in bytes, as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LIMITS_IOV_HW_MAX
+
+Maximal number of scatter/gather elements of requests bypassing
+kernel IO scheduler, as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LIMITS_IOV_MAX
+
+Maximum number of scatter/gather elements, as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LIMITS_MEMORY_ALIGNMENT_MINIMAL
+
+Memory alignment in bytes so that no bounce buffer is needed, as
+unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LIMITS_MEMORY_ALIGNMENT_OPTIMAL
+
+Memory alignment in bytes that is used for bounce buffers, as
+unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LIMITS_REQUEST_ALIGNMENT
+
+Alignment requirement, in bytes, for offset/length of I/O
+requests, as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LIMITS_TRANSFER_HW_MAX
+
+Maximal hardware transfer length of requests bypassing kernel IO
+scheduler in bytes, as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LIMITS_TRANSFER_MAX
+
+Maximal transfer length in bytes, as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LIMITS_TRANSFER_OPTIMAL
+
+Optimal transfer length in bytes, as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LIMITS_WRITE_ZEROES_ALIGNMENT
+
+Optimal alignment for write_zeroes requests in bytes, as unsigned
+long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LIMITS_WRITE_ZEROES_MAX
+
+Maximum number of bytes that can be zeroed out at once, as
+unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_COUNT
+
+Number of groups of statistics accounted in a configured time
+intervals as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_PREFIX
+
+The parameter name prefix to access each group of timed stats.
+Concatenate the prefix, the entry number formatted as an unsigned
+integer and one of the timed group suffix parameters to form a
+complete paramter name.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_SUFFIX_FLUSH_LATENCY_AVG
+
+Average latency of flush operations in the defined interval, in
+nanoseconds as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_SUFFIX_FLUSH_LATENCY_MAX
+
+Maximum latency of flush operations in the defined interval, in
+nanoseconds as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_SUFFIX_FLUSH_LATENCY_MIN
+
+Minimum latency of flush operations in the defined interval, in
+nanoseconds as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_SUFFIX_INTERVAL
+
+The time interval in seconds as unsigned long long for which the
+statistics in this group were collected.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_SUFFIX_RD_LATENCY_AVG
+
+Average latency of read operations in the defined interval, in
+nanoseconds as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_SUFFIX_RD_LATENCY_MAX
+
+Maximum latency of read operations in the defined interval, in
+nanoseconds as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_SUFFIX_RD_LATENCY_MIN
+
+Minimum latency of read operations in the defined interval, in
+nanoseconds as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_SUFFIX_RD_QUEUE_DEPTH_AVG
+
+Average number of pending read operations in the defined interval
+as double.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_SUFFIX_WR_LATENCY_AVG
+
+Average latency of write operations in the defined interval, in
+nanoseconds as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_SUFFIX_WR_LATENCY_MAX
+
+Maximum latency of write operations in the defined interval, in
+nanoseconds as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_SUFFIX_WR_LATENCY_MIN
+
+Minimum latency of write operations in the defined interval, in
+nanoseconds as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_SUFFIX_WR_QUEUE_DEPTH_AVG
+
+Average number of pending write operations in the defined interval as double.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_SUFFIX_ZONE_APPEND_LATENCY_AVG
+
+Average latency of zone append operations in the defined
+interval, in nanoseconds as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_SUFFIX_ZONE_APPEND_LATENCY_MAX
+
+Maximum latency of zone append operations in the defined
+interval, in nanoseconds as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_SUFFIX_ZONE_APPEND_LATENCY_MIN
+
+Minimum latency of zone append operations in the defined
+interval, in nanoseconds as unsigned long long.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_TIMED_GROUP_SUFFIX_ZONE_APPEND_QUEUE_DEPTH_AVG
+
+Average number of pending zone append operations in the defined
+interval as double.
+
 =back
 
 =item Sys::Virt::Domain::STATS_CPU_TOTAL
