@@ -4104,6 +4104,11 @@ The domain has been suspended for post-copy migration
 
 The domain has been suspended due post-copy migration failing
 
+=item Sys::Virt::Domain::EVENT_SUSPENDED_GUEST_SHUTDOWN
+
+The domain has been suspended after guest os shut-down (a long
+running job is preserving the VM until completion)
+
 =back
 
 =item Sys::Virt::Domain::EVENT_UNDEFINED
