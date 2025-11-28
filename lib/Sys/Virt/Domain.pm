@@ -2115,6 +2115,11 @@ C<$flags> parameter can be one of the following constants:
 Assume that the output/temporary files for the backup have been
 precreated by the caller with the correct size and format.
 
+=item Sys::Virt::Domain::BACKUP_BEGIN_PRESERVE_SHUTDOWN_DOMAIN
+
+Preserve the domain if the guest OS shuts down while the backup
+is running.
+
 =back
 
 =item $xml = $dom->backup_get_xml_description($flags=0);

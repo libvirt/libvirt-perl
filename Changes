@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 11.10.0 2025-12-00
 
- - XXX
+ - Add VIR_DOMAIN_BACKUP_BEGIN_PRESERVE_SHUTDOWN_DOMAIN constant
 
 11.8.0 2025-11-07
 
