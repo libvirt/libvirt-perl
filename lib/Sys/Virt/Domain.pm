@@ -4654,7 +4654,40 @@ stopped.
 
 =item Sys::Virt::Domain::SAVE_PARAM_IMAGE_FORMAT
 
-Specify the save state image format.
+Specify the save state image format. This can be one of the following
+constant values
+
+=over 4
+
+=item Sys::Virt::Domain::SAVE_PARAM_IMAGE_FORMAT_RAW
+
+Uncompressed raw image
+
+=item Sys::Virt::Domain::SAVE_PARAM_IMAGE_FORMAT_GZIP
+
+Image compressed with gzip
+
+=item Sys::Virt::Domain::SAVE_PARAM_IMAGE_FORMAT_BZIP2
+
+Image compressed with bzip2
+
+=item Sys::Virt::Domain::SAVE_PARAM_IMAGE_FORMAT_XZ
+
+Image compressed with xz
+
+=item Sys::Virt::Domain::SAVE_PARAM_IMAGE_FORMAT_LZOP
+
+Image compressed with lzop
+
+=item Sys::Virt::Domain::SAVE_PARAM_IMAGE_FORMAT_ZSTD
+
+Image compressed with zstd
+
+=item Sys::Virt::Domain::SAVE_PARAM_IMAGE_FORMAT_SPARSE
+
+Uncompressed sparse image
+
+=back
 
 =item Sys::Virt::Domain::SAVE_PARAM_PARALLEL_CHANNELS
 
