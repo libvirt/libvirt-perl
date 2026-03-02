@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+12.2.0 2026-04-00
+
+ - XXX
+
 12.1.0 2026-03-03
 
  - Add VIR_DOMAIN_STATS_BLOCK_SUFFIX_LATENCY_HISTOGRAM_* constants
