@@ -5461,6 +5461,38 @@ interval, in nanoseconds as unsigned long long.
 Average number of pending zone append operations in the defined
 interval as double.
 
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LATENCY_HISTOGRAM_FLUSH_PREFIX
+
+The parameter name prefix to access 'flush' latency histograms.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LATENCY_HISTOGRAM_READ_PREFIX
+
+The parameter name prefix to access 'read' latency histograms.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LATENCY_HISTOGRAM_WRITE_PREFIX
+
+The parameter name prefix to access 'write' latency histograms.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LATENCY_HISTOGRAM_ZONE_APPEND_PREFIX
+
+The parameter name prefix to access 'zone_append' latency histograms.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LATENCY_HISTOGRAM_SUFFIX_BIN_COUNT
+
+The parameter name suffix to access number of bins in the histogram stats.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LATENCY_HISTOGRAM_SUFFIX_BIN_PREFIX
+
+The parameter name suffix to access a latency histogram bin.
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LATENCY_HISTOGRAM_SUFFIX_BIN_SUFFIX_START
+
+Start of the current latency histogram bin in nanoseconds
+
+=item Sys::Virt::Domain::STATS_BLOCK_SUFFIX_LATENCY_HISTOGRAM_SUFFIX_BIN_SUFFIX_VALUE
+
+Current value of the number of occurences of the latency within this bin
+
 =back
 
 =item Sys::Virt::Domain::STATS_CPU_TOTAL
