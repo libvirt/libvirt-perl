@@ -892,6 +892,10 @@ Guest agent didn't respond to a non-sync command within timeout
 
 Guest agent responded with failure to a command
 
+=item Sys::Virt::Error::ERR_INVALID_ENCR_KEY_SECRET
+
+Secret encryption key is invalid
+
 =back
 
 =head1 AUTHORS
