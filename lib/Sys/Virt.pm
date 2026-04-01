@@ -1958,6 +1958,10 @@ to zero, and accepts one or more of the following constants:
 
 Disable deprecated features when reporting CPU model information.
 
+=item $Sys::Virt::DOMAIN_CAPABILITIES_EXPAND_CPU_FEATURES
+
+Expand base CPU features implied by the model name.
+
 =back
 
 =item my $xml = $con->get_storage_pool_capabilities($flags=0);
