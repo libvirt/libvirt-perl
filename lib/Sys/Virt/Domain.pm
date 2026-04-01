@@ -1231,6 +1231,10 @@ The maximum bandwidth (in MiB/s) that will be used for migration
 during the switchover phase. If set to 0 or omitted, QEMU will
 estimate a suitable default.
 
+=item C<Sys::Virt::Domain::MIGRATE_PARAM_MIGRATE_DISKS_TARGET_ZERO>
+
+List of target disks that can be assumed to be initialized to all zeros.
+
 =back
 
 =item $ddom = $dom->migrate(destcon, flags=0, dname=undef, uri=undef, bandwidth=0)
