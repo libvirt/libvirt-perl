@@ -1,0 +1,22 @@
+#!include_default
+# Avoid configuration metadata file
+^MYMETA\.
+
+# Avoid Module::Build generated and utility files.
+\bBuild$
+\bBuild.bat$
+\b_build
+\bBuild.COM$
+\bBUILD.COM$
+\bbuild.com$
+^MANIFEST\.SKIP
+
+# Avoid archives of this distribution
+\bSys-Virt-v[\d\.\_]+\.tar\.gz
+
+# Avoid CI files
+^.gitlab-ci.yml
+\bci
+
+# Avoid XS generated files
+\bVirt.(c|o)$
