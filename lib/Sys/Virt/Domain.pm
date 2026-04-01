@@ -4570,6 +4570,11 @@ Don't force usage of recoverable job for the copy operation
 Force the copy job to synchronously propagate guest writes into
 the destination image, so that the copy is guaranteed to converge
 
+=item Sys::Virt::Domain::BLOCK_COPY_TARGET_ZEROED
+
+The target image is guaranteed to be pre-zeroed so all
+reads will return zeros.
+
 =back
 
 =head2 DOMAIN BLOCK JOB ABORT CONSTANTS

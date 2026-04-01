@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 12.2.0 2026-04-00
 
- - XXX
+ - Add VIR_DOMAIN_BLOCK_COPY_TARGET_ZEROED constant
 
 12.1.0 2026-03-03
 
