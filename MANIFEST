@@ -1,6 +1,7 @@
 AUTHORS
 Build.PL
 Changes
+CONTRIBUTING.rst
 examples/auth.pl
 examples/devices.pl
 examples/dhcp-leases.pl
@@ -36,8 +37,8 @@ INSTALL
 lib/Sys/Virt.pm
 lib/Sys/Virt.xs
 lib/Sys/Virt/Domain.pm
-lib/Sys/Virt/DomainSnapshot.pm
 lib/Sys/Virt/DomainCheckpoint.pm
+lib/Sys/Virt/DomainSnapshot.pm
 lib/Sys/Virt/Error.pm
 lib/Sys/Virt/Event.pm
 lib/Sys/Virt/EventImpl.pm
@@ -54,7 +55,10 @@ lib/Sys/Virt/Stream.pm
 LICENSE
 LICENSE.Artistic
 LICENSE.GPL
+Makefile.PL
 MANIFEST
+META.json
+META.yml
 perl-Sys-Virt.spec
 perl-Sys-Virt.spec.PL
 prepare-release.sh
@@ -73,6 +77,3 @@ t/600-interfaces.t
 t/800-eventimpl.t
 t/801-events-backward-compat.t
 typemap
-Makefile.PL
-META.yml
-META.json
