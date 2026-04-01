@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-12.2.0 2026-04-00
+12.2.0 2026-04-01
 
  - Add VIR_DOMAIN_BLOCK_COPY_TARGET_ZEROED constant
  - Add VIR_MIGRATE_PARAM_MIGRATE_DISKS_TARGET_ZERO constant
