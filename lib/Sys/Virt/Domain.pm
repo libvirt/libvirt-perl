@@ -957,6 +957,10 @@ Treat C<$newsize> as if it were in bytes, rather than KB.
 
 Resize to full the capacity of the source
 
+=item Sys::Virt::Domain::BLOCK_RESIZE_EXTEND
+
+Disallow shrinking of the disk in size.
+
 =back
 
 =item $dom->interface_stats($path)
