@@ -3058,6 +3058,8 @@ get_node_memory_stats(con, cellNum=VIR_NODE_MEMORY_STATS_ALL_CELLS, flags=0)
             (void)hv_store (RETVAL, "buffers", 7, virt_newSVull(params[i].value), 0);
         } else if (strcmp(params[i].field, VIR_NODE_MEMORY_STATS_CACHED) == 0) {
             (void)hv_store (RETVAL, "cached", 6, virt_newSVull(params[i].value), 0);
+        } else if (strcmp(params[i].field, VIR_NODE_MEMORY_STATS_AVAILABLE) == 0) {
+            (void)hv_store (RETVAL, "available", 8, virt_newSVull(params[i].value), 0);
         }
     }
     Safefree(params);
@@ -9871,6 +9873,7 @@ BOOT:
     REGISTER_CONSTANT_STR(VIR_NODE_CPU_STATS_GUEST, NODE_CPU_STATS_GUEST);
 
     REGISTER_CONSTANT(VIR_NODE_MEMORY_STATS_ALL_CELLS, NODE_MEMORY_STATS_ALL_CELLS);
+    REGISTER_CONSTANT_STR(VIR_NODE_MEMORY_STATS_AVAILABLE, NODE_MEMORY_STATS_AVAILABLE);
     REGISTER_CONSTANT_STR(VIR_NODE_MEMORY_STATS_BUFFERS, NODE_MEMORY_STATS_BUFFERS);
     REGISTER_CONSTANT_STR(VIR_NODE_MEMORY_STATS_CACHED, NODE_MEMORY_STATS_CACHED);
     REGISTER_CONSTANT_STR(VIR_NODE_MEMORY_STATS_FREE, NODE_MEMORY_STATS_FREE);

@@ -3,6 +3,7 @@ Revision history for perl module Sys::Virt
 12.3.0 2026-05-00
 
  - Add VIR_DOMAIN_BLOCK_RESIZE_EXTEND constant
+ - Add VIR_NODE_MEMORY_STATS_AVAILABLE constant
 
 12.2.0 2026-04-01
 

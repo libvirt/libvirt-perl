@@ -2327,6 +2327,11 @@ The following constants provide the names of known memory stats fields
 
 =over 4
 
+=item Sys::Virt::NODE_MEMORY_STATS_AVAILABLE
+
+The amount of memory available. It is only returned in case C<$cellNum>
+parameter of C<get_node_memory_stats> equals NODE_MEMORY_STATS_ALL_CELLS.
+
 =item Sys::Virt::NODE_MEMORY_STATS_BUFFERS
 
 The amount of memory consumed by I/O buffers
