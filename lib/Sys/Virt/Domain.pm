@@ -759,10 +759,11 @@ Set the number of virtual CPUs in the guest VM to C<$count>.
 The optional C<$flags> parameter can be used to control whether
 the setting changes the live config or inactive config.
 
-=item $dom->set_vcpu($cpumap, $state, [$flags])
+=item $dom->set_vcpu($cpumap, $state, [$flags=0])
 
 Set the state of the CPUs in C<$cpumap> to C<$state>. The
-C<$flags> parameter defaults to zero if not present.
+C<$flags> parameter accepts one or more the SETVCPU OPTIONS
+constants documented later, and defaults to 0 if omitted.
 
 =item $count = $dom->get_vcpus([$flags])
 
@@ -3203,6 +3204,31 @@ Modify only the live state of the domain
 =item Sys::Virt::Domain::AFFECT_CONFIG
 
 Modify only the persistent config of the domain
+
+=back
+
+=head2 SETVCPU OPTIONS
+
+The following constants are used to control what setting vCPUs
+changes.
+
+=over 4
+
+=item Sys::Virt::Domain::SETVCPU_AFFECT_CURRENT
+
+Modify the current state
+
+=item Sys::Virt::Domain::SETVCPU_AFFECT_LIVE
+
+Modify only the live state of the domain
+
+=item Sys::Virt::Domain::SETVCPU_AFFECT_CONFIG
+
+Modify only the persistent config of the domain
+
+=item Sys::Virt::Domain::SETVCPU_ASYNC_UNPLUG
+
+Do not wait for the guest to comply with the request
 
 =back
 
