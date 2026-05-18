@@ -4,6 +4,7 @@ Revision history for perl module Sys::Virt
 
  - Add support for vCPU remove event
  - Add VIR_DOMAIN_SETVCPU_* constants
+ - Add VIR_DOMAIN_VCPU_ASYNC_UNPLUG constant
 
 12.3.0 2026-05-06
 

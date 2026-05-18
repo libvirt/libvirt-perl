@@ -3936,6 +3936,10 @@ Flag to request the guest VCPU mask
 
 Flag to make vcpus added hot(un)pluggable
 
+=item Sys::Virt::Domain::VCPU_ASYNC_UNPLUG
+
+Flag to not wait for the guest to comply with unplug request(s)
+
 =back
 
 =head2 STATE CHANGE EVENTS
