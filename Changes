@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 12.4.0 2026-06-00
 
- - XXX
+ - Add support for vCPU remove event
 
 12.3.0 2026-05-06
 

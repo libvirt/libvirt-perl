@@ -4333,6 +4333,10 @@ the memory device size.
 The event occurs when the guest changes MAC address on one of its virtual
 network interfaces.
 
+=item Sys::Virt::Domain::EVENT_ID_VCPU_REMOVED
+
+This event occurs when a vCPU is removed from the domain.
+
 =back
 
 =head2 IO ERROR EVENT CONSTANTS
