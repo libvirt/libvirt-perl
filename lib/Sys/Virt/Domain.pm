@@ -5613,6 +5613,36 @@ Host allocated cache id for the bank as an unsigned int.
 The number of bytes of last level cache that the domain is using as an
 unsigned long long.
 
+=item Sys::Virt::Domain::STATS_CPU_ENERGY_MONITOR_COUNT
+
+The number of energy monitors for this domain, as an unsigned int.
+
+=item Sys::Virt::Domain::STATS_CPU_ENERGY_MONITOR_PREFIX
+
+Prefix for an individual energy monitor group. Concatenate with
+the monitor index and one of the "cpu.energy.monitor.<i>." suffix
+constants below to form a full parameter name.
+
+=item Sys::Virt::Domain::STATS_CPU_ENERGY_MONITOR_SUFFIX_NAME
+
+Name of the monitor group as a string.
+
+=item Sys::Virt::Domain::STATS_CPU_ENERGY_MONITOR_SUFFIX_VCPUS
+
+vCPU set covered by the monitor group as a string.
+
+=item Sys::Virt::Domain::STATS_CPU_ENERGY_MONITOR_SUFFIX_PKG_COUNT
+
+Number of PERF_PKG nodes the monitor group exposes, as an unsigned int.
+
+=item Sys::Virt::Domain::STATS_CPU_ENERGY_MONITOR_SUFFIX_PKG_PREFIX
+
+Prefix for a single mon_PERF_PKG node inside a monitor group.
+
+=item Sys::Virt::Domain::STATS_CPU_ENERGY_MONITOR_SUFFIX_PKG_SUFFIX_ID
+
+Kernel-assigned mon_PERF_PKG node id, as an unsigned int.
+
 =back
 
 =item Sys::Virt::Domain::STATS_INTERFACE
