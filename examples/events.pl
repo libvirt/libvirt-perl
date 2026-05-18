@@ -40,6 +40,14 @@ sub nic_mac_change_event {
     printf "NIC MAC change: conn %s dom %s alias %s old %s new %s\n", $conn->get_uri, $dom->get_name, $alias, $oldMAC, $newMAC;
 }
 
+sub vcpu_removed_event {
+    my $conn = shift;
+    my $dom = shift;
+    my $vcpu = shift;
+
+    printf "vCPU removed: conn %s dom %s id %d\n", $con->get_uri, $dom->get_name, vcpu;
+}
+
 $c->domain_event_register_any(undef,
 			      Sys::Virt::Domain::EVENT_ID_LIFECYCLE,
 			      \&lifecycle_event);
@@ -49,6 +57,9 @@ $c->domain_event_register_any(undef,
 $c->domain_event_register_any(undef,
                               Sys::Virt::Domain::EVENT_ID_NIC_MAC_CHANGE,
                               \&nic_mac_change_event);
+$c->domain_event_register_any(undef,
+                              Sys::Virt::Domain::EVENT_ID_VCPU_REMOVED,
+                              \&vcpu_removed_event);
 
 $c->register_close_callback(
     sub {
