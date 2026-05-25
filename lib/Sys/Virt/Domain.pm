@@ -4305,12 +4305,6 @@ The agent is now disconnected
 The second parameter, C<reason>, matches one of the following
 constants
 
-=item Sys::Virt::Domain::EVENT_ID_MIGRATION_ITERATION
-
-Domain migration progress iteration. The C<iteration> parameter
-to the callback will specify the number of iterations migration
-has made over guest RAM.
-
 =over 4
 
 =item Sys::Virt::Domain::EVENT_AGENT_LIFECYCLE_REASON_UNKNOWN
@@ -4326,6 +4320,12 @@ The domain was initially booted
 The channel on a running guest changed state
 
 =back
+
+=item Sys::Virt::Domain::EVENT_ID_MIGRATION_ITERATION
+
+Domain migration progress iteration. The C<iteration> parameter
+to the callback will specify the number of iterations migration
+has made over guest RAM.
 
 =item Sys::Virt::Domain::EVENT_ID_JOB_COMPLETED
 
