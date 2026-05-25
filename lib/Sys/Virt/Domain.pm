@@ -4367,6 +4367,42 @@ network interfaces.
 
 This event occurs when a vCPU is removed from the domain.
 
+=item Sys::Virt::Domain::EVENT_ID_CHANNEL_LIFECYCLE
+
+Domain channel lifecycle events. The C<state> parameter
+to the callback will match one of the constants
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_CHANNEL_LIFECYCLE_STATE_CONNECTED
+
+The channel is now connected
+
+=item Sys::Virt::Domain::EVENT_CHANNEL_LIFECYCLE_STATE_DISCONNECTED
+
+The channel is now disconnected
+
+=back
+
+The second parameter, C<reason>, matches one of the following
+constants
+
+=over 4
+
+=item Sys::Virt::Domain::EVENT_CHANNEL_LIFECYCLE_REASON_UNKNOWN
+
+The reason is unknown
+
+=item Sys::Virt::Domain::EVENT_CHANNEL_LIFECYCLE_REASON_DOMAIN_STARTED
+
+The domain was initially booted
+
+=item Sys::Virt::Domain::EVENT_CHANNEL_LIFECYCLE_REASON_CHANNEL
+
+The channel on a running guest changed state
+
+=back
+
 =back
 
 =head2 IO ERROR EVENT CONSTANTS

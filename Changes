@@ -6,6 +6,7 @@ Revision history for perl module Sys::Virt
  - Add VIR_DOMAIN_SETVCPU_* constants
  - Add VIR_DOMAIN_VCPU_ASYNC_UNPLUG constant
  - Add VIR_DOMAIN_STATS_CPU_ENERGY_MONITOR_* constants
+ - Add support for channel lifecycle event
 
 12.3.0 2026-05-06
 
