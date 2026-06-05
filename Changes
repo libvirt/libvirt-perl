@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-12.4.0 2026-06-00
+12.4.0 2026-06-05
 
  - Add support for vCPU remove event
  - Add VIR_DOMAIN_SETVCPU_* constants
