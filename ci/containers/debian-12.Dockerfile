@@ -25,6 +25,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
                       libmodule-build-perl \
                       libnl-3-dev \
                       libnl-route-3-dev \
+                      libperl-dev \
                       libtest-pod-coverage-perl \
                       libtest-pod-perl \
                       libtime-hr-perl \

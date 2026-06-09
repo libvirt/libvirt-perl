@@ -4,7 +4,7 @@
 #
 # https://gitlab.com/libvirt/libvirt-ci
 
-FROM docker.io/library/ubuntu:22.04
+FROM docker.io/library/ubuntu:26.04
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
@@ -25,6 +25,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
                       libmodule-build-perl \
                       libnl-3-dev \
                       libnl-route-3-dev \
+                      libperl-dev \
                       libtest-pod-coverage-perl \
                       libtest-pod-perl \
                       libtime-hr-perl \

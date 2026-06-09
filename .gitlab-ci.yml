@@ -19,14 +19,14 @@ stages:
     - .gitlab_native_build_job
   script:
     - *git_build_vars
-    - pushd "$PWD"
+    - origin=$PWD
     - mkdir -p "$SCRATCH_DIR"
     - cd "$SCRATCH_DIR"
     - git clone --depth 1 https://gitlab.com/libvirt/libvirt.git
     - cd libvirt
     - meson build -Ddriver_libvirtd=disabled "--prefix=$VROOT" "--libdir=$LIBDIR"
     - ninja -C build install
-    - popd
+    - cd $origin
     - perl Build.PL
     - perl Build
     - perl Build test

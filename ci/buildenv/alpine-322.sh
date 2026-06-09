@@ -5,46 +5,44 @@
 # https://gitlab.com/libvirt/libvirt-ci
 
 function install_buildenv() {
-    dnf update -y
-    dnf install -y \
+    apk update
+    apk upgrade
+    apk add \
         ca-certificates \
         ccache \
-        cpp \
         gcc \
         gettext \
         git \
-        glib2-devel \
-        glibc-devel \
-        glibc-langpack-en \
-        gnutls-devel \
-        libnl3-devel \
-        libtirpc-devel \
-        libxml2 \
-        libxml2-devel \
+        glib-dev \
+        gnutls-dev \
+        libnl3-dev \
+        libtirpc-dev \
+        libxml2-dev \
+        libxml2-utils \
         libxslt \
         make \
         meson \
-        ninja-build \
-        perl-Archive-Tar \
-        perl-CPAN-Changes \
-        perl-ExtUtils-CBuilder \
-        perl-Module-Build \
-        perl-Sys-Hostname \
-        perl-Test-Pod \
-        perl-Test-Pod-Coverage \
-        perl-Time-HiRes \
-        perl-XML-XPath \
-        perl-base \
-        perl-generators \
-        pkgconfig \
+        musl-dev \
+        perl \
+        perl-app-cpanminus \
+        perl-dev \
+        perl-module-build \
+        perl-test-pod \
+        perl-test-pod-coverage \
+        perl-time-hires \
+        perl-xml-xpath \
+        pkgconf \
+        py3-docutils \
         python3 \
-        python3-docutils \
-        rpm-build
+        samurai
     rm -f /usr/lib*/python3*/EXTERNALLY-MANAGED
-    rpm -qa | sort > /packages.txt
+    apk list --installed | sort > /packages.txt
     mkdir -p /usr/libexec/ccache-wrappers
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/cc
     ln -s /usr/bin/ccache /usr/libexec/ccache-wrappers/gcc
+    cpanm --notest \
+          Archive::Tar \
+          CPAN::Changes
 }
 
 export CCACHE_WRAPPERSDIR="/usr/libexec/ccache-wrappers"

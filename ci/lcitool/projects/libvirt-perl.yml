@@ -3,6 +3,7 @@ packages:
   - ccache
   - gcc
   - perl
+  - perl-devel
   - perl-Archive-Tar
   - perl-CPAN-Changes
   - perl-ExtUtils-CBuilder

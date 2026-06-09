@@ -6,8 +6,8 @@
 
 FROM registry.fedoraproject.org/fedora:rawhide
 
-RUN dnf update -y --nogpgcheck fedora-gpg-keys && \
-    dnf install -y nosync && \
+RUN dnf --quiet update -y --nogpgcheck fedora-gpg-keys && \
+    dnf --quiet install -y nosync && \
     printf '#!/bin/sh\n\
 if test -d /usr/lib64\n\
 then\n\
@@ -17,43 +17,44 @@ else\n\
 fi\n\
 exec "$@"\n' > /usr/bin/nosync && \
     chmod +x /usr/bin/nosync && \
-    nosync dnf distro-sync -y && \
-    nosync dnf install -y \
-               ca-certificates \
-               ccache \
-               cpp \
-               gcc \
-               gettext \
-               git \
-               glib2-devel \
-               glibc-devel \
-               glibc-langpack-en \
-               gnutls-devel \
-               libnl3-devel \
-               libtirpc-devel \
-               libxml2 \
-               libxml2-devel \
-               libxslt \
-               make \
-               meson \
-               ninja-build \
-               perl-Archive-Tar \
-               perl-CPAN-Changes \
-               perl-ExtUtils-CBuilder \
-               perl-Module-Build \
-               perl-Sys-Hostname \
-               perl-Test-Pod \
-               perl-Test-Pod-Coverage \
-               perl-Time-HiRes \
-               perl-XML-XPath \
-               perl-base \
-               perl-generators \
-               pkgconfig \
-               python3 \
-               python3-docutils \
-               rpm-build && \
-    nosync dnf autoremove -y && \
-    nosync dnf clean all -y && \
+    nosync dnf --quiet distro-sync -y && \
+    nosync dnf --quiet install -y \
+                       ca-certificates \
+                       ccache \
+                       cpp \
+                       gcc \
+                       gettext \
+                       git \
+                       glib2-devel \
+                       glibc-devel \
+                       glibc-langpack-en \
+                       gnutls-devel \
+                       libnl3-devel \
+                       libtirpc-devel \
+                       libxml2 \
+                       libxml2-devel \
+                       libxslt \
+                       make \
+                       meson \
+                       ninja-build \
+                       perl-Archive-Tar \
+                       perl-CPAN-Changes \
+                       perl-ExtUtils-CBuilder \
+                       perl-Module-Build \
+                       perl-Sys-Hostname \
+                       perl-Test-Pod \
+                       perl-Test-Pod-Coverage \
+                       perl-Time-HiRes \
+                       perl-XML-XPath \
+                       perl-base \
+                       perl-devel \
+                       perl-generators \
+                       pkgconfig \
+                       python3 \
+                       python3-docutils \
+                       rpm-build && \
+    nosync dnf --quiet autoremove -y && \
+    nosync dnf --quiet clean all -y && \
     rm -f /usr/lib*/python3*/EXTERNALLY-MANAGED && \
     rpm -qa | sort > /packages.txt && \
     mkdir -p /usr/libexec/ccache-wrappers && \

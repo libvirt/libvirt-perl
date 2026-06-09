@@ -6,7 +6,6 @@
 
 function install_buildenv() {
     zypper update -y
-    zypper addrepo -fc https://download.opensuse.org/update/leap/15.6/backports/openSUSE:Backports:SLE-15-SP6:Update.repo
     zypper install -y --allow-downgrade \
            ca-certificates \
            ccache \
@@ -27,7 +26,6 @@ function install_buildenv() {
            meson \
            ninja \
            perl \
-           perl-Archive-Tar \
            perl-CPAN-Changes \
            perl-Module-Build \
            perl-Test-Pod \

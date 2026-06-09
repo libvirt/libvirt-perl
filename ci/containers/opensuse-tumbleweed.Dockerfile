@@ -7,7 +7,7 @@
 FROM registry.opensuse.org/opensuse/tumbleweed:latest
 
 RUN zypper dist-upgrade -y && \
-    zypper install -y \
+    zypper install -y --allow-downgrade \
            ca-certificates \
            ccache \
            cpp \
