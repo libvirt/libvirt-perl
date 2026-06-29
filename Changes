@@ -3,6 +3,7 @@ Revision history for perl module Sys::Virt
 12.5.0 2026-07-00
 
  - Add VIR_CONNECT_GET_DOMAIN_CAPABILITIES_SUPPORTED_CPU_FEATURES constant
+ - Add virDomainAnnounceInterface API and related constants
 
 12.4.0 2026-06-05
 

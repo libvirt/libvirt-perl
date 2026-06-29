@@ -7430,6 +7430,41 @@ set_throttle_group(dom, group, newparams, flags=0)
 
 
 void
+announce_interface(dom, device, newparams, flags=0)
+    virDomainPtr dom;
+    const char *device;
+    HV *newparams;
+    unsigned int flags;
+ PREINIT:
+    virTypedParameterPtr params;
+    int nparams;
+ PPCODE:
+    nparams = 4;
+    Newx(params, nparams, virTypedParameter);
+
+    strncpy(params[0].field, VIR_DOMAIN_ANNOUNCE_INTERFACE_INITIAL,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[0].type = VIR_TYPED_PARAM_UINT;
+    strncpy(params[1].field, VIR_DOMAIN_ANNOUNCE_INTERFACE_MAX,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[1].type = VIR_TYPED_PARAM_UINT;
+    strncpy(params[2].field, VIR_DOMAIN_ANNOUNCE_INTERFACE_ROUNDS,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[2].type = VIR_TYPED_PARAM_UINT;
+    strncpy(params[3].field, VIR_DOMAIN_ANNOUNCE_INTERFACE_STEP,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[3].type = VIR_TYPED_PARAM_UINT;
+
+    nparams = vir_typed_param_from_hv(newparams, params, nparams);
+
+    if (virDomainAnnounceInterface(dom, device, params, nparams, flags) < 0) {
+        vir_typed_param_safe_free(params, nparams);
+        _croak_error();
+    }
+    vir_typed_param_safe_free(params, nparams);
+
+
+void
 destroy(dom_rv, flags=0)
     SV *dom_rv;
     unsigned int flags;
@@ -10529,6 +10564,12 @@ BOOT:
     REGISTER_CONSTANT_STR(VIR_DOMAIN_BLOCK_IOTUNE_TOTAL_IOPS_SEC_MAX_LENGTH, BLOCK_IOTUNE_TOTAL_IOPS_SEC_MAX_LENGTH);
     REGISTER_CONSTANT_STR(VIR_DOMAIN_BLOCK_IOTUNE_READ_IOPS_SEC_MAX_LENGTH, BLOCK_IOTUNE_READ_IOPS_SEC_MAX_LENGTH);
     REGISTER_CONSTANT_STR(VIR_DOMAIN_BLOCK_IOTUNE_WRITE_IOPS_SEC_MAX_LENGTH, BLOCK_IOTUNE_WRITE_IOPS_SEC_MAX_LENGTH);
+
+
+    REGISTER_CONSTANT_STR(VIR_DOMAIN_ANNOUNCE_INTERFACE_INITIAL, ANNOUNCE_INTERFACE_INITIAL);
+    REGISTER_CONSTANT_STR(VIR_DOMAIN_ANNOUNCE_INTERFACE_MAX, ANNOUNCE_INTERFACE_MAX);
+    REGISTER_CONSTANT_STR(VIR_DOMAIN_ANNOUNCE_INTERFACE_ROUNDS, ANNOUNCE_INTERFACE_ROUNDS);
+    REGISTER_CONSTANT_STR(VIR_DOMAIN_ANNOUNCE_INTERFACE_STEP, ANNOUNCE_INTERFACE_STEP);
 
 
     REGISTER_CONSTANT(VIR_DOMAIN_BLOCK_RESIZE_BYTES, BLOCK_RESIZE_BYTES);

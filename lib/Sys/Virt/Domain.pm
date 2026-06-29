@@ -2803,6 +2803,16 @@ Add throttlegroup or change all of the throttlegroup options
 within specific domain. The C<$params> should be a hash reference
 whose keys are one of the BLKIO TUNING PARAMETERS constants.
 
+=item $dom->announce_interface($device, $params, $flags=0)
+
+Cause this domain to "announce" its network interfaces by
+injecting a series of "gratuitous ARP" packets into the outgoing
+data stream for the interface matching C<$device> (or all
+interfaces). This should cause local switches to direct traffic
+for that MAC address correctly after a topology change.
+The C<$params> should be a hash reference whose keys are one of the
+INTERFACE ANNOUNCE PARAMETERS constants.
+
 =back
 
 
@@ -3698,6 +3708,33 @@ The peak outbound bandwidth
 =item Sys::Virt::Domain::BANDWIDTH_OUT_BURST
 
 The burstable outbound bandwidth
+
+=back
+
+=head2 INTERFACE ANNOUNCE PARAMETERS
+
+The following constants are useful when calling the
+C<Sys::Virt::Domain::announce_interface> function.
+
+=over 4
+
+=item Sys::Virt::Domain::ANNOUNCE_INTERFACE_INITIAL
+
+Initial delay in milliseconds before the first announce packet is
+sent.
+
+=item Sys::Virt::Domain::ANNOUNCE_INTERFACE_MAX
+
+Maximum delay in milliseconds between packets.
+
+=item Sys::Virt::Domain::ANNOUNCE_INTERFACE_ROUNDS
+
+The number of packets to send.
+
+=item Sys::Virt::Domain::ANNOUNCE_INTERFACE_STEP
+
+Increment added to the delay (in milliseconds) after each packet
+is sent.
 
 =back
 
