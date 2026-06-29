@@ -1962,6 +1962,11 @@ Disable deprecated features when reporting CPU model information.
 
 Expand base CPU features implied by the model name.
 
+=item $Sys::Virt::DOMAIN_CAPABILITIES_SUPPORTED_CPU_FEATURES
+
+Report all CPU features supported on the host, even those that
+will not be enabled by host-model CPU mode.
+
 =back
 
 =item my $xml = $con->get_storage_pool_capabilities($flags=0);
