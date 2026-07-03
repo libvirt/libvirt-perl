@@ -666,19 +666,23 @@ Set the period on which guests memory stats are refreshed,
 with C<$period> being a value in seconds. The C<$flags>
 parameter is currently unused.
 
-=item $dom->shutdown()
+=item $dom->shutdown([$flags])
 
 Request that the guest OS perform a graceful shutdown and
 poweroff. This usually requires some form of cooperation
 from the guest operating system, such as responding to an
 ACPI signal, or a guest agent process. For an immediate,
 forceful poweroff, use the C<destroy> method instead.
+The optional C<$flags> parameter specifies the shutdown
+mechanism, see L</SHUTDOWN CONSTANTS>. If not specified,
+driver's defaults are used.
 
 =item $dom->reboot([$flags])
 
 Request that the guest OS perform a graceful shutdown and
-optionally restart. The optional C<$flags> parameter is
-currently unused and if omitted defaults to zero.
+optionally restart. The optional C<$flags> parameter
+specifies the reboot mechanism, see L</REBOOT CONSTANTS>.
+If not specified, driver's defaults are used.
 
 =item $dom->reset([$flags])
 
