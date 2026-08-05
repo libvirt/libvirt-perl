@@ -6622,6 +6622,10 @@ The coredump-destroy lifecycle action
 
 The coredump-restart lifecycle action
 
+=item Sys::Virt::Domain::LIFECYCLE_ACTION_PRESERVE_RUNNING
+
+The preserve-running lifecycle action
+
 =back
 
 =head2 MEMORY FAILURE ACTION CONSTANTS
