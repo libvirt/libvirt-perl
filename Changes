@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+12.7.0 2026-09-00
+
+ - XXX
+
 12.6.0 2026-08-05
 
  - Add VIR_DOMAIN_LIFECYCLE_ACTION_PRESERVE_RUNNING constant
