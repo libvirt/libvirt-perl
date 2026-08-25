@@ -6018,6 +6018,12 @@ Polling time divisor as an unsigned int or unsigned long long if exceeding
 range of unsigned int. A 0 (zero) indicates to allow the underlying
 hypervisor to choose how to shrink the polling time.
 
+=item Sys::Virt::Domain::STATS_IOTHREAD_SUFFIX_POLL_WEIGHT
+
+Polling weight factor as an unsigned int. This shift value controls how
+much the most recent event interval affects adaptive polling calculations.
+A 0 (zero) indicates the hypervisor's default weight is used.
+
 =back
 
 =item Sys::Virt::Domain::STATS_MEMORY
