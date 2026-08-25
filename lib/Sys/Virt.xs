@@ -6860,7 +6860,7 @@ set_iothread(dom, iothread_id, newparams, flags=0)
     virTypedParameterPtr params;
     size_t nparams;
  PPCODE:
-    nparams = 5;
+    nparams = 6;
     Newx(params, nparams, virTypedParameter);
 
     strncpy(params[0].field, VIR_DOMAIN_IOTHREAD_POLL_MAX_NS,
@@ -6882,6 +6882,10 @@ set_iothread(dom, iothread_id, newparams, flags=0)
     strncpy(params[4].field, VIR_DOMAIN_IOTHREAD_THREAD_POOL_MAX,
             VIR_TYPED_PARAM_FIELD_LENGTH);
     params[4].type = VIR_TYPED_PARAM_INT;
+
+    strncpy(params[5].field, VIR_DOMAIN_IOTHREAD_POLL_WEIGHT,
+            VIR_TYPED_PARAM_FIELD_LENGTH);
+    params[5].type = VIR_TYPED_PARAM_UINT;
 
     nparams = vir_typed_param_from_hv(newparams, params, nparams);
 
@@ -10611,6 +10615,7 @@ BOOT:
     REGISTER_CONSTANT_STR(VIR_DOMAIN_IOTHREAD_POLL_MAX_NS, IOTHREAD_PARAM_POLL_MAX_NS);
     REGISTER_CONSTANT_STR(VIR_DOMAIN_IOTHREAD_POLL_GROW, IOTHREAD_PARAM_POLL_GROW);
     REGISTER_CONSTANT_STR(VIR_DOMAIN_IOTHREAD_POLL_SHRINK, IOTHREAD_PARAM_POLL_SHRINK);
+    REGISTER_CONSTANT_STR(VIR_DOMAIN_IOTHREAD_POLL_WEIGHT, IOTHREAD_PARAM_POLL_WEIGHT);
     REGISTER_CONSTANT_STR(VIR_DOMAIN_IOTHREAD_THREAD_POOL_MIN, IOTHREAD_PARAM_THREAD_POOL_MIN);
     REGISTER_CONSTANT_STR(VIR_DOMAIN_IOTHREAD_THREAD_POOL_MAX, IOTHREAD_PARAM_THREAD_POOL_MAX);
 
