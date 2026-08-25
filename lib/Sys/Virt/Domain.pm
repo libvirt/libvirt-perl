@@ -2657,6 +2657,52 @@ The guest load averaged over 15 minutes as a double
 
 =back
 
+=item Sys::Virt::Domain::GUEST_INFO_DEVICES
+
+Guest devices information.
+
+=over 4
+
+=item Sys::Virt::Domain::GUEST_INFO_DEVICE_COUNT
+
+The number of guest devices that detailed information is fetched for as
+unsigned int.
+
+=item Sys::Virt::Domain::GUEST_INFO_DEVICE_PREFIX
+
+The parameter name prefix to access each device entry. Concatenate the
+prefix, the entry number formatted as an unsigned integer and one of the
+device suffix parameters to form a complete parameter name.
+
+=item Sys::Virt::Domain::GUEST_INFO_DEVICE_SUFFIX_DRIVER_DATE
+
+Driver release date in seconds since the epoch (e.g. 1736726400) as long
+long.
+
+=item Sys::Virt::Domain::GUEST_INFO_DEVICE_SUFFIX_DRIVER_NAME
+
+Name of the device driver (e.g. ``VirtIO Balloon Driver``) as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_DEVICE_SUFFIX_DRIVER_VERSION
+
+Driver version (e.g. ``100.100.104.27100``) as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_DEVICE_SUFFIX_ID_TYPE
+
+Device identification (e.g. ``pci``) as a string.
+
+=item Sys::Virt::Domain::GUEST_INFO_DEVICE_SUFFIX_PCI_DEVICE
+
+PCI device (a device with GUEST_INFO_DEVICE_SUFFIX_ID_TYPE equal to
+``pci``) device id (e.g. 4165) as a unsigned int.
+
+=item Sys::Virt::Domain::GUEST_INFO_DEVICE_SUFFIX_PCI_VENDOR
+
+PCI device (a device with GUEST_INFO_DEVICE_SUFFIX_ID_TYPE equal to
+``pci``) vendor id (e.g. 6900) as a unsigned int.
+
+=back
+
 =back
 
 C<$flags> is currently unused and defaults to zero.

@@ -4,6 +4,7 @@ Revision history for perl module Sys::Virt
 
  - Add VIR_DOMAIN_IOTHREAD_POLL_WEIGHT constant
  - Add VIR_DOMAIN_STATS_IOTHREAD_SUFFIX_POLL_WEIGHT constant
+ - Add VIR_DOMAIN_GUEST_INFO_DEVICES and related constants
 
 12.6.0 2026-08-05
 
