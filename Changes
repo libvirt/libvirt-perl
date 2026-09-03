@@ -1,5 +1,9 @@
 Revision history for perl module Sys::Virt
 
+12.8.0 2026-10-00
+
+ - XXX
+
 12.7.0 2026-09-03
 
  - Add VIR_DOMAIN_IOTHREAD_POLL_WEIGHT constant
