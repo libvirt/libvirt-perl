@@ -4259,6 +4259,11 @@ removed by administrator.
 
 The undefined configuration is a rename of an existing configuration
 
+=item Sys::Virt::Domain::EVENT_UNDEFINED_MIGRATED
+
+The domain configuration has been removed due to outgoing
+live migration.
+
 =back
 
 =item Sys::Virt::Domain::EVENT_PMSUSPENDED

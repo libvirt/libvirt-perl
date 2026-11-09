@@ -2,7 +2,7 @@ Revision history for perl module Sys::Virt
 
 12.9.0 2026-11-00
 
- - XXX
+ - Add VIR_DOMAIN_EVENT_UNDEFINED_MIGRATED
 
 12.7.0 2026-09-03
 
