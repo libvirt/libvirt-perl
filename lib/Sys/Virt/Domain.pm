@@ -4191,6 +4191,10 @@ The domain shutdown due to host trigger
 
 The domain shutdown due to guest trigger
 
+=item Sys::Virt::Domain::EVENT_SHUTDOWN_GUEST_RESET
+
+The domain shutdown due to guest reset
+
 =back
 
 =item Sys::Virt::Domain::EVENT_SUSPENDED
