@@ -1,6 +1,6 @@
 Revision history for perl module Sys::Virt
 
-12.9.0 2026-11-00
+12.9.0 2026-11-09
 
  - Add VIR_DOMAIN_EVENT_UNDEFINED_MIGRATED
  - Add VIR_DOMAIN_SHUTDOWN_GUEST_RESET
